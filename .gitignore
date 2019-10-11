@@ -4,6 +4,7 @@
 /.idea
 /.idea/workspace.xml
 /.idea/libraries
+/target/
 .DS_Store
 /captures
 .externalNativeBuild
@@ -15,7 +16,5 @@ gen
 /.project
 /.settings/
 /.springBeans
-/target
 /README.md
-.DS_Store
 /user-profile-analysis.iml
