@@ -29,6 +29,6 @@ public class Question implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date updateTime;
     private String updateUserId;
-    private Integer state;
+    private Integer status;
     private String remark;
 }

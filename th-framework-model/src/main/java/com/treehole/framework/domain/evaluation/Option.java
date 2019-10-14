@@ -23,6 +23,6 @@ public class Option implements Serializable {
     private Integer score;
     private Integer skip;
     private Integer skipId;
-    private Integer state;
+    private Integer status;
     private String remark;
 }

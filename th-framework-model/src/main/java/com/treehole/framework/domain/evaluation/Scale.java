@@ -25,7 +25,7 @@ public class Scale implements Serializable {
     private String topicBackground;
     private String guide;
     private String scaleFunction;
-    private Integer state;
+    private Integer status;
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date createTime;
     private String createUserId;
