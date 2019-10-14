@@ -43,6 +43,7 @@
         <mysql-connector-java.version>5.1.40</mysql-connector-java.version>
         <elasticsearch.version>6.2.1</elasticsearch.version>
         <guava.version>24.0-jre</guava.version>
+        <!--        <mapper.starter.version>2.0.2</mapper.starter.version>-->
     </properties>
 
     <!--依赖管理的版本控制-->
@@ -197,5 +198,4 @@
     </build>
 
 
-    
 </project>
