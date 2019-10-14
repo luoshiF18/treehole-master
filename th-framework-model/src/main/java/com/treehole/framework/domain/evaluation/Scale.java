@@ -22,21 +22,20 @@ public class Scale implements Serializable {
     private String id;
     private String scaleName;
     private String shortName;
+    private String letter;
     private String topicDescription;
     private String topicSuggest;
     private String topicBackground;
     private String guide;
     private String scaleFunction;
     private Integer status;
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date createTime;
     private String createUserId;
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date updateTime;
     private String updateUserId;
     private String images;
     private String typeId;
     private String remark;
-
-
 }
