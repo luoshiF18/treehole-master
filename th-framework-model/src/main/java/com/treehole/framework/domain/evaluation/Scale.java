@@ -3,6 +3,7 @@ package com.treehole.framework.domain.evaluation;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
@@ -17,6 +18,7 @@ import java.util.Date;
 @Table(name = "test_scale")
 public class Scale implements Serializable {
 
+    @Id
     private String id;
     private String scaleName;
     private String shortName;
