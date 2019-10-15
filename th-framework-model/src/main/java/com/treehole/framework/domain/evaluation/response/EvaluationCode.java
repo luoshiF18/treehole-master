@@ -13,10 +13,14 @@ import lombok.ToString;
 public enum EvaluationCode implements ResultCode {
 
 
+    DATA_ERROR(false, 401, "前台数据有误！"),
+    DESC_DATA_ERROR(false, 401, "描述信息有误，请检查！"),
+    SELECT_NULL(false, 401, "查询失败！"),
+    INSERT_FAIL(false, 401, "插入数据库失败！"),
+    SCALE_DATA_NULL(false, 401, "量表数据为空！"),
+    SCALE_FIND_ERROR(false, 401, "没有找到该量表！")
 
 
-    SCALE_INSERT_FAIL(false, 401, "插入数据库失败！"),
-    SCALE_DATA_NULL(false, 401, "量表数据为空！")
 
     ;
     //操作代码

@@ -1,6 +1,8 @@
 package com.treehole.framework.domain.evaluation;
 
 import lombok.Data;
+import tk.mybatis.mapper.annotation.NameStyle;
+import tk.mybatis.mapper.code.Style;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -14,15 +16,15 @@ import java.io.Serializable;
  */
 @Data
 @Table(name = "test_option")
+@NameStyle(Style.normal)
 public class Option implements Serializable {
 
     @Id
     private String id;
     private String questionId;
+    private Integer sort;
     private String answer;
     private Integer score;
     private Integer skip;
     private Integer skipId;
-    private Integer status;
-    private String remark;
 }

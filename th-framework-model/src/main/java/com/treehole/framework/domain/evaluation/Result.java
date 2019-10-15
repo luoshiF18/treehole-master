@@ -2,6 +2,9 @@ package com.treehole.framework.domain.evaluation;
 
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+import tk.mybatis.mapper.annotation.KeySql;
+import tk.mybatis.mapper.annotation.NameStyle;
+import tk.mybatis.mapper.code.Style;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -16,9 +19,11 @@ import java.util.Date;
  */
 @Data
 @Table(name = "result")
+@NameStyle(Style.normal)
 public class Result implements Serializable {
 
     @Id
+    @KeySql(useGeneratedKeys = true)
     private String id;
     private String userId;
     private String scaleId;
