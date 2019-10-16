@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,7 +27,7 @@ public class TestDetailVO {
     private String guide;
     private String scaleFunction;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private Date createTime;
+    private String createTime;
     private String images;
     private String type;
     //    问题集合，里面包含所有问题和其下面的所有选项

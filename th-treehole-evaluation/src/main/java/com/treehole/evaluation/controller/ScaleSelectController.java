@@ -2,16 +2,18 @@ package com.treehole.evaluation.controller;
 
 import com.treehole.api.evaluation.ScaleSelectControllerApi;
 import com.treehole.evaluation.service.ScaleSelectService;
+import com.treehole.framework.domain.evaluation.dto.OptionsDTO;
+import com.treehole.framework.domain.evaluation.response.EvaluationCode;
+import com.treehole.framework.domain.evaluation.response.ResultRequest;
 import com.treehole.framework.domain.evaluation.response.StartTestResult;
+import com.treehole.framework.domain.evaluation.vo.ResultVO;
 import com.treehole.framework.domain.evaluation.vo.TestDetailVO;
+import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @auther: Yan Hao
@@ -54,8 +56,30 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
      */
     @Override
     @GetMapping("test")
-    public StartTestResult startTest(String scaleId) {
+    public StartTestResult startTest(@RequestParam(value = "scaleId", defaultValue = "") String scaleId) {
         TestDetailVO testDetailVO = scaleSelectService.startTest(scaleId);
+        if (testDetailVO == null) {
+            ExceptionCast.cast(EvaluationCode.SELECT_NULL);
+        }
         return new StartTestResult(CommonCode.SUCCESS, testDetailVO);
     }
+
+
+    /**
+     * 根据分数得出测试结果
+     *
+     * @param optionsDTO
+     * @return
+     */
+    @Override
+    @PostMapping("result")
+    public ResultRequest testResult(@RequestBody OptionsDTO optionsDTO) {
+        String userId = "null"; //TODO 需要获取用户id
+        ResultVO testResult = scaleSelectService.getTestResult(optionsDTO, userId);
+        if (testResult == null) {
+            ExceptionCast.cast(EvaluationCode.TEST_ERROR);
+        }
+        return new ResultRequest(CommonCode.SUCCESS, testResult);
+    }
 }
+

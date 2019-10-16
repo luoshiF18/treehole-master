@@ -18,7 +18,8 @@ public enum EvaluationCode implements ResultCode {
     SELECT_NULL(false, 401, "查询失败！"),
     INSERT_FAIL(false, 401, "插入数据库失败！"),
     SCALE_DATA_NULL(false, 401, "量表数据为空！"),
-    SCALE_FIND_ERROR(false, 401, "没有找到该量表！")
+    SCALE_FIND_ERROR(false, 401, "没有找到该量表！"),
+    TEST_ERROR(false,401,"抱歉，测评出现问题！")
 
 
 

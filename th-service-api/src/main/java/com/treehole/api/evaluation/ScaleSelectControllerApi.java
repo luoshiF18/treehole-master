@@ -1,5 +1,7 @@
 package com.treehole.api.evaluation;
 
+import com.treehole.framework.domain.evaluation.dto.OptionsDTO;
+import com.treehole.framework.domain.evaluation.response.ResultRequest;
 import com.treehole.framework.domain.evaluation.response.StartTestResult;
 import com.treehole.framework.model.response.QueryResponseResult;
 import io.swagger.annotations.Api;
@@ -17,4 +19,7 @@ public interface ScaleSelectControllerApi {
 
     @ApiOperation("开始测试")
     public StartTestResult startTest(String scaleId);
+
+    @ApiOperation("根据选项得出测试结果")
+    public ResultRequest testResult(OptionsDTO optionsDTO);
 }

@@ -27,9 +27,8 @@ public class UserOption implements Serializable {
     private String id;
     private String scaleId;
     private String userId;
-    private String questionId;
-    private String optionId;
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
+    private String questionAndOption;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date time;
 
 }

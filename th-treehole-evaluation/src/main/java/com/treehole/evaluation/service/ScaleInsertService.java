@@ -92,7 +92,8 @@ public class ScaleInsertService {
             Integer score = option.getScore();
             Integer skip = option.getScore();
             Integer skipId = option.getSkipId();
-            if (optionMapper.insertList(id, questionId, sort, answer, score, skip, skipId) != 1) {
+            String scaleId = option.getScaleId();
+            if (optionMapper.insertList(id, questionId, sort, answer, score, skip, skipId,scaleId) != 1) {
                 ExceptionCast.cast(EvaluationCode.INSERT_FAIL);
             }
         }
