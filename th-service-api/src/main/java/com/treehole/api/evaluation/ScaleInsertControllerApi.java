@@ -20,6 +20,6 @@ public interface ScaleInsertControllerApi {
     public ResponseResult insertQuestionAndOption(QuestionDTO questionDTO);
 
     @ApiOperation("添加得分描述")
-    public ResponseResult insertDescription(String scaleId, Integer score1, Integer score2, String description, Integer warningLevel);
+    public ResponseResult insertDescription(String scaleId, Float score1, Float score2, String description, Integer warningLevel);
 
 }

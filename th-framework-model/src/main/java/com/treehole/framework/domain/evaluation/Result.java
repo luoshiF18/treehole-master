@@ -28,7 +28,7 @@ public class Result implements Serializable {
     private String userId;
     private String scaleId;
     private String descriptionId;
-    private Integer score;
+    private Float score;
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date createTime;
     private String warningId;

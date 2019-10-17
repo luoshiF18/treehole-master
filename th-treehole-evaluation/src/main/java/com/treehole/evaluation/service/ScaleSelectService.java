@@ -3,15 +3,13 @@ package com.treehole.evaluation.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.evaluation.MyUtils.MyDateUtils;
+import com.treehole.evaluation.MyUtils.MyMapUtils;
 import com.treehole.evaluation.MyUtils.MyNumberUtils;
 import com.treehole.evaluation.dao.*;
 import com.treehole.framework.domain.evaluation.*;
 import com.treehole.framework.domain.evaluation.dto.OptionsDTO;
 import com.treehole.framework.domain.evaluation.response.EvaluationCode;
-import com.treehole.framework.domain.evaluation.vo.OptionVO;
-import com.treehole.framework.domain.evaluation.vo.QuestionVO;
-import com.treehole.framework.domain.evaluation.vo.ResultVO;
-import com.treehole.framework.domain.evaluation.vo.TestDetailVO;
+import com.treehole.framework.domain.evaluation.vo.*;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
 import org.apache.commons.lang3.StringUtils;
@@ -21,9 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @auther: Yan Hao
@@ -44,6 +40,8 @@ public class ScaleSelectService {
     private UserOptionMapper userOptionMapper;
     @Autowired
     private ResultMapper resultMapper;
+
+//    private static final String USER_OPTIONS = "user:options";
 
     /**
      * 搜索量表
@@ -94,12 +92,48 @@ public class ScaleSelectService {
     }
 
     /**
-     * 开始测试，获取量表内容
+     * 得到量表详细信息
      *
      * @param scaleId
      * @return
      */
-    public TestDetailVO startTest(String scaleId) {
+    public ScaleDetailVO findScaleDetail(String scaleId) {
+        if (StringUtils.isBlank(scaleId)) {
+            ExceptionCast.cast(EvaluationCode.DATA_ERROR);
+        }
+        try {
+//            查询量表
+            Scale scale = scaleMapper.selectByPrimaryKey(scaleId);
+//            填入展示类
+            ScaleDetailVO scaleDetailVO = new ScaleDetailVO();
+            scaleDetailVO.setId(scaleId);
+            scaleDetailVO.setScaleName(scale.getScaleName());
+            scaleDetailVO.setShortName(scale.getShortName());
+            scaleDetailVO.setTopicDescription(scale.getTopicDescription());
+            scaleDetailVO.setTopicSuggest(scale.getTopicSuggest());
+            scaleDetailVO.setTopicBackground(scale.getTopicBackground());
+            scaleDetailVO.setGuide(scale.getGuide());
+            scaleDetailVO.setScaleFunction(scale.getScaleFunction());
+            scaleDetailVO.setCreateTime(MyDateUtils.dateToString2(scale.getCreateTime(), "yyyy-MM-dd"));
+            scaleDetailVO.setImages(scale.getImages());
+            scaleDetailVO.setType("暂时没有");//TODO 这里需要搜索详细类型名称
+            scaleDetailVO.setScaleType(scale.getScaleType());
+//            返回
+            return scaleDetailVO;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    /**
+     * 开始测试，获取量表内容,简单类型
+     *
+     * @param scaleId
+     * @return
+     */
+    public TestDetailVO startTestType1(String scaleId) {
         if (StringUtils.isEmpty(scaleId)) {
             ExceptionCast.cast(EvaluationCode.SCALE_FIND_ERROR);
         }
@@ -112,12 +146,6 @@ public class ScaleSelectService {
             testDetailVO.setId(scaleId);
             testDetailVO.setScaleName(scale.getScaleName());
             testDetailVO.setShortName(scale.getShortName());
-            testDetailVO.setTopicDescription(scale.getTopicDescription());
-            testDetailVO.setTopicSuggest(scale.getTopicSuggest());
-            testDetailVO.setTopicBackground(scale.getTopicBackground());
-            testDetailVO.setGuide(scale.getGuide());
-            testDetailVO.setScaleFunction(scale.getScaleFunction());
-            testDetailVO.setCreateTime(MyDateUtils.dateToString2(scale.getCreateTime(), "yyyy-MM-dd"));
             testDetailVO.setImages(scale.getImages());
             testDetailVO.setType(scale.getTypeId()); //TODO 这里需要搜索详细类型名称
 
@@ -163,6 +191,65 @@ public class ScaleSelectService {
     }
 
     /**
+     * 开始测试,跳题类型
+     *
+     * @return
+     */
+    public QuestionVO2 startTestType2(String scaleId, String nextQuestionId, Integer questionSort, String optionId) {
+        try {
+            if (StringUtils.isNotBlank(nextQuestionId) || questionSort != null) {
+//        第二次查询带有nextQuestionId
+//            获取问题
+                StringBuilder nextId = new StringBuilder();
+                StringBuilder question = new StringBuilder();
+                Integer sort = 0;
+//            如果有跳题处理
+                Option option = optionMapper.getOptionList1(optionId);
+                String skipId = option.getSkipId();
+                Integer skip = option.getSkip();
+//                如果有跳转id，并且跳转状态为开启就跳转
+                if (skip == 1 && skipId != null) {
+                    nextId.append(skipId);
+                    Question select = questionMapper.selectByPrimaryKey(skipId);
+                    sort = select.getSort();
+                    question.append(select.getQuestion());
+
+                } else {
+//            如果没有跳题处理
+                    Question questionInfo = questionMapper.findQuestionInfo(questionSort + 1, scaleId);
+                    nextId.append(questionInfo.getId());
+                    sort = questionSort + 1;
+                    question.append(questionInfo.getQuestion());
+                }
+//            准备返回数据
+                QuestionVO2 questionVO2 = new QuestionVO2();
+                questionVO2.setNextQuestionId(nextId.toString());
+                questionVO2.setQuestionSort(sort);
+                questionVO2.setQuestion(question.toString());
+                questionVO2.setOptionVOS(optionMapper.findOptionByQuestionId(nextId.toString()));
+                return questionVO2;
+
+            } else if (StringUtils.isBlank(nextQuestionId)) {
+//        第一次查询没有下一题问题id,返回第一题的信息
+//            获取第一个问题并返回
+                Question firstInfo = questionMapper.findFirstInfo(1, scaleId);
+                QuestionVO2 firstQuestionVO2 = new QuestionVO2();
+                firstQuestionVO2.setNextQuestionId(questionMapper.findNextId(2, scaleId));
+                firstQuestionVO2.setQuestionSort(1);
+                firstQuestionVO2.setQuestion(firstInfo.getQuestion());
+                firstQuestionVO2.setOptionVOS(optionMapper.findOptionByQuestionId(firstInfo.getId()));
+                return firstQuestionVO2;
+            } else {
+                ExceptionCast.cast(EvaluationCode.GET_QUESTION_ERROR);
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * 根据分数得出测试结果
      *
      * @param optionsDTO
@@ -180,13 +267,13 @@ public class ScaleSelectService {
 //        选项信息
             StringBuilder questionAndOption = new StringBuilder();
             System.out.println(questionAndOption);
-            int sum = 0;
+            Float sum = Float.valueOf(0);
             if (StringUtils.isNotBlank(userId)) {
 //            得出分数并存储选项
                 for (String optionId : optionIds) {
                     Option UserOption = optionMapper.getOptionList1(optionId);
-                    Integer integer = UserOption.getScore();
-                    sum += integer;
+                    Float aFloat = UserOption.getScore();
+                    sum += aFloat;
 //                拼接字符串
                     questionAndOption.append(UserOption.getQuestionId() + "|" + UserOption.getAnswer() + ",");
                 }
@@ -195,7 +282,7 @@ public class ScaleSelectService {
             } else {
 //            如果没有登录就不记录，直接返回分数
                 for (String optionId : optionIds) {
-                    Integer integer = optionMapper.getScore(optionId);
+                    Float integer = optionMapper.getScore(optionId);
                     sum += integer;
                 }
             }
@@ -228,9 +315,58 @@ public class ScaleSelectService {
 
 
     /**
+     * 根据量表名和用户id查询用户选项
+     *
+     * @param scaleId
+     * @param userId
+     * @return
+     */
+    public UserOptionVO findUserOption(String scaleId, String userId) {
+        if (StringUtils.isEmpty(scaleId) || StringUtils.isEmpty(userId)) {
+            ExceptionCast.cast(EvaluationCode.DATA_ERROR);
+        }
+        try {
+//        查询用户的选项
+            UserOption userOption = new UserOption();
+            userOption.setScaleId(scaleId);
+            userOption.setUserId(userId);
+            UserOption selectOne = userOptionMapper.selectOne(userOption);
+            Scale scale = scaleMapper.selectByPrimaryKey(scaleId);
+            String questionAndOption = selectOne.getQuestionAndOption();
+//        准备问题和选项map
+            List<Map> result2 = new ArrayList<>();
+//        解析字符串
+            String[] splits = StringUtils.split(questionAndOption, ",");
+//        这样把每个选项分出来，但是问题id和答案还在一起
+            for (String split : splits) {
+                String question = StringUtils.substringBefore(split, "|");
+                String option = StringUtils.substringAfter(split, "|");
+                String questionName = questionMapper.findQuestionName(question);
+                Map result = new HashMap<>();
+                result.put(questionName, option);
+                result2.add(result);
+            }
+//            因为有的是多选，所以需要合并value到一个key中
+            Map combine = MyMapUtils.mapValueCombine(result2);
+//        准备返回数据
+            UserOptionVO userOptionVO = new UserOptionVO();
+            userOptionVO.setId(selectOne.getId());
+            userOptionVO.setScaleName(scale.getScaleName());
+            userOptionVO.setUserName("暂时没有"); //TODO 获取用户名称
+            userOptionVO.setResult(combine);
+            userOptionVO.setTime(MyDateUtils.dateToString1(selectOne.getTime()));
+//        返回
+            return userOptionVO;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * 获取匹配的量表描述
      */
-    private Description getDescription(String scaleId, Integer sum) {
+    private Description getDescription(String scaleId, Float sum) {
 //        查出量表的描述信息
         Description description = new Description();
         description.setScaleId(scaleId);
@@ -264,7 +400,7 @@ public class ScaleSelectService {
     /**
      * 存入到结果表中
      */
-    private void insertResult(String userId, String scaleId, String descriptionId, Integer score, String warningId) {
+    private void insertResult(String userId, String scaleId, String descriptionId, Float score, String warningId) {
 //        准备数据
         Result result = new Result();
         result.setId(MyNumberUtils.getUUID());
@@ -277,6 +413,5 @@ public class ScaleSelectService {
 //         存入
         resultMapper.insert(result);
     }
-
 
 }

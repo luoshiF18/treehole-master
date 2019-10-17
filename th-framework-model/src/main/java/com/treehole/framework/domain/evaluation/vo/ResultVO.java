@@ -12,7 +12,7 @@ public class ResultVO {
     private String userName;
     private String scaleName;
     private String descriptionInfo;
-    private Integer score;
+    private Float score;
     private String warningInfo;
     private Integer warningLevel;
 }

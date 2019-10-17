@@ -42,5 +42,6 @@ public class Scale implements Serializable {
     private String updateUserId;
     private String images;
     private String typeId;
+    private Integer scaleType;
     private String remark;
 }

@@ -59,8 +59,8 @@ public class ScaleInsertController implements ScaleInsertControllerApi {
     @PostMapping("description")
     public ResponseResult insertDescription(
             @RequestParam("scaleId") String scaleId,
-            @RequestParam("score1") Integer score1,
-            @RequestParam("score2") Integer score2,
+            @RequestParam("score1")  Float score1,
+            @RequestParam("score2")  Float score2,
             @RequestParam("description") String description,
             @RequestParam("warningLevel") Integer warningLevel) {
         scaleInsertService.insertDescription(scaleId, score1, score2, description, warningLevel, "暂时么得cookie");
