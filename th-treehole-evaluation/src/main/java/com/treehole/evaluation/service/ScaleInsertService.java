@@ -89,11 +89,11 @@ public class ScaleInsertService {
             String questionId = uuid;
             Integer sort = option.getSort();
             String answer = option.getAnswer();
-            Integer score = option.getScore();
-            Integer skip = option.getScore();
-            Integer skipId = option.getSkipId();
+            Float score = option.getScore();
+            Integer skip = option.getSkip();
+            String skipId = option.getSkipId();
             String scaleId = option.getScaleId();
-            if (optionMapper.insertList(id, questionId, sort, answer, score, skip, skipId,scaleId) != 1) {
+            if (optionMapper.insertList(id, questionId, sort, answer, score, skip, skipId, scaleId) != 1) {
                 ExceptionCast.cast(EvaluationCode.INSERT_FAIL);
             }
         }
@@ -109,7 +109,7 @@ public class ScaleInsertService {
      * @param warningLevel
      * @return
      */
-    public void insertDescription(String scaleId, Integer score1, Integer score2, String description, Integer warningLevel, String createUserId) {
+    public void insertDescription(String scaleId, Float score1, Float score2, String description, Integer warningLevel, String createUserId) {
         if (StringUtils.isEmpty(scaleId) || StringUtils.isEmpty(description) || score1 < 0 || score2 < 0 || score1 > score2 || warningLevel < 0) {
             ExceptionCast.cast(EvaluationCode.DESC_DATA_ERROR);
         }
@@ -132,7 +132,7 @@ public class ScaleInsertService {
      *
      * @return
      */
-    public void insertResult(String userId, String scaleId, String descriptionId, Integer score, String warningId) {
+    public void insertResult(String userId, String scaleId, String descriptionId, Float score, String warningId) {
         if (StringUtils.isEmpty(userId) || StringUtils.isEmpty(scaleId) || StringUtils.isEmpty(descriptionId) || StringUtils.isEmpty(warningId) || score < 0) {
             ExceptionCast.cast(EvaluationCode.DATA_ERROR);
         }

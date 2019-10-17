@@ -26,8 +26,8 @@ public class Option implements Serializable {
     private String questionId;
     private Integer sort;
     private String answer;
-    private Integer score;
+    private Float score;
     private Integer skip;
-    private Integer skipId;
+    private String skipId;
     private String scaleId;
 }

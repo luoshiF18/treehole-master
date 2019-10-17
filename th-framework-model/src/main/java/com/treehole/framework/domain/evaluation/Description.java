@@ -26,8 +26,8 @@ public class Description implements Serializable {
     @KeySql(useGeneratedKeys = true)
     private String id;
     private String scaleId;
-    private Integer score1;
-    private Integer score2;
+    private Float score1;
+    private Float score2;
     private String description;
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date createTime;
