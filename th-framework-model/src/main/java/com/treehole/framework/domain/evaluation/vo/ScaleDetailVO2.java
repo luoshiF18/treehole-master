@@ -3,16 +3,15 @@ package com.treehole.framework.domain.evaluation.vo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * @auther: Yan Hao
- * @date: 2019/10/17
+ * @date: 2019/10/18
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ScaleDetailVO {
+public class ScaleDetailVO2 {
     private String id;
     private String scaleName;
     private String shortName;
@@ -21,8 +20,10 @@ public class ScaleDetailVO {
     private String topicBackground;
     private String guide;
     private String scaleFunction;
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private String createTime;
+    private String createUserId;
+    private String updateTime;
+    private String updateUserId;
     private String images;
     private String type;
     private Integer scaleType;

@@ -9,10 +9,15 @@ import lombok.Data;
 @Data
 public class ResultVO {
 
+    private String id;
     private String userName;
     private String scaleName;
     private String descriptionInfo;
     private Float score;
+    private String resultTime;
     private String warningInfo;
-    private Integer warningLevel;
+    private String userWarningInfo;
+    private String updateUserName;
+    private String updateTime;
+    private String remark;
 }
