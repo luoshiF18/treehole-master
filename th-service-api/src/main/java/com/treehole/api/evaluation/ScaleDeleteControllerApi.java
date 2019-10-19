@@ -16,4 +16,10 @@ public interface ScaleDeleteControllerApi {
 
     @ApiOperation("删除某个用户的测评结果")
     public ResponseResult deleteUserScale(String userId);
+
+    @ApiOperation("删除某个问题")
+    public ResponseResult deleteQuestion(String questionId);
+
+    @ApiOperation("删除某个选项")
+    public ResponseResult deleteOption(String optionId);
 }

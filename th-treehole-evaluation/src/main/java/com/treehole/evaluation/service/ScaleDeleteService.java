@@ -67,7 +67,7 @@ public class ScaleDeleteService {
      */
     @Transactional
     public void deleteUserScale(String userId) {
-//        还是不废话，删起来
+//        不废话，删起来
         try {
             if (StringUtils.isNotBlank(userId)) {
                 Result result = new Result();
@@ -84,5 +84,46 @@ public class ScaleDeleteService {
         }
 
 
+    }
+
+    /**
+     * 删除某个问题
+     *
+     * @param questionId
+     * @return
+     */
+    @Transactional
+    public void deleteQuestion(String questionId) {
+//        不废话，删起来
+        try {
+            if (StringUtils.isNotBlank(questionId)) {
+                Option option = new Option();
+                option.setQuestionId(questionId);
+                optionMapper.delete(option);
+                questionMapper.deleteByPrimaryKey(questionId);
+            }
+        } catch (Exception e) {
+            ExceptionCast.cast(EvaluationCode.DELETE_ERROR);
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 删除某个选项
+     *
+     * @param optionId
+     * @return
+     */
+    @Transactional
+    public void deleteOption(String optionId) {
+//        不废话，删起来
+        try {
+            if (StringUtils.isNotBlank(optionId)) {
+                optionMapper.deleteByPrimaryKey(optionId);
+            }
+        } catch (Exception e) {
+            ExceptionCast.cast(EvaluationCode.DELETE_ERROR);
+            e.printStackTrace();
+        }
     }
 }
