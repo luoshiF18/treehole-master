@@ -292,7 +292,7 @@ public class ScaleSelectService {
                     Float aFloat = UserOption.getScore();
                     sum += aFloat;
 //                拼接字符串
-                    questionAndOption.append(UserOption.getQuestionId() + "|" + UserOption.getAnswer() + ",");
+                    questionAndOption.append(questionMapper.findQuestionName(UserOption.getQuestionId()) + "|" + UserOption.getAnswer() + ",");
                 }
 //            存入到选项表
                 insertUserOption(userId, scale.getScaleName(), questionAndOption.toString());
@@ -358,9 +358,8 @@ public class ScaleSelectService {
             for (String split : splits) {
                 String question = StringUtils.substringBefore(split, "|");
                 String option = StringUtils.substringAfter(split, "|");
-                String questionName = questionMapper.findQuestionName(question);
                 Map result = new HashMap<>();
-                result.put(questionName, option);
+                result.put(question, option);
                 result2.add(result);
             }
 //            因为有的是多选，所以需要合并value到一个key中
