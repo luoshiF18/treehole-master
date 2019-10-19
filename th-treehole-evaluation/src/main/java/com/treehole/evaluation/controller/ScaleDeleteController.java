@@ -72,4 +72,29 @@ public class ScaleDeleteController implements ScaleDeleteControllerApi {
         scaleDeleteService.deleteOption(optionId);
         return new ResponseResult(CommonCode.SUCCESS);
     }
+
+    /**
+     * 删除某个描述
+     *
+     * @param descId
+     * @return
+     */
+    @Override
+    @DeleteMapping("desc")
+    public ResponseResult deleteDesc(@RequestParam("descId") String descId) {
+        scaleDeleteService.deleteDesc(descId);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 删除某个用户的某个结果
+     *
+     * @param resultId
+     * @return
+     */
+    @Override
+    public ResponseResult deleteResult(@RequestParam("resultId") String resultId) {
+        scaleDeleteService.deleteResult(resultId);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
 }
