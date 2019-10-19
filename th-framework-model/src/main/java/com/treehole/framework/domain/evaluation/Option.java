@@ -7,6 +7,7 @@ import tk.mybatis.mapper.code.Style;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 
 /**
@@ -30,4 +31,6 @@ public class Option implements Serializable {
     private Integer skip;
     private String skipId;
     private String scaleId;
+    @Transient
+    private Integer skipQuestionSort;// 问题序号，这个不会作为数据库字段,用于修改问题展示用questionVO3
 }

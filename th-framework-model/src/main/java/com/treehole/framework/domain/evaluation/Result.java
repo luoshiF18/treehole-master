@@ -26,12 +26,16 @@ public class Result implements Serializable {
     @KeySql(useGeneratedKeys = true)
     private String id;
     private String userId;
-    private String scaleId;
-    private String descriptionId;
+    private String scaleName;
+    private String description;
     private Float score;
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date createTime;
-    private String warningId;
+    private String userWarningInfo;
+    private String updateUserId;
+    private Date updateTime;
+    private String warningInfo;
+    private Integer resultType;
     private String remark;
 
 
