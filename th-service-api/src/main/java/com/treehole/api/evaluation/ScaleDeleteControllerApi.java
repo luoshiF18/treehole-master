@@ -22,4 +22,10 @@ public interface ScaleDeleteControllerApi {
 
     @ApiOperation("删除某个选项")
     public ResponseResult deleteOption(String optionId);
+
+    @ApiOperation("删除某个描述")
+    public ResponseResult deleteDesc(String descId);
+
+    @ApiOperation("删除某个用户的某个结果")
+    public ResponseResult deleteResult(String resultId);
 }
