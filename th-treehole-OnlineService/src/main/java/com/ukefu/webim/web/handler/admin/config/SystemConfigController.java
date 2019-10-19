@@ -28,10 +28,10 @@ import com.ukefu.core.UKDataContext;
 import com.ukefu.util.Menu;
 import com.ukefu.util.UKTools;
 import com.ukefu.webim.service.cache.CacheHelper;
-import com.ukefu.webim.service.repository.SecretRepository;
+/*import com.ukefu.webim.service.repository.SecretRepository;*/
 import com.ukefu.webim.service.repository.SystemConfigRepository;
 import com.ukefu.webim.web.handler.Handler;
-import com.ukefu.webim.web.model.Secret;
+/*import com.ukefu.webim.web.model.Secret;*/
 import com.ukefu.webim.web.model.SysDic;
 import com.ukefu.webim.web.model.SystemConfig;
 import com.ukefu.webim.web.model.UKeFuDic;
@@ -52,8 +52,8 @@ public class SystemConfigController extends Handler{
 	@Autowired
 	private SystemConfigRepository systemConfigRes ;
 	
-	@Autowired
-	private SecretRepository secRes ;
+	/*@Autowired
+	private SecretRepository secRes ;*/
 	
 	/*@Autowired
 	private TemplateRepository templateRes ;*/
@@ -63,10 +63,10 @@ public class SystemConfigController extends Handler{
     public ModelAndView index(ModelMap map , HttpServletRequest request , @Valid String execute) throws SQLException {
     	map.addAttribute("server", server) ;
     	map.addAttribute("imServerStatus", UKDataContext.getIMServerStatus()) ;
-    	List<Secret> secretConfig = secRes.findByOrgi(super.getOrgi(request)) ;
-    	if(secretConfig!=null && secretConfig.size() > 0){
+    	/*List<Secret> secretConfig = secRes.findByOrgi(super.getOrgi(request)) ;*/
+    	/*if(secretConfig!=null && secretConfig.size() > 0){
     		map.addAttribute("secret", secretConfig.get(0)) ;
-    	}
+    	}*/
     	List<SysDic> dicList = UKeFuDic.getInstance().getDic(UKDataContext.UKEFU_SYSTEM_DIC) ;
     	SysDic callCenterDic = null ;
     	for(SysDic dic : dicList){
@@ -90,10 +90,10 @@ public class SystemConfigController extends Handler{
     @Menu(type = "admin" , subtype = "stopimserver" , access = false , admin = true)
     public ModelAndView stopimserver(ModelMap map , HttpServletRequest request , @Valid String confirm) throws SQLException {
     	boolean execute = false ;
-    	if(execute = UKTools.secConfirm(secRes, super.getOrgi(request), confirm)){
+    	/*if(execute = UKTools.secConfirm(secRes, super.getOrgi(request), confirm)){
 	    	server.stop();
 	    	UKDataContext.setIMServerStatus(false);
-    	}
+    	}*/
         return request(super.createRequestPageTempletResponse("redirect:/admin/config/index.html?execute="+execute));
     }
     
@@ -108,16 +108,16 @@ public class SystemConfigController extends Handler{
     @Menu(type = "admin" , subtype = "stop" , access = false , admin = true)
     public ModelAndView stop(ModelMap map , HttpServletRequest request , @Valid String confirm) throws SQLException {
     	boolean execute = false ;
-    	if(execute = UKTools.secConfirm(secRes, super.getOrgi(request), confirm)){
+    	/*if(execute = UKTools.secConfirm(secRes, super.getOrgi(request), confirm)){
 	    	server.stop();
 	    	UKDataContext.setIMServerStatus(false);
 	    	System.exit(0);
-    	}
+    	}*/
     	return request(super.createRequestPageTempletResponse("redirect:/admin/config/index.html?execute="+execute));
     }
     
     
-    @RequestMapping("/save")
+   /* @RequestMapping("/save")
     @Menu(type = "admin" , subtype = "save" , admin = true)
     public ModelAndView save(ModelMap map , HttpServletRequest request , @Valid SystemConfig config , @RequestParam(value = "keyfile", required = false) MultipartFile keyfile , @Valid Secret secret) throws SQLException, IOException, NoSuchAlgorithmException {
     	SystemConfig systemConfig = systemConfigRes.findByOrgi(super.getOrgi(request)) ;
@@ -186,5 +186,5 @@ public class SystemConfigController extends Handler{
     	map.addAttribute("imServerStatus", UKDataContext.getIMServerStatus()) ;
     	
     	return request(super.createRequestPageTempletResponse("redirect:/admin/config/index.html?msg="+msg));
-    }
+    }*/
 }

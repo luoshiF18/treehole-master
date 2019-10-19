@@ -104,7 +104,7 @@ public class IMEventHandler
     }  
       
     //消息接收入口，用于接受网站资源用户传入的 个人信息
-    @OnEvent(value = "new")  
+    @OnEvent(value = "new")
     public void onEvent(SocketIOClient client, AckRequest request, Contacts contacts)   
     {
     	String user = client.getHandshakeData().getSingleUrlParam("userid") ;
@@ -134,7 +134,7 @@ public class IMEventHandler
 			agentService.setRegion(contacts.getMemo());
 			agentServiceRes.save(agentService) ;
 		}
-    }  
+    }
     
   //消息接收入口，坐席状态更新  
     @OnEvent(value = "agentstatus")  

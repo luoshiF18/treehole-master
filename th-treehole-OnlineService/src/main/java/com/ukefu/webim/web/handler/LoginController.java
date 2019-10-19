@@ -101,22 +101,22 @@ public class LoginController extends Handler{
 		        		}
 		        	}*/
 		        	//获取用户的授权资源
-		        	List<RoleAuth> roleAuthList = roleAuthRes.findAll(new Specification<RoleAuth>(){
+		        	/*List<RoleAuth> roleAuthList = roleAuthRes.findAll(new Specification<RoleAuth>(){
 						@Override
 						public Predicate toPredicate(Root<RoleAuth> root, CriteriaQuery<?> query,
 								CriteriaBuilder cb) {
 							List<Predicate> list = new ArrayList<Predicate>();  
-							/*if(loginUser.getRoleList()!=null && loginUser.getRoleList().size() > 0){
+							*//*if(loginUser.getRoleList()!=null && loginUser.getRoleList().size() > 0){
 								for(Role role : loginUser.getRoleList()){
 									list.add(cb.equal(root.get("roleid").as(String.class), role.getId())) ;
 								}
-							}*/
+							}*//*
 							Predicate[] p = new Predicate[list.size()];  
 							cb.and(cb.equal(root.get("orgi").as(String.class), loginUser.getOrgi())) ;
 						    return cb.or(list.toArray(p));  
-						}}) ;
+						}}) ;*/
 		        	
-		        	loginUser.setRoleAuthList(roleAuthList);//获取用户收取的资源信息
+		        	/*loginUser.setRoleAuthList(roleAuthList);//获取用户收取的资源信息*/
 		        	
 		        	loginUser.setLastlogintime(new Date());
 		        	if(!StringUtils.isBlank(loginUser.getId())){

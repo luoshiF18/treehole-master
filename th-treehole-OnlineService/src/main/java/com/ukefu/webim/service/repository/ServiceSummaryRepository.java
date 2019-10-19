@@ -1,3 +1,4 @@
+/*
 package com.ukefu.webim.service.repository;
 
 
@@ -20,3 +21,4 @@ public interface ServiceSummaryRepository extends JpaRepository<AgentServiceSumm
 
 	public abstract Page<AgentServiceSummary> findByChannelAndOrgi(String string, String orgi, Pageable pageable);
 }
+*/

@@ -21,11 +21,11 @@ import com.ukefu.util.Menu;
 import com.ukefu.util.UKTools;
 import com.ukefu.webim.service.repository.ConsultInviteRepository;
 import com.ukefu.webim.service.repository.SNSAccountRepository;
-import com.ukefu.webim.service.repository.SecretRepository;
+/*import com.ukefu.webim.service.repository.SecretRepository;*/
 import com.ukefu.webim.web.handler.Handler;
 import com.ukefu.webim.web.model.CousultInvite;
 import com.ukefu.webim.web.model.SNSAccount;
-import com.ukefu.webim.web.model.Secret;
+/*import com.ukefu.webim.web.model.Secret;*/
 
 /**
  *
@@ -41,17 +41,17 @@ public class SNSAccountIMController extends Handler{
 	@Autowired
 	private ConsultInviteRepository invite;
 	
-	@Autowired
-	private SecretRepository secRes ;
+	/*@Autowired
+	private SecretRepository secRes ;*/
 
     @RequestMapping("/index")
     @Menu(type = "admin" , subtype = "im" , access = false ,admin = true)
     public ModelAndView index(ModelMap map , HttpServletRequest request , @Valid String execute) {
     	map.addAttribute("snsAccountList", snsAccountRes.findBySnstype( UKDataContext.ChannelTypeEnum.WEBIM.toString(), new PageRequest(super.getP(request), super.getPs(request)))) ;
-    	List<Secret> secretConfig = secRes.findByOrgi(super.getOrgi(request)) ;
+    	/*List<Secret> secretConfig = secRes.findByOrgi(super.getOrgi(request)) ;
     	if(secretConfig!=null && secretConfig.size() > 0){
     		map.addAttribute("secret", secretConfig.get(0)) ;
-    	}
+    	}*/
     	if(!StringUtils.isBlank(execute) && execute.equals("false")){
     		map.addAttribute("execute", execute) ;
     	}
@@ -93,7 +93,7 @@ public class SNSAccountIMController extends Handler{
     	return request(super.createRequestPageTempletResponse("redirect:/admin/im/index.html"));
     }
     
-    @RequestMapping("/delete")
+    /*@RequestMapping("/delete")
     @Menu(type = "weixin" , subtype = "delete")
     public ModelAndView delete(ModelMap map , HttpServletRequest request , @Valid String id  , @Valid String confirm) {
     	boolean execute = false ;
@@ -109,7 +109,7 @@ public class SNSAccountIMController extends Handler{
     	}
     	
         return request(super.createRequestPageTempletResponse("redirect:/admin/im/index.html?execute="+execute));
-    }
+    }*/
     
     @RequestMapping("/edit")
     @Menu(type = "admin" , subtype = "im" , access = false ,admin = true)

@@ -1,3 +1,4 @@
+/*
 package com.ukefu.webim.web.handler.api.rest;
 
 import java.util.Date;
@@ -34,12 +35,14 @@ public class ApiContactsController extends Handler{
 	@Autowired
 	private ContactsRepository contactsRepository;
 	
-	/**
+	*/
+/**
 	 * 返回用户列表，支持分页，分页参数为 p=1&ps=50，默认分页尺寸为 20条每页
 	 * @param request
 	 * @param username	搜索用户名，精确搜索
 	 * @return
-	 */
+	 *//*
+
 	@RequestMapping( method = RequestMethod.GET)
 	@Menu(type = "apps" , subtype = "contacts" , access = true)
 	@ApiOperation("返回联系人列表，支持分页，分页参数为 p=1&ps=50，默认分页尺寸为 20条每页")
@@ -54,12 +57,14 @@ public class ApiContactsController extends Handler{
         return new ResponseEntity<>(new RestResult(RestResultType.OK, contactsList), HttpStatus.OK);
     }
 	
-	/**
+	*/
+/**
 	 * 新增或修改用户用户 ，在修改用户信息的时候，如果用户 密码未改变，请设置为 NULL
 	 * @param request
 	 * @param user
 	 * @return
-	 */
+	 *//*
+
 	@RequestMapping(method = RequestMethod.PUT)
 	@Menu(type = "apps" , subtype = "contacts" , access = true)
 	@ApiOperation("新增或修改联系人，联系人部分字段是字典选项，请从字典接口获取数据")
@@ -79,12 +84,14 @@ public class ApiContactsController extends Handler{
         return new ResponseEntity<>(new RestResult(RestResultType.OK), HttpStatus.OK);
     }
 	
-	/**
+	*/
+/**
 	 * 删除用户，只提供 按照用户ID删除 ， 并且，不能删除系统管理员
 	 * @param request
 	 * @param id
 	 * @return
-	 */
+	 *//*
+
 	@RequestMapping(method = RequestMethod.DELETE)
 	@Menu(type = "apps" , subtype = "contacts" , access = true)
 	@ApiOperation("删除联系人，联系人删除是逻辑删除，将 datastatus字段标记为 true，即已删除")
@@ -99,4 +106,4 @@ public class ApiContactsController extends Handler{
     	}
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-}
+}*/

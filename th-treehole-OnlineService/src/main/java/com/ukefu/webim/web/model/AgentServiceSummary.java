@@ -1,3 +1,4 @@
+/*
 package com.ukefu.webim.web.model;
 
 import java.io.Serializable;
@@ -17,9 +18,11 @@ import org.hibernate.annotations.Proxy;
 @Proxy(lazy = false)
 public class AgentServiceSummary implements Serializable{
 
-	/**
+	*/
+/**
 	 * 
-	 */
+	 *//*
+
 	private static final long serialVersionUID = -1435057931574776533L;
 	private String agentusername;
 	private String agentno;
@@ -318,3 +321,4 @@ public class AgentServiceSummary implements Serializable{
 		this.processmemo = processmemo;
 	}
 }
+*/
