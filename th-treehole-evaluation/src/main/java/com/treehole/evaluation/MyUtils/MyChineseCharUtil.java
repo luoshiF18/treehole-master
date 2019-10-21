@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 /**
  * @auther: Yan Hao
- * @date: 2019/10/14
  */
 public final class MyChineseCharUtil {
     /**
