@@ -354,7 +354,7 @@ public class ScaleSelectService {
             List<Map> result2 = new ArrayList<>();
 //        解析字符串
             String[] splits = StringUtils.split(questionAndOption, ",");
-//        这样把每个选项分出来，但是问题id和答案还在一起
+//        这样把每个选项分出来，但是问题和答案还在一起
             for (String split : splits) {
                 String question = StringUtils.substringBefore(split, "|");
                 String option = StringUtils.substringAfter(split, "|");
