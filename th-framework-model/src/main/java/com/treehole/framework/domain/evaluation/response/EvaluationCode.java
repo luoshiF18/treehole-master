@@ -12,13 +12,13 @@ import lombok.ToString;
 @ToString
 public enum EvaluationCode implements ResultCode {
 
-
+    WARNING_IS_ERROR(false, 401, "预警信息插入失败！"),
     DATA_ERROR(false, 401, "前台数据有误！"),
     DESC_DATA_ERROR(false, 401, "描述信息有误，请检查！"),
     SELECT_NULL(false, 401, "查询失败！"),
     INSERT_FAIL(false, 401, "插入数据库失败！"),
     SCALE_DATA_NULL(false, 401, "量表数据为空！"),
-
+    SCALE_DERC_NULL(false, 401, "描述表id为空！"),
     SCALE_FIND_ERROR(false, 401, "没有找到该量表！"),
     TEST_ERROR(false, 401, "抱歉，测评出现问题！"),
     GET_QUESTION_ERROR(false, 401, "抱歉，获取题目失败！"),
