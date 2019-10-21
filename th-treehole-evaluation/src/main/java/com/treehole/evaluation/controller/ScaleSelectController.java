@@ -15,6 +15,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @auther: Yan Hao
@@ -58,11 +59,24 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
     @Override
     @GetMapping("detail")
     public DetailResult findScaleDetail(@RequestParam("scaleId") String scaleId) {
-        ScaleDetailVO scaleDetail = scaleSelectService.findScaleDetail(scaleId);
+        ScaleDetailVO2 scaleDetail = scaleSelectService.findScaleDetail(scaleId);
         if (scaleDetail == null) {
             ExceptionCast.cast(EvaluationCode.SELECT_NULL);
         }
         return new DetailResult(CommonCode.SUCCESS, scaleDetail);
+    }
+
+    /**
+     * 搜索所有量表描述
+     *
+     * @param scaleId
+     * @return
+     */
+    @Override
+    @GetMapping("desc")
+    public QueryResponseResult findScaleDesc(String scaleId) {
+        QueryResult scaleDesc = scaleSelectService.findScaleDesc(scaleId);
+        return new QueryResponseResult(CommonCode.SUCCESS, scaleDesc);
     }
 
     /**
@@ -74,6 +88,7 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
     @Override
     @GetMapping("test/type1")
     public StartTestResult startTestType1(@RequestParam(value = "scaleId", defaultValue = "") String scaleId) {
+//     TODO   只允许测试一次
         TestDetailVO testDetailVO = scaleSelectService.startTestType1(scaleId);
         if (testDetailVO == null) {
             ExceptionCast.cast(EvaluationCode.SELECT_NULL);
@@ -93,6 +108,7 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
                                            @RequestParam(value = "nextQuestionId", required = false) String nextQuestionId,
                                            @RequestParam(value = " questionSort", required = false) Integer questionSort,
                                            @RequestParam(value = " optionId", required = false) String optionId) {
+//     TODO   只允许测试一次
         QuestionVO2 questionVO2 = scaleSelectService.startTestType2(scaleId, nextQuestionId, questionSort, optionId);
         if (questionVO2 == null) {
             ExceptionCast.cast(EvaluationCode.GET_QUESTION_ERROR);
@@ -122,18 +138,52 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
     /**
      * 根据量表名和用户id查询用户选项
      *
-     * @param scaleId
+     * @param scaleName
      * @param userId
      * @return
      */
     @Override
     @GetMapping("option")
-    public UserOptionResult findUserOption(@RequestParam("scaleId") String scaleId, @RequestParam("userId") String userId) {
-        UserOptionVO userOption = scaleSelectService.findUserOption(scaleId, userId);
+    public UserOptionResult findUserOption(@RequestParam("scaleName") String scaleName, @RequestParam("userId") String userId) {
+        UserOptionVO userOption = scaleSelectService.findUserOption(scaleName, userId);
         if (userOption == null) {
             ExceptionCast.cast(EvaluationCode.SELECT_NULL);
         }
         return new UserOptionResult(CommonCode.SUCCESS, userOption);
+    }
+
+    /**
+     * 根据量表名或用户id查询用户结果
+     *
+     * @param scaleName
+     * @param userId
+     * @return
+     */
+    @Override
+    @GetMapping("user/result")
+    public QueryResponseResult findResult(
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "size", defaultValue = "5") Integer size,
+            @RequestParam(value = "scaleName", required = false) String scaleName,
+            @RequestParam(value = "userId", required = false) String userId) {
+        QueryResult result = scaleSelectService.findResult(page, size, scaleName, userId);
+        return new QueryResponseResult(CommonCode.SUCCESS, result);
+    }
+
+    /**
+     * 获取要更改的问题和选项
+     *
+     * @param scaleId
+     * @return
+     */
+    @Override
+    @GetMapping("up/question")
+    public UpdateQuestionResult findUpdateQuestion(@RequestParam("scaleId") String scaleId) {
+        List<QuestionVO3> updateQuestions = scaleSelectService.findUpdateQuestion(scaleId);
+        if (updateQuestions == null) {
+            ExceptionCast.cast(EvaluationCode.SELECT_NULL);
+        }
+        return new UpdateQuestionResult(CommonCode.SUCCESS, updateQuestions);
     }
 }
 

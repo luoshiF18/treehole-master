@@ -5,6 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
+ * 用于跳题类型
  * @auther: Yan Hao
  * @date: 2019/10/17
  */

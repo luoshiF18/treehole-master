@@ -1,28 +1,28 @@
-package com.treehole.framework.domain.evaluation.dto;
+package com.treehole.framework.domain.evaluation.vo;
 
 import com.treehole.framework.domain.evaluation.Option;
 import lombok.Data;
 
-import java.util.Date;
 import java.util.List;
 
 /**
+ * 用于更改题目
+ *
  * @auther: Yan Hao
- * @date: 2019/10/15
+ * @date: 2019/10/18
  */
 @Data
-public class QuestionDTO {
+public class QuestionVO3 {
 
     private String id;
     private String scaleId;
     private Integer sort;
     private String question;
-    private Date createTime;
+    private String createTime;
     private String createUserId;
-    private Date updateTime;
+    private String updateTime;
     private String updateUserId;
     private String remark;
-    //    增加选项
-    private List<Option> options;
+    //    选项全部信息
+    List<Option> options;
 }
-

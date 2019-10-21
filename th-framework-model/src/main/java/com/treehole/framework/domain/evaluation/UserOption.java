@@ -25,7 +25,7 @@ public class UserOption implements Serializable {
     @Id
     @KeySql(useGeneratedKeys = true)
     private String id;
-    private String scaleId;
+    private String scaleName;
     private String userId;
     private String questionAndOption;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
