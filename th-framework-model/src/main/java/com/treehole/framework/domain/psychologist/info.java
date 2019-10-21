@@ -10,6 +10,9 @@ import tk.mybatis.mapper.code.Style;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * 心理咨询师基本信息
+ */
 @Data
 @ToString
 @Table(name = "psychologist_info")
