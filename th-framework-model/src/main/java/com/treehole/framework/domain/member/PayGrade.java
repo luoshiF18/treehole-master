@@ -1,5 +1,8 @@
-package com.treehole.member.entity;
+package com.treehole.framework.domain.member;
 
+import lombok.Data;
+
+import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
@@ -7,15 +10,17 @@ import java.io.Serializable;
  * @Description: 付费等级信息
  * @Date
  */
+@Data
+@Table(name = "member_paygrade")
 public class PayGrade implements Serializable {
     private String paygrade_id; //等级id
     private String paygrade_name; //等级名称
-    private double card_price;  //售卡金额
-    private int card_legality;  //有效期 （单位：天）
+    private Double card_price;  //售卡金额
+    private Integer card_legality;  //有效期 （单位：天）
     private String card_desc;  //会员权益描述
-    private int initial_money;  //初始储值
-    private int initial_points;  //初始积分
-    private double discount;  //付费会员折扣
+    private Integer initial_money;  //初始储值
+    private Integer initial_points;  //初始积分
+    private Double discount;  //付费会员折扣
 
     public PayGrade() {
     }
@@ -36,19 +41,19 @@ public class PayGrade implements Serializable {
         this.paygrade_name = paygrade_name;
     }
 
-    public double getCard_price() {
+    public Double getCard_price() {
         return card_price;
     }
 
-    public void setCard_price(double card_price) {
+    public void setCard_price(Double card_price) {
         this.card_price = card_price;
     }
 
-    public int getCard_legality() {
+    public Integer getCard_legality() {
         return card_legality;
     }
 
-    public void setCard_legality(int card_legality) {
+    public void setCard_legality(Integer card_legality) {
         this.card_legality = card_legality;
     }
 
@@ -60,27 +65,27 @@ public class PayGrade implements Serializable {
         this.card_desc = card_desc;
     }
 
-    public int getInitial_money() {
+    public Integer getInitial_money() {
         return initial_money;
     }
 
-    public void setInitial_money(int initial_money) {
+    public void setInitial_money(Integer initial_money) {
         this.initial_money = initial_money;
     }
 
-    public int getInitial_points() {
+    public Integer getInitial_points() {
         return initial_points;
     }
 
-    public void setInitial_points(int initial_points) {
+    public void setInitial_points(Integer initial_points) {
         this.initial_points = initial_points;
     }
 
-    public double getDiscount() {
+    public Double getDiscount() {
         return discount;
     }
 
-    public void setDiscount(double discount) {
+    public void setDiscount(Double discount) {
         this.discount = discount;
     }
 }

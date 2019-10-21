@@ -1,5 +1,9 @@
-package com.treehole.member.entity;
+package com.treehole.framework.domain.member;
 
+import lombok.Data;
+import org.springframework.data.annotation.Id;
+
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -8,7 +12,11 @@ import java.util.Date;
  * @Description: 会员卡表信息
  * @Date
  */
+@Data
+@Table(name = "member_cards")
+
 public class Cards implements Serializable {
+    @Id //声明主键字段
     private String card_id;  //会员卡id
     private String user_id;  //用户id
     private String paygrade_id;  //付费等级id
