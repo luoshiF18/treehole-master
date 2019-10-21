@@ -1,5 +1,8 @@
-package com.treehole.member.entity;
+package com.treehole.framework.domain.member;
 
+import lombok.Data;
+
+import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
@@ -7,10 +10,12 @@ import java.io.Serializable;
  * @Description: 非付费会员等级信息
  * @Date
  */
+@Data
+@Table(name = "member_freegrade")
 public class FreeGrade implements Serializable {
     private String freegrade_id; //等级id
     private String freegrade_name; // 等级名称
-    private int points_judge; //判断积分数
+    private Integer points_judge; //判断积分数
     private Double consum_judge; //判定消费金额
 
     public FreeGrade() {
@@ -32,11 +37,11 @@ public class FreeGrade implements Serializable {
         this.freegrade_name = freegrade_name;
     }
 
-    public int getPoints_judge() {
+    public Integer getPoints_judge() {
         return points_judge;
     }
 
-    public void setPoints_judge(int points_judge) {
+    public void setPoints_judge(Integer points_judge) {
         this.points_judge = points_judge;
     }
 

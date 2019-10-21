@@ -1,5 +1,8 @@
-package com.treehole.member.entity;
+package com.treehole.framework.domain.member;
 
+import lombok.Data;
+
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -8,6 +11,8 @@ import java.util.Date;
  * @Description: 签到信息
  * @Date
  */
+@Data
+@Table(name = "member_checkin")
 public class Checkin implements Serializable {
     private String checkin_id; //签到id
     private String user_id; //用户id
