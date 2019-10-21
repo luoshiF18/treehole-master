@@ -296,8 +296,8 @@ public class ScaleSelectService {
 //                拼接字符串
                     questionAndOption.append(questionMapper.findQuestionName(UserOption.getQuestionId()) + "|" + UserOption.getAnswer() + ",");
                 }
-//            存入到选项表
-                insertUserOption(userId, scale.getScaleName(), questionAndOption.toString());
+/*//            存入到选项表
+                insertUserOption(userId, scale.getScaleName(), questionAndOption.toString());*/
             } else {
 //            如果没有登录就不记录，直接返回分数
                 for (String optionId : optionIds) {
@@ -319,7 +319,6 @@ public class ScaleSelectService {
                 warningInfo.append(warningIn);
                 resultVO.setWarningInfo(warningInfo.toString());
             }
-
             resultVO.setScaleName(scale.getScaleName());
             resultVO.setDescriptionInfo(description.getDescription());
             resultVO.setScore(sum);
@@ -327,11 +326,12 @@ public class ScaleSelectService {
             if (StringUtils.isNotBlank(userId)) {
 //            存入用户名称
                 resultVO.setUserName(userId);
-//                存入用户预警信息
+//            存入用户预警信息
                 insertResult(userId, scale.getScaleName(), description.getDescription(), sum, warningInfo.toString());
+//            存入到选项表
+                insertUserOption(userId, scale.getScaleName(), questionAndOption.toString());
             }
             resultVO.setResultTime(MyDateUtils.dateToString1(new Date()));
-            resultVO.setWarningInfo(null);
 //        返回
             return resultVO;
         } catch (Exception e) {
@@ -585,6 +585,6 @@ public class ScaleSelectService {
         warning.setScaleId(scaleId);
         warning.setWarningLevel(warningLevel);
         Warning selectOne = warningFindInfo.selectOne(warning);
-        return "预警等级为：" + warningLevel + "级 " + "预警描述为：" + selectOne.getWMessage();
+        return "预警等级：" + warningLevel + "级 " + "描述为：" + selectOne.getWMessage();
     }
 }
