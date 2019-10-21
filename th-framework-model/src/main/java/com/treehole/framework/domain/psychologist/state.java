@@ -12,6 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
+/**
+ * 心理咨询师状态信息
+ */
 @Data
 @ToString
 @Table(name = "psychologist_state")
