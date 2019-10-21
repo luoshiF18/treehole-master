@@ -40,6 +40,8 @@ public class ScaleSelectService {
     private UserOptionMapper userOptionMapper;
     @Autowired
     private ResultMapper resultMapper;
+    @Autowired
+    private WarningFindInfo warningFindInfo;
 
 //    private static final String USER_OPTIONS = "user:options";
 
@@ -306,18 +308,27 @@ public class ScaleSelectService {
 
 //        获取量表描述
             Description description = getDescription(scaleId, sum);
-//        如果警告等级超过2级预警
-            if (description.getWarningLevel() >= 2) {
-                // TODO 获取预警信息
-            }
 //        准备展示数据
             ResultVO resultVO = new ResultVO();
+//        如果警告等级超过2级预警
+//            初始化预警信息
+            StringBuilder warningInfo = new StringBuilder();
+            Integer warningLevel = description.getWarningLevel();
+            if (warningLevel >= 2) {
+                String warningIn = findWarningInfo(scaleId, warningLevel);
+                warningInfo.append(warningIn);
+                resultVO.setWarningInfo(warningInfo.toString());
+            }
+
             resultVO.setScaleName(scale.getScaleName());
             resultVO.setDescriptionInfo(description.getDescription());
             resultVO.setScore(sum);
+//            如果用户不为空
             if (StringUtils.isNotBlank(userId)) {
-                resultVO.setUserName(userId); //TODO 存入用户名称
-                insertResult(userId, scale.getScaleName(), description.getDescription(), sum, null);
+//            存入用户名称
+                resultVO.setUserName(userId);
+//                存入用户预警信息
+                insertResult(userId, scale.getScaleName(), description.getDescription(), sum, warningInfo.toString());
             }
             resultVO.setResultTime(MyDateUtils.dateToString1(new Date()));
             resultVO.setWarningInfo(null);
@@ -566,5 +577,14 @@ public class ScaleSelectService {
         resultMapper.insert(result);
     }
 
-
+    /**
+     * 获取预警信息
+     */
+    private String findWarningInfo(String scaleId, Integer warningLevel) {
+        Warning warning = new Warning();
+        warning.setScaleId(scaleId);
+        warning.setWarningLevel(warningLevel);
+        Warning selectOne = warningFindInfo.selectOne(warning);
+        return "预警等级为：" + warningLevel + "级 " + "预警描述为：" + selectOne.getWMessage();
+    }
 }
