@@ -97,7 +97,7 @@ public class UserService {
         //将密码MD5加密！！！！未实现
         user.setUser_createtime(new Date());
         //System.out.println("+++++++++"+ user.getUniq_id());
-        user.setPoints_now(0);
+        //user.setPoints_now(0);
         int ins = userMapper.insert(user);
         return ins;
     }
