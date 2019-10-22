@@ -422,6 +422,7 @@ public class ScaleSelectService {
 //            准备返回对象
                 ResultVO resultVO = new ResultVO();
                 resultVO.setId(result1.getId());
+                resultVO.setUserId(result1.getUserId());
                 resultVO.setScaleName(result1.getScaleName());
                 resultVO.setUserName("暂时没有"); //TODO 获取用户名字
                 resultVO.setDescriptionInfo(result1.getDescription());
