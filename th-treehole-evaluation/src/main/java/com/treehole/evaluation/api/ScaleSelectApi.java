@@ -18,7 +18,7 @@ public interface ScaleSelectApi {
      * @param userId
      * @return
      */
-    @GetMapping("user/result")
+    @GetMapping("/scale/select/user/result")
     public QueryResponseResult findResult(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "size", defaultValue = "5") Integer size,

@@ -166,7 +166,7 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
             @RequestParam(value = "size", defaultValue = "5") Integer size,
             @RequestParam(value = "scaleName", required = false) String scaleName,
             @RequestParam(value = "userId", required = false) String userId) {
-        QueryResult result = scaleSelectService.findResult(page, size, scaleName, userId);
+        QueryResult<ResultVO> result = scaleSelectService.findResult(page, size, scaleName, userId);
         return new QueryResponseResult(CommonCode.SUCCESS, result);
     }
 
