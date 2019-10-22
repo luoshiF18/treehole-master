@@ -24,5 +24,4 @@ public interface ScaleSelectApi {
             @RequestParam(value = "size", defaultValue = "5") Integer size,
             @RequestParam(value = "scaleName", required = false) String scaleName,
             @RequestParam(value = "userId", required = false) String userId);
-
 }
