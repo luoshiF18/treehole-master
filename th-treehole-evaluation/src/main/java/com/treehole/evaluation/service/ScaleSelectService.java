@@ -312,12 +312,13 @@ public class ScaleSelectService {
             ResultVO resultVO = new ResultVO();
 //        如果警告等级超过2级预警
 //            初始化预警信息
-            StringBuilder warningInfo = new StringBuilder();
+            //StringBuilder warningInfo = new StringBuilder();
             Integer warningLevel = description.getWarningLevel();
             if (warningLevel >= 2) {
-                String warningIn = findWarningInfo(scaleId, warningLevel);
-                warningInfo.append(warningIn);
-                resultVO.setWarningInfo(warningInfo.toString());
+                //
+               // String warningIn = findWarningInfo(scaleId, warningLevel);
+               // warningInfo.append(warningIn);
+                resultVO.setWarningInfo(description.getWarningMessage());
             }
             resultVO.setScaleName(scale.getScaleName());
             resultVO.setDescriptionInfo(description.getDescription());
@@ -327,7 +328,7 @@ public class ScaleSelectService {
 //            存入用户名称
                 resultVO.setUserName(userId);
 //            存入用户预警信息
-                insertResult(userId, scale.getScaleName(), description.getDescription(), sum, warningInfo.toString());
+                insertResult(userId, scale.getScaleName(), description.getDescription(), sum, description.getWarningMessage());
 //            存入到选项表
                 insertUserOption(userId, scale.getScaleName(), questionAndOption.toString());
             }
@@ -426,7 +427,7 @@ public class ScaleSelectService {
                 resultVO.setUserName("暂时没有"); //TODO 获取用户名字
                 resultVO.setDescriptionInfo(result1.getDescription());
                 resultVO.setScore(result1.getScore());
-                resultVO.setWarningInfo("暂时没有"); //TODO 获取预警信息
+                resultVO.setWarningInfo(result1.getWarningInfo());
                 resultVO.setUserWarningInfo(result1.getUserWarningInfo());
                 resultVO.setResultTime(MyDateUtils.dateToString1(result1.getCreateTime()));
                 if (result1.getUpdateTime() != null && result1.getUpdateUserId() != null) {
@@ -533,7 +534,6 @@ public class ScaleSelectService {
         description.setScaleId(scaleId);
         List<Description> descriptions = descriptionMapper.select(description);
 //        匹配相应的量表
-
         for (Description desc : descriptions) {
             if (sum >= desc.getScore1() && sum <= desc.getScore2()) {
                 description = desc;
@@ -580,11 +580,11 @@ public class ScaleSelectService {
     /**
      * 获取预警信息
      */
-    private String findWarningInfo(String scaleId, Integer warningLevel) {
+/*    private String findWarningInfo(String scaleId, Integer warningLevel) {
         Warning warning = new Warning();
         warning.setScaleId(scaleId);
         warning.setWarningLevel(warningLevel);
         Warning selectOne = warningFindInfo.selectOne(warning);
         return "预警等级：" + warningLevel + "级 " + "描述为：" + selectOne.getWMessage();
-    }
+    }*/
 }
