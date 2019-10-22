@@ -426,7 +426,8 @@ public class ScaleSelectService {
                 resultVO.setUserName("暂时没有"); //TODO 获取用户名字
                 resultVO.setDescriptionInfo(result1.getDescription());
                 resultVO.setScore(result1.getScore());
-                resultVO.setWarningInfo("暂时没有"); //TODO 获取预警信息
+                // 获取预警信息
+                resultVO.setWarningInfo(result1.getWarningInfo());
                 resultVO.setUserWarningInfo(result1.getUserWarningInfo());
                 resultVO.setResultTime(MyDateUtils.dateToString1(result1.getCreateTime()));
                 if (result1.getUpdateTime() != null && result1.getUpdateUserId() != null) {
@@ -440,7 +441,7 @@ public class ScaleSelectService {
             //        解析分页
             PageInfo<ResultVO> pageInfo = new PageInfo<>(resultVOS);
 
-            return new QueryResult(resultVOS, pageInfo.getTotal());
+            return new QueryResult<>(resultVOS, pageInfo.getTotal());
         } catch (Exception e) {
             ExceptionCast.cast(EvaluationCode.SELECT_NULL);
             return null;
