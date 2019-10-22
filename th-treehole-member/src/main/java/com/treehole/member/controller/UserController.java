@@ -43,7 +43,7 @@ public class UserController implements UserControllerApi {
 
 
     @GetMapping("/find/id/{id}")
-    public Result getUserById(@PathVariable String id) throws Exception {
+    public Result getUserById(@PathVariable("id") String id) throws Exception {
         //System.out.println("==========+++++++++11111   "+id);
        List<User> res = userService.getUserById(id);
         //System.out.println("==========+++++++++      "+res);
@@ -55,7 +55,7 @@ public class UserController implements UserControllerApi {
     }
 
     @RequestMapping(value = "/delete/id/{id}")
-    public Result deleteUserById(@PathVariable("id")String user_id) throws Exception {
+    public Result deleteUserById(@PathVariable("user_id") String user_id) throws Exception {
         int del = userService.deleteUserById(user_id);
         //System.out.println("}}}}}}}}}}}}"+ del);
         List<User> res=userService.getUserById(user_id);
@@ -96,7 +96,7 @@ public class UserController implements UserControllerApi {
     public Result updateUserPhone(@RequestBody @Valid User user) throws Exception {
         //System.out.println("前端传来的+++++++++++++"+user);
         if (userService.findUserByPhone(user.getUser_phone())!= null){  /*手机号唯一*/
-            return ResultUtil.error(ResultEnum.Phone_IS_EXISTS.getCode(),ResultEnum.Phone_IS_EXISTS.getMsg());
+            return ResultUtil.error(ResultEnum.PHONE_IS_EXISTS.getCode(),ResultEnum.PHONE_IS_EXISTS.getMsg());
         }
         int res = userService.updateUser(user);
         if(res>0){

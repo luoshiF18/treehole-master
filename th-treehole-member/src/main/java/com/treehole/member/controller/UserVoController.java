@@ -42,7 +42,7 @@ public class UserVoController implements UserVoControllerApi {
     }
 
     @GetMapping("/find/uniqId/{uniq_id}")
-    public Result getUserVoByUniqId(@PathVariable String uniq_id) throws Exception {
+    public Result getUserVoByUniqId(@PathVariable("uniq_id") String uniq_id) throws Exception {
         //System.out.println("==========+++++++++11111   "+id);
         List<UserVo> res = userVoService.getUserByUniqId(uniq_id);
         //System.out.println("==========+++++++++      "+res);
@@ -54,7 +54,7 @@ public class UserVoController implements UserVoControllerApi {
     }
 
     @GetMapping("/find/userId/{user_id}")
-    public Result getUserVoByUserId(@PathVariable String user_id) throws Exception {
+    public Result getUserVoByUserId(@PathVariable("user_id") String user_id) throws Exception {
         //System.out.println("==========+++++++++11111   "+id);
         List<UserVo> res = userVoService.getUserByUserId(user_id);
         //System.out.println("==========+++++++++      "+res);
@@ -66,7 +66,7 @@ public class UserVoController implements UserVoControllerApi {
     }
 
     @GetMapping("/find/userPhone/{user_phone}")
-    public Result getUserVoByUserPhone(@PathVariable String user_phone) throws Exception {
+    public Result getUserVoByUserPhone(@PathVariable("user_phone") String user_phone) throws Exception {
         //System.out.println("==========+++++++++11111   "+user_phone);
         UserVo res = userVoService.getUserByUserPhone(user_phone);
         //System.out.println("==========+++++++++      "+res);
