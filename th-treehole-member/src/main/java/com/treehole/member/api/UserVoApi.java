@@ -15,12 +15,12 @@ public interface UserVoApi {
     public Result findAllUserVo() throws Exception;
     /*根据id查找用户*/
     @GetMapping("/uservo/find/userId/{user_id}")
-    public Result getUserVoByUserId(@PathVariable String user_id);
+    public Result getUserVoByUserId(@PathVariable("user_id") String user_id);
     /*根据uniq_id查找用户*/
     @GetMapping("/uservo/find/uniqId/{uniq_id}")
-    public Result getUserVoByUniqId(@PathVariable String uniq_id) throws Exception;
+    public Result getUserVoByUniqId(@PathVariable("uniq_id") String uniq_id) throws Exception;
     /*根据user_phone查找用户*/
     @GetMapping("/uservo/find/userPhone/{user_phone}")
-    public Result getUserVoByUserPhone(@PathVariable String user_phone) throws Exception;
+    public Result getUserVoByUserPhone(@PathVariable("user_phone") String user_phone) throws Exception;
 
 }
