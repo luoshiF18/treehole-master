@@ -2,6 +2,7 @@ package com.treehole.framework.domain.member;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.format.annotation.DateTimeFormat;
 import tk.mybatis.mapper.annotation.KeySql;
 
 import javax.persistence.Entity;
@@ -28,16 +29,18 @@ public class User implements Serializable {
     private String user_name; //用户姓名
     private String password; //用户密码
     private Integer gender; //用户性别 0：男 1：女
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date user_birth; //用户出生年月
     private String user_email; //用户邮箱
     private String user_phone; //用户电话
     private String user_qq; //用户qq
     private String user_wechat; //用户微信
     private String user_region; //用户所在地区
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date user_createtime; //用户创建账户时间
     private Integer user_type; //用户类型 0：个人用户 1：企业用户
     private Integer user_status; //用户状态 0：正常 1：被禁
-    private Integer points_now;  //现有积分
+    //private Integer points_now;  //现有积分
 
 
 
@@ -62,7 +65,7 @@ public class User implements Serializable {
         this.user_createtime = user_createtime;
         this.user_type = user_type;
         this.user_status = user_status;
-        this.points_now = points_now;
+        //this.points_now = points_now;
     }
 
     @Override
@@ -85,7 +88,7 @@ public class User implements Serializable {
                 ", user_createtime=" + user_createtime +
                 ", user_type=" + user_type +
                 ", user_status=" + user_status +
-                ", points_now=" + points_now +
+                //", points_now=" + points_now +
                 '}';
     }
 
@@ -224,11 +227,11 @@ public class User implements Serializable {
         this.user_status = user_status;
     }
 
-    public Integer getPoints_now() {
+    /*public Integer getPoints_now() {
         return points_now;
     }
 
     public void setPoints_now(Integer points_now) {
         this.points_now = points_now;
-    }
+    }*/
 }

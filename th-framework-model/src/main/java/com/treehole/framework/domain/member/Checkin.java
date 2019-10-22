@@ -1,6 +1,7 @@
 package com.treehole.framework.domain.member;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -16,6 +17,7 @@ import java.util.Date;
 public class Checkin implements Serializable {
     private String checkin_id; //签到id
     private String user_id; //用户id
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date checkin_time; //签到时间
 
     public Checkin() {

@@ -14,6 +14,7 @@ public class ThServiceList {
     public static final String TH_TREEHOLE_EVALUATION = "th-treehole-evaluation";   //心理测评
     public static final String TH_TREEHOLE_WARNING = "th-treehole-warning";         //心理预警
     public static final String TH_TREEHOLE_SEARCH = "th-treehole-search";           //搜索服务
+    public static final String TH_TREEHOLE_MEMBER = "th-treehole-member";           //会员服务
 
 
 

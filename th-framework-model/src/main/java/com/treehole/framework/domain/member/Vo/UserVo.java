@@ -1,5 +1,7 @@
 package com.treehole.framework.domain.member.Vo;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -14,18 +16,20 @@ public class UserVo implements Serializable {
     private String user_nickname; //会员昵称
     private String user_name; //用户姓名
     private Integer gender; //用户性别 0：男 1：女
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date user_birth; //用户出生年月
     private String user_email; //用户邮箱
     private String user_phone; //用户电话
     private String user_qq; //用户qq
     private String user_wechat; //用户微信
     private String user_region; //用户所在地区
-    private Integer points_now;  //现有积分
+    //private Integer points_now;  //现有积分
+    private Date user_createtime; //用户创建账户时间
 
     public UserVo() {
     }
 
-    public UserVo(String uniq_id, String user_image, String user_nickname, String user_name, Integer gender, Date user_birth, String user_email, String user_phone, String user_qq, String user_wechat, String user_region, Integer points_now) {
+    public UserVo(String uniq_id, String user_image, String user_nickname, String user_name, Integer gender, Date user_birth, String user_email, String user_phone, String user_qq, String user_wechat, String user_region, Integer points_now, Date user_createtime) {
         this.uniq_id = uniq_id;
         this.user_image = user_image;
         this.user_nickname = user_nickname;
@@ -37,7 +41,8 @@ public class UserVo implements Serializable {
         this.user_qq = user_qq;
         this.user_wechat = user_wechat;
         this.user_region = user_region;
-        this.points_now = points_now;
+        //this.points_now = points_now;
+        this.user_createtime = user_createtime;
     }
 
     @Override
@@ -54,8 +59,17 @@ public class UserVo implements Serializable {
                 ", user_qq='" + user_qq + '\'' +
                 ", user_wechat='" + user_wechat + '\'' +
                 ", user_region='" + user_region + '\'' +
-                ", points_now=" + points_now +
+               // ", points_now=" + points_now +
+                ", user_createtime=" + user_createtime +
                 '}';
+    }
+
+    public Date getUser_createtime() {
+        return user_createtime;
+    }
+
+    public void setUser_createtime(Date user_createtime) {
+        this.user_createtime = user_createtime;
     }
 
     public String getUniq_id() {
@@ -146,12 +160,12 @@ public class UserVo implements Serializable {
         this.user_region = user_region;
     }
 
-    public Integer getPoints_now() {
+    /*public Integer getPoints_now() {
         return points_now;
     }
 
     public void setPoints_now(Integer points_now) {
         this.points_now = points_now;
     }
-
+*/
 }

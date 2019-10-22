@@ -53,6 +53,15 @@ public class PointController implements PointControllerApi {
         }
     }
 
+    /*积分插入的步骤：
+  先查询user表中的pointnow付给before，后修改
+  记录表需要4个参数： 1.before ：从user表里通过userid获取
+           2.num  ：从前端获取
+           3.after    ：before+num
+           4.userid   ：从前端获取
+  最后:user表内的pointnow = after;   updateUserById() //
+
+*/
     @Override
     @PostMapping("/insert")
     public Result insertPoint(@RequestBody @Valid Points points) throws Exception {
@@ -64,7 +73,8 @@ public class PointController implements PointControllerApi {
         }
     }
 
-    @Override
+
+    /*@Override
     @PostMapping("/update")
     public Result update( @RequestBody @Valid Points points) throws Exception {
 
@@ -74,7 +84,7 @@ public class PointController implements PointControllerApi {
         }else {
             return ResultUtil.error(ResultEnum.UPDATE_FAIL.getCode(),ResultEnum.UPDATE_FAIL.getMsg());
         }
-    }
+    }*/
 
     @Override
     @RequestMapping(value = "/delete/id/{id}")

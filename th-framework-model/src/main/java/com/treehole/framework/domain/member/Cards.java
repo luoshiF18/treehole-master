@@ -2,6 +2,7 @@ package com.treehole.framework.domain.member;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -22,10 +23,38 @@ public class Cards implements Serializable {
     private String paygrade_id;  //付费等级id
     private String freegrade_id;  //非付费等级id
     private Double consum_all;  //总消费金额
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date paygrade_start;  //付费会员办卡时间
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date paygrade_end;  //付费会员到期日
+    private Integer points_now;//现有积分
 
     public Cards() {
+    }
+
+    public Cards(String card_id, String user_id, String paygrade_id, String freegrade_id, Double consum_all, Date paygrade_start, Date paygrade_end, Integer points_now) {
+        this.card_id = card_id;
+        this.user_id = user_id;
+        this.paygrade_id = paygrade_id;
+        this.freegrade_id = freegrade_id;
+        this.consum_all = consum_all;
+        this.paygrade_start = paygrade_start;
+        this.paygrade_end = paygrade_end;
+        this.points_now = points_now;
+    }
+
+    @Override
+    public String toString() {
+        return "Cards{" +
+                "card_id='" + card_id + '\'' +
+                ", user_id='" + user_id + '\'' +
+                ", paygrade_id='" + paygrade_id + '\'' +
+                ", freegrade_id='" + freegrade_id + '\'' +
+                ", consum_all=" + consum_all +
+                ", paygrade_start=" + paygrade_start +
+                ", paygrade_end=" + paygrade_end +
+                ", points_now=" + points_now +
+                '}';
     }
 
     public String getCard_id() {
@@ -82,5 +111,13 @@ public class Cards implements Serializable {
 
     public void setPaygrade_end(Date paygrade_end) {
         this.paygrade_end = paygrade_end;
+    }
+
+    public Integer getPoints_now() {
+        return points_now;
+    }
+
+    public void setPoints_now(Integer points_now) {
+        this.points_now = points_now;
     }
 }

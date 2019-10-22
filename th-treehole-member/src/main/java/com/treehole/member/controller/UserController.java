@@ -24,6 +24,8 @@ public class UserController implements UserControllerApi {
     @Autowired
     private UserService userService;
 
+    @Autowired UserVoService userVoService;
+
 
     @GetMapping ("/getAllUsers")
     public Result findAllUser() throws Exception {
@@ -38,17 +40,7 @@ public class UserController implements UserControllerApi {
 
     }
 
-    @GetMapping ("/getAllUserVos")
-    public Result findAllUserVo() throws Exception {
-        List<UserVo> userVos = userService.findAllUserVos();
-        if(userVos != null){
-            //System.out.println("users:==============" +users);
-            return ResultUtil.success(userVos);
-        }else{
-            return ResultUtil.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
-        }
 
-    }
 
     @GetMapping("/find/id/{id}")
     public Result getUserById(@PathVariable String id) throws Exception {
@@ -61,31 +53,6 @@ public class UserController implements UserControllerApi {
             return ResultUtil.error(ResultEnum.USER_NOT_EXIST.getCode(),ResultEnum.USER_NOT_EXIST.getMsg());
         }
     }
-
-    @GetMapping("/find/uniqId/{uniq_id}")
-    public Result getUserVoByUniqId(@PathVariable String uniq_id) throws Exception {
-        //System.out.println("==========+++++++++11111   "+id);
-        List<UserVo> res = userService.getUserByUniqId(uniq_id);
-        //System.out.println("==========+++++++++      "+res);
-        if(!res.isEmpty()){
-            return ResultUtil.success(res);
-        }else {
-            return ResultUtil.error(ResultEnum.USER_NOT_EXIST.getCode(),ResultEnum.USER_NOT_EXIST.getMsg());
-        }
-    }
-
-    @GetMapping("/find/userId/{user_id}")
-    public Result getUserVoByUserId(@PathVariable String user_id) throws Exception {
-        //System.out.println("==========+++++++++11111   "+id);
-        List<UserVo> res = userService.getUserByUserId(user_id);
-        //System.out.println("==========+++++++++      "+res);
-        if(!res.isEmpty()){
-            return ResultUtil.success(res);
-        }else {
-            return ResultUtil.error(ResultEnum.USER_NOT_EXIST.getCode(),ResultEnum.USER_NOT_EXIST.getMsg());
-        }
-    }
-
 
     @RequestMapping(value = "/delete/id/{id}")
     public Result deleteUserById(@PathVariable("id")String user_id) throws Exception {
@@ -123,7 +90,7 @@ public class UserController implements UserControllerApi {
         }
         return ResultUtil.success();
     }
-/*更新手机号绑定*/
+    /*更新手机号绑定*/
     @Override
     @PostMapping("/update/phone")
     public Result updateUserPhone(@RequestBody @Valid User user) throws Exception {
