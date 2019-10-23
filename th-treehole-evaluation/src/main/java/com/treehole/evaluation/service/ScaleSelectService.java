@@ -294,7 +294,10 @@ public class ScaleSelectService {
                     Float aFloat = UserOption.getScore();
                     sum += aFloat;
 //                拼接字符串
-                    questionAndOption.append(questionMapper.findQuestionName(UserOption.getQuestionId()) + "|" + UserOption.getAnswer() + ",");
+                    Question questionName = questionMapper.findQuestionName(UserOption.getQuestionId());
+                    questionAndOption.append(
+                            questionName.getSort() + "：" + questionName.getQuestion() + "|" + UserOption.getAnswer() + ","
+                    );
                 }
 /*//            存入到选项表
                 insertUserOption(userId, scale.getScaleName(), questionAndOption.toString());*/
@@ -305,7 +308,6 @@ public class ScaleSelectService {
                     sum += integer;
                 }
             }
-
 //        获取量表描述
             Description description = getDescription(scaleId, sum);
 //        准备展示数据
@@ -316,8 +318,8 @@ public class ScaleSelectService {
             Integer warningLevel = description.getWarningLevel();
             if (warningLevel >= 2) {
                 //
-               // String warningIn = findWarningInfo(scaleId, warningLevel);
-               // warningInfo.append(warningIn);
+                // String warningIn = findWarningInfo(scaleId, warningLevel);
+                // warningInfo.append(warningIn);
                 resultVO.setWarningInfo(description.getWarningMessage());
             }
             resultVO.setScaleName(scale.getScaleName());

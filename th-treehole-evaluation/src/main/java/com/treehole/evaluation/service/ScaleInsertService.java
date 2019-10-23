@@ -3,20 +3,21 @@ package com.treehole.evaluation.service;
 import com.treehole.evaluation.MyUtils.MyChineseCharUtil;
 import com.treehole.evaluation.MyUtils.MyNumberUtils;
 import com.treehole.evaluation.dao.*;
-import com.treehole.framework.domain.evaluation.*;
+import com.treehole.framework.domain.evaluation.Description;
+import com.treehole.framework.domain.evaluation.Option;
+import com.treehole.framework.domain.evaluation.Question;
+import com.treehole.framework.domain.evaluation.Scale;
 import com.treehole.framework.domain.evaluation.dto.QuestionDTO;
 import com.treehole.framework.domain.evaluation.response.EvaluationCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.ResponseResult;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @auther: Yan Hao
@@ -112,18 +113,17 @@ public class ScaleInsertService {
     @Transactional
     public ResponseResult insertDescription(Description description) {
 
-        if(description==null){
-            ExceptionCast.cast( CommonCode.FAIL);
+        if (description == null) {
+            ExceptionCast.cast(CommonCode.FAIL);
         }
         try {
             description.setId(MyNumberUtils.getUUID());
-            description.setScaleId("2"); //TODO 量表id存入到request域中
+            description.setScaleId(description.getId());
             description.setCreateUserId("3"); //从cookie中拿
             description.setCreateTime(new Date());
             descriptionMapper.insert(description);
             return ResponseResult.SUCCESS();
-          }
-        catch (RuntimeException e){
+        } catch (RuntimeException e) {
             return new ResponseResult(EvaluationCode.DESCRIPTION_IS_ERROR);
         }
 

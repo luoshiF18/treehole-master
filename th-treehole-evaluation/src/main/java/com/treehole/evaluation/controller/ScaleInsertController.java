@@ -58,11 +58,9 @@ public class ScaleInsertController implements ScaleInsertControllerApi {
     @Override
     @PostMapping("description")
     public ResponseResult insertDescription(
-             Description description) {
+            @RequestBody Description description) {
         return scaleInsertService.insertDescription(description);
     }
-
-
 
 
 }
