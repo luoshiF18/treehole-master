@@ -30,7 +30,7 @@ public class UserVoController implements UserVoControllerApi {
     UserVoService userVoService;
 
     @GetMapping("/getAllUserVos")
-    public Result findAllUserVo()  {
+    public Result getAllUserVo(){
         List<UserVo> userVos = userVoService.findAllUserVos();
         if(userVos != null){
             //System.out.println("users:==============" +users);
@@ -41,12 +41,12 @@ public class UserVoController implements UserVoControllerApi {
 
     }
 
-    @GetMapping("/find/uniqId/{uniq_id}")
+   /* @GetMapping("/find/uniqId/{uniq_id}")
     public UserVo getUserVoByUniqId(@PathVariable("uniq_id") String uniq_id)  {
         //System.out.println("==========+++++++++11111   "+id);
          return userVoService.getUserByUniqId(uniq_id);
 
-    }
+    }*/
 
     @GetMapping("/find/userId/{user_id}")
     public UserVo getUserVoByUserId(@PathVariable("user_id") String user_id)  {

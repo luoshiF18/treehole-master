@@ -47,7 +47,7 @@ public class UserVoService {
             String roleId=user.getRole_id();
             Role role = new Role();
             role.setRole_id(roleId);
-            uservo.setUniq_id(user.getUniq_id());
+            //uservo.setUniq_id(user.getUniq_id());
             uservo.setRole_name(roleMapper.selectOne(role).getRole_name());
             uservo.setUser_image(user.getUser_image());
             uservo.setUser_name(user.getUser_name());
@@ -72,7 +72,7 @@ public class UserVoService {
      * 通过uniq_id查询用户拓展类
      * @return List<UserVo>
      */
-    public UserVo getUserByUniqId(String uniq_id) {
+    /*public UserVo getUserByUniqId(String uniq_id) {
         User user1 = new User();
         user1.setUniq_id(uniq_id);
         User user = userMapper.selectOne(user1);
@@ -99,7 +99,7 @@ public class UserVoService {
         uservo.setUser_createtime(user.getUser_createtime());
         uservo.setCompany_id(user.getCompany_id());
         return uservo;
-    }
+    }*/
 
     /**
      * 通过user_id查询用户拓展类
@@ -114,9 +114,8 @@ public class UserVoService {
         String roleId=user.getRole_id();
         Role role = new Role();
         role.setRole_id(roleId);
-        //System.out.println("++++++++++++++++++++++"+ roleId);
         UserVo uservo = new UserVo();
-        uservo.setUniq_id(user.getUniq_id());
+        //uservo.setUniq_id(user.getUniq_id());
         uservo.setRole_name(roleMapper.selectOne(role).getRole_name());
         uservo.setUser_image(user.getUser_image());
         uservo.setUser_name(user.getUser_name());
@@ -143,9 +142,8 @@ public class UserVoService {
         String roleId=user.getRole_id();
         Role role = new Role();
         role.setRole_id(roleId);
-        System.out.println("++++++++++++++++++++++"+ roleId);
         UserVo uservo = new UserVo();
-        uservo.setUniq_id(user.getUniq_id());
+        //uservo.setUniq_id(user.getUniq_id());
         uservo.setRole_name(roleMapper.selectOne(role).getRole_name());
         uservo.setUser_image(user.getUser_image());
         uservo.setUser_name(user.getUser_name());

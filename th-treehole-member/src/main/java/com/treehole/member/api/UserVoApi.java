@@ -18,8 +18,8 @@ public interface UserVoApi {
     @GetMapping("/uservo/find/userId/{user_id}")
     public UserVo getUserVoByUserId(@PathVariable("user_id") String user_id);
     /*根据uniq_id查找用户*/
-    @GetMapping("/uservo/find/uniqId/{uniq_id}")
-    public UserVo getUserVoByUniqId(@PathVariable("uniq_id") String uniq_id);
+    /*@GetMapping("/uservo/find/uniqId/{uniq_id}")
+    public UserVo getUserVoByUniqId(@PathVariable("uniq_id") String uniq_id);*/
     /*根据user_phone查找用户*/
     @GetMapping("/uservo/find/userPhone/{user_phone}")
     public Result getUserVoByUserPhone(@PathVariable("user_phone") String user_phone);

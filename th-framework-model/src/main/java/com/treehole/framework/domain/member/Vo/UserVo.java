@@ -19,7 +19,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserVo implements Serializable {
-    private String uniq_id; //会员唯一id
+    //private String uniq_id; //会员唯一id
     private String role_name;//角色名称
     private String user_image;//会员头像
     private String user_nickname; //会员昵称

@@ -91,7 +91,6 @@ public class UserController implements UserControllerApi {
 
     @PostMapping("/update/phone")
     public Result updateUserPhone(@RequestBody @Valid User user){
-        //System.out.println("前端传来的+++++++++++++"+user);
         if (userService.findUserByPhone(user.getUser_phone())!= null){  /*手机号唯一*/
             return ResultUtil.error(ResultEnum.PHONE_IS_EXISTS.getCode(),ResultEnum.PHONE_IS_EXISTS.getMsg());
         }
