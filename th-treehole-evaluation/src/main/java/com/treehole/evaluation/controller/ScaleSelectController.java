@@ -58,8 +58,9 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
      */
     @Override
     @GetMapping("detail")
-    public DetailResult findScaleDetail(@RequestParam("scaleId") String scaleId) {
-        ScaleDetailVO2 scaleDetail = scaleSelectService.findScaleDetail(scaleId);
+    public DetailResult findScaleDetail(@RequestParam(value = "scaleId",required = false) String scaleId,
+                                        @RequestParam(value = "scaleName",required = false) String scaleName) {
+        ScaleDetailVO2 scaleDetail = scaleSelectService.findScaleDetail(scaleId, scaleName);
         if (scaleDetail == null) {
             ExceptionCast.cast(EvaluationCode.SELECT_NULL);
         }
