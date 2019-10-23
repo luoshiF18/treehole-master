@@ -28,7 +28,7 @@ public class PointController implements PointControllerApi {
 
     @Override
     @GetMapping("/getAllPoints")
-    public Result findAllPoint() throws Exception {
+    public Result findAllPoint()  {
 
         List<Points> points = pointService.findAllPoints();
         if(points != null){
@@ -41,8 +41,8 @@ public class PointController implements PointControllerApi {
     }
 
     @Override
-    @GetMapping("/find/id/{id}")
-    public Result getPointById(@PathVariable String points_id) throws Exception {
+    @GetMapping("/find/id/{points_id}")
+    public Result getPointById(@PathVariable("points_id") String points_id)  {
         //System.out.println("==========+++++++++11111   "+id);
         List<Points> res = pointService.getPointById(points_id);
         //System.out.println("==========+++++++++      "+res);
@@ -53,18 +53,10 @@ public class PointController implements PointControllerApi {
         }
     }
 
-    /*积分插入的步骤：
-  先查询user表中的pointnow付给before，后修改
-  记录表需要4个参数： 1.before ：从user表里通过userid获取
-           2.num  ：从前端获取
-           3.after    ：before+num
-           4.userid   ：从前端获取
-  最后:user表内的pointnow = after;   updateUserById() //
 
-*/
     @Override
     @PostMapping("/insert")
-    public Result insertPoint(@RequestBody @Valid Points points) throws Exception {
+    public Result insertPoint(@RequestBody @Valid Points points)  {
         int res=pointService.insertPoint(points);
         if(res==1){
             return ResultUtil.success(res);
@@ -87,8 +79,8 @@ public class PointController implements PointControllerApi {
     }*/
 
     @Override
-    @RequestMapping(value = "/delete/id/{id}")
-    public Result deletePointById(@PathVariable("id") String points_id) throws Exception {
+    @RequestMapping(value = "/delete/id/{points_id}")
+    public Result deletePointById(@PathVariable("points_id") String points_id) {
         int del = pointService.deletePointById(points_id);
         //System.out.println("}}}}}}}}}}}}"+ del);
         List<Points> res=pointService.getPointById(points_id);

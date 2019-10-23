@@ -18,18 +18,18 @@ import javax.validation.Valid;
 @Api(value = "用户积分信息管理", description = "对用户积分信息进行增、删、查")
 public interface PointControllerApi {
     @ApiOperation("查询所有积分")
-    public Result findAllPoint() throws Exception;
+    public Result findAllPoint();
 
     @ApiOperation("通过id查询积分")
-    public Result getPointById(@PathVariable String points_id) throws Exception;
+    public Result getPointById(@PathVariable("points_id") String points_id) ;
 
     @ApiOperation("创建一条积分信息")
-    public Result insertPoint(@RequestBody @Valid Points points) throws Exception;
+    public Result insertPoint(@RequestBody @Valid Points points) ;
 
     /*@ApiOperation("更新积分信息")
-    public Result update(@RequestBody @Valid Points points) throws Exception;*/
+    public Result update(@RequestBody @Valid Points points) ;*/
 
     @ApiOperation("通过id删除积分")
-    public Result deletePointById(@PathVariable("id")String points_id) throws Exception;
+    public Result deletePointById(@PathVariable("points_id") String points_id);
 
 }

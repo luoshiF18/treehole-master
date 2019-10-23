@@ -1,7 +1,9 @@
 package com.treehole.member.service;
 
+import com.treehole.framework.domain.member.Role;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
+import com.treehole.member.mapper.RoleMapper;
 import com.treehole.member.mapper.UserMapper;
 import com.treehole.member.mapper.UserVoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ public class UserVoService {
     private UserVoMapper userVoMapper;
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RoleMapper roleMapper;
     //UserService userService = new UserService();
 
     /**
@@ -32,12 +37,16 @@ public class UserVoService {
      * @return List<UserVo>
      */
 
-    public List<UserVo> findAllUserVos() throws Exception {
+    public List<UserVo> findAllUserVos() {
         List<User> users = userService.findAllUsers();
         List<UserVo> userVos = new ArrayList<UserVo>();
         for(User user:users){
             UserVo uservo = new UserVo();
+            String roleId=user.getRole_id();
+            Role role = new Role();
+            role.setRole_id(roleId);
             uservo.setUniq_id(user.getUniq_id());
+            uservo.setRole_name(roleMapper.selectOne(role).getRole_name());
             uservo.setUser_image(user.getUser_image());
             uservo.setUser_name(user.getUser_name());
             uservo.setUser_nickname(user.getUser_nickname());
@@ -49,10 +58,11 @@ public class UserVoService {
             uservo.setUser_wechat(user.getUser_wechat());
             uservo.setUser_region(user.getUser_region());
             uservo.setUser_createtime(user.getUser_createtime());
+            uservo.setCompany_id(user.getCompany_id());
+
 
             userVos.add(uservo);
         }
-        //BeanUtils.copyProperties(userExts,users);
         return userVos;
     }
 
@@ -60,7 +70,7 @@ public class UserVoService {
      * 通过uniq_id查询用户拓展类
      * @return List<UserVo>
      */
-    public List<UserVo> getUserByUniqId(String uniq_id) throws Exception{
+    public List<UserVo> getUserByUniqId(String uniq_id) {
         User user1 = new User();
         user1.setUniq_id(uniq_id);
         List<User> users = userMapper.select(user1);
@@ -68,7 +78,11 @@ public class UserVoService {
         List<UserVo> userVos = new ArrayList<UserVo>();
         for(User user:users){
             UserVo uservo = new UserVo();
+            String roleId=user.getRole_id();
+            Role role = new Role();
+            role.setRole_id(roleId);
             uservo.setUniq_id(user.getUniq_id());
+            uservo.setRole_name(roleMapper.selectOne(role).getRole_name());
             uservo.setUser_image(user.getUser_image());
             uservo.setUser_name(user.getUser_name());
             uservo.setUser_nickname(user.getUser_nickname());
@@ -80,7 +94,7 @@ public class UserVoService {
             uservo.setUser_wechat(user.getUser_wechat());
             uservo.setUser_region(user.getUser_region());
             uservo.setUser_createtime(user.getUser_createtime());
-
+            uservo.setCompany_id(user.getCompany_id());
             userVos.add(uservo);
         }
         return userVos;
@@ -90,14 +104,18 @@ public class UserVoService {
      * 通过user_id查询用户拓展类
      * @return List<UserVo>
      */
-    public List<UserVo> getUserByUserId(String user_id) throws Exception{
+    public List<UserVo> getUserByUserId(String user_id) {
 
         List<User> users = userService.getUserById(user_id);
 
         List<UserVo> userVos = new ArrayList<UserVo>();
         for(User user:users){
             UserVo uservo = new UserVo();
+            String roleId=user.getRole_id();
+            Role role = new Role();
+            role.setRole_id(roleId);
             uservo.setUniq_id(user.getUniq_id());
+            uservo.setRole_name(roleMapper.selectOne(role).getRole_name());
             uservo.setUser_image(user.getUser_image());
             uservo.setUser_name(user.getUser_name());
             uservo.setUser_nickname(user.getUser_nickname());
@@ -109,6 +127,7 @@ public class UserVoService {
             uservo.setUser_wechat(user.getUser_wechat());
             uservo.setUser_region(user.getUser_region());
             uservo.setUser_createtime(user.getUser_createtime());
+            uservo.setCompany_id(user.getCompany_id());
             userVos.add(uservo);
         }
         return userVos;
@@ -118,13 +137,16 @@ public class UserVoService {
      * 通过user_phone查询用户拓展类信息
      * @return List<UserVo>
      */
-    public UserVo getUserByUserPhone(String user_phone) throws Exception{
+    public UserVo getUserByUserPhone(String user_phone) {
 
-        //System.out.println("787777777777777777777777777778878787");
         User user = userService.findUserByPhone(user_phone);
-        //System.out.println("++++++++++++++++++++++++" + user);
+        String roleId=user.getRole_id();
+        Role role = new Role();
+        role.setRole_id(roleId);
+        System.out.println("++++++++++++++++++++++"+ roleId);
         UserVo uservo = new UserVo();
         uservo.setUniq_id(user.getUniq_id());
+        uservo.setRole_name(roleMapper.selectOne(role).getRole_name());
         uservo.setUser_image(user.getUser_image());
         uservo.setUser_name(user.getUser_name());
         uservo.setUser_nickname(user.getUser_nickname());
@@ -136,7 +158,7 @@ public class UserVoService {
         uservo.setUser_wechat(user.getUser_wechat());
         uservo.setUser_region(user.getUser_region());
         uservo.setUser_createtime(user.getUser_createtime());
-
+        uservo.setCompany_id(user.getCompany_id());
         return uservo;
     }
 
