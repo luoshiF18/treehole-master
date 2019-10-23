@@ -19,15 +19,15 @@ import javax.validation.Valid;
 @Api(value = "用户角色信息管理", description = "对用户角色信息进行增、删、改、查")
 public interface RoleControllerApi {
     @ApiOperation("查询所有角色信息")
-    public Result findAllRoles() throws Exception;
+    public Result findAllRoles();
 
     @ApiOperation("插入一条角色信息")
-    public Result insertRole(@RequestBody @Valid Role role) throws Exception;
+    public Result insertRole(@RequestBody @Valid Role role) ;
 
     @ApiOperation("根据id删除角色信息")
-    public Result deleteRoleById(@PathVariable("id")String role_id) throws Exception;
+    public Result deleteRoleById(@PathVariable("role_id")String role_id);
 
     @ApiOperation("更改角色信息")
-    public Result update(@RequestBody @Valid Role role) throws Exception;
+    public Result update(@RequestBody @Valid Role role);
 
 }

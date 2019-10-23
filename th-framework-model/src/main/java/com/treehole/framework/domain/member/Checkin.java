@@ -1,7 +1,11 @@
 package com.treehole.framework.domain.member;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import tk.mybatis.mapper.annotation.NameStyle;
+import tk.mybatis.mapper.code.Style;
 
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -14,36 +18,14 @@ import java.util.Date;
  */
 @Data
 @Table(name = "member_checkin")
+@NoArgsConstructor
+@AllArgsConstructor
+@NameStyle(Style.normal)
 public class Checkin implements Serializable {
     private String checkin_id; //签到id
     private String user_id; //用户id
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date checkin_time; //签到时间
 
-    public Checkin() {
-    }
 
-    public String getCheckin_id() {
-        return checkin_id;
-    }
-
-    public void setCheckin_id(String checkin_id) {
-        this.checkin_id = checkin_id;
-    }
-
-    public String getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
-    }
-
-    public Date getCheckin_time() {
-        return checkin_time;
-    }
-
-    public void setCheckin_time(Date checkin_time) {
-        this.checkin_time = checkin_time;
-    }
 }

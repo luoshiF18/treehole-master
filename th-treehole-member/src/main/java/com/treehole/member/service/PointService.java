@@ -29,7 +29,7 @@ public class PointService {
      * @param
      * @return List<Points>
      */
-    public List<Points> findAllPoints() throws Exception{
+    public List<Points> findAllPoints(){
 
         List<Points> points = pointsMapper.selectAll();
         return points;
@@ -42,7 +42,7 @@ public class PointService {
      * @return List<Points>
      */
 
-    public List<Points> getPointById(String points_id) throws Exception{
+    public List<Points> getPointById(String points_id){
         Points point = new Points();
         point.setPoints_id(points_id);
         List<Points> points = pointsMapper.select(point);
@@ -50,13 +50,22 @@ public class PointService {
     }
     /**
      * 插入一条积分信息
-     * 会员注册后立即调用
+     * 会员注册后立即调用(会员)
+     * 积分插入的步骤：
+     *   先查询user表中的pointnow付给before，后修改
+     *   记录表需要4个参数： 1.before ：从user表里通过userid获取
+     *            2.num  ：从前端获取
+     *            3.after    ：before+num
+     *            4.userid   ：从前端获取
+     *   最后:user表内的pointnow = after;   updateUserById() //
+     *
+     *
      *
      * @param
      * @return int
      */
 
-    public int insertPoint(Points points) throws Exception {
+    public int insertPoint(Points points)  {
         points.setPoints_id(MyNumberUtils.getUUID());
         points.setPoints_time(new Date());
         points.setPoints_num(0);
@@ -76,7 +85,7 @@ public class PointService {
      * @param points_id
      * @return int
      */
-    public int deletePointById(String points_id) throws Exception{
+    public int deletePointById(String points_id) {
         //List<Points> points = this.getPointById(points_id);
         Points point = new Points();
         point.setPoints_id(points_id);
@@ -91,7 +100,7 @@ public class PointService {
      * @param points
      * @return int
      */
-    public int updatePoint(Points points) throws Exception{
+    public int updatePoint(Points points) {
         Example example = new Example(Points.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("points_id",points.getPoints_id());

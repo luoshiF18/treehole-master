@@ -20,14 +20,14 @@ import javax.validation.Valid;
 public interface PayGradeControllerApi {
 
     @ApiOperation("查询所有付费会员等级信息")
-    public Result findAllPayGrade() throws Exception;
+    public Result findAllPayGrade() ;
 
     @ApiOperation("插入一条付费会员等级信息")
-    public Result insertPayGrade(@RequestBody @Valid PayGrade payGrade) throws Exception;
+    public Result insertPayGrade(@RequestBody @Valid PayGrade payGrade) ;
 
     @ApiOperation("根据id删除付费会员等级信息")
-    public Result deletePayGrade(@PathVariable("card_id")String paygrade_id) throws Exception;
+    public Result deletePayGrade(@PathVariable("paygrade_id")String paygrade_id);
 
     @ApiOperation("更改付费会员等级信息")
-    public Result update(@RequestBody @Valid PayGrade payGrade) throws Exception;
+    public Result update(@RequestBody @Valid PayGrade payGrade);
 }

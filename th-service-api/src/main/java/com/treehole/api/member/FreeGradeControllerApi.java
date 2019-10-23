@@ -18,15 +18,15 @@ import javax.validation.Valid;
 @Api(value = "非付费会员等级信息管理", description = "对非付费会员等级信息进行增/删/改/查")
 public interface FreeGradeControllerApi {
     @ApiOperation("查询所有非付费会员等级信息")
-    public Result findAllFreeGrade() throws Exception;
+    public Result findAllFreeGrade();
 
     @ApiOperation("插入一条非付费会员等级信息")
-    public Result insertFreeGrade(@RequestBody @Valid FreeGrade freeGrade) throws Exception;
+    public Result insertFreeGrade(@RequestBody @Valid FreeGrade freeGrade) ;
 
     @ApiOperation("根据id删除非付费会员等级信息")
-    public Result deleteFreeGrade(@PathVariable("card_id")String freegrade_id) throws Exception;
+    public Result deleteFreeGrade(@PathVariable("freegrade_id")String freegrade_id);
 
     @ApiOperation("更改非付费会员等级信息")
-    public Result update(@RequestBody @Valid FreeGrade freeGrade) throws Exception;
+    public Result update(@RequestBody @Valid FreeGrade freeGrade) ;
 
 }

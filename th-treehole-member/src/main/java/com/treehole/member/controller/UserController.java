@@ -28,7 +28,7 @@ public class UserController implements UserControllerApi {
 
 
     @GetMapping ("/getAllUsers")
-    public Result findAllUser() throws Exception {
+    public Result getAllUser()  {
         List<User> user = userService.findAllUsers();
         if(user != null){
             //System.out.println("users:==============" +users);
@@ -40,12 +40,10 @@ public class UserController implements UserControllerApi {
 
     }
 
-
-
     @GetMapping("/find/id/{id}")
-    public Result getUserById(@PathVariable("id") String id) throws Exception {
+    public Result getUserById(@PathVariable("id") String id) {
         //System.out.println("==========+++++++++11111   "+id);
-       List<User> res = userService.getUserById(id);
+        List<User> res = userService.getUserById(id);
         //System.out.println("==========+++++++++      "+res);
         if(!res.isEmpty()){
             return ResultUtil.success(res);
@@ -54,8 +52,10 @@ public class UserController implements UserControllerApi {
         }
     }
 
-    @RequestMapping(value = "/delete/id/{id}")
-    public Result deleteUserById(@PathVariable("user_id") String user_id) throws Exception {
+    @DeleteMapping(value ="/delete/id/{user_id}")
+    public Result deleteUserById(@PathVariable("user_id") String user_id) {
+        //1.判断用户是否存在
+        //if(this.getUserById(user_id))
         int del = userService.deleteUserById(user_id);
         //System.out.println("}}}}}}}}}}}}"+ del);
         List<User> res=userService.getUserById(user_id);
@@ -67,7 +67,7 @@ public class UserController implements UserControllerApi {
     }
 
     @PostMapping ("/insert")
-    public Result insertUser(@RequestBody @Valid User user) throws Exception {
+    public Result insertUser(@RequestBody @Valid User user) {
 
         if (userService.findUserByPhone(user.getUser_phone())!= null){  /*手机号唯一*/
             return ResultUtil.error(ResultEnum.USER_IS_EXISTS.getCode(),ResultEnum.USER_IS_EXISTS.getMsg());
@@ -81,7 +81,7 @@ public class UserController implements UserControllerApi {
     }
     /*接收到的数据为前端update后的*/
     @PostMapping("/update")
-    public Result update(@RequestBody @Valid User user) throws Exception {
+    public Result update(@RequestBody @Valid User user){
         //System.out.println("前端传来的+++++++++++++"+user);
         int res=userService.updateUser(user);
         if(res==0||res<0){
@@ -91,9 +91,9 @@ public class UserController implements UserControllerApi {
         return ResultUtil.success();
     }
     /*更新手机号绑定*/
-    @Override
+
     @PostMapping("/update/phone")
-    public Result updateUserPhone(@RequestBody @Valid User user) throws Exception {
+    public Result updateUserPhone(@RequestBody @Valid User user){
         //System.out.println("前端传来的+++++++++++++"+user);
         if (userService.findUserByPhone(user.getUser_phone())!= null){  /*手机号唯一*/
             return ResultUtil.error(ResultEnum.PHONE_IS_EXISTS.getCode(),ResultEnum.PHONE_IS_EXISTS.getMsg());
@@ -106,6 +106,9 @@ public class UserController implements UserControllerApi {
         }
 
     }
+
+    //public Result updateUserPassWord()
+
 
 
 }

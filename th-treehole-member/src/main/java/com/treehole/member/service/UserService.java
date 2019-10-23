@@ -2,9 +2,13 @@ package com.treehole.member.service;
 
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
+import com.treehole.framework.domain.member.result.MemberCode;
+import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.member.mapper.UserMapper;
+import com.treehole.member.myUtil.MyMd5Utils;
 import com.treehole.member.myUtil.MyNumberUtils;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
@@ -31,7 +35,7 @@ public class UserService {
      * @return List<User>
      */
 
-    public List<User> findAllUsers() throws Exception {
+    public List<User> findAllUsers() {
         List<User> users = userMapper.selectAll();
         return users;
     }
@@ -42,7 +46,7 @@ public class UserService {
      * @param
      * @return List<UserVo>
      */
-    public User findUser(User user) throws Exception {
+    public User findUser(User user) {
 
         return userMapper.selectOne(user);
     }
@@ -53,7 +57,7 @@ public class UserService {
      * @param phonenumber
      * @return User
      */
-    public User findUserByPhone(String phonenumber) throws Exception {
+    public User findUserByPhone(String phonenumber)  {
         User user = new User();
         //System.out.println("pppppppppppp"+phonenumber);
         user.setUser_phone(phonenumber);
@@ -65,7 +69,7 @@ public class UserService {
      * 通过id查询用户
      * @return List<User>
      */
-    public List<User> getUserById(String user_id) throws Exception{
+    public List<User> getUserById(String user_id){
         User user = new User();
         user.setUser_id(user_id);
         List<User> users = userMapper.select(user);
@@ -77,7 +81,11 @@ public class UserService {
      * @param user_id
      * @return
      */
-    public int deleteUserById(String user_id) throws Exception{
+    public int deleteUserById(String user_id) {
+        //System.out.println("111111111111111111"+user_id);
+        if(StringUtils.isBlank(user_id)){
+            ExceptionCast.cast(MemberCode.DATA_ERROR);
+        }
         User user = new User();
         user.setUser_id(user_id);
         int del = userMapper.delete(user);
@@ -90,14 +98,23 @@ public class UserService {
      * @param user
      * @return int
      */
-    public int insertUser(User user) throws Exception{
-
+    public int insertUser(User user)  {
+        System.out.println("--------------------"+user);
         user.setUser_id(MyNumberUtils.getUUID());
         user.setUniq_id(MyNumberUtils.getNumForAssign(6));
         //将密码MD5加密！！！！未实现
+        String pw=user.getPassword();
+        System.out.println("+++++++++++++++++++" + pw);
+        try {
+            user.setPassword(MyMd5Utils.getMd5(pw));
+            System.out.println("++++++++++++++++===========" + user.getPassword());
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
         user.setUser_createtime(new Date());
         //System.out.println("+++++++++"+ user.getUniq_id());
-        //user.setPoints_now(0);
+        user.setPoints_now(0);
         int ins = userMapper.insert(user);
         return ins;
     }
@@ -108,7 +125,7 @@ public class UserService {
      * @param user
      * @return int
      */
-    public int updateUser(User user) throws Exception{
+    public int updateUser(User user){
 
         Example example =new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
@@ -119,10 +136,7 @@ public class UserService {
         return upd;
     }
 
+    /*更改密码 未实现*/
 
-    /*public int updatePhone(User user) {
-        Example example =new Example(User.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("user_id",user.getUser_id());
-    }*/
+    /*忘记密码 未实现*/
 }

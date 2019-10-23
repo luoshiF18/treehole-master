@@ -18,13 +18,13 @@ import javax.validation.Valid;
 @Api(value = "签到信息管理", description = "对签到信息进行增、删、查")
 public interface CheckinControllerApi {
     @ApiOperation("查询所有签到信息")
-    public Result findAllCheckin() throws Exception;
+    public Result findAllCheckin();
 
     @ApiOperation("插入一条签到信息")
-    public Result insertCheckin(@RequestBody @Valid Role role) throws Exception;
+    public Result insertCheckin(@RequestBody @Valid Role role) ;
 
     @ApiOperation("根据id删除签到信息")
-    public Result deleteCheckinById(@PathVariable("role_id")String role_id) throws Exception;
+    public Result deleteCheckinById(@PathVariable("role_id")String role_id) ;
 
 
 }
