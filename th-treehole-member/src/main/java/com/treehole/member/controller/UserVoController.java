@@ -42,15 +42,10 @@ public class UserVoController implements UserVoControllerApi {
     }
 
     @GetMapping("/find/uniqId/{uniq_id}")
-    public Result getUserVoByUniqId(@PathVariable("uniq_id") String uniq_id)  {
+    public UserVo getUserVoByUniqId(@PathVariable("uniq_id") String uniq_id)  {
         //System.out.println("==========+++++++++11111   "+id);
-        List<UserVo> res = userVoService.getUserByUniqId(uniq_id);
-        //System.out.println("==========+++++++++      "+res);
-        if(!res.isEmpty()){
-            return ResultUtil.success(res);
-        }else {
-            return ResultUtil.error(ResultEnum.USER_NOT_EXIST.getCode(),ResultEnum.USER_NOT_EXIST.getMsg());
-        }
+         return userVoService.getUserByUniqId(uniq_id);
+
     }
 
     @GetMapping("/find/userId/{user_id}")
