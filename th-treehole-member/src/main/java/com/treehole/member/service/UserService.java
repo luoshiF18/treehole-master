@@ -69,10 +69,10 @@ public class UserService {
      * 通过id查询用户
      * @return List<User>
      */
-    public List<User> getUserById(String user_id){
+    public User getUserById(String user_id){
         User user = new User();
         user.setUser_id(user_id);
-        List<User> users = userMapper.select(user);
+        User users = userMapper.selectOne(user);
         return users;
     }
 

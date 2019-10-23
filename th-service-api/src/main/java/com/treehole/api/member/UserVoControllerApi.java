@@ -1,5 +1,6 @@
 package com.treehole.api.member;
 
+import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,7 +20,7 @@ public interface UserVoControllerApi {
     public Result getUserVoByUniqId(@PathVariable("uniq_id") String uniq_id);
 
     @ApiOperation("根据用户user_ID查询用户Vo信息")
-    public Result getUserVoByUserId(@PathVariable("user_id") String user_id);
+    public UserVo getUserVoByUserId(@PathVariable("user_id") String user_id);
 
     @ApiOperation("根据用户user_phone查询用户Vo信息")
     public Result getUserVoByUserPhone(@PathVariable("user_phone") String user_phone);

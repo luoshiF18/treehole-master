@@ -1,5 +1,6 @@
 package com.treehole.member.api;
 
+import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.result.Result;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +16,7 @@ public interface UserVoApi {
     public Result findAllUserVo() ;
     /*根据id查找用户*/
     @GetMapping("/uservo/find/userId/{user_id}")
-    public Result getUserVoByUserId(@PathVariable("user_id") String user_id);
+    public UserVo getUserVoByUserId(@PathVariable("user_id") String user_id);
     /*根据uniq_id查找用户*/
     @GetMapping("/uservo/find/uniqId/{uniq_id}")
     public Result getUserVoByUniqId(@PathVariable("uniq_id") String uniq_id) ;
