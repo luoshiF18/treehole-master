@@ -59,7 +59,6 @@ public class UserService {
      */
     public User findUserByPhone(String phonenumber)  {
         User user = new User();
-        //System.out.println("pppppppppppp"+phonenumber);
         user.setUser_phone(phonenumber);
         return userMapper.selectOne(user);
     }
@@ -104,7 +103,7 @@ public class UserService {
     public void insertUser(User user)  {
         //System.out.println("--------------------"+user);
         user.setUser_id(MyNumberUtils.getUUID());
-        user.setUniq_id(MyNumberUtils.getNumForAssign(6));
+        //user.setUniq_id(MyNumberUtils.getNumForAssign(6));
         //将密码MD5加密！！！！
         String pw=user.getPassword();
         try {

@@ -28,9 +28,8 @@ import java.util.Date;
 @NameStyle(Style.normal)   //数据库字段与属性名写法保持一致
 public class User implements Serializable {
     @Id //声明主键字段
-    //@KeySql(useGeneratedKeys = true) //该主键是否自增
     private String user_id; //会员id
-    private String uniq_id; //会员唯一id
+    //private String uniq_id; //会员唯一id
     private String role_id; //用户角色权限 0：用户 1：管理员
     private String user_image;//会员头像
     private String user_nickname; //会员昵称
