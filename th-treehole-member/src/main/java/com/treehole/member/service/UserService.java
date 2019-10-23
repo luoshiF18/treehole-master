@@ -73,6 +73,9 @@ public class UserService {
         User user = new User();
         user.setUser_id(user_id);
         User users = userMapper.selectOne(user);
+        if(user == null){
+            ExceptionCast.cast(MemberCode.USER_NOT_EXIST);
+        }
         return users;
     }
 
@@ -98,25 +101,23 @@ public class UserService {
      * @param user
      * @return int
      */
-    public int insertUser(User user)  {
-        System.out.println("--------------------"+user);
+    public void insertUser(User user)  {
+        //System.out.println("--------------------"+user);
         user.setUser_id(MyNumberUtils.getUUID());
         user.setUniq_id(MyNumberUtils.getNumForAssign(6));
-        //将密码MD5加密！！！！未实现
+        //将密码MD5加密！！！！
         String pw=user.getPassword();
-        System.out.println("+++++++++++++++++++" + pw);
         try {
             user.setPassword(MyMd5Utils.getMd5(pw));
-            System.out.println("++++++++++++++++===========" + user.getPassword());
         } catch (Exception e) {
             e.printStackTrace();
-
         }
         user.setUser_createtime(new Date());
-        //System.out.println("+++++++++"+ user.getUniq_id());
         user.setPoints_now(0);
-        int ins = userMapper.insert(user);
-        return ins;
+        if(userMapper.insert(user) != 1){
+            ExceptionCast.cast(MemberCode.INSERT_FAIL);
+        }
+
     }
 
     /**

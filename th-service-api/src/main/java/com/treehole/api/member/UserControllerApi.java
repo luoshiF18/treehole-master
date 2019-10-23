@@ -2,6 +2,7 @@ package com.treehole.api.member;
 
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.result.Result;
+import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,13 +22,13 @@ public interface UserControllerApi {
     public Result getAllUser();
 
     @ApiOperation("通过id查询用户")
-    public Result getUserById(@PathVariable("id") String id)  ;
+    public User getUserById(@PathVariable("id") String id)  ;
 
     @ApiOperation("创建一条用户信息")
-    public Result insertUser(@RequestBody @Valid User user);
+    public ResponseResult insertUser(@RequestBody @Valid User user);
 
     @ApiOperation("通过id删除用户")
-    public Result deleteUserById(@PathVariable("user_id")String user_id) ;
+    public ResponseResult deleteUserById(@PathVariable("user_id")String user_id) ;
 
     @ApiOperation("更新用户基本信息")
     public Result update(@RequestBody @Valid User user);

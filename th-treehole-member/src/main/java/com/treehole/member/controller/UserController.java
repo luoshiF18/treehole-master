@@ -3,10 +3,14 @@ package com.treehole.member.controller;
 import com.treehole.api.member.UserControllerApi;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.User;
+import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.domain.member.result.Result;
 import com.treehole.framework.domain.member.result.ResultEnum;
 import com.treehole.framework.domain.member.result.ResultUtil;
 
+import com.treehole.framework.exception.ExceptionCast;
+import com.treehole.framework.model.response.CommonCode;
+import com.treehole.framework.model.response.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.treehole.member.service.*;
@@ -41,43 +45,36 @@ public class UserController implements UserControllerApi {
     }
 
     @GetMapping("/find/id/{id}")
-    public Result getUserById(@PathVariable("id") String id) {
-        //System.out.println("==========+++++++++11111   "+id);
-        List<User> res = userService.getUserById(id);
-        //System.out.println("==========+++++++++      "+res);
-        if(!res.isEmpty()){
-            return ResultUtil.success(res);
-        }else {
-            return ResultUtil.error(ResultEnum.USER_NOT_EXIST.getCode(),ResultEnum.USER_NOT_EXIST.getMsg());
-        }
+    public User getUserById(@PathVariable("id") String id) {
+
+         return userService.getUserById(id);
+
+
     }
 
     @DeleteMapping(value ="/delete/id/{user_id}")
-    public Result deleteUserById(@PathVariable("user_id") String user_id) {
-        //1.判断用户是否存在
-        //if(this.getUserById(user_id))
-        int del = userService.deleteUserById(user_id);
-        //System.out.println("}}}}}}}}}}}}"+ del);
-        List<User> res=userService.getUserById(user_id);
-        if(res.isEmpty()){
-            return ResultUtil.success(res);
-        }else {
-            return ResultUtil.error(ResultEnum.DELETE_FAIL.getCode(),ResultEnum.DELETE_FAIL.getMsg());
-        }
+    public ResponseResult deleteUserById(@PathVariable("user_id") String user_id) {
+
+
+         userService.deleteUserById(user_id);
+         //再判断用户是否存在
+         if(this.getUserById(user_id) != null){
+             ExceptionCast.cast(MemberCode.DELETE_FAIL);
+         }
+        return new ResponseResult(CommonCode.SUCCESS);
+
     }
 
     @PostMapping ("/insert")
-    public Result insertUser(@RequestBody @Valid User user) {
+    public ResponseResult insertUser(@RequestBody @Valid User user) {
 
         if (userService.findUserByPhone(user.getUser_phone())!= null){  /*手机号唯一*/
-            return ResultUtil.error(ResultEnum.USER_IS_EXISTS.getCode(),ResultEnum.USER_IS_EXISTS.getMsg());
+            return new ResponseResult(MemberCode.PHONE_IS_EXISTS);
         }
-        int res=userService.insertUser(user);
-        if(res==1){
-            return ResultUtil.success(res);
-        }else {
-            return ResultUtil.error(ResultEnum.UNKNOWN_ERROR.getCode(),ResultEnum.UNKNOWN_ERROR.getMsg());
-        }
+        userService.insertUser(user);
+        return new ResponseResult(CommonCode.SUCCESS);
+
+
     }
     /*接收到的数据为前端update后的*/
     @PostMapping("/update")

@@ -17,7 +17,7 @@ public interface UserVoControllerApi {
     public Result findAllUserVo();
 
     @ApiOperation("根据用户uniq_ID查询用户Vo信息")
-    public Result getUserVoByUniqId(@PathVariable("uniq_id") String uniq_id);
+    public UserVo getUserVoByUniqId(@PathVariable("uniq_id") String uniq_id);
 
     @ApiOperation("根据用户user_ID查询用户Vo信息")
     public UserVo getUserVoByUserId(@PathVariable("user_id") String user_id);
