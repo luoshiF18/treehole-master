@@ -3,6 +3,8 @@ package com.treehole.member.service;
 import com.treehole.framework.domain.member.Role;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
+import com.treehole.framework.domain.member.result.MemberCode;
+import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.member.mapper.RoleMapper;
 import com.treehole.member.mapper.UserMapper;
 import com.treehole.member.mapper.UserVoMapper;
@@ -104,33 +106,32 @@ public class UserVoService {
      * 通过user_id查询用户拓展类
      * @return List<UserVo>
      */
-    public List<UserVo> getUserByUserId(String user_id) {
+    public UserVo getUserByUserId(String user_id) {
 
-        List<User> users = userService.getUserById(user_id);
-
-        List<UserVo> userVos = new ArrayList<UserVo>();
-        for(User user:users){
-            UserVo uservo = new UserVo();
-            String roleId=user.getRole_id();
-            Role role = new Role();
-            role.setRole_id(roleId);
-            uservo.setUniq_id(user.getUniq_id());
-            uservo.setRole_name(roleMapper.selectOne(role).getRole_name());
-            uservo.setUser_image(user.getUser_image());
-            uservo.setUser_name(user.getUser_name());
-            uservo.setUser_nickname(user.getUser_nickname());
-            uservo.setGender(user.getGender());
-            uservo.setUser_birth(user.getUser_birth());
-            uservo.setUser_email(user.getUser_email());
-            uservo.setUser_phone(user.getUser_phone());
-            uservo.setUser_qq(user.getUser_qq());
-            uservo.setUser_wechat(user.getUser_wechat());
-            uservo.setUser_region(user.getUser_region());
-            uservo.setUser_createtime(user.getUser_createtime());
-            uservo.setCompany_id(user.getCompany_id());
-            userVos.add(uservo);
+        User user = userService.getUserById(user_id);
+        if(user == null){
+            ExceptionCast.cast(MemberCode.USER_NOT_EXIST);
         }
-        return userVos;
+        String roleId=user.getRole_id();
+        Role role = new Role();
+        role.setRole_id(roleId);
+        //System.out.println("++++++++++++++++++++++"+ roleId);
+        UserVo uservo = new UserVo();
+        uservo.setUniq_id(user.getUniq_id());
+        uservo.setRole_name(roleMapper.selectOne(role).getRole_name());
+        uservo.setUser_image(user.getUser_image());
+        uservo.setUser_name(user.getUser_name());
+        uservo.setUser_nickname(user.getUser_nickname());
+        uservo.setGender(user.getGender());
+        uservo.setUser_birth(user.getUser_birth());
+        uservo.setUser_email(user.getUser_email());
+        uservo.setUser_phone(user.getUser_phone());
+        uservo.setUser_qq(user.getUser_qq());
+        uservo.setUser_wechat(user.getUser_wechat());
+        uservo.setUser_region(user.getUser_region());
+        uservo.setUser_createtime(user.getUser_createtime());
+        uservo.setCompany_id(user.getCompany_id());
+        return uservo;
     }
 
     /**
