@@ -3,6 +3,7 @@ package com.treehole.api.member;
 import com.treehole.framework.domain.member.Points;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.result.Result;
+import com.treehole.framework.model.response.QueryResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +19,7 @@ import javax.validation.Valid;
 @Api(value = "用户积分信息管理", description = "对用户积分信息进行增、删、查")
 public interface PointControllerApi {
     @ApiOperation("查询所有积分")
-    public Result findAllPoint();
+    public QueryResponseResult findAllPoint(Integer page, Integer size);
 
     @ApiOperation("通过id查询积分")
     public Result getPointById(@PathVariable("points_id") String points_id) ;

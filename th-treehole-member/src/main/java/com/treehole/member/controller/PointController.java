@@ -6,6 +6,9 @@ import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.result.Result;
 import com.treehole.framework.domain.member.result.ResultEnum;
 import com.treehole.framework.domain.member.result.ResultUtil;
+import com.treehole.framework.model.response.CommonCode;
+import com.treehole.framework.model.response.QueryResponseResult;
+import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.service.PointService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,16 +31,11 @@ public class PointController implements PointControllerApi {
 
     @Override
     @GetMapping("/getAllPoints")
-    public Result findAllPoint()  {
-
-        List<Points> points = pointService.findAllPoints();
-        if(points != null){
-
-            return ResultUtil.success(points);
-
-        }else{
-            return ResultUtil.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
-        }
+    public QueryResponseResult findAllPoint(@RequestParam(value = "page", defaultValue = "1") Integer page,
+                                            @RequestParam(value = "size", defaultValue = "5") Integer size)
+    {
+        QueryResult queryResult = pointService.findAllPoints(page,size);
+        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 
     @Override

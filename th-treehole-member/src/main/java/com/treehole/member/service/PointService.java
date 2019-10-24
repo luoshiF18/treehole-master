@@ -1,12 +1,18 @@
 package com.treehole.member.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.member.Points;
 import com.treehole.framework.domain.member.User;
+import com.treehole.framework.domain.member.result.MemberCode;
+import com.treehole.framework.exception.ExceptionCast;
+import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.mapper.PointsMapper;
 import com.treehole.member.mapper.UserMapper;
 import com.treehole.member.myUtil.MyNumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.Date;
@@ -29,10 +35,18 @@ public class PointService {
      * @param
      * @return List<Points>
      */
-    public List<Points> findAllPoints(){
-
+    public QueryResult findAllPoints(Integer page, Integer size){
+//        分页
+        PageHelper.startPage(page, size);
+        //查询
         List<Points> points = pointsMapper.selectAll();
-        return points;
+        if (CollectionUtils.isEmpty(points)) {
+            ExceptionCast.cast(MemberCode.DATA_IS_NULL);
+        }
+        //        解析分页结果
+        PageInfo<Points> pageInfo = new PageInfo<>(points);
+
+        return new QueryResult(points, pageInfo.getTotal());
     }
 
     /**

@@ -19,7 +19,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserVo implements Serializable {
-    //private String uniq_id; //会员唯一id
+    private String user_id; //会员唯一id
     private String role_name;//角色名称
     private String user_image;//会员头像
     private String user_nickname; //会员昵称
@@ -35,6 +35,7 @@ public class UserVo implements Serializable {
     //private Integer points_now;  //现有积分
     private Date user_createtime; //用户创建账户时间
     private String company_id;//企业用户所在公司
+    private Integer points_now;
 
 
 }

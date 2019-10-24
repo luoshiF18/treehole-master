@@ -24,4 +24,6 @@ public interface UserVoApi {
     @GetMapping("/uservo/find/userPhone/{user_phone}")
     public Result getUserVoByUserPhone(@PathVariable("user_phone") String user_phone);
 
+    @GetMapping("/uservo/find/nickname/{nickname}")
+    public UserVo getUserVoByNickname(@PathVariable("nickname") String nickname);
 }
