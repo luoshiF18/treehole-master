@@ -2,6 +2,7 @@ package com.treehole.framework.domain.member;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Table;
 import java.util.Date;
@@ -19,7 +20,9 @@ public class Role {
     private String role_name;  //角色名称
     private String role_code;  //角色code
     private String description;  //描述
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date create_time;  //创建时间
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date update_time;  //更新时间
     private String status; //角色状态
 

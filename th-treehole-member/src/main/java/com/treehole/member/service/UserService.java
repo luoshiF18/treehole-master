@@ -35,41 +35,12 @@ public class UserService {
         List<User> users = userMapper.selectAll();
         return users;
     }
-    /**
-     * 查询所有用户Vo信息
-     *
-     * @param
-     * @return List<UserVo>
-     */
-
-    public List<UserVo> findAllUserVos() throws Exception {
-        List<User> users = userMapper.selectAll();
-        List<UserVo> userVos = new ArrayList<UserVo>();
-        for(User user:users){
-            UserVo uservo = new UserVo();
-            uservo.setUniq_id(user.getUniq_id());
-            uservo.setUser_image(user.getUser_image());
-            uservo.setUser_name(user.getUser_name());
-            uservo.setUser_nickname(user.getUser_nickname());
-            uservo.setGender(user.getGender());
-            uservo.setUser_birth(user.getUser_birth());
-            uservo.setUser_email(user.getUser_email());
-            uservo.setUser_phone(user.getUser_phone());
-            uservo.setUser_qq(user.getUser_qq());
-            uservo.setUser_wechat(user.getUser_wechat());
-            uservo.setUser_region(user.getUser_region());
-
-            userVos.add(uservo);
-        }
-        //BeanUtils.copyProperties(userExts,users);
-        return userVos;
-    }
 
     /**
      * 根据user对象查询所有user记录
      *
      * @param
-     * @return List<UserExt>
+     * @return List<UserVo>
      */
     public User findUser(User user) throws Exception {
 
@@ -102,65 +73,6 @@ public class UserService {
     }
 
     /**
-     * 通过uniq_id查询用户拓展类
-     * @return List<User>
-     */
-    public List<UserVo> getUserByUniqId(String uniq_id) throws Exception{
-        User user1 = new User();
-        user1.setUniq_id(uniq_id);
-        List<User> users = userMapper.select(user1);
-
-        List<UserVo> userVos = new ArrayList<UserVo>();
-        for(User user:users){
-            UserVo uservo = new UserVo();
-            uservo.setUniq_id(user.getUniq_id());
-            uservo.setUser_image(user.getUser_image());
-            uservo.setUser_name(user.getUser_name());
-            uservo.setUser_nickname(user.getUser_nickname());
-            uservo.setGender(user.getGender());
-            uservo.setUser_birth(user.getUser_birth());
-            uservo.setUser_email(user.getUser_email());
-            uservo.setUser_phone(user.getUser_phone());
-            uservo.setUser_qq(user.getUser_qq());
-            uservo.setUser_wechat(user.getUser_wechat());
-            uservo.setUser_region(user.getUser_region());
-            userVos.add(uservo);
-        }
-        return userVos;
-    }
-
-    /**
-     * 通过user_id查询用户拓展类
-     * @return List<User>
-     */
-    public List<UserVo> getUserByUserId(String user_id) throws Exception{
-        User user1 = new User();
-        user1.setUser_id(user_id);
-        List<User> users = userMapper.select(user1);
-
-        List<UserVo> userVos = new ArrayList<UserVo>();
-        for(User user:users){
-            UserVo uservo = new UserVo();
-            uservo.setUniq_id(user.getUniq_id());
-            uservo.setUser_image(user.getUser_image());
-            uservo.setUser_name(user.getUser_name());
-            uservo.setUser_nickname(user.getUser_nickname());
-            uservo.setGender(user.getGender());
-            uservo.setUser_birth(user.getUser_birth());
-            uservo.setUser_email(user.getUser_email());
-            uservo.setUser_phone(user.getUser_phone());
-            uservo.setUser_qq(user.getUser_qq());
-            uservo.setUser_wechat(user.getUser_wechat());
-            uservo.setUser_region(user.getUser_region());
-            userVos.add(uservo);
-        }
-        return userVos;
-    }
-
-
-
-
-    /**
      * 通过id删除用户
      * @param user_id
      * @return
@@ -185,7 +97,7 @@ public class UserService {
         //将密码MD5加密！！！！未实现
         user.setUser_createtime(new Date());
         //System.out.println("+++++++++"+ user.getUniq_id());
-        user.setPoints_now(0);
+        //user.setPoints_now(0);
         int ins = userMapper.insert(user);
         return ins;
     }

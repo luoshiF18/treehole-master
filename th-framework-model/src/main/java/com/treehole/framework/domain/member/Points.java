@@ -1,6 +1,7 @@
 package com.treehole.framework.domain.member;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -16,19 +17,22 @@ import java.util.Date;
 public class Points implements Serializable {
     private String points_id;  //记录积分id
     private String user_id;  //用户id
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date points_time;  //记录时间
+    private Integer points_before;//积分计算之前数量
     private Integer points_num;  //记录本次积分数
-    private Integer points_later;  //会员计算之后积分
+    private Integer points_later;  //积分计算之后数量
     private Integer points_cumulate;  //累计积分
     private Integer points_clear;  //消去积分
 
     public Points() {
     }
 
-    public Points(String points_id, String user_id, Date points_time, Integer points_num, Integer points_later, Integer points_cumulate, Integer points_clear) {
+    public Points(String points_id, String user_id, Date points_time, Integer points_before, Integer points_num, Integer points_later, Integer points_cumulate, Integer points_clear) {
         this.points_id = points_id;
         this.user_id = user_id;
         this.points_time = points_time;
+        this.points_before = points_before;
         this.points_num = points_num;
         this.points_later = points_later;
         this.points_cumulate = points_cumulate;
@@ -41,11 +45,20 @@ public class Points implements Serializable {
                 "points_id='" + points_id + '\'' +
                 ", user_id='" + user_id + '\'' +
                 ", points_time=" + points_time +
+                ", points_before=" + points_before +
                 ", points_num=" + points_num +
                 ", points_later=" + points_later +
                 ", points_cumulate=" + points_cumulate +
                 ", points_clear=" + points_clear +
                 '}';
+    }
+
+    public Integer getPoints_before() {
+        return points_before;
+    }
+
+    public void setPoints_before(Integer points_before) {
+        this.points_before = points_before;
     }
 
     public String getPoints_id() {
