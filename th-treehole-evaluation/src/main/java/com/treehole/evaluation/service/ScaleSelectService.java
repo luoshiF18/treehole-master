@@ -100,10 +100,6 @@ public class ScaleSelectService {
      * @return
      */
     public ScaleDetailVO2 findScaleDetail(String scaleId, String scaleName) {
-        if (StringUtils.isBlank(scaleName)) {
-            ExceptionCast.cast(EvaluationCode.DATA_ERROR);
-        }
-
         try {
 //            查询量表
             Scale scale2 = new Scale();
