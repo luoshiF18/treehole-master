@@ -40,6 +40,8 @@ public class ScaleSelectService {
     private UserOptionMapper userOptionMapper;
     @Autowired
     private ResultMapper resultMapper;
+    @Autowired
+    private WarningFindInfo warningFindInfo;
 
 //    private static final String USER_OPTIONS = "user:options";
 
@@ -294,8 +296,8 @@ public class ScaleSelectService {
 //                拼接字符串
                     questionAndOption.append(questionMapper.findQuestionName(UserOption.getQuestionId()) + "|" + UserOption.getAnswer() + ",");
                 }
-//            存入到选项表
-                insertUserOption(userId, scale.getScaleName(), questionAndOption.toString());
+/*//            存入到选项表
+                insertUserOption(userId, scale.getScaleName(), questionAndOption.toString());*/
             } else {
 //            如果没有登录就不记录，直接返回分数
                 for (String optionId : optionIds) {
@@ -306,21 +308,30 @@ public class ScaleSelectService {
 
 //        获取量表描述
             Description description = getDescription(scaleId, sum);
-//        如果警告等级超过2级预警
-            if (description.getWarningLevel() >= 2) {
-                // TODO 获取预警信息
-            }
 //        准备展示数据
             ResultVO resultVO = new ResultVO();
+//        如果警告等级超过2级预警
+//            初始化预警信息
+            StringBuilder warningInfo = new StringBuilder();
+            Integer warningLevel = description.getWarningLevel();
+            if (warningLevel >= 2) {
+                String warningIn = findWarningInfo(scaleId, warningLevel);
+                warningInfo.append(warningIn);
+                resultVO.setWarningInfo(warningInfo.toString());
+            }
             resultVO.setScaleName(scale.getScaleName());
             resultVO.setDescriptionInfo(description.getDescription());
             resultVO.setScore(sum);
+//            如果用户不为空
             if (StringUtils.isNotBlank(userId)) {
-                resultVO.setUserName(userId); //TODO 存入用户名称
-                insertResult(userId, scale.getScaleName(), description.getDescription(), sum, null);
+//            存入用户名称
+                resultVO.setUserName(userId);
+//            存入用户预警信息
+                insertResult(userId, scale.getScaleName(), description.getDescription(), sum, warningInfo.toString());
+//            存入到选项表
+                insertUserOption(userId, scale.getScaleName(), questionAndOption.toString());
             }
             resultVO.setResultTime(MyDateUtils.dateToString1(new Date()));
-            resultVO.setWarningInfo(null);
 //        返回
             return resultVO;
         } catch (Exception e) {
@@ -354,7 +365,7 @@ public class ScaleSelectService {
             List<Map> result2 = new ArrayList<>();
 //        解析字符串
             String[] splits = StringUtils.split(questionAndOption, ",");
-//        这样把每个选项分出来，但是问题id和答案还在一起
+//        这样把每个选项分出来，但是问题和答案还在一起
             for (String split : splits) {
                 String question = StringUtils.substringBefore(split, "|");
                 String option = StringUtils.substringAfter(split, "|");
@@ -566,5 +577,14 @@ public class ScaleSelectService {
         resultMapper.insert(result);
     }
 
-
+    /**
+     * 获取预警信息
+     */
+    private String findWarningInfo(String scaleId, Integer warningLevel) {
+        Warning warning = new Warning();
+        warning.setScaleId(scaleId);
+        warning.setWarningLevel(warningLevel);
+        Warning selectOne = warningFindInfo.selectOne(warning);
+        return "预警等级：" + warningLevel + "级 " + "描述为：" + selectOne.getWMessage();
+    }
 }
