@@ -7,6 +7,7 @@ import com.treehole.framework.model.response.QueryResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author shanhuijie
@@ -26,6 +27,7 @@ public interface UserVoControllerApi {
 
     @ApiOperation("根据用户user_phone查询用户Vo信息")
     public UserVo getUserVoByUserPhone(@PathVariable("user_phone") String user_phone);
+
     @ApiOperation("根据用户user_nickname查询用户Vo信息")
-    public UserVo getUserVoByNickname(@PathVariable("nickname") String nickname);
+    public UserVo getUserVoByNickname(@RequestParam("nickname") String nickname);
 }
