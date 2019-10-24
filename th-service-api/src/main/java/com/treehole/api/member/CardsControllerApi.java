@@ -18,15 +18,15 @@ import javax.validation.Valid;
 @Api(value = "会员卡信息管理", description = "对会员卡信息进行增/删/改/查")
 public interface CardsControllerApi {
     @ApiOperation("查询所有会员卡信息")
-    public Result findAllCards() throws Exception;
+    public Result findAllCards() ;
 
     @ApiOperation("插入一条会员卡信息")
-    public Result insertCard(@RequestBody @Valid Cards cards) throws Exception;
+    public Result insertCard(@RequestBody @Valid Cards cards) ;
 
     @ApiOperation("根据id删除会员卡信息")
-    public Result deleteCardById(@PathVariable("card_id")String card_id) throws Exception;
+    public Result deleteCardById(@PathVariable("card_id")String card_id) ;
 
     @ApiOperation("更改会员卡信息")
-    public Result update(@RequestBody @Valid Cards cards) throws Exception;
+    public Result update(@RequestBody @Valid Cards cards) ;
 
 }
