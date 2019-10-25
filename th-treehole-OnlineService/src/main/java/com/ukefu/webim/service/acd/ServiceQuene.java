@@ -37,16 +37,8 @@ import com.ukefu.webim.web.model.SessionConfig;
 
 @SuppressWarnings("deprecation")
 public class ServiceQuene {
-
+	
 	/**
-	 * 关于排队的相关操作
-	 */
-
-
-
-
-	/**
-	 * 定义排队规则
 	 * 载入坐席 ACD策略配置
 	 * @param orgi
 	 * @return

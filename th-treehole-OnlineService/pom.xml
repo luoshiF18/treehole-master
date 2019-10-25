@@ -2,8 +2,8 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.ukefu</groupId>
-  <artifactId>webim</artifactId>
+	<artifactId>th-treehole-OnlineService</artifactId>
+	<groupId>com.treehole</groupId>
   <version>3.2.0</version>
   <packaging>war</packaging>
 	<!--<packaging>jar</packaging>-->
@@ -180,11 +180,11 @@
 		    <version>1.0.27</version>
 		</dependency>
 		
-		<!--<dependency>
+		<dependency>
 	        <groupId>org.lionsoul.ip2region</groupId>
 	        <artifactId>ip2region</artifactId>
 	        <version>1.2.4</version>
-	    </dependency>-->
+	    </dependency>
 	    
 	    <dependency>
 		    <groupId>com.lmax</groupId>
