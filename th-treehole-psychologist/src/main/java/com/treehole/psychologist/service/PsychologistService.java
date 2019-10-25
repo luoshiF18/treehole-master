@@ -9,6 +9,7 @@ import com.treehole.framework.model.response.QueryResult;
 import com.treehole.psychologist.dao.PsychologistMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -59,9 +60,34 @@ public class PsychologistService {
         //判断结果是否为空
         if (one == null) {
             //如果为空，抛出异常，异常内容为该心理咨询师不存在
-            ExceptionCast.cast(PsychologistCode.Psychologist_NOT_EXIST);
+            ExceptionCast.cast(PsychologistCode.PSYCHOLOGIST_NOT_EXIST);
         }
         //如果不为空，则直接返回查询到的对象信息
         return one;
+    }
+
+    /**
+     * 根据id删除心理咨询师信息
+     *
+     * @param id 心理咨询师id
+     * @return
+     */
+    @Transactional
+    public void delPsychologistById(String id) {
+        Psychologist psychologist = new Psychologist();
+        psychologist.setId(id);
+        //先查询要删除的心理咨询师
+        Psychologist psychologist1 = this.findPsychologistById(id);
+        //判断结果是否为空
+        if (psychologist1 == null) {
+            //如果为空，抛出异常，异常内容为该心理咨询师不存在
+            ExceptionCast.cast(PsychologistCode.PSYCHOLOGIST_NOT_EXIST);
+        }
+        //删除
+        int i = this.psychologistMapper.delete(psychologist);
+        //如果受影响行数不为1，则删除失败
+        if (i != 1) {
+            ExceptionCast.cast(PsychologistCode.DELETE_FAIL);
+        }
     }
 }

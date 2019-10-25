@@ -2,6 +2,7 @@ package com.treehole.api.psychologist;
 
 import com.treehole.framework.domain.psychologist.Psychologist;
 import com.treehole.framework.model.response.QueryResponseResult;
+import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -17,5 +18,8 @@ public interface PsychologistControllerApi {
 
     @ApiOperation("根据id查询心理咨询师信息")
     Psychologist findPsychologistById(String id);
+
+    @ApiOperation("根据id删除心理咨询师信息")
+    ResponseResult delPsychologistById(String id);
 
 }
