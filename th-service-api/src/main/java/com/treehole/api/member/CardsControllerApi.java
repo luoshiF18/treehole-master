@@ -2,6 +2,7 @@ package com.treehole.api.member;
 
 import com.treehole.framework.domain.member.Cards;
 import com.treehole.framework.domain.member.Role;
+import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.result.Result;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
@@ -23,12 +24,15 @@ public interface CardsControllerApi {
     public QueryResponseResult findAllCards(Integer page, Integer size) ;
 
     @ApiOperation("插入一条会员卡信息")
-    public ResponseResult insertCard(@RequestBody @Valid Cards cards) ;
+    public ResponseResult insertCard(@RequestBody @Valid User user) ;
 
     @ApiOperation("根据user_id删除会员卡信息")
     public ResponseResult deleteCardById(@PathVariable("card_id")String card_id) ;
 
     @ApiOperation("更改会员卡信息")
     public ResponseResult update(@RequestBody @Valid Cards cards) ;
+
+    @ApiOperation("根据user_id查找cards")
+    public Cards findCardsByUserId(@PathVariable("user_id") String user_id);
 
 }

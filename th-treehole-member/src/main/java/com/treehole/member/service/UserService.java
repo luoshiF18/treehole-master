@@ -84,9 +84,7 @@ public class UserService {
         User user = new User();
         user.setUser_nickname(nickname);
         User use = userMapper.selectOne(user);
-        if(use == null){
-            ExceptionCast.cast(MemberCode.DATA_IS_NULL);
-        }
+
         return use;
     }
 
@@ -174,7 +172,8 @@ public class UserService {
         if( ins != 1){
             ExceptionCast.cast(MemberCode.INSERT_FAIL);
         }
-        cardsService.insertCard(user);
+        //往cards表中插入数据
+       //cardsService.insertCard(user);
     }
 
     /**

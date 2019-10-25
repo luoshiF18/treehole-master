@@ -37,4 +37,5 @@ public class Cards implements Serializable {
     private Integer points_now;//现有积分
 
 
+
 }

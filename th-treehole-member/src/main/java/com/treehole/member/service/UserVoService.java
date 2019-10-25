@@ -183,7 +183,6 @@ public class UserVoService {
      * @return List<UserVo>
      */
     public UserVo getUserByNickname(String nickname) {
-
         User user = userService.findUserByNickname(nickname);
         if(user == null){
             ExceptionCast.cast(MemberCode.USER_NOT_EXIST);
