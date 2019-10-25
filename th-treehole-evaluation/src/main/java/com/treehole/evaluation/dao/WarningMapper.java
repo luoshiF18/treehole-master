@@ -9,4 +9,5 @@ import tk.mybatis.mapper.common.Mapper;
  */
 public interface WarningMapper extends Mapper<Warning> {
 
+    void deleteMoreWarning(String[] ids);
 }
