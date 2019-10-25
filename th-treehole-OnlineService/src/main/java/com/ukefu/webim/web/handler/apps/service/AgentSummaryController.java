@@ -1,3 +1,4 @@
+/*
 package com.ukefu.webim.web.handler.apps.service;
 
 import java.io.IOException;
@@ -31,35 +32,42 @@ import org.springframework.web.servlet.ModelAndView;
 import com.ukefu.core.UKDataContext;
 import com.ukefu.util.Menu;
 import com.ukefu.util.UKTools;
-/*import com.ukefu.util.task.export.ExcelExporterProcess;*/
+*/
+/*import com.ukefu.util.task.export.ExcelExporterProcess;*//*
+
 import com.ukefu.webim.service.repository.AgentServiceRepository;
 import com.ukefu.webim.service.repository.ContactsRepository;
-/*import com.ukefu.webim.service.repository.ServiceSummaryRepository;*/
+import com.ukefu.webim.service.repository.ServiceSummaryRepository;
 import com.ukefu.webim.web.handler.Handler;
 import com.ukefu.webim.web.model.AgentService;
-/*import com.ukefu.webim.web.model.AgentServiceSummary;*/
+import com.ukefu.webim.web.model.AgentServiceSummary;
 import com.ukefu.webim.web.model.Contacts;
 
 @Controller
 @RequestMapping("/apps/agent/summary")
 public class AgentSummaryController extends Handler{
-	/*
-	@Autowired
-	private ServiceSummaryRepository serviceSummaryRes ;*/
 	
-	/*@Autowired
-	private MetadataRepository metadataRes ;*/
+	@Autowired
+	private ServiceSummaryRepository serviceSummaryRes ;
+	
+	*/
+/*@Autowired
+	private MetadataRepository metadataRes ;*//*
+
 	
 	@Autowired
 	private AgentServiceRepository agentServiceRes ;
 	
-	/*@Autowired
-	private TagRepository tagRes ;*/
+	*/
+/*@Autowired
+	private TagRepository tagRes ;*//*
+
 	
 	@Autowired
 	private ContactsRepository contactsRes ;
 	
-	/**
+	*/
+/**
 	 * 按条件查询
 	 * @param map
 	 * @param request
@@ -69,8 +77,9 @@ public class AgentSummaryController extends Handler{
 	 * @param end
 	 * @param
 	 * @return
-	 */
-	/*@RequestMapping(value = "/index")
+	 *//*
+
+	@RequestMapping(value = "/index")
     @Menu(type = "agent" , subtype = "agentsummary" , access = false)
     public ModelAndView index(ModelMap map , HttpServletRequest request , @Valid final String begin , @Valid final String end ) {
 		Page<AgentServiceSummary> page = serviceSummaryRes.findAll(new Specification<AgentServiceSummary>(){
@@ -97,21 +106,25 @@ public class AgentSummaryController extends Handler{
 		map.addAttribute("begin", begin) ;
 		map.addAttribute("end", end) ;
 		
-*//*
+*/
+/*
 		map.addAttribute("tags", tagRes.findByOrgiAndTagtype(super.getOrgi(request) , UKDataContext.ModelType.SUMMARY.toString())) ;
 *//*
 
+
     	return request(super.createAppsTempletResponse("/apps/service/summary/index"));
-    }*/
+    }
 	
-	/*@RequestMapping(value = "/process")
+	@RequestMapping(value = "/process")
     @Menu(type = "agent" , subtype = "agentsummary" , access = false)
     public ModelAndView process(ModelMap map , HttpServletRequest request , @Valid final String id) {
 		AgentServiceSummary summary = serviceSummaryRes.findByIdAndOrgi(id, super.getOrgi(request)) ;
 		map.addAttribute("summary",summary) ;
-*//*
+*/
+/*
 		map.put("summaryTags", tagRes.findByOrgiAndTagtype(super.getOrgi(request) , UKDataContext.ModelType.SUMMARY.toString())) ;
 *//*
+
 		if(summary!=null && !StringUtils.isBlank(summary.getAgentserviceid())){
 			AgentService service = agentServiceRes.findByIdAndOrgi(summary.getAgentserviceid(), super.getOrgi(request)) ;
 			map.addAttribute("service",service) ;
@@ -122,9 +135,9 @@ public class AgentSummaryController extends Handler{
 		}
 		
 		return request(super.createRequestPageTempletResponse("/apps/service/summary/process"));
-	}*/
+	}
 	
-	/*@RequestMapping(value = "/save")
+	@RequestMapping(value = "/save")
     @Menu(type = "agent" , subtype = "agentsummary" , access = false)
     public ModelAndView save(ModelMap map , HttpServletRequest request , @Valid final AgentServiceSummary summary) {
 		AgentServiceSummary oldSummary = serviceSummaryRes.findByIdAndOrgi(summary.getId(), super.getOrgi(request)) ;
@@ -137,9 +150,10 @@ public class AgentSummaryController extends Handler{
 		}
 		
 		return request(super.createRequestPageTempletResponse("redirect:/apps/agent/summary/index.html"));
-	}*/
+	}
 	
-	/* @RequestMapping("/expids")
+	*/
+/* @RequestMapping("/expids")
 	    @Menu(type = "agent" , subtype = "agentsummary" , access = false)
 	    public void expids(ModelMap map , HttpServletRequest request , HttpServletResponse response , @Valid String[] ids) throws IOException {
 	    	if(ids!=null && ids.length > 0){
@@ -157,9 +171,11 @@ public class AgentSummaryController extends Handler{
 	    	}
 	    	
 	        return ;
-	    }*/
+	    }*//*
+
 	    
-	   /* @RequestMapping("/expall")
+	   */
+/* @RequestMapping("/expall")
 	    @Menu(type = "agent" , subtype = "agentsummary" , access = false)
 	    public void expall(ModelMap map , HttpServletRequest request , HttpServletResponse response) throws IOException {
 	    	Iterable<AgentServiceSummary> statusEventList = serviceSummaryRes.findByChannelAndOrgi(UKDataContext.ChannelTypeEnum.PHONE.toString() , super.getOrgi(request) , new PageRequest(0, 10000));
@@ -176,8 +192,10 @@ public class AgentSummaryController extends Handler{
 			excelProcess.process();
 	        return ;
 	    }
-	    */
-	   /* @RequestMapping("/expsearch")
+	    *//*
+
+	   */
+/* @RequestMapping("/expsearch")
 	    @Menu(type = "agent" , subtype = "agentsummary" , access = false)
 	    public void expall(ModelMap map , HttpServletRequest request  , HttpServletResponse response ,  @Valid final String begin , @Valid final String end ) throws IOException {
 	    	
@@ -215,5 +233,7 @@ public class AgentSummaryController extends Handler{
 	    	excelProcess.process();
 	    	
 	        return ;
-	    }*/
+	    }*//*
+
 }
+*/
