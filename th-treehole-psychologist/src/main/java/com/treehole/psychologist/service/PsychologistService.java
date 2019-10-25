@@ -37,12 +37,31 @@ public class PsychologistService {
         List<Psychologist> psychologists = psychologistMapper.selectAll();
         //判断psychologists集合是否为空
         if (CollectionUtils.isEmpty(psychologists)) {
-            //如果数据为空页面，抛出异常，异常内容就是查询数据为空
+            //如果数据为空页面，抛出异常，异常内容为查询数据为空
             ExceptionCast.cast(PsychologistCode.DATA_IS_NULL);
         }
-        // 包装成pageInfo
+        //包装成pageInfo
         PageInfo<Psychologist> pageInfo = new PageInfo<>(psychologists);
-        // 包装成分页结果集返回
+        //包装成分页结果集返回
         return new QueryResult(pageInfo.getList(), pageInfo.getTotal());
+    }
+
+    /**
+     * 根据id查询心理咨询师信息
+     *
+     * @param id 心理咨询师id
+     * @return
+     */
+    public Psychologist findPsychologistById(String id) {
+        Psychologist psychologist = new Psychologist();
+        psychologist.setId(id);
+        Psychologist one = this.psychologistMapper.selectOne(psychologist);
+        //判断结果是否为空
+        if (one == null) {
+            //如果为空，抛出异常，异常内容为该心理咨询师不存在
+            ExceptionCast.cast(PsychologistCode.Psychologist_NOT_EXIST);
+        }
+        //如果不为空，则直接返回查询到的对象信息
+        return one;
     }
 }
