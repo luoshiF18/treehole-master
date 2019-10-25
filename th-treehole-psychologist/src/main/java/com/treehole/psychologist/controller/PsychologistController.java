@@ -1,15 +1,13 @@
 package com.treehole.psychologist.controller;
 
 import com.treehole.api.psychologist.PsychologistControllerApi;
+import com.treehole.framework.domain.psychologist.Psychologist;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.psychologist.service.PsychologistService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Helay
@@ -35,7 +33,19 @@ public class PsychologistController implements PsychologistControllerApi {
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "size", defaultValue = "5") Integer size
     ) {
-        QueryResult queryResult = psychologistService.findAllPsychologist(page, size);
+        QueryResult queryResult = this.psychologistService.findAllPsychologist(page, size);
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
+    }
+
+    /**
+     * 根据id查询心理咨询师信息
+     *
+     * @param id 心理咨询师id
+     * @return
+     */
+    @Override
+    @GetMapping("{id}")
+    public Psychologist findPsychologistById(@PathVariable("id") String id) {
+        return this.psychologistService.findPsychologistById(id);
     }
 }
