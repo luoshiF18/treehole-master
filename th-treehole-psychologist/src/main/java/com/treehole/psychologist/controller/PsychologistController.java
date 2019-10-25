@@ -5,6 +5,7 @@ import com.treehole.framework.domain.psychologist.Psychologist;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
+import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.psychologist.service.PsychologistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class PsychologistController implements PsychologistControllerApi {
      * @return
      */
     @Override
-    @GetMapping("/all")
+    @GetMapping("find/all")
     public QueryResponseResult findAllPsychologist(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "size", defaultValue = "5") Integer size
@@ -44,8 +45,22 @@ public class PsychologistController implements PsychologistControllerApi {
      * @return
      */
     @Override
-    @GetMapping("{id}")
+    @GetMapping("find/{id}")
     public Psychologist findPsychologistById(@PathVariable("id") String id) {
         return this.psychologistService.findPsychologistById(id);
+    }
+
+    /**
+     * 根据id删除心理咨询师信息
+     *
+     * @param id 心理咨询师id
+     * @return
+     */
+    @Override
+    @DeleteMapping("del/{id}")
+    public ResponseResult delPsychologistById(@PathVariable("id") String id) {
+        this.psychologistService.delPsychologistById(id);
+        //删除成功，响应成功状态码
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 }
