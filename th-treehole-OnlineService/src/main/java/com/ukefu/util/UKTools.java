@@ -60,10 +60,10 @@ import com.ukefu.util.event.UserDataEvent;
 import com.ukefu.util.event.UserEvent;
 import com.ukefu.webim.service.cache.CacheHelper;
 /*import com.ukefu.webim.service.repository.AttachmentRepository;*/
-import com.ukefu.webim.service.repository.SecretRepository;
+/*import com.ukefu.webim.service.repository.SecretRepository;*/
 import com.ukefu.webim.service.repository.SystemConfigRepository;
 /*import com.ukefu.webim.web.model.AttachmentFile;*/
-import com.ukefu.webim.web.model.Secret;
+/*import com.ukefu.webim.web.model.Secret;*/
 import com.ukefu.webim.web.model.SystemConfig;
 import com.ukefu.webim.web.model.User;
 
@@ -789,10 +789,10 @@ public class UKTools {
 	    return ip;  
 	}
 	
-	public static boolean secConfirm(SecretRepository secRes , String orgi , String confirm){
-		/**
+	/*public static boolean secConfirm(SecretRepository secRes , String orgi , String confirm){
+		*//**
     	 * 先调用 IMServer 
-    	 */
+    	 *//*
     	boolean execute = false ;
     	List<Secret> secretConfig = secRes.findByOrgi(orgi) ;
     	if(!StringUtils.isBlank(confirm)){
@@ -807,7 +807,7 @@ public class UKTools {
     	}
     	return execute ;
 	}
-	
+	*/
 	/*public static void  processAttachmentFile(MultipartFile[] files, AttachmentRepository attachementRes , String path,User user , String orgi, *//*WorkOrders workOrders,*//* HttpServletRequest request  , String dataid , String modelid) throws IOException{
     	if(files!=null && files.length > 0){
     	*//*	workOrders.setAnonymous(true);//变更用途为是否有 附件*//*

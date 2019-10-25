@@ -1,3 +1,4 @@
+/*
 package com.ukefu.webim.service.repository;
 
 import java.util.List;
@@ -10,3 +11,4 @@ public abstract interface SecretRepository  extends JpaRepository<Secret, String
 	public abstract List<Secret> findByOrgi(String orgi);
 }
 
+*/

@@ -1,3 +1,4 @@
+/*
 package com.ukefu.webim.web.handler.apps.service;
 
 import java.io.IOException;
@@ -31,13 +32,17 @@ import org.springframework.web.servlet.ModelAndView;
 import com.ukefu.core.UKDataContext;
 import com.ukefu.util.Menu;
 import com.ukefu.util.UKTools;
-/*import com.ukefu.util.task.export.ExcelExporterProcess;*/
+*/
+/*import com.ukefu.util.task.export.ExcelExporterProcess;*//*
+
 import com.ukefu.webim.service.repository.AgentServiceRepository;
 import com.ukefu.webim.service.repository.ContactsRepository;
 import com.ukefu.webim.service.repository.ServiceSummaryRepository;
 import com.ukefu.webim.web.handler.Handler;
 import com.ukefu.webim.web.model.AgentService;
-import com.ukefu.webim.web.model.AgentServiceSummary;
+*/
+/*import com.ukefu.webim.web.model.AgentServiceSummary;*//*
+
 import com.ukefu.webim.web.model.Contacts;
 
 @Controller
@@ -47,19 +52,24 @@ public class ProcessedSummaryController extends Handler{
 	@Autowired
 	private ServiceSummaryRepository serviceSummaryRes ;
 	
-	/*@Autowired
-	private MetadataRepository metadataRes ;*/
+	*/
+/*@Autowired
+	private MetadataRepository metadataRes ;*//*
+
 	
 	@Autowired
 	private AgentServiceRepository agentServiceRes ;
 	
-	/*@Autowired
-	private TagRepository tagRes ;*/
+	*/
+/*@Autowired
+	private TagRepository tagRes ;*//*
+
 	
 	@Autowired
 	private ContactsRepository contactsRes ;
 	
-	/**
+	*/
+/**
 	 * 按条件查询
 	 * @param map
 	 * @param request
@@ -69,7 +79,8 @@ public class ProcessedSummaryController extends Handler{
 	 * @param end
 	 * @param direction
 	 * @return
-	 */
+	 *//*
+
 	@RequestMapping(value = "/index")
     @Menu(type = "agent" , subtype = "processed" , access = false)
     public ModelAndView index(ModelMap map , HttpServletRequest request ,@Valid final String ani , @Valid final String called , @Valid final String begin , @Valid final String end , @Valid final String direction) {
@@ -105,9 +116,11 @@ public class ProcessedSummaryController extends Handler{
 		map.addAttribute("begin", begin) ;
 		map.addAttribute("end", end) ;
 		
+*/
 /*
 		map.addAttribute("tags", tagRes.findByOrgiAndTagtype(super.getOrgi(request) , UKDataContext.ModelType.SUMMARY.toString())) ;
-*/
+*//*
+
 
     	return request(super.createAppsTempletResponse("/apps/service/processed/index"));
     }
@@ -118,7 +131,9 @@ public class ProcessedSummaryController extends Handler{
     public ModelAndView process(ModelMap map , HttpServletRequest request , @Valid final String id) {
 		AgentServiceSummary summary = serviceSummaryRes.findByIdAndOrgi(id, super.getOrgi(request)) ;
 		map.addAttribute("summary",summary) ;
-	/*	map.put("summaryTags", tagRes.findByOrgiAndTagtype(super.getOrgi(request) , UKDataContext.ModelType.SUMMARY.toString())) ;*/
+	*/
+/*	map.put("summaryTags", tagRes.findByOrgiAndTagtype(super.getOrgi(request) , UKDataContext.ModelType.SUMMARY.toString())) ;*//*
+
 		if(summary!=null && !StringUtils.isBlank(summary.getAgentserviceid())){
 			AgentService service = agentServiceRes.findByIdAndOrgi(summary.getAgentserviceid(), super.getOrgi(request)) ;
 			map.addAttribute("service",service) ;
@@ -146,7 +161,8 @@ public class ProcessedSummaryController extends Handler{
 		return request(super.createRequestPageTempletResponse("redirect:/apps/agent/processed/index.html"));
 	}
 	
-	/* @RequestMapping("/expids")
+	*/
+/* @RequestMapping("/expids")
 	    @Menu(type = "agent" , subtype = "processed" , access = false)
 	    public void expids(ModelMap map , HttpServletRequest request , HttpServletResponse response , @Valid String[] ids) throws IOException {
 	    	if(ids!=null && ids.length > 0){
@@ -227,5 +243,7 @@ public class ProcessedSummaryController extends Handler{
 	    	excelProcess.process();
 	    	
 	        return ;
-	    }*/
+	    }*//*
+
 }
+*/

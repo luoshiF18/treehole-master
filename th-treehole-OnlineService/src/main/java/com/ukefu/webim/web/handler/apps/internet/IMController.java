@@ -185,12 +185,12 @@ public class IMController extends Handler{
     @RequestMapping("/{id}/userlist")
     @Menu(type = "im" , subtype = "inlist" , access = true)
     public void inlist(HttpServletRequest request , HttpServletResponse response, @PathVariable String id , @Valid String userid) throws IOException {
-    	if(!StringUtils.isBlank(userid)){
-	    	/*BlackEntity black = (BlackEntity) CacheHelper.getSystemCacheBean().getCacheObject(userid, UKDataContext.SYSTEM_ORGI) ;
+    	/*if(!StringUtils.isBlank(userid)){
+	    	BlackEntity black = (BlackEntity) CacheHelper.getSystemCacheBean().getCacheObject(userid, UKDataContext.SYSTEM_ORGI) ;
 	    	if((black != null && (black.getEndtime()==null || black.getEndtime().after(new Date()))) ){
 	    		response.getWriter().write("in");;
-	    	}*/
-    	}
+	    	}
+    	}*/
     }
     /**
      * 延时获取用户端浏览器的跟踪ID
@@ -356,7 +356,7 @@ public class IMController extends Handler{
 			}
 			
 		/*	map.addAttribute("skillList", OnlineUserUtils.organ(invite.getOrgi()))  ;*/
-			
+
     		if(invite!=null && consult){
 				if(contacts!=null && !StringUtils.isBlank(contacts.getName())){
 					nickname = contacts.getName() ;

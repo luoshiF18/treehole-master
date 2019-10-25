@@ -51,13 +51,13 @@ import com.ukefu.webim.service.repository.OnlineUserRepository;
 import com.ukefu.webim.service.repository.QuickReplyRepository;
 import com.ukefu.webim.service.repository.QuickTypeRepository;
 import com.ukefu.webim.service.repository.SNSAccountRepository;
-import com.ukefu.webim.service.repository.ServiceSummaryRepository;
+/*import com.ukefu.webim.service.repository.ServiceSummaryRepository;*/
 import com.ukefu.webim.service.repository.UserRepository;
 import com.ukefu.webim.util.router.OutMessageRouter;
 import com.ukefu.webim.util.server.message.ChatMessage;
 import com.ukefu.webim.web.handler.Handler;
 import com.ukefu.webim.web.model.AgentService;
-import com.ukefu.webim.web.model.AgentServiceSummary;
+/*import com.ukefu.webim.web.model.AgentServiceSummary;*/
 import com.ukefu.webim.web.model.AgentStatus;
 import com.ukefu.webim.web.model.AgentUser;
 import com.ukefu.webim.web.model.AgentUserContacts;
@@ -92,8 +92,8 @@ public class AgentController extends Handler {
 /*	@Autowired
 	private WeiXinUserRepository weiXinUserRes;*/
 	
-	@Autowired
-	private ServiceSummaryRepository serviceSummaryRes ;
+	/*@Autowired
+	private ServiceSummaryRepository serviceSummaryRes ;*/
 	
 	@Autowired
 	private ChatMessageRepository chatMessageRepository ;
@@ -129,7 +129,7 @@ public class AgentController extends Handler {
 	private UserRepository userRes ;
 	
 	@Autowired
-	private AgentUserContactsRepository agentUserContactsRes; 
+	private AgentUserContactsRepository agentUserContactsRes;
 	
 	@Value("${web.upload-path}")
 	private String path;	
@@ -182,12 +182,12 @@ public class AgentController extends Handler {
 			agentUser = (AgentUser) agentUserList.get(0);
 			view.addObject("curagentuser", agentUser);
 			
-			if(!StringUtils.isBlank(agentUser.getAgentserviceid())){
+			/*if(!StringUtils.isBlank(agentUser.getAgentserviceid())){
 				AgentServiceSummary summary = this.serviceSummaryRes.findByAgentserviceidAndOrgi(agentUser.getAgentserviceid(), super.getOrgi(request)) ;
 				if(summary!=null){
 					view.addObject("summary", summary) ;
 				}
-			}
+			}*/
 
 			view.addObject("agentUserMessageList", this.chatMessageRepository.findByUsessionAndOrgi(agentUser.getUserid() , super.getOrgi(request), new PageRequest(0, 20, Direction.DESC , "updatetime")));
 			
@@ -290,12 +290,12 @@ public class AgentController extends Handler {
 				agentUserTaskRes.save(agentUserTask) ;
 			}
 			
-			if(!StringUtils.isBlank(agentUser.getAgentserviceid())){
+			/*if(!StringUtils.isBlank(agentUser.getAgentserviceid())){
 				AgentServiceSummary summary = this.serviceSummaryRes.findByAgentserviceidAndOrgi(agentUser.getAgentserviceid(), super.getOrgi(request)) ;
 				if(summary!=null){
 					view.addObject("summary", summary) ;
 				}
-			}
+			}*/
 			
 			view.addObject("agentUserMessageList", this.chatMessageRepository.findByUsessionAndOrgi(agentUser.getUserid() , super.getOrgi(request), new PageRequest(0, 20, Direction.DESC , "updatetime")));
 			
@@ -708,17 +708,17 @@ public class AgentController extends Handler {
     	return request(super.createRequestPageTempletResponse("/apps/agent/contacts")) ; 
     }
 	
-	@RequestMapping(value="/summary")  
+	@RequestMapping(value="/summary")
 	@Menu(type = "apps", subtype = "summary")
     public ModelAndView summary(ModelMap map , HttpServletRequest request , @Valid String userid , @Valid String agentserviceid, @Valid String agentuserid){ 
 		if(!StringUtils.isBlank(userid) && !StringUtils.isBlank(agentuserid)){
 			AgentUser agentUser = this.agentUserRepository.findByIdAndOrgi(agentuserid, super.getOrgi(request)) ;
-			if(agentUser!=null && !StringUtils.isBlank(agentUser.getAgentserviceid())){
+			/*if(agentUser!=null && !StringUtils.isBlank(agentUser.getAgentserviceid())){
 				AgentServiceSummary summary = this.serviceSummaryRes.findByAgentserviceidAndOrgi(agentUser.getAgentserviceid(), super.getOrgi(request)) ;
 				if(summary!=null){
 					map.addAttribute("summary", summary) ;
 				}
-			}
+			}*/
 		/*	map.addAttribute("tags", tagRes.findByOrgiAndTagtype(super.getOrgi(request) , UKDataContext.ModelType.SUMMARY.toString())) ;*/
 			map.addAttribute("userid", userid) ;
 			map.addAttribute("agentserviceid", agentserviceid) ;
@@ -729,7 +729,7 @@ public class AgentController extends Handler {
     	return request(super.createRequestPageTempletResponse("/apps/agent/summary")) ; 
     }
 	
-	@RequestMapping(value="/summary/save")  
+	/*@RequestMapping(value="/summary/save")
 	@Menu(type = "apps", subtype = "summarysave")
     public ModelAndView summarysave(ModelMap map , HttpServletRequest request , @Valid AgentServiceSummary summary , @Valid String contactsid , @Valid String userid , @Valid String agentserviceid, @Valid String agentuserid){ 
 		if(!StringUtils.isBlank(userid) && !StringUtils.isBlank(agentuserid)){
@@ -752,7 +752,7 @@ public class AgentController extends Handler {
 		}
 		
     	return request(super.createRequestPageTempletResponse("redirect:/agent/agentuser.html?id="+agentuserid)) ; 
-    }
+    }*/
 	
 	@RequestMapping(value="/transfer")  
 	@Menu(type = "apps", subtype = "transfer")
