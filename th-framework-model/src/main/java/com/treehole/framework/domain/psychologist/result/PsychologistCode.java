@@ -11,6 +11,7 @@ import com.treehole.framework.model.response.ResultCode;
 public enum PsychologistCode implements ResultCode {
 
     SUCCESS(false, 200, "成功"),
+    Psychologist_NOT_EXIST(false,302,"该心理咨询师不存在"),
     DATA_IS_NULL(false, 304, "查询数据为空");
 
 
