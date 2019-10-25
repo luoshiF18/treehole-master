@@ -38,6 +38,7 @@ public class ScaleInsertService {
      *
      * @return null
      */
+    @Transactional
     public void insertScale(Scale scale) {
 //        如果数据为空报错
         if (scale == null) {
@@ -109,6 +110,7 @@ public class ScaleInsertService {
      * @param warningLevel
      * @return
      */
+    @Transactional
     public void insertDescription(String scaleId, Float score1, Float score2, String description, Integer warningLevel, String createUserId) {
         if (StringUtils.isEmpty(scaleId) || StringUtils.isEmpty(description) || score1 < 0 || score2 < 0 || score1 > score2 || warningLevel < 0) {
             ExceptionCast.cast(EvaluationCode.DESC_DATA_ERROR);
@@ -127,11 +129,10 @@ public class ScaleInsertService {
         }
     }
 
-    /**
+    /*    *//**
      * 添加测评结果
      *
-     * @return
-     */
+     *//*
     public void insertResult(String userId, String scaleId, String descriptionId, Float score, String warningId) {
         if (StringUtils.isEmpty(userId) || StringUtils.isEmpty(scaleId) || StringUtils.isEmpty(descriptionId) || StringUtils.isEmpty(warningId) || score < 0) {
             ExceptionCast.cast(EvaluationCode.DATA_ERROR);
@@ -140,13 +141,13 @@ public class ScaleInsertService {
 //        存入欠缺数据
         result.setId(MyNumberUtils.getUUID());
         result.setUserId(userId);
-        result.setScaleId(scaleId);
-        result.setDescriptionId(descriptionId);
+//        result.setScaleId(scaleId);
+//        result.setDescriptionId(descriptionId);
         result.setScore(score);
         result.setCreateTime(new Date());
-        result.setWarningId(warningId);
+        result.setWarningInfo(warningId);
         if (resultMapper.insert(result) != 1) {
             ExceptionCast.cast(EvaluationCode.INSERT_FAIL);
         }
-    }
+    }*/
 }

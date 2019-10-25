@@ -5,6 +5,8 @@ spring:
     name: th-treehole-evaluation
   redis:
     host: 10.0.43.60
+#  jackson:
+#    default-property-inclusion: non_null
   datasource:
     druid:
       url: ${MYSQL_URL:jdbc:mysql://10.0.43.60:3306/th_evaluation?characterEncoding=utf-8}
