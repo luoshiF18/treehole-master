@@ -708,18 +708,18 @@ public class AgentController extends Handler {
     	return request(super.createRequestPageTempletResponse("/apps/agent/contacts")) ; 
     }
 	
-	@RequestMapping(value="/summary")
+	/*@RequestMapping(value="/summary")
 	@Menu(type = "apps", subtype = "summary")
     public ModelAndView summary(ModelMap map , HttpServletRequest request , @Valid String userid , @Valid String agentserviceid, @Valid String agentuserid){ 
 		if(!StringUtils.isBlank(userid) && !StringUtils.isBlank(agentuserid)){
 			AgentUser agentUser = this.agentUserRepository.findByIdAndOrgi(agentuserid, super.getOrgi(request)) ;
-			/*if(agentUser!=null && !StringUtils.isBlank(agentUser.getAgentserviceid())){
+			*//*if(agentUser!=null && !StringUtils.isBlank(agentUser.getAgentserviceid())){
 				AgentServiceSummary summary = this.serviceSummaryRes.findByAgentserviceidAndOrgi(agentUser.getAgentserviceid(), super.getOrgi(request)) ;
 				if(summary!=null){
 					map.addAttribute("summary", summary) ;
 				}
-			}*/
-		/*	map.addAttribute("tags", tagRes.findByOrgiAndTagtype(super.getOrgi(request) , UKDataContext.ModelType.SUMMARY.toString())) ;*/
+			}*//*
+		*//*	map.addAttribute("tags", tagRes.findByOrgiAndTagtype(super.getOrgi(request) , UKDataContext.ModelType.SUMMARY.toString())) ;*//*
 			map.addAttribute("userid", userid) ;
 			map.addAttribute("agentserviceid", agentserviceid) ;
 			map.addAttribute("agentuserid", agentuserid) ;
@@ -727,7 +727,7 @@ public class AgentController extends Handler {
 		}
 		
     	return request(super.createRequestPageTempletResponse("/apps/agent/summary")) ; 
-    }
+    }*/
 	
 	/*@RequestMapping(value="/summary/save")
 	@Menu(type = "apps", subtype = "summarysave")

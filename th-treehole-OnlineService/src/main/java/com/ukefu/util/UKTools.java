@@ -38,7 +38,6 @@ import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.Converter;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.jsoup.Jsoup;
@@ -50,11 +49,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.lmax.disruptor.dsl.Disruptor;
 import com.ukefu.core.UKDataContext;
-import com.ukefu.util.event.AiEvent;
 import com.ukefu.util.event.MultiUpdateEvent;
 import com.ukefu.util.event.UserDataEvent;
 import com.ukefu.util.event.UserEvent;
@@ -65,7 +62,6 @@ import com.ukefu.webim.service.repository.SystemConfigRepository;
 /*import com.ukefu.webim.web.model.AttachmentFile;*/
 /*import com.ukefu.webim.web.model.Secret;*/
 import com.ukefu.webim.web.model.SystemConfig;
-import com.ukefu.webim.web.model.User;
 
 
 public class UKTools {
@@ -210,13 +206,13 @@ public class UKTools {
 		disruptor.getRingBuffer().publish(seq);
 	}
 	
-	@SuppressWarnings({ "unchecked"})
+	/*@SuppressWarnings({ "unchecked"})
 	public static void ai(UserEvent event){
 		Disruptor<AiEvent> disruptor = (Disruptor<AiEvent>) UKDataContext.getContext().getBean("ai") ;
 		long seq = disruptor.getRingBuffer().next();
 		disruptor.getRingBuffer().get(seq).setEvent(event); ;
 		disruptor.getRingBuffer().publish(seq);
-	}
+	}*/
 	/**
 	 * 
 	 * @param request

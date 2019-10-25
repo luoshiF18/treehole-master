@@ -120,6 +120,6 @@ public class AiIMEventHandler
     			CacheHelper.getOnlineUserCacheBean().put(client.getSessionId().toString(), aiUser, UKDataContext.SYSTEM_ORGI);
     		}
     	}
-    	UKTools.ai(data);
+    	/*UKTools.ai(data);*/
     } 
 }  
