@@ -9,6 +9,7 @@ import tk.mybatis.mapper.code.Style;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -42,6 +43,9 @@ public class Psychologist {
 
     //心理咨询师是否空闲 0：是  1：否
     private Integer state;
+
+    //心理咨询师咨询价格
+    private BigDecimal price;
 
     //心理咨询师创建时间
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
