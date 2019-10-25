@@ -47,7 +47,6 @@ public class User implements Serializable {
     private Date user_createtime; //用户创建账户时间
     private Integer user_type; //用户类型 0：个人用户 1：企业用户
     private Integer user_status; //用户状态 0：正常 1：被禁
-    private Integer points_now;  //现有积分
     private String company_id;//企业用户所在公司
 
 

@@ -28,8 +28,7 @@ public interface PointControllerApi {
     @ApiOperation("创建一条积分信息")
     public ResponseResult insertPoint(@RequestBody @Valid Points points) ;
 
-
-    /*@ApiOperation("通过id删除积分")
+    /*@ApiOperation("通过id删除积分") 定时删除老旧数据
     public ResponseResult deletePointById(@PathVariable("points_id") String points_id);*/
 
 }
