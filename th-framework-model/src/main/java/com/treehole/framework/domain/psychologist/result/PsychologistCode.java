@@ -16,7 +16,8 @@ public enum PsychologistCode implements ResultCode {
     DATA_IS_NULL(false, 403, "查询数据为空!"),
     INSERT_DATA_NULL(false, 404, "插入数据为空!"),
     DELETE_FAIL(false, 405, "删除失败!"),
-    INSERT_FAIL(false, 406, "添加失败!");
+    INSERT_FAIL(false, 406, "添加失败!"),
+    UPDATE_FAIL(false, 407, "更新失败!");
 
 
     //操作是否成功,true为成功，false操作失败
