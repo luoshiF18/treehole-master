@@ -63,4 +63,18 @@ public class PsychologistController implements PsychologistControllerApi {
         //删除成功，响应成功状态码
         return new ResponseResult(CommonCode.SUCCESS);
     }
+
+    /**
+     * 添加心理咨询师信息
+     *
+     * @param psychologist 心理咨询师对象
+     * @return
+     */
+    @Override
+    @PostMapping("add")
+    public ResponseResult addPsychologist(@RequestBody Psychologist psychologist) {
+        this.psychologistService.addPsychologist(psychologist);
+        //添加成功，响应成功状态码
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
 }
