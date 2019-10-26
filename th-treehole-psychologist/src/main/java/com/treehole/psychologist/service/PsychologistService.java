@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
 
@@ -119,4 +120,23 @@ public class PsychologistService {
             ExceptionCast.cast(PsychologistCode.INSERT_FAIL);
         }
     }
+
+    /**
+     * 更新心理咨询师信息
+     *
+     * @param psychologist 心理咨询师对象
+     * @return
+     */
+    @Transactional
+    public void updatePsychologist(Psychologist psychologist) {
+        Example example = new Example(Psychologist.class);
+        Example.Criteria criteria = example.createCriteria();
+        //根据id更新
+        criteria.andEqualTo("id", psychologist.getId());
+        int key = this.psychologistMapper.updateByExample(psychologist, example);
+        if (key != 1) {
+            ExceptionCast.cast(PsychologistCode.UPDATE_FAIL);
+        }
+    }
+
 }

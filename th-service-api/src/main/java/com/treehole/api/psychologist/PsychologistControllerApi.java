@@ -25,4 +25,7 @@ public interface PsychologistControllerApi {
     @ApiOperation("添加心理咨询师信息")
     ResponseResult addPsychologist(Psychologist psychologist);
 
+    @ApiOperation("更新心理咨询师信息")
+    ResponseResult updatePsychologist(Psychologist psychologist);
+
 }
