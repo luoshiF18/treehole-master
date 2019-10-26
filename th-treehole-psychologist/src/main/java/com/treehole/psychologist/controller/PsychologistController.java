@@ -77,4 +77,18 @@ public class PsychologistController implements PsychologistControllerApi {
         //添加成功，响应成功状态码
         return new ResponseResult(CommonCode.SUCCESS);
     }
+
+    /**
+     * 更新心理咨询师信息
+     *
+     * @param psychologist 心理咨询师对象
+     * @return
+     */
+    @Override
+    @PutMapping("update")
+    public ResponseResult updatePsychologist(@RequestBody Psychologist psychologist) {
+        this.psychologistService.updatePsychologist(psychologist);
+        //更新成功，响应成功状态码
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
 }
