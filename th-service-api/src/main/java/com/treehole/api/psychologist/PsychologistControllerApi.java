@@ -22,4 +22,7 @@ public interface PsychologistControllerApi {
     @ApiOperation("根据id删除心理咨询师信息")
     ResponseResult delPsychologistById(String id);
 
+    @ApiOperation("添加心理咨询师信息")
+    ResponseResult addPsychologist(Psychologist psychologist);
+
 }
