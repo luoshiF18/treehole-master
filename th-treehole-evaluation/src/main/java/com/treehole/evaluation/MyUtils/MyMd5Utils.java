@@ -14,7 +14,10 @@ public final class MyMd5Utils {
     }
 
     /**
-     * 将明文密码转成MD5密码
+     * 将明文密码转成MD5密码   如：生成32位
+     *                           89f3b5e181cc2f03b0679c404f360d52
+     *                           54979031e3847fa870a4e4a5f0be1d40
+     *                           c20ad4d76fe97759aa27a0c99bff6710
      */
     public static String getMd5(String password) throws Exception {
         //Java中MessageDigest类封装了MD5和SHA算法，今天我们只要MD5算法
@@ -42,6 +45,7 @@ public final class MyMd5Utils {
 
     /**
      * 将byte转在16进制字符串
+
      */
     private static String byteToHexString(byte b) {//-31转成e1，10转成0a，。。。
         //将byte类型赋给int类型
