@@ -3,11 +3,15 @@ package com.treehole.member.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.treehole.framework.domain.archives.resquest.ResultListRequest;
 import com.treehole.framework.domain.member.Role;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
+import com.treehole.framework.domain.member.resquest.UserListRequest;
 import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.exception.ExceptionCast;
+import com.treehole.framework.model.response.CommonCode;
+import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.mapper.RoleMapper;
 import com.treehole.member.mapper.UserMapper;
@@ -44,7 +48,7 @@ public class UserVoService {
      * @return List<UserVo>
      */
 
-    public QueryResult findAllUserVos(Integer page, Integer size) {
+    /*public QueryResult findAllUserVos(Integer page, Integer size) {
         //        分页
         //PageHelper.startPage(page, size);
         Page pag =PageHelper.startPage(page,size);
@@ -79,7 +83,7 @@ public class UserVoService {
         //解析分页结果
         PageInfo<UserVo> pageInfo = new PageInfo<>(pag.getResult());
         return  new QueryResult(userVos, pageInfo.getTotal());
-    }
+    }*/
 
     /**
      * 通过uniq_id查询用户拓展类
@@ -210,12 +214,21 @@ public class UserVoService {
     }
 
 
-    public QueryResult findAllUserVos1(Integer page, Integer size, User user1) {
+    public QueryResponseResult findAllUserVos(Integer page, Integer size, UserListRequest userListRequest) {
         //        分页
-        //PageHelper.startPage(page, size);
         Page pag =PageHelper.startPage(page,size);
+        //判断请求条件的合法性
+        if (userListRequest == null){
+            userListRequest = new UserListRequest();
+        }
+
+        User user1 = new User();
+        user1.setUser_id(userListRequest.getUser_id());
+        user1.setUser_nickname(userListRequest.getUser_nickname());
+        user1.setUser_phone(userListRequest.getUser_phone());
         //查询
         List<User> users = userMapper.select(user1);
+
         if (CollectionUtils.isEmpty(users)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
@@ -244,6 +257,10 @@ public class UserVoService {
         }
         //解析分页结果
         PageInfo<UserVo> pageInfo = new PageInfo<>(pag.getResult());
-        return  new QueryResult(userVos, pageInfo.getTotal());
+
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(userVos);
+        queryResult.setTotal(pageInfo.getTotal());
+        return new QueryResponseResult(CommonCode.SUCCESS,queryResult);
     }
 }
