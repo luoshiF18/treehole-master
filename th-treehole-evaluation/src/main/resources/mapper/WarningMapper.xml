@@ -6,11 +6,40 @@
         DELETE FROM
         warning
         WHERE
-        id IN
-        <foreach collection="array" item="item" index="index" open="(" separator="," close=")">
+        warning.id IN
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
             #{item}
         </foreach>
     </delete>
+    <select id="findScaleWarning" resultType="com.treehole.framework.domain.evaluation.vo.WarningVo">
+        select
+        warning.id,
+        scaleName,
+        warning.user_id as userId,
+        scale_id as scaleId,
+        warning_level as warningLevel,
+        w_message as Wmessage,
+        warning.create_time as createTime
+        from warning
+        inner join test_scale on warning.scale_id=test_scale.id
+    </select>
+    <select id="getWaning" resultType="com.treehole.framework.domain.evaluation.vo.WarningVo">
+        select
+        warning.id,
+        test_scale.scaleName,
+        warning.status,
+        user_id as userId,
+        warning_level as warningLevel,
+        w_message as wMessage,
+        create_time as createTime
+        from warning
+        left join test_scale   on warning.scale_id=test_scale.id
+        where warning.id IN
+        <foreach collection="list" item="WarningId" index="index" open="(" close=")" separator=",">
+            #{WarningId}
+        </foreach>
+
+    </select>
 
 
 

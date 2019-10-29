@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -93,68 +94,150 @@ public class WarningService {
     }
 
     //分页查询数据库中所有预警信息
-    public QueryResponseResult findAll() {
+    public QueryResponseResult findAll(int page,int size) {
 
         //设置分页参数
-        PageHelper.startPage( 1, 10 );
-        List<Warning> warnings = warningMapper.selectAll();
-        PageInfo<Warning> warningPageInfo = new PageInfo<>( warnings );
-        QueryResult queryResult = new QueryResult<>();
-        queryResult.setList( warningPageInfo.getList() );
-        queryResult.setTotal( warningPageInfo.getTotal() );
+        PageHelper.startPage(page,size);
+        //得到量表名称和预警信息
+        List<WarningVo> scaleWarning = warningMapper.findScaleWarning();
+        //计算总条数
+        int sum = scaleWarning.size();
+        //遍历得到userId
+        List listUserId = new ArrayList();
+        for (WarningVo warningVo : scaleWarning) {
+            listUserId.add(warningVo.getUserId());
+        }
+        //远程调用得到用户信息
+        List<UserVo> allUser = userClient.getAllUser( listUserId );
+        if (allUser.get(0)!=null||scaleWarning.get(0)!=null) {
+            for (UserVo userVo : allUser) {
+                for (WarningVo warningVo : scaleWarning) {
+                    if (userVo.getUser_id().equals(warningVo.getUserId())) {
+                        if(userVo.getGender()==null||userVo.getUser_birth()==null){
+                            warningVo.setSex("");
+                            warningVo.setUserBirth(null);
+                        }
+                        else {
+                            if(userVo.getGender().equals(0 )){
+                                warningVo.setSex("男");
+                            }
+                            else {
+                                warningVo.setSex("女");
+                            }
+                            warningVo.setUserBirth( userVo.getUser_birth() );
+                        }
+                        warningVo.setSum(sum);
+                        warningVo.setUserName( userVo.getUser_name() );
+                        warningVo.setUserNickName( userVo.getUser_nickname() );
+                    }
+                }
+            }
+        }else {
+            ExceptionCast.cast(EvaluationCode.DATA_ERROR);
+            return new QueryResponseResult(CommonCode.FAIL,null);
+        }
+        PageInfo<WarningVo> warningVoPageInfo = new PageInfo<WarningVo>(scaleWarning);
+        QueryResult<WarningVo> queryResult = new QueryResult<>();
+        queryResult.setTotal(warningVoPageInfo.getTotal());
+        queryResult.setList(warningVoPageInfo.getList());
         QueryResponseResult queryResponseResult = new QueryResponseResult( CommonCode.SUCCESS, queryResult );
         return queryResponseResult;
     }
 
     //后台管理条件查询，根据量表名称、用户名、预警等级综合分页查询预警信息
-    public QueryResponseResult findWarningCondition(WarningVo warningVo) {
-
-        //根据量表名称得到量表id
-        String sacleId = this.getSacleId(warningVo.getScaleName());
+    public QueryResponseResult findWarningCondition(int page,int size,WarningVo warningVo) {
+        //得到量表名称，查询量表Id
+        String scaleId = this.getScaleId(warningVo.getScaleName());
+        Warning warning = new Warning();
+        //如果用户昵称不为空，得到用户id
+        if(warningVo.getUserNickName()!=null&&StringUtils.isNotEmpty(warningVo.getUserNickName())){
+            warning.setUserId(this.getUsersByName(warningVo.getUserNickName()).getUser_id());
+        }
+        //如果预警等级不为空，得到预警等级
+        if(warningVo.getWarningLevel()!=null&&warningVo.getWarningLevel()!=0){
+            warning.setWarningLevel(warningVo.getWarningLevel());
+        }
+        //如果量表名称不为空得到量表姓名
+        if(warningVo.getScaleName()!=null&&StringUtils.isNotEmpty(warningVo.getScaleName()))
+        {
+            warning.setScaleId(scaleId);
+        }
         //得到空对象，查询所有
-        if (warningVo==null) {
+        if (warningVo.getUserNickName()==null&&warningVo.getWarningLevel()==null
+                &&warningVo.getScaleName()==null) {
             try {
-                PageHelper.startPage( 1, 10 );
-                List<Warning> warnings = warningMapper.selectAll();
-                PageInfo<Warning> warningPageInfo = new PageInfo<>( warnings );
-                QueryResult<Warning> queryResult = new QueryResult<>();
-                queryResult.setTotal( warningPageInfo.getTotal() );
-                queryResult.setList( warningPageInfo.getList() );
-                QueryResponseResult queryResponseResult = new QueryResponseResult( CommonCode.SUCCESS, queryResult );
-                return queryResponseResult;
+              return this.findAll(page,size);
             } catch (RuntimeException e) {
                 e.getCause();
             }
         }
-        Warning warning = new Warning();
-        if(sacleId!=null||StringUtils.isNoneEmpty(sacleId)){
-            warning.setScaleId(sacleId);
-        }
-        if (warningVo.getUserName()!=null||StringUtils.isNoneEmpty(warningVo.getUserName())){
-            //根据用户名得到用户id
-            UserVo userVoByNickname = userClient.getUserVoByNickname(warningVo.getUserName());
-            warning.setUserId(userVoByNickname.getUser_id());
-        }
-        if (warningVo.getWarningLevel()!=0){
-            warning.setWarningLevel(warningVo.getWarningLevel());
+        //根据输入条件得到预警信息
+        List<Warning> warnings = warningMapper.select( warning );
+        List listWarningId=new ArrayList();
+        List listUserId = new ArrayList<>();
+        for (Warning NoUserWarnings : warnings) {
+                listWarningId.add( NoUserWarnings.getId());
+                listUserId.add(NoUserWarnings.getUserId());
         }
         //设置分页参数
-        PageHelper.startPage( 1, 10 );
-        List<Warning> warningList = warningMapper.select( warning );
-        PageInfo<Warning> warningPageInfo = new PageInfo<>( warningList );
-        QueryResult<Warning> queryResult = new QueryResult<>();
-        queryResult.setList( warningPageInfo.getList() );
-        queryResult.setTotal( warningPageInfo.getTotal() );
-        QueryResponseResult queryResponseResult = new QueryResponseResult( CommonCode.SUCCESS, queryResult );
+        PageHelper.startPage( page,size);
+        //得到预警信息和量表信息
+        List<WarningVo> warningVoList = warningMapper.getWaning( listWarningId );
+        System.out.println(warningVoList);
+        List<UserVo> usersByUserId = this.getUsersByUserId( listUserId );
+        for (WarningVo warningvo : warningVoList){
+            for (UserVo userVo : usersByUserId){
+                if(warningvo.getUserId()!=null&&warningvo.getUserId().equals(userVo.getUser_id())){
+                    if(userVo.getGender()==null||userVo.getUser_birth()==null){
+
+                        warningVo.setSex("");
+                        warningVo.setUserBirth(null);
+                        warningvo.setPhone("");
+                    }
+                    else {
+                        if(userVo.getGender().equals( 0 )){
+                            warningVo.setSex("男");
+                        }
+                        else {
+                            warningVo.setSex("女");
+                        }
+                    }
+                    warningvo.setUserNickName(userVo.getUser_nickname() );
+                    warningvo.setUserName(userVo.getUser_name() );
+
+                }
+            }
+        }
+        PageInfo<WarningVo> warningVoPageInfo = new PageInfo<>( warningVoList );
+        QueryResult<WarningVo> queryResult = new QueryResult<>();
+        queryResult.setList( warningVoPageInfo.getList());
+        queryResult.setTotal( warningVoPageInfo.getTotal() );
+        QueryResponseResult queryResponseResult= new QueryResponseResult( CommonCode.SUCCESS, queryResult );
         return queryResponseResult;
     }
 
     //查看预警详细信息
-    public Warning lookWaring(String warningId) {
+    public WarningVo lookWaring(String warningId) {
+        //根据id查询出预警信息
         if (warningId == null || StringUtils.isEmpty( warningId )) {
             ExceptionCast.cast( EvaluationCode.DATA_ERROR );
         }
-        return warningMapper.selectByPrimaryKey( warningId );
+        try {
+            Warning warning = warningMapper.selectByPrimaryKey( warningId );
+            Scale scale = scaleMapper.selectByPrimaryKey( warning.getScaleId());
+            UserVo userVo = userClient.getUserVoByUserId( warning.getUserId() );
+            WarningVo warningVo = new WarningVo();
+            warningVo.setUserNickName(userVo.getUser_nickname() );
+            warningVo.setScaleName(scale.getScaleName() );
+            warningVo.setWarningLevel(warning.getWarningLevel() );
+            warningVo.setWMessage(warning.getWMessage());
+            warningVo.setCreateTime(warning.getCreateTime());
+            return warningVo;
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return  null;
+        }
     }
 
     //根据用户id删除用户的预警记录
@@ -172,12 +255,12 @@ public class WarningService {
     }
 
     //批量删除预警记录
-    public ResponseResult deleteMoreWarning(String[] ids) {
+    public ResponseResult deleteMoreWarning(List<String> ids) {
         if (ids == null) {
             ExceptionCast.cast( CommonCode.FAIL );
         }
         try {
-            warningMapper.deleteMoreWarning( ids );
+            warningMapper.deleteMoreWarning(ids);
             return ResponseResult.SUCCESS();
         } catch (Exception e) {
             e.printStackTrace();
@@ -186,7 +269,7 @@ public class WarningService {
     }
 
     //根据量表名称得到量表id
-    private String getSacleId(String scaleName) {
+    private String getScaleId(String scaleName) {
         if (scaleName==null||StringUtils.isEmpty(scaleName)){
             return null;
         }
@@ -194,6 +277,25 @@ public class WarningService {
         scale.setScaleName(scaleName);
         Scale scaleOne = scaleMapper.selectOne( scale );
         return scaleOne.getId();
+    }
+    //根据用户名称得到用户信息
+    private UserVo getUsersByName(String userNickNmae)
+    {
+        if(userNickNmae!=null&&StringUtils.isNotEmpty(userNickNmae )){
+            UserVo userVoByNickname = userClient.getUserVoByNickname( userNickNmae );
+            return userVoByNickname;
+        }
+        else {
+            return  null;
+        }
+    }
+    //根据用户id的list得到用户信息
+    private List<UserVo> getUsersByUserId(List listUserId){
+        if(listUserId.get( 0 )!=null){
+            List<UserVo> allUser = userClient.getAllUser( listUserId );
+            return allUser;
+        }
+        else return null;
     }
 
 

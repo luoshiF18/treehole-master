@@ -2,16 +2,17 @@ package com.treehole.member.controller;
 
 import com.treehole.api.member.UserVoControllerApi;
 import com.treehole.framework.domain.member.Vo.UserVo;
-import com.treehole.framework.domain.member.result.Result;
-import com.treehole.framework.domain.member.result.ResultEnum;
-import com.treehole.framework.domain.member.result.ResultUtil;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.service.UserService;
 import com.treehole.member.service.UserVoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -64,6 +65,12 @@ public class UserVoController implements UserVoControllerApi {
         //System.out.println("==========+++++++++11111   "+user_phone);
         return userVoService.getUserByNickname(nickname);
 
+    }
+
+    @Override
+    @GetMapping("/get/warningUser")
+    public List<UserVo> getAllUser(@RequestParam("listUserId") List listUserId) {
+        return userVoService.getAllUser(listUserId);
     }
 
 }

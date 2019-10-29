@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * @Author: Qbl
  * Created by 10:23 on 2019/10/17.
@@ -41,9 +43,10 @@ public class WarningController implements WarningControllerApi
     }
 
     @Override
-    @GetMapping("/findAll")
-    public QueryResponseResult findAll() {
-        return warningService.findAll();
+    @GetMapping("/findAll/{page}/{size}")
+    public QueryResponseResult findAll(@PathVariable("page") int page,
+                                       @PathVariable("size") int size) {
+        return warningService.findAll(page,size);
     }
 
     @Override
@@ -54,13 +57,13 @@ public class WarningController implements WarningControllerApi
 
     @Override
     @DeleteMapping("/delMoreWarning")
-    public ResponseResult deleteMoreWarning(@RequestParam("ids[]") String[] ids) {
+    public ResponseResult deleteMoreWarning(@RequestParam("ids[]") List<String> ids) {
         return warningService.deleteMoreWarning(ids);
     }
 
     @Override
-    @GetMapping("/lookWarning")
-    public Warning lookWaring(@RequestParam("warningId") String warningId) {
+    @GetMapping("/lookWarning/{warningId}")
+    public WarningVo lookWaring(@PathVariable("warningId") String warningId) {
         return warningService.lookWaring( warningId );
     }
 
@@ -71,8 +74,10 @@ public class WarningController implements WarningControllerApi
     }
 
     @Override
-    @GetMapping("/getWarningCondition")
-    public QueryResponseResult findWarningCondition(WarningVo warningVo) {
-        return warningService.findWarningCondition(warningVo);
+    @GetMapping("/getWarningCondition/{page}/{size}")
+    public QueryResponseResult findWarningCondition(@PathVariable("page") int page,
+                                                    @PathVariable("size") int size,
+                                                     WarningVo warningVo) {
+        return warningService.findWarningCondition(page, size, warningVo );
     }
 }
