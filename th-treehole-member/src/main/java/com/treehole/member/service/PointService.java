@@ -114,6 +114,11 @@ public class PointService {
         points.setPoints_num(points.getPoints_num());  //手写代码，后期需完善
         //points.setPoints_num("跨服务调用接口,从活动表里获取值");
         //System.out.println("++++++++++++++++benci:" +points.getPoints_num());
+
+
+        points.setAct_id(points.getAct_id());
+        //需要接口：根据活动id查询活动名称及活动积分值，从营销活动表内获取活动名称
+        points.setDesc("签到");
         //later的值
         int later = points.getPoints_before() + points.getPoints_num();
         if(later < 0){  //积分值小于0 ，不可操作

@@ -2,6 +2,7 @@ package com.treehole.member.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.treehole.framework.domain.evaluation.Scale;
 import com.treehole.framework.domain.member.Cards;
 import com.treehole.framework.domain.member.FreeGrade;
 import com.treehole.framework.domain.member.PayGrade;
@@ -36,9 +37,16 @@ public class CardsService {
     @Autowired
     private FreegradeMapper freegradeMapper;
 
-    public QueryResult findAllCards(Integer page, Integer size) {
+    public QueryResult findAllCards(Integer page, Integer size,String sortBy,Boolean desc) {
         //        分页
         PageHelper.startPage(page, size);
+
+        Example example = new Example(Cards.class);
+        //排序
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(sortBy)) {
+            String orderByClause = sortBy + " " + (desc ? "DESC" : "ASC");
+            example.setOrderByClause(orderByClause);
+        }
         //查询
         List<Cards> cards = cardsMapper.selectAll();
         if (CollectionUtils.isEmpty(cards)) {

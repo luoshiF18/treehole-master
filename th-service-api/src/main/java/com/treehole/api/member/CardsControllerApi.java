@@ -21,7 +21,7 @@ import javax.validation.Valid;
 @Api(value = "会员卡信息管理", description = "对会员卡信息进行增/删/改/查")
 public interface CardsControllerApi {
     @ApiOperation("查询所有会员卡信息")
-    public QueryResponseResult findAllCards(Integer page, Integer size) ;
+    public QueryResponseResult findAllCards(Integer page, Integer size,String sortBy,Boolean desc) ;
 
     @ApiOperation("插入一条会员卡信息")
     public ResponseResult insertCard(@RequestBody @Valid User user) ;

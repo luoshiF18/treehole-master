@@ -210,6 +210,40 @@ public class UserVoService {
     }
 
 
-
-
+    public QueryResult findAllUserVos1(Integer page, Integer size, User user1) {
+        //        分页
+        //PageHelper.startPage(page, size);
+        Page pag =PageHelper.startPage(page,size);
+        //查询
+        List<User> users = userMapper.select(user1);
+        if (CollectionUtils.isEmpty(users)) {
+            ExceptionCast.cast(MemberCode.DATA_IS_NULL);
+        }
+        List<UserVo> userVos = new ArrayList<UserVo>();
+        for(User user:users){
+            UserVo uservo = new UserVo();
+            String roleId=user.getRole_id();
+            Role role = new Role();
+            role.setRole_id(roleId);
+            //uservo.setUniq_id(user.getUniq_id());
+            uservo.setUser_id(user.getUser_id());
+            uservo.setRole_name(roleMapper.selectOne(role).getRole_name());
+            uservo.setUser_image(user.getUser_image());
+            uservo.setUser_name(user.getUser_name());
+            uservo.setUser_nickname(user.getUser_nickname());
+            uservo.setGender(user.getGender());
+            uservo.setUser_birth(user.getUser_birth());
+            uservo.setUser_email(user.getUser_email());
+            uservo.setUser_phone(user.getUser_phone());
+            uservo.setUser_qq(user.getUser_qq());
+            uservo.setUser_wechat(user.getUser_wechat());
+            uservo.setUser_region(user.getUser_region());
+            uservo.setUser_createtime(user.getUser_createtime());
+            uservo.setCompany_id(user.getCompany_id());
+            userVos.add(uservo);
+        }
+        //解析分页结果
+        PageInfo<UserVo> pageInfo = new PageInfo<>(pag.getResult());
+        return  new QueryResult(userVos, pageInfo.getTotal());
+    }
 }
