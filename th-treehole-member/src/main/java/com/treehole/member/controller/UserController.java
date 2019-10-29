@@ -10,6 +10,8 @@ import com.treehole.framework.domain.member.result.ResultUtil;
 
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
+import com.treehole.framework.model.response.QueryResponseResult;
+import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,17 +32,12 @@ public class UserController implements UserControllerApi {
 
     @Autowired UserVoService userVoService;
 
-
+    //http://localhost:40300/user/getAllUsers?page=3
     @GetMapping ("/getAllUsers")
-    public Result getAllUser()  {
-        List<User> user = userService.findAllUsers();
-        if(user != null){
-            //System.out.println("users:==============" +users);
-            return ResultUtil.success(user);
-
-        }else{
-            return ResultUtil.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
-        }
+    public QueryResponseResult getAllUser(@RequestParam(value = "page", defaultValue = "1") Integer page,
+                             @RequestParam(value = "size", defaultValue = "5") Integer size)  {
+        QueryResult queryResult = userService.findAllUsers(page, size);
+        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
 
     }
 
@@ -51,16 +48,22 @@ public class UserController implements UserControllerApi {
 
 
     }
+    @GetMapping("/find")
+    public User getUser(@RequestBody @Valid User user){
+        return  userService.findUser(user);
+
+    }
+
+    /*@GetMapping("/find/")
+    public User getUser*/
 
     @DeleteMapping(value ="/delete/id/{user_id}")
     public ResponseResult deleteUserById(@PathVariable("user_id") String user_id) {
-
-
          userService.deleteUserById(user_id);
          //再判断用户是否存在
-         if(this.getUserById(user_id) != null){
-             ExceptionCast.cast(MemberCode.DELETE_FAIL);
-         }
+         /*if(this.getUserById(user_id) != null){
+             ExceptionCast.cast(MemberCode.DELETE_USER_NOT_EXIST);
+         }*/
         return new ResponseResult(CommonCode.SUCCESS);
 
     }
@@ -69,7 +72,7 @@ public class UserController implements UserControllerApi {
     public ResponseResult insertUser(@RequestBody @Valid User user) {
 
         if (userService.findUserByPhone(user.getUser_phone())!= null){  /*手机号唯一*/
-            return new ResponseResult(MemberCode.PHONE_IS_EXISTS);
+            return new ResponseResult(MemberCode.PHONE_IS_EXIST);
         }
         userService.insertUser(user);
         return new ResponseResult(CommonCode.SUCCESS);
@@ -78,28 +81,22 @@ public class UserController implements UserControllerApi {
     }
     /*接收到的数据为前端update后的*/
     @PostMapping("/update")
-    public Result update(@RequestBody @Valid User user){
+    public ResponseResult update(@RequestBody @Valid User user){
         //System.out.println("前端传来的+++++++++++++"+user);
-        int res=userService.updateUser(user);
-        if(res==0||res<0){
-            return ResultUtil.error(ResultEnum.UPDATE_FAIL.getCode(),ResultEnum.UPDATE_FAIL.getMsg());
+        userService.updateUser(user);
 
-        }
-        return ResultUtil.success();
+        return new ResponseResult(CommonCode.SUCCESS);
     }
     /*更新手机号绑定*/
 
     @PostMapping("/update/phone")
-    public Result updateUserPhone(@RequestBody @Valid User user){
+    public ResponseResult updateUserPhone(@RequestBody @Valid User user){
         if (userService.findUserByPhone(user.getUser_phone())!= null){  /*手机号唯一*/
-            return ResultUtil.error(ResultEnum.PHONE_IS_EXISTS.getCode(),ResultEnum.PHONE_IS_EXISTS.getMsg());
+            return new ResponseResult(MemberCode.PHONE_IS_EXIST);
         }
-        int res = userService.updateUser(user);
-        if(res>0){
-            return ResultUtil.success();
-        }else {
-            return ResultUtil.error(ResultEnum.UPDATE_FAIL.getCode(),ResultEnum.UPDATE_FAIL.getMsg());
-        }
+         userService.updateUser(user);
+        return new ResponseResult(CommonCode.SUCCESS);
+
 
     }
 

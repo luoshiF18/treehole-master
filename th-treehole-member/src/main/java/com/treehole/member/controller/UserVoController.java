@@ -5,13 +5,13 @@ import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.result.Result;
 import com.treehole.framework.domain.member.result.ResultEnum;
 import com.treehole.framework.domain.member.result.ResultUtil;
+import com.treehole.framework.model.response.CommonCode;
+import com.treehole.framework.model.response.QueryResponseResult;
+import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.service.UserService;
 import com.treehole.member.service.UserVoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,14 +30,10 @@ public class UserVoController implements UserVoControllerApi {
     UserVoService userVoService;
 
     @GetMapping("/getAllUserVos")
-    public Result getAllUserVo(){
-        List<UserVo> userVos = userVoService.findAllUserVos();
-        if(userVos != null){
-            //System.out.println("users:==============" +users);
-            return ResultUtil.success(userVos);
-        }else{
-            return ResultUtil.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
-        }
+    public QueryResponseResult getAllUserVo(@RequestParam(value = "page", defaultValue = "1") Integer page,
+                                            @RequestParam(value = "size", defaultValue = "5") Integer size){
+        QueryResult queryResult = userVoService.findAllUserVos(page, size);
+        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
 
     }
 
@@ -57,14 +53,17 @@ public class UserVoController implements UserVoControllerApi {
     }
 
     @GetMapping("/find/userPhone/{user_phone}")
-    public Result getUserVoByUserPhone(@PathVariable("user_phone") String user_phone)  {
+    public UserVo getUserVoByUserPhone(@PathVariable("user_phone") String user_phone)  {
         //System.out.println("==========+++++++++11111   "+user_phone);
-        UserVo res = userVoService.getUserByUserPhone(user_phone);
-        //System.out.println("==========+++++++++      "+res);
-        if(res != null){
-            return ResultUtil.success(res);
-        }else {
-            return ResultUtil.error(ResultEnum.USER_NOT_EXIST.getCode(),ResultEnum.USER_NOT_EXIST.getMsg());
-        }
+        return userVoService.getUserByUserPhone(user_phone);
+
     }
+
+    @GetMapping("/find/nickname")
+    public UserVo getUserVoByNickname(@RequestParam("nickname") String nickname)  {
+        //System.out.println("==========+++++++++11111   "+user_phone);
+        return userVoService.getUserByNickname(nickname);
+
+    }
+
 }
