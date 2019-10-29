@@ -58,8 +58,9 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
      */
     @Override
     @GetMapping("detail")
-    public DetailResult findScaleDetail(@RequestParam("scaleId") String scaleId) {
-        ScaleDetailVO2 scaleDetail = scaleSelectService.findScaleDetail(scaleId);
+    public DetailResult findScaleDetail(@RequestParam(value = "scaleId",required = false) String scaleId,
+                                        @RequestParam(value = "scaleName",required = false) String scaleName) {
+        ScaleDetailVO2 scaleDetail = scaleSelectService.findScaleDetail(scaleId, scaleName);
         if (scaleDetail == null) {
             ExceptionCast.cast(EvaluationCode.SELECT_NULL);
         }
@@ -88,6 +89,7 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
     @Override
     @GetMapping("test/type1")
     public StartTestResult startTestType1(@RequestParam(value = "scaleId", defaultValue = "") String scaleId) {
+//     TODO   只允许测试一次
         TestDetailVO testDetailVO = scaleSelectService.startTestType1(scaleId);
         if (testDetailVO == null) {
             ExceptionCast.cast(EvaluationCode.SELECT_NULL);
@@ -107,6 +109,7 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
                                            @RequestParam(value = "nextQuestionId", required = false) String nextQuestionId,
                                            @RequestParam(value = " questionSort", required = false) Integer questionSort,
                                            @RequestParam(value = " optionId", required = false) String optionId) {
+//     TODO   只允许测试一次
         QuestionVO2 questionVO2 = scaleSelectService.startTestType2(scaleId, nextQuestionId, questionSort, optionId);
         if (questionVO2 == null) {
             ExceptionCast.cast(EvaluationCode.GET_QUESTION_ERROR);
@@ -164,7 +167,7 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
             @RequestParam(value = "size", defaultValue = "5") Integer size,
             @RequestParam(value = "scaleName", required = false) String scaleName,
             @RequestParam(value = "userId", required = false) String userId) {
-        QueryResult result = scaleSelectService.findResult(page, size, scaleName, userId);
+        QueryResult<ResultVO> result = scaleSelectService.findResult(page, size, scaleName, userId);
         return new QueryResponseResult(CommonCode.SUCCESS, result);
     }
 

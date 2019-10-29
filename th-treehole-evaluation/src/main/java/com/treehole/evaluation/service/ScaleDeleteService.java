@@ -46,10 +46,10 @@ public class ScaleDeleteService {
                 option.setScaleId(scaleId);
                 Description description = new Description();
                 description.setScaleId(scaleId);
-                scaleMapper.deleteByPrimaryKey(scaleId);
                 questionMapper.delete(question);
                 optionMapper.delete(option);
                 descriptionMapper.delete(description);
+                scaleMapper.deleteByPrimaryKey(scaleId);
                 //TODO 删除预警信息
             }
         } catch (Exception e) {
@@ -67,15 +67,15 @@ public class ScaleDeleteService {
      */
     @Transactional
     public void deleteUserScale(String userId) {
-//        还是不废话，删起来
+//        不废话，删起来
         try {
             if (StringUtils.isNotBlank(userId)) {
                 Result result = new Result();
                 result.setUserId(userId);
                 UserOption userOption = new UserOption();
                 userOption.setUserId(userId);
-                resultMapper.delete(result);
                 userOptionMapper.delete(userOption);
+                resultMapper.delete(result);
                 //TODO 删除预警信息
             }
         } catch (Exception e) {
@@ -84,5 +84,92 @@ public class ScaleDeleteService {
         }
 
 
+    }
+
+    /**
+     * 删除某个问题
+     *
+     * @param questionId
+     * @return
+     */
+    @Transactional
+    public void deleteQuestion(String questionId) {
+//        不废话，删起来
+        try {
+            if (StringUtils.isNotBlank(questionId)) {
+                Option option = new Option();
+                option.setQuestionId(questionId);
+                optionMapper.delete(option);
+                questionMapper.deleteByPrimaryKey(questionId);
+            }
+        } catch (Exception e) {
+            ExceptionCast.cast(EvaluationCode.DELETE_ERROR);
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 删除某个选项
+     *
+     * @param optionId
+     * @return
+     */
+    @Transactional
+    public void deleteOption(String optionId) {
+//        不废话，删起来
+        try {
+            if (StringUtils.isNotBlank(optionId)) {
+                optionMapper.deleteByPrimaryKey(optionId);
+            }
+        } catch (Exception e) {
+            ExceptionCast.cast(EvaluationCode.DELETE_ERROR);
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 删除某个描述
+     *
+     * @param descId
+     * @return
+     */
+    @Transactional
+    public void deleteDesc(String descId) {
+        //        不废话，删起来
+        try {
+            if (StringUtils.isNotBlank(descId)) {
+                descriptionMapper.deleteByPrimaryKey(descId);
+            }
+        } catch (Exception e) {
+            ExceptionCast.cast(EvaluationCode.DELETE_ERROR);
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * 删除某个用户的某个结果
+     *
+     * @param resultId
+     * @return
+     */
+    @Transactional
+    public void deleteResult(String resultId) {
+//        不废话，删起来
+        try {
+            if (StringUtils.isNotBlank(resultId)) {
+//                先查询用户的量表名称和id
+                Result result = resultMapper.selectByPrimaryKey(resultId);
+                UserOption userOption = new UserOption();
+                userOption.setScaleName(result.getScaleName());
+                userOption.setUserId(result.getUserId());
+//                删除用户该量表的选项
+                userOptionMapper.delete(userOption);
+                resultMapper.deleteByPrimaryKey(resultId);
+            }
+        } catch (Exception e) {
+            ExceptionCast.cast(EvaluationCode.DELETE_ERROR);
+            e.printStackTrace();
+        }
     }
 }

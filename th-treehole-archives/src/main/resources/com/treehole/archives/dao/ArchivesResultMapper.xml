@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.treehole.archives.dao.ArchivesResultMapper">
+    <select id="findAll" resultType="com.treehole.framework.domain.evaluation.Result">
+        select * from result
+    </select>
+    <select id="findResultById" parameterType="java.lang.String"
+            resultType="com.treehole.framework.domain.archives.ext.ResultBase">
+        select * from result where id = #{id}
+    </select>
+    <select id="findArchivesListByUserId" parameterType="java.lang.String"
+            resultType="com.treehole.framework.domain.archives.ext.ArchivesList">
+        SELECT
+        COUNT(DISTINCT scaleName) a, scaleName,userId
+        FROM
+          result
+        WHERE userId = #{userId}
+        GROUP BY scaleName
+    </select>
+    <select id="finArchivesByUserIdAndScaleName"
+            parameterType="com.treehole.framework.domain.archives.resquest.ArchivesListRequest"
+            resultType="com.treehole.framework.domain.archives.ext.ResultTiny">
+        SELECT
+        *
+        FROM
+          result
+        WHERE userId = #{userId}
+        AND scaleName = #{scaleName}
+        ORDER BY createTime
+    </select>
+</mapper>

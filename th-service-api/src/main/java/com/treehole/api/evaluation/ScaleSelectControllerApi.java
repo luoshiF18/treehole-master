@@ -17,11 +17,10 @@ public interface ScaleSelectControllerApi {
     public QueryResponseResult findScale(Integer page, Integer size, String sortBy, Boolean desc, String key);
 
     @ApiOperation("得到量表详细信息")
-    public DetailResult findScaleDetail(String scaleId);
+    public DetailResult findScaleDetail(String scaleId,String scaleName);
 
     @ApiOperation("搜索所有量表描述")
     public QueryResponseResult findScaleDesc(String scaleId);
-
 
     @ApiOperation("开始测试,普通选择和多选类型")
     public StartTestResult startTestType1(String scaleId);

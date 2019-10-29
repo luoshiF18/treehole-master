@@ -37,6 +37,4 @@ public class Result implements Serializable {
     private String warningInfo;
     private Integer resultType;
     private String remark;
-
-
 }
