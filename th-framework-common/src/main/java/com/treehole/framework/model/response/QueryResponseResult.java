@@ -1,6 +1,7 @@
 package com.treehole.framework.model.response;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
@@ -11,6 +12,7 @@ import lombok.ToString;
  */
 @Data
 @ToString
+@NoArgsConstructor  //无参构造方法
 public class QueryResponseResult<T> extends ResponseResult {
 
     QueryResult<T> queryResult;

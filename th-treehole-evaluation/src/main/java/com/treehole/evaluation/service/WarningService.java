@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @Author: Qbl
@@ -45,7 +46,7 @@ public class WarningService {
         Warning warning = new Warning();
         Integer warningLevel = description.getWarningLevel();
         //测试 硬编码存入预警信息
-        HashMap<Integer, String> map = new HashMap<>();
+        HashMap<Integer, String> map = new HashMap<>();  //TODO 预警信息从前台获取
         map.put(2,"轻微");
         map.put(3,"严重");
         map.put(4,"非常严重");
@@ -68,4 +69,33 @@ public class WarningService {
         }
     }
 
+
+    //心理咨询师添加咨询用户的预警信息
+    public ResponseResult addWarningByPsy(){
+        //
+
+        return null;
+    }
+
+
+
+
+
+
+    //根据用户id查询用户的预警信息
+    public List<Warning> selectWarningByUserId(String userId) {
+        //TODO 只限后台管理查询 ，心理咨询师查看待写
+        if (userId == null || StringUtils.isEmpty( userId )) {
+            ExceptionCast.cast( EvaluationCode.DATA_ERROR );
+        }
+        Warning warning = new Warning();
+        warning.setUserId(userId);
+        try {
+            List<Warning> warnings = warningMapper.select(warning);
+            return warnings;
+        } catch (RuntimeException e) {
+            ExceptionCast.cast( EvaluationCode.SELECT_NULL );
+            return null;
+        }
+    }
 }

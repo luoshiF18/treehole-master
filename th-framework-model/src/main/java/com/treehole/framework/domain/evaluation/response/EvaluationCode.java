@@ -13,6 +13,7 @@ import lombok.ToString;
 public enum EvaluationCode implements ResultCode {
 
     WARNING_IS_ERROR(false, 401, "预警信息插入失败！"),
+    DESCRIPTION_IS_ERROR(false, 401, "描述信息插入失败！"),
     DATA_ERROR(false, 401, "前台数据有误！"),
     DESC_DATA_ERROR(false, 401, "描述信息有误，请检查！"),
     SELECT_NULL(false, 401, "查询失败！"),

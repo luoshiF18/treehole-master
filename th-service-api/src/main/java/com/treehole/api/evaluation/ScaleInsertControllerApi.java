@@ -1,5 +1,6 @@
 package com.treehole.api.evaluation;
 
+import com.treehole.framework.domain.evaluation.Description;
 import com.treehole.framework.domain.evaluation.Scale;
 import com.treehole.framework.domain.evaluation.dto.QuestionDTO;
 import com.treehole.framework.model.response.ResponseResult;
@@ -20,6 +21,6 @@ public interface ScaleInsertControllerApi {
     public ResponseResult insertQuestionAndOption(QuestionDTO questionDTO);
 
     @ApiOperation("添加得分描述")
-    public ResponseResult insertDescription(String scaleId, Float score1, Float score2, String description, Integer warningLevel);
+    public ResponseResult insertDescription(Description description);
 
 }
