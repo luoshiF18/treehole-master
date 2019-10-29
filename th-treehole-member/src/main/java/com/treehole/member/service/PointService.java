@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.evaluation.Description;
 import com.treehole.framework.domain.evaluation.response.EvaluationCode;
+import com.treehole.framework.domain.member.Cards;
 import com.treehole.framework.domain.member.Points;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
@@ -35,6 +36,9 @@ public class PointService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CardsService cardsService;
 
 
     /**
@@ -77,7 +81,7 @@ public class PointService {
            // System.out.println("+++++++++++++++++size:" +size);
             return new QueryResult(points, pageInfo.getTotal());
         } else {
-            ExceptionCast.cast(EvaluationCode.SELECT_NULL);
+            ExceptionCast.cast(MemberCode.SELECT_NULL);
             return null;
         }
     }
@@ -101,24 +105,35 @@ public class PointService {
     public void insertPoint(Points points)  {
         points.setPoints_id(MyNumberUtils.getUUID());
         points.setPoints_time(new Date());
-        User user = userService.getUserById(points.getUser_id());
+        //User user = userService.getUserById(points.getUser_id());
+        Cards cards = cardsService.findCardsByUserId(points.getUser_id());
         //当前用户的积分值
-        points.setPoints_before(user.getPoints_now());
+        points.setPoints_before(cards.getPoints_now());
         //System.out.println("++++++++++++++++before:" +user.getPoints_now());
         //获取本次操作的值
-        points.setPoints_num(points.getPoints_num());
+        points.setPoints_num(points.getPoints_num());  //手写代码，后期需完善
+        //points.setPoints_num("跨服务调用接口,从活动表里获取值");
         //System.out.println("++++++++++++++++benci:" +points.getPoints_num());
+
+
+        points.setAct_id(points.getAct_id());
+        //需要接口：根据活动id查询活动名称及活动积分值，从营销活动表内获取活动名称
+        points.setDesc("签到");
         //later的值
         int later = points.getPoints_before() + points.getPoints_num();
-        if(later < 0){
+        if(later < 0){  //积分值小于0 ，不可操作
             ExceptionCast.cast(MemberCode.POINT_NOT_FULL);
         }
         points.setPoints_later(later);
         //与user表保持同步
-        user.setPoints_now(later);
-        //System.out.println("++++++++++++++++later:" + later);
-        userService.updateUser(user);
+        cards.setPoints_now(later);
+        points.setAct_id(points.getAct_id());
+        //需要接口：根据活动id查询活动名称及活动积分值，从营销活动表内获取活动名称
+        points.setDesc("签到");
 
+        //System.out.println("++++++++++++++++later:" + later);
+        //userService.updateUser(cards);
+        cardsService.updateCard(cards);
         int ins = pointsMapper.insert(points);
         if( ins != 1){
             ExceptionCast.cast(MemberCode.INSERT_FAIL);

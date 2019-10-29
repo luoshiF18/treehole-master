@@ -1,6 +1,7 @@
 package com.treehole.member.controller;
 
 import com.treehole.api.member.UserVoControllerApi;
+import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.result.Result;
 import com.treehole.framework.domain.member.result.ResultEnum;
@@ -28,6 +29,14 @@ public class UserVoController implements UserVoControllerApi {
 
     @Autowired
     UserVoService userVoService;
+
+    @GetMapping("/getAllUserVos1")
+    public QueryResponseResult findAllUserVo(@RequestParam(value = "page", defaultValue = "1") Integer page,
+                                             @RequestParam(value = "size", defaultValue = "5") Integer size,
+                                             User user){
+        QueryResult queryResult = userVoService.findAllUserVos1(page, size,user);
+        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
+    }
 
     @GetMapping("/getAllUserVos")
     public QueryResponseResult getAllUserVo(@RequestParam(value = "page", defaultValue = "1") Integer page,

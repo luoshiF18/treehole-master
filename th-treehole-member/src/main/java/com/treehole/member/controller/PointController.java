@@ -59,7 +59,7 @@ public class PointController implements PointControllerApi {
     }
     /*该删除方法保留，暂时不用！！*/
     //@Override
-    //@RequestMapping(value = "/delete/id/{points_id}")
+    //@DeleteMapping(value = "/delete/id/{points_id}")
     public ResponseResult deletePointById(@PathVariable("points_id") String points_id) {
         pointService.deletePointById(points_id);
         return new ResponseResult(CommonCode.SUCCESS);

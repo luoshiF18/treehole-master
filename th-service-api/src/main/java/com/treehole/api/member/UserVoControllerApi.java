@@ -1,5 +1,6 @@
 package com.treehole.api.member;
 
+import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.result.Result;
 import com.treehole.framework.model.response.QueryResponseResult;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Api(value = "用户扩展信息管理", description = "对用户扩展信息进行查询")
 public interface UserVoControllerApi {
+    @ApiOperation("根据传入的user对象，查询所有Vo用户信息")
+    public QueryResponseResult findAllUserVo( Integer page, Integer size, User user);
+
     @ApiOperation("查询所有Vo用户信息")
     public QueryResponseResult getAllUserVo(Integer page, Integer size);
 
