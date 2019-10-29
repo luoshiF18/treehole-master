@@ -9,25 +9,40 @@ import tk.mybatis.mapper.code.Style;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.math.BigDecimal;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 心理咨询师特有信息实体类
+ * 心理咨询师基本信息实体类
  *
  * @author Helay
  * @date 2019/10/25 8:55
  */
 @Data
-@Table(name = "psychologist")
+@Table(name = "profile")
 @NoArgsConstructor
 @AllArgsConstructor
 @NameStyle(Style.normal)
-public class Psychologist {
+public class Profile implements Serializable {
 
     //心理咨询师id
     @Id
     private String id;
+
+    //心理咨询师姓名
+    private String name;
+
+    //心理咨询师性别
+    private String sex;
+
+    //心理咨询师年龄
+    private String age;
+
+    //心理咨询师所在地区
+    private String region;
+
+    //心理咨询师资质
+    private String qualification;
 
     //心理咨询师自我介绍
     private String introduction;
@@ -35,17 +50,8 @@ public class Psychologist {
     //心理咨询师擅长领域
     private String proficiency;
 
-    //心理咨询师资质
-    private String qualification;
-
     //心理咨询师工作室
     private String studio;
-
-    //心理咨询师是否空闲 0：是  1：否
-    private Integer state;
-
-    //心理咨询师咨询价格
-    private BigDecimal price;
 
     //心理咨询师创建时间
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")

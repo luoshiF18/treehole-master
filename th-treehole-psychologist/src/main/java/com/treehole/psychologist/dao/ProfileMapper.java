@@ -1,6 +1,6 @@
 package com.treehole.psychologist.dao;
 
-import com.treehole.framework.domain.psychologist.Psychologist;
+import com.treehole.framework.domain.psychologist.Profile;
 import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.Mapper;
 
@@ -9,5 +9,5 @@ import tk.mybatis.mapper.common.Mapper;
  * @date 2019/10/25 9:42
  */
 @Repository
-public interface PsychologistMapper extends Mapper<Psychologist> {
+public interface ProfileMapper extends Mapper<Profile> {
 }
