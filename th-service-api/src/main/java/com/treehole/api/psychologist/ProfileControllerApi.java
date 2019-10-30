@@ -14,7 +14,7 @@ import io.swagger.annotations.ApiOperation;
 public interface ProfileControllerApi {
 
     @ApiOperation("分页查询所有心理咨询师简介信息")
-    QueryResponseResult findAllProfile(Integer page, Integer size);
+    QueryResponseResult findAllProfile(Integer page, Integer size, String name, String sex, String qualification);
 
     @ApiOperation("根据id查询心理咨询师简介信息")
     Profile findProfileById(String id);
@@ -25,6 +25,6 @@ public interface ProfileControllerApi {
     @ApiOperation("添加心理咨询师简介信息")
     ResponseResult addProfile(Profile profile);
 
-    @ApiOperation("更新心理咨询师简介信息")
+    @ApiOperation("根据id更新心理咨询师简介信息")
     ResponseResult updateProfile(Profile profile);
 }

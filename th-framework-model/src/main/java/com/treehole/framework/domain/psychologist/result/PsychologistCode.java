@@ -12,13 +12,13 @@ public enum PsychologistCode implements ResultCode {
 
     SUCCESS(false, 200, "成功"),
     DATA_ERROR(false, 401, "前台数据有误!"),
-    PSYCHOLOGIST_NOT_EXIST(false, 402, "该心理咨询师不存在!"),
-    DATA_IS_NULL(false, 403, "查询数据为空!"),
-    INSERT_DATA_NULL(false, 404, "插入数据为空!"),
-    DELETE_FAIL(false, 405, "删除失败!"),
-    INSERT_FAIL(false, 406, "添加失败!"),
-    UPDATE_FAIL(false, 407, "更新失败!");
-
+    PSYCHOLOGIST_NOT_EXIST(false, 402, "该心理咨询师不存在！"),
+    STATE_NOT_EXIST(false, 403, "该状态信息不存在!"),
+    DATA_IS_NULL(false, 404, "查询数据为空!"),
+    INSERT_DATA_NULL(false, 405, "插入数据为空!"),
+    DELETE_FAIL(false, 406, "删除失败!"),
+    INSERT_FAIL(false, 407, "添加失败!"),
+    UPDATE_FAIL(false, 408, "更新失败!");
 
     //操作是否成功,true为成功，false操作失败
     boolean success;
