@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 public interface UserVoApi {
     /*根据user_id,user_nickname,user_phone,查询所有Vo用户信息*/
-    @GetMapping("/getAllUserVos")
+    @GetMapping("/uservo/getAllUserVos")
     public QueryResponseResult findAllUserVo(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                              @RequestParam(value = "size", defaultValue = "5") Integer size,
                                              UserListRequest userListRequest);
