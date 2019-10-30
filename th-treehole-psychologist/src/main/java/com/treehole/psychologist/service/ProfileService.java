@@ -27,18 +27,36 @@ public class ProfileService {
     private ProfileMapper profileMapper;
 
     /**
-     * 分页查询心理咨询师简介信息
+     * 根据条件分页查询心理咨询师简介信息
      *
-     * @param page 当前页码
-     * @param size 每页记录数
+     * @param page          当前页码
+     * @param size          每页记录数
+     * @param name          心理咨询师姓名
+     * @param sex           心理咨询师性别
+     * @param qualification 心理咨询师资质
      * @return
      */
-    public QueryResult findAllProfile(Integer page, Integer size) {
+    public QueryResult findAllProfile(Integer page, Integer size, String name, String sex, String qualification) {
+        //通用mapper中的example用于条件查询，criteria用于添加条件
+        Example example = new Example(Profile.class);
+        Example.Criteria criteria = example.createCriteria();
+        //添加姓名查询条件，实现模糊查询
+        if (name != null) {
+            criteria.andLike("name", "%" + name + "%");
+        }
+        //添加性别查询条件，实现精准查询
+        if (StringUtils.isNotBlank(sex)) {
+            criteria.andEqualTo("sex", sex);
+        }
+        //添加资质查询条件，实现模糊查询
+        if (qualification != null) {
+            criteria.andLike("qualification", "%" + qualification + "%");
+        }
         //分页参数
         PageHelper.startPage(page, size);
         //进行查询
-        List<Profile> profiles = this.profileMapper.selectAll();
-        //判断psychologists集合是否为空
+        List<Profile> profiles = this.profileMapper.selectByExample(example);
+        //判断profiles集合是否为空
         if (CollectionUtils.isEmpty(profiles)) {
             //如果数据为空页面，抛出异常，异常内容为查询数据为空！
             ExceptionCast.cast(PsychologistCode.DATA_IS_NULL);
@@ -122,15 +140,22 @@ public class ProfileService {
     }
 
     /**
-     * 更新心理咨询师简介信息
+     * 根据id更新心理咨询师简介信息
      *
-     * @param profile 心理咨询师对象
+     * @param profile 心理咨询师简介
      * @return
      */
     @Transactional
     public void updateProfile(Profile profile) {
+        //通用mapper中的example用于条件查询，criteria用于添加条件
         Example example = new Example(Profile.class);
         Example.Criteria criteria = example.createCriteria();
+        //先查询要更新的心理咨询师是否存在
+        Profile one = this.findProfileById(profile.getId());
+        //判断是否为空
+        if (one == null) {
+            ExceptionCast.cast(PsychologistCode.PSYCHOLOGIST_NOT_EXIST);
+        }
         //根据id更新
         criteria.andEqualTo("id", profile.getId());
         int key = this.profileMapper.updateByExample(profile, example);
