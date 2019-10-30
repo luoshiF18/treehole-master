@@ -31,9 +31,9 @@ public class UserVoController implements UserVoControllerApi {
     @Autowired
     UserVoService userVoService;
 
-    @GetMapping("/getAllUserVos")
-    public QueryResponseResult findAllUserVo(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                             @RequestParam(value = "size", defaultValue = "5") Integer size,
+    @GetMapping("/getAllUserVos/{page}/{size}")
+    public QueryResponseResult findAllUserVo(@PathVariable("page") Integer page,
+                                             @PathVariable("size") Integer size,
                                              UserListRequest userListRequest){
 
         return userVoService.findAllUserVos(page,size,userListRequest);

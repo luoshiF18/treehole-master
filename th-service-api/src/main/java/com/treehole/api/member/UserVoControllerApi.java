@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Api(value = "用户扩展信息管理", description = "对用户扩展信息进行查询")
 public interface UserVoControllerApi {
     @ApiOperation("根据user_id,user_nickname,user_phone，查询所有Vo用户信息")
-    public QueryResponseResult findAllUserVo( @RequestParam(value = "page", defaultValue = "1") Integer page,
-                                               @RequestParam(value = "size", defaultValue = "5") Integer size,
-                                               UserListRequest userListRequest);
+    public QueryResponseResult findAllUserVo( Integer page,
+                                              Integer size,
+                                              UserListRequest userListRequest);
 
     /*@ApiOperation("查询所有Vo用户信息")
     public QueryResponseResult getAllUserVo(Integer page, Integer size);*/
