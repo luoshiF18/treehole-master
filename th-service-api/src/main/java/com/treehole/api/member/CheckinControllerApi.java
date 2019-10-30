@@ -1,7 +1,10 @@
 package com.treehole.api.member;
 
+import com.treehole.framework.domain.member.Checkin;
 import com.treehole.framework.domain.member.Role;
 import com.treehole.framework.domain.member.result.Result;
+import com.treehole.framework.model.response.QueryResponseResult;
+import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,13 +21,17 @@ import javax.validation.Valid;
 @Api(value = "签到信息管理", description = "对签到信息进行增、删、查")
 public interface CheckinControllerApi {
     @ApiOperation("查询所有签到信息")
-    public Result findAllCheckin();
+    public QueryResponseResult findAllCheckin(Integer page, Integer size);
+
+    @ApiOperation("根据user_id查询签到信息")
+    public ResponseResult findCheckinByUserId(@PathVariable("user_id")String user_id,Integer page, Integer size) ;
 
     @ApiOperation("插入一条签到信息")
-    public Result insertCheckin(@RequestBody @Valid Role role) ;
+    public ResponseResult insertCheckin(@RequestBody @Valid Checkin checkin) ;
 
-    @ApiOperation("根据id删除签到信息")
-    public Result deleteCheckinById(@PathVariable("role_id")String role_id) ;
+    @ApiOperation("根据user_id删除签到信息")
+    public ResponseResult deleteCheckinById(@PathVariable("user_id")String user_id) ;
 
+    /*定时删除老旧数据*/
 
 }
