@@ -227,13 +227,15 @@ public class UserVoService {
         String id = userListRequest.getUser_id();
         String nickname = userListRequest.getUser_nickname();
         String phone = userListRequest.getUser_phone();
-        //判断为空字符串
-        if(!StringUtils.isEmpty(id) || !StringUtils.isEmpty(nickname) || !StringUtils.isEmpty(phone)) {
+        //判断不为空字符串
+        if(!StringUtils.isEmpty(id)){
             user1.setUser_id(id);
+        }
+        if(!StringUtils.isEmpty(nickname)){
             user1.setUser_nickname(nickname);
+        }
+        if(!StringUtils.isEmpty(phone)){
             user1.setUser_phone(phone);
-        }else{
-            ExceptionCast.cast(MemberCode.DATA_ERROR);
         }
 
         //查询
