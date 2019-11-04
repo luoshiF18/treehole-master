@@ -3,7 +3,6 @@ package com.treehole.member.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.treehole.framework.domain.archives.resquest.ResultListRequest;
 import com.treehole.framework.domain.member.Role;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
@@ -16,10 +15,10 @@ import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.mapper.RoleMapper;
 import com.treehole.member.mapper.UserMapper;
 import com.treehole.member.mapper.UserVoMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -224,19 +223,17 @@ public class UserVoService {
         }
 
         User user1 = new User();
-        String id = userListRequest.getUser_id();
-        String nickname = userListRequest.getUser_nickname();
-        String phone = userListRequest.getUser_phone();
         //判断不为空字符串
-        if(!StringUtils.isEmpty(id)){
-            user1.setUser_id(id);
+        if(StringUtils.isNotEmpty(userListRequest.getUser_id())){
+            user1.setUser_id(userListRequest.getUser_id());
         }
-        if(!StringUtils.isEmpty(nickname)){
-            user1.setUser_nickname(nickname);
+        if(StringUtils.isNotEmpty(userListRequest.getUser_nickname())){
+            user1.setUser_nickname(userListRequest.getUser_nickname());
         }
-        if(!StringUtils.isEmpty(phone)){
-            user1.setUser_phone(phone);
+        if(StringUtils.isNotEmpty(userListRequest.getUser_phone())){
+            user1.setUser_phone(userListRequest.getUser_phone());
         }
+
 
         //查询
         List<User> users = userMapper.select(user1);

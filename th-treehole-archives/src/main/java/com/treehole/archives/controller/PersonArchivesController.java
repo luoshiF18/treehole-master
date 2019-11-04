@@ -4,9 +4,13 @@ import com.treehole.api.archives.PersonArchivesApi;
 import com.treehole.archives.service.PersonArchivesService;
 import com.treehole.framework.domain.archives.ext.ArchivesExt;
 import com.treehole.framework.domain.archives.resquest.ArchivesListRequest;
+import com.treehole.framework.domain.member.resquest.UserListRequest;
 import com.treehole.framework.model.response.QueryResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author 任志强
@@ -47,5 +51,21 @@ public class PersonArchivesController implements PersonArchivesApi {
     public ArchivesExt findArchivesExt(
             ArchivesListRequest archivesListRequest) {
         return personArchivesService.findArchivesExt(archivesListRequest);
+    }
+
+    /**
+     * 查询所有用户的档案接口
+     * @param page
+     * @param size
+     * @param userListRequest
+     * @return
+     */
+    @Override
+    @GetMapping("/person/allUser/{page}/{size}")
+    public QueryResponseResult findAllUserArchivesList(
+            @PathVariable("page") Integer page,
+            @PathVariable("size") Integer size,
+            UserListRequest userListRequest) {
+        return personArchivesService.findAllUserArchivesList(page,size,userListRequest);
     }
 }

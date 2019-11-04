@@ -43,6 +43,7 @@
         <mysql-connector-java.version>5.1.40</mysql-connector-java.version>
         <elasticsearch.version>6.2.1</elasticsearch.version>
         <guava.version>24.0-jre</guava.version>
+        <feign-httpclient.version>9.5.0</feign-httpclient.version>
         <!--        <mapper.starter.version>2.0.2</mapper.starter.version>-->
     </properties>
 
@@ -166,7 +167,12 @@
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
             </dependency>
-
+            <!--feign-client-->
+            <dependency>
+                <groupId>io.github.openfeign</groupId>
+                <artifactId>feign-httpclient</artifactId>
+                <version>${feign-httpclient.version}}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>

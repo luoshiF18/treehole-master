@@ -2,6 +2,7 @@ package com.treehole.api.archives;
 
 import com.treehole.framework.domain.archives.ext.ArchivesExt;
 import com.treehole.framework.domain.archives.resquest.ArchivesListRequest;
+import com.treehole.framework.domain.member.resquest.UserListRequest;
 import com.treehole.framework.model.response.QueryResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,5 +28,11 @@ public interface PersonArchivesApi {
             ArchivesListRequest archivesListRequest
     );
 
+    @ApiOperation("查询所有用户的档案记录")
+    public QueryResponseResult findAllUserArchivesList(
+            Integer page,
+            Integer size,
+            UserListRequest userListRequest
+    );
 
 }

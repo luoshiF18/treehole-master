@@ -2,6 +2,8 @@ package com.treehole.framework.domain.archives.ext;
 
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * @author 任志强
  * @version 1.0
@@ -16,6 +18,8 @@ public class ResultList extends ArchivesList{
 
     //用户角色
     private String role_name;//角色名称
+
+    private Date create_date; //创建时间
 
     //预警等级
     //...

@@ -1,9 +1,11 @@
 package com.treehole.archives.dao;
 
+import com.github.pagehelper.Page;
 import com.treehole.framework.domain.archives.ext.ArchivesList;
 import com.treehole.framework.domain.archives.ext.ResultBase;
 import com.treehole.framework.domain.archives.ext.ResultTiny;
 import com.treehole.framework.domain.archives.resquest.ArchivesListRequest;
+import com.treehole.framework.domain.archives.resquest.ResultListRequest;
 import com.treehole.framework.domain.evaluation.Result;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -22,10 +24,10 @@ public interface ArchivesResultMapper {
     ResultBase findResultById(String id);
 
     //查询所有结果
-    List<Result> findAll();
+    Page<Result> findAll(ResultListRequest resultListRequest);
 
     //根据用户id查询用户所答过的量表记录(重复量表去重)
-    List<ArchivesList> findArchivesListByUserId(String userId);
+    Page<ArchivesList> findArchivesListByUserId(String userId);
 
     //根据用户id和量表名查询答该量表的历次作答记录
     List<ResultTiny> finArchivesByUserIdAndScaleName(ArchivesListRequest archivesListRequest);
