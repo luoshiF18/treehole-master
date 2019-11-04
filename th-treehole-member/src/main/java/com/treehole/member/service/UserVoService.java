@@ -19,6 +19,7 @@ import com.treehole.member.mapper.UserVoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -223,9 +224,18 @@ public class UserVoService {
         }
 
         User user1 = new User();
-        user1.setUser_id(userListRequest.getUser_id());
-        user1.setUser_nickname(userListRequest.getUser_nickname());
-        user1.setUser_phone(userListRequest.getUser_phone());
+        String id = userListRequest.getUser_id();
+        String nickname = userListRequest.getUser_nickname();
+        String phone = userListRequest.getUser_phone();
+        //判断为空字符串
+        if(!StringUtils.isEmpty(id) || !StringUtils.isEmpty(nickname) || !StringUtils.isEmpty(phone)) {
+            user1.setUser_id(id);
+            user1.setUser_nickname(nickname);
+            user1.setUser_phone(phone);
+        }else{
+            ExceptionCast.cast(MemberCode.DATA_ERROR);
+        }
+
         //查询
         List<User> users = userMapper.select(user1);
 
@@ -261,6 +271,10 @@ public class UserVoService {
         QueryResult queryResult = new QueryResult();
         queryResult.setList(userVos);
         queryResult.setTotal(pageInfo.getTotal());
+
+
         return new QueryResponseResult(CommonCode.SUCCESS,queryResult);
+
     }
+
 }
