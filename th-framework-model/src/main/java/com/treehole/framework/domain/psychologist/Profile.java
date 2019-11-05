@@ -53,6 +53,9 @@ public class Profile implements Serializable {
     //心理咨询师工作室
     private String studio;
 
+    //心理咨询师手机
+    private String phone;
+
     //心理咨询师创建时间
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date createTime;
