@@ -3,6 +3,7 @@ package com.treehole.framework.domain.psychologist;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import tk.mybatis.mapper.annotation.NameStyle;
 import tk.mybatis.mapper.code.Style;
 
@@ -10,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @author Helay
@@ -35,9 +37,6 @@ public class State implements Serializable {
     //心理咨询师所执证书
     private String certificate;
 
-    //心理咨询师手机
-    private String phone;
-
     //心理咨询师微信
     private String weChat;
 
@@ -46,5 +45,9 @@ public class State implements Serializable {
 
     //心理咨询师所在详细地址
     private String address;
+
+    //心理咨询师信息更新时间
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    private Date updateTime;
 
 }
