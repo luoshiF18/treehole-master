@@ -36,7 +36,7 @@ public class WarningService {
     public ResponseResult getWarning(String descriptionId ){
 
         if(descriptionId==null|| StringUtils.isEmpty(descriptionId)){
-            ExceptionCast.cast( EvaluationCode.SCALE_DERC_NULL);
+            ExceptionCast.cast( EvaluationCode.SCALE_DESC_NULL);
         }
         Description description = descriptionMapper.selectByPrimaryKey( descriptionId );
         if(description==null){
