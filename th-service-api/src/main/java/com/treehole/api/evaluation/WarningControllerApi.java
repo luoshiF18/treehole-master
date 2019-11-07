@@ -1,7 +1,8 @@
 package com.treehole.api.evaluation;
 
 import com.treehole.framework.domain.evaluation.Warning;
-import com.treehole.framework.domain.evaluation.vo.WarningVo;
+import com.treehole.framework.domain.evaluation.request.WarnRequest;
+import com.treehole.framework.domain.evaluation.vo.WarnReportVo;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
@@ -21,8 +22,8 @@ public interface WarningControllerApi {
     public ResponseResult addWarningByPsy(Warning warning);
     @ApiOperation("心理咨询师查看用户预警信息")
     public QueryResponseResult findWarningByUserId(String userId,int page,int size);
-    @ApiOperation("后台管理，根据条件查询用户信息")
-    public QueryResponseResult findWarningCondition(int page,int size,WarningVo warningVo);
+    @ApiOperation("后台管理，根据条件查询用户预警信息")
+    public QueryResponseResult findWarningCondition(int page,int size,WarnRequest warnRequest);
     @ApiOperation( "后台管理，查询所有预警信息")
     public QueryResponseResult findAll(int page,int size);
     @ApiOperation("后台管理，删除预警信息")
@@ -30,5 +31,6 @@ public interface WarningControllerApi {
     @ApiOperation("后台管理，批量删除预警信息")
     public ResponseResult deleteMoreWarning(List<String> ids);
     @ApiOperation("后台管理，查看详细预警信息")
-    public WarningVo lookWaring(String warningId);
+    public WarnReportVo lookWaring(String warningId);
+
 }

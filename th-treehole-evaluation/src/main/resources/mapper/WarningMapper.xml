@@ -23,7 +23,7 @@
         from warning
         inner join test_scale on warning.scale_id=test_scale.id
     </select>
-    <select id="getWaning" resultType="com.treehole.framework.domain.evaluation.vo.WarningVo">
+    <select id="getWaning" parameterType="com.treehole.framework.domain.evaluation.request.WarnRequest" resultType="com.treehole.framework.domain.evaluation.vo.WarningVo">
         select
         warning.id,
         test_scale.scaleName,
@@ -34,11 +34,20 @@
         create_time as createTime
         from warning
         left join test_scale   on warning.scale_id=test_scale.id
-        where warning.id IN
-        <foreach collection="list" item="WarningId" index="index" open="(" close=")" separator=",">
-            #{WarningId}
-        </foreach>
-
+        where
+        1=1
+        <if test="request.date1 != null and request.date2 != null ">
+            and create_time BETWEEN #{request.date1} and #{request.date2}
+        </if>
+        <if test="request.userId!=null">
+            AND warning.user_id=#{request.userId}
+        </if>
+        <if test="request.scaleName != null and request.scaleName !=''">
+            and test_scale.scaleName =#{request.scaleName}
+        </if>
+        <if test="request.warningLevel != 0">
+            and warning.warning_level=#{request.warningLevel}
+        </if>
     </select>
 
 

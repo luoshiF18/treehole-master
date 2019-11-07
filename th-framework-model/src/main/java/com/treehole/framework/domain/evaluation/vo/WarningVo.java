@@ -19,13 +19,18 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WarningVo extends Warning implements Serializable{
-    private int sum;
+
     private String scaleName;
     private String userName; //实际姓名，user表中的
     private String userNickName; //昵称，user表中的
-    private String sex;
+    private int sex;
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date userBirth;
     @Null
     private String phone;
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    private Date date1;
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    private Date date2;
+
 }

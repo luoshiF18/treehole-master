@@ -1,7 +1,9 @@
 package com.treehole.evaluation.dao;
 
 import com.treehole.framework.domain.evaluation.Warning;
+import com.treehole.framework.domain.evaluation.request.WarnRequest;
 import com.treehole.framework.domain.evaluation.vo.WarningVo;
+import org.apache.ibatis.annotations.Param;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
@@ -15,5 +17,6 @@ public interface WarningMapper extends Mapper<Warning> {
 
     void deleteMoreWarning(List<String> ids);
     List<WarningVo> findScaleWarning();
-    List<WarningVo> getWaning(List listScaleId);
+    List<WarningVo> getWaning(@Param("request" ) WarnRequest request);
+
 }
