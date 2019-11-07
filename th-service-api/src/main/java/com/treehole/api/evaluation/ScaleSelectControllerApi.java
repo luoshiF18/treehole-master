@@ -23,8 +23,8 @@ public interface ScaleSelectControllerApi {
     @ApiOperation("搜索所有量表描述")
     public QueryResponseResult findScaleDesc(String scaleId);
 
-    @ApiOperation("开始测试,普通选择和多选类型")
-    public StartTestResult startTestType1(String scaleId);
+    @ApiOperation("开始测试,多选类型")
+    public StartTestResult startTestType1(String scaleId, Integer nextQuestionSort);
 
     @ApiOperation("开始测试,跳题类型")
     public StartTestResult2 startTestType2(String scaleId, String nextQuestionId, Integer questionSort, String optionId);

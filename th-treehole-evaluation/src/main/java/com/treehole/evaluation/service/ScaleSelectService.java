@@ -99,7 +99,7 @@ public class ScaleSelectService {
             ScaleType scaleType = scaleTypeMapper.selectByPrimaryKey(typeId2);
             scale.setTypeName(scaleType.getScaleType());
             scale.setLetter(StringUtils.substring(scale.getLetter(), 0, 1));
-            scale.setScaleTypeName(scale.getScaleType() == 0 ? "普通" : "跳题");
+            scale.setScaleTypeName(scale.getScaleType() == 2 ? "普通" : "多选");
 //            获取状态并判断
             scale.setStatusName(scale.getStatus() == 0 ? "未启用" : "已启用");
         }
@@ -137,7 +137,7 @@ public class ScaleSelectService {
 //            获取分类
             scaleDetailVO.setType(scaleTypeMapper.selectByPrimaryKey(scale.getTypeId()).getScaleType());
 //            设置类型
-            scaleDetailVO.setScaleTypeName(scale.getScaleType() == 0 ? "普通" : "跳题");
+            scaleDetailVO.setScaleTypeName(scale.getScaleType() == 2 ? "普通" : "多选");
             scaleDetailVO.setStatusName(scale.getStatus() == 0 ? "未启用" : "已启用");
 //            返回
             return scaleDetailVO;
@@ -149,70 +149,45 @@ public class ScaleSelectService {
     }
 
     /**
-     * 开始测试，获取量表内容,简单类型
+     * 开始测试，获取量表内容,多选类型
      *
      * @param scaleId
      * @return
      */
-    public TestDetailVO startTestType1(String scaleId) {
-        if (StringUtils.isEmpty(scaleId)) {
-            ExceptionCast.cast(EvaluationCode.SCALE_FIND_ERROR);
-        }
+    public QuestionVO startTestType1(String scaleId, Integer nextQuestionSort) {
         try {
-//        展示数据
-            TestDetailVO testDetailVO = new TestDetailVO();
-//        获取量表信息
-            Scale scale = scaleMapper.selectByPrimaryKey(scaleId);
-//        存入展示数据中
-            testDetailVO.setId(scaleId);
-            testDetailVO.setScaleName(scale.getScaleName());
-            testDetailVO.setShortName(scale.getShortName());
-            testDetailVO.setImages(scale.getImages());
-            testDetailVO.setType(scale.getTypeId()); //TODO 这里需要搜索详细类型名称
-
-//        获取量表问题
-            Question question = new Question();
-            question.setScaleId(scaleId);
-            List<Question> questions = questionMapper.select(question);
-//        问题展示集合
-            List<QuestionVO> questionVOList = new ArrayList<>();
-//        循环遍历出问题，存入问题展示类
-            for (Question question1 : questions) {
-//            每个都存入问题展示类
+//        如果第二题
+            if (nextQuestionSort != null) {
+//            获取下一个问题并返回
+                Question questionInfo = questionMapper.findFirstInfo(nextQuestionSort, scaleId);
+//            准备数据
                 QuestionVO questionVO = new QuestionVO();
-                String question1Id = question1.getId();
-                questionVO.setId(question1Id);
-                questionVO.setSort(question1.getSort());
-                questionVO.setQuestion(question1.getQuestion());
-//            获取该问题的选项
-                Option option = new Option();
-                option.setQuestionId(question1Id);
-//            获取该问题选项的集合
-                List<Option> options = optionMapper.select(option);
-                List<OptionVO> optionVOS = new ArrayList<>();
-//            获取量表问题里的选项
-                for (Option option1 : options) {
-                    OptionVO optionVO = new OptionVO();
-                    optionVO.setId(option1.getId());
-                    optionVO.setSort(option1.getSort());
-                    optionVO.setAnswer(option1.getAnswer());
-                    optionVOS.add(optionVO);
-                }
-                questionVO.setOptionVOS(optionVOS);
-                questionVOList.add(questionVO);
+                questionVO.setId(questionInfo.getId());
+                questionVO.setQuestion(questionInfo.getQuestion());
+                questionVO.setNextQuestionSort(nextQuestionSort + 1);
+                questionVO.setOptionVOS(optionMapper.findOptionByQuestionId(questionInfo.getId()));
+                return questionVO;
+
+//        第一题时候没有questionSort
+            } else {
+//            获取第一个问题并返回
+                Question firstInfo = questionMapper.findFirstInfo(1, scaleId);
+//            准备数据
+                QuestionVO questionVO = new QuestionVO();
+                questionVO.setId(firstInfo.getId());
+                questionVO.setQuestion(firstInfo.getQuestion());
+                questionVO.setNextQuestionSort(2);
+                questionVO.setOptionVOS(optionMapper.findOptionByQuestionId(firstInfo.getId()));
+                return questionVO;
             }
-//        把问题们存入显示类中
-            testDetailVO.setQuestionVOS(questionVOList);
-//        返回
-            return testDetailVO;
         } catch (Exception e) {
-            e.printStackTrace();
+            ExceptionCast.cast(EvaluationCode.GET_QUESTION_ERROR);
             return null;
         }
     }
 
     /**
-     * 开始测试,跳题类型
+     * 开始测试,普通类型
      *
      * @return
      */

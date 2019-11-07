@@ -83,20 +83,21 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
     }
 
     /**
-     * 开始测试，获取量表内容,简单类型
+     * 开始测试，获取量表内容,多选类型
      *
      * @param scaleId
      * @return
      */
     @Override
     @GetMapping("test/type1")
-    public StartTestResult startTestType1(@RequestParam(value = "scaleId", defaultValue = "") String scaleId) {
+    public StartTestResult startTestType1(@RequestParam(value = "scaleId") String scaleId,
+                                          @RequestParam(value = "nextQuestionSort", required = false) Integer nextQuestionSort) {
 //     TODO   只允许测试一次
-        TestDetailVO testDetailVO = scaleSelectService.startTestType1(scaleId);
-        if (testDetailVO == null) {
+        QuestionVO questionVO = scaleSelectService.startTestType1(scaleId, nextQuestionSort);
+        if (questionVO == null) {
             ExceptionCast.cast(EvaluationCode.SELECT_NULL);
         }
-        return new StartTestResult(CommonCode.SUCCESS, testDetailVO);
+        return new StartTestResult(CommonCode.SUCCESS, questionVO);
     }
 
     /**
