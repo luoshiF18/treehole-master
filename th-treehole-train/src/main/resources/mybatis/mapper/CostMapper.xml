@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.treehole.train.dao.CostMapper">
+
+    <!--查询cost按时间降序-->
+    <select id="findCostByStudentId"
+            resultType="com.treehole.framework.domain.train.Cost"
+            parameterType="java.lang.String">
+        SELECT *
+        FROM cost c
+        WHERE c.`cost_student_id` = #{id}
+        ORDER BY c.`cost_time` DESC
+    </select>
+
+</mapper>

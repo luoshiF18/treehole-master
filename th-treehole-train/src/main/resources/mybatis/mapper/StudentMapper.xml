@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.treehole.train.dao.StudentMapper">
+
+
+    <!--查询学所有学生-->
+    <select id="findAllStudent"
+            resultType="com.treehole.framework.domain.train.Student">
+       select * from student
+    </select>
+
+
+
+    <!--查询学生课程-->
+    <select id="findStudentCourse"
+            resultType="com.treehole.framework.domain.train.ext.StudentCourse"
+            parameterType="java.lang.String">
+        SELECT
+        co.*,
+        t.teacher_name
+        FROM student s
+        LEFT JOIN class c
+        ON s.`student_class` = c.`class_id`
+        LEFT JOIN class_course cc
+        ON c.`class_id` = cc.`class_id`
+        LEFT JOIN course co
+        ON cc.`course_id` = co.`course_id`
+        LEFT JOIN teacher t
+        ON co.course_teacher = t.teacher_id
+        WHERE s.`student_id` = #{id}
+
+    </select>
+
+    <!--学生交费记录-->
+    <select id="findPay"
+            resultMap="PayMap"
+            parameterType="java.lang.String">
+        SELECT
+        c.`cost_time`,
+        c.`cost_amount_payable`,
+        c.`cost_preferential_amount`,
+        c.`cost_amount_received`,
+        c.`cost_other`
+        FROM cost c
+        WHERE c.`cost_student_id`= #{id}
+    </select>
+    <resultMap id="PayMap" type="java.util.HashMap">
+        <result column="cost_time" property="costTime" jdbcType="DATE" />
+        <result column="cost_amount_payable" property="costAmountPayable" jdbcType="DOUBLE" />
+        <result column="cost_preferential_amount" property="costPreferentialAmount" jdbcType="DOUBLE" />
+        <result column="cost_amount_received" property="costAmountReceived" jdbcType="DOUBLE" />
+        <result column="cost_other" property="costOther" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <!--学生欠费记录-->
+    <select id="findArrears"
+            resultMap="ArrearsMap"
+            parameterType="java.lang.String">
+        SELECT
+        c.`cost_time`,
+        c.`cost_arrears`,
+        c.`cost_other`
+        FROM cost c
+        WHERE c.`cost_student_id`=  #{id}
+    </select>
+
+    <resultMap id="ArrearsMap" type="java.util.HashMap">
+        <result column="cost_time" property="costTime" jdbcType="DATE" />
+        <result column="cost_arrears" property="costArrears" jdbcType="DOUBLE" />
+        <result column="cost_other" property="costOther" jdbcType="VARCHAR" />
+    </resultMap>
+
+</mapper>

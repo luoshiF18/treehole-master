@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.treehole.train.dao.ClassMapper">
+
+    <!--查询所有班级信息-->
+    <select id="findAllClass"
+            resultType="com.treehole.framework.domain.train.Class">
+            SELECT * from class
+    </select>
+
+    <!--班级学生统计-->
+    <select id="findClassStudent"
+            resultType="com.treehole.framework.domain.train.Student"
+            parameterType="java.lang.String">
+        SELECT
+        s.`student_id`,
+        s.`student_name`,
+        s.`student_gender`,
+        s.`student_birth_date`,
+        s.`student_type`,
+        s.`student_state`,
+        s.`student_telephone`,
+        s.`student_address`,
+        s.`student_enrollment_time`
+        FROM class c
+        LEFT JOIN student s
+        ON c.`class_id` = s.`student_class`
+        WHERE c.`class_id`=#{id}
+
+    </select>
+
+    <!--班级课程统计-->
+    <select id="findClassCourse"
+            parameterType="java.lang.String"
+            resultType="com.treehole.framework.domain.train.ext.StudentCourse">
+        SELECT
+        co.*,
+        t.`teacher_name`
+        FROM class c
+        LEFT JOIN class_course cc
+        ON c.`class_id` = cc.`class_id`
+        LEFT JOIN course co
+        ON cc.`course_id` = co.`course_id`
+        LEFT JOIN teacher t
+        ON co.course_teacher = t.teacher_id
+        WHERE c.`class_id` = #{id}
+
+    </select>
+
+    <!--班级老师统计-->
+    <select id="findClassTeacher"
+            parameterType="java.lang.String"
+            resultType="com.treehole.framework.domain.train.Teacher">
+        SELECT t.*
+        FROM class c
+        LEFT JOIN teacher t
+        ON c.`class_teacher_id` = t.`teacher_id`
+        WHERE c.`class_id`= #{id}
+        UNION
+        SELECT t.*
+        FROM class c
+        LEFT JOIN class_course cc
+        ON c.`class_id` = cc.`class_id`
+        LEFT JOIN course co
+        ON cc.`course_id` = co.`course_id`
+        LEFT JOIN teacher t
+        ON co.course_teacher = t.teacher_id
+        WHERE c.`class_id` = #{id}
+
+    </select>
+
+</mapper>
