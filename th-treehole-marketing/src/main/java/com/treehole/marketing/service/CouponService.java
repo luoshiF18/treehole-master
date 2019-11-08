@@ -3,14 +3,13 @@ package com.treehole.marketing.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.marketing.Coupon;
-import com.treehole.framework.domain.marketing.dto.CouponDTO;
 import com.treehole.framework.domain.marketing.response.MarketingCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.marketing.dao.CouponMapper;
+import com.treehole.marketing.utils.MyChineseCharUtil;
 import com.treehole.marketing.utils.MyNumberUtils;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,25 +44,21 @@ public class CouponService {
         if(StringUtils.isNotBlank(key)){
             criteria.andLike("title", "%" + key + "%");
         }
-        //查询的优惠券是有效的
-        criteria.andEqualTo("valid", 1);
+
         // 添加分页条件
         PageHelper.startPage(page, size);
-
         // 添加排序条件
         if (StringUtils.isNotBlank(sortBy)) {
             example.setOrderByClause(sortBy + " " + (desc ? "desc" : "asc"));
         }
+
         //查询
         List<Coupon> coupons = this.couponMapper.selectByExample(example);
 
         if(CollectionUtils.isEmpty(coupons)){
             ExceptionCast.cast(MarketingCode.SELECT_NULL);
         }
-        //!!!!!!!!!此处应该设为null，还是返回前端的属性中不该有valid？
-        coupons.forEach(coupon->{
-            coupon.setValid(null);
-        });
+
         // 包装成pageInfo
         PageInfo<Coupon> pageInfo = new PageInfo<>(coupons);
 
@@ -79,9 +74,10 @@ public class CouponService {
         if(StringUtils.isBlank(cid)){
             ExceptionCast.cast(MarketingCode.DATA_ERROR);
         }
-        //!!!!!!!!!此处应该设为null，还是返回前端的属性中不该有valid？
-        Coupon coupon = this.couponMapper.selectByPrimaryKey(cid);
-        coupon.setValid(null);
+        Coupon coupon = couponMapper.selectByPrimaryKey(cid);
+        if(coupon == null){
+            ExceptionCast.cast(MarketingCode.COUPON_DATA_NULL);
+        }
         return coupon;
     }
 
@@ -99,21 +95,24 @@ public class CouponService {
     }
     /**
      * 添加优惠券
-     * @param couponDTO
+     * @param coupon
      */
-    public void saveCoupon(CouponDTO couponDTO) {
+    public void saveCoupon(Coupon coupon) {
         //数据为空
-        if(couponDTO == null){
+        if(coupon == null){
             ExceptionCast.cast(MarketingCode.DATA_ERROR);
         }
-        Coupon coupon = new Coupon();
-        BeanUtils.copyProperties(couponDTO, coupon);
-        //!!!!!!!!!不确定还有没有字段需要修改
         coupon.setId(MyNumberUtils.getUUID());
-        coupon.setValid(true);
+        String upperCase = MyChineseCharUtil.getUpperCase(coupon.getTitle(), false);
+        coupon.setLetter(upperCase);
+
+        coupon.setStock(coupon.getStock());//是这样设置还是？？？？？
+        coupon.setStock(coupon.getQuota());//库存量值为发行量
+        //!!!!!!!!!不确定还有没有字段需要修改
+
         coupon.setCreated(new Date());
         coupon.setUpdated(coupon.getCreated());
-        coupon.setStock(coupon.getQuota());//库存量值为发行量
+
         if(this.couponMapper.insertSelective(coupon) != 1 ){
             ExceptionCast.cast(MarketingCode.INSERT_FAILURE);
         }
@@ -126,16 +125,14 @@ public class CouponService {
      * @param coupon
      */
     @Transactional
-    public void updateCouponInfo(CouponDTO couponDTO) {
+    public void updateCouponInfo(Coupon coupon) {
         //数据为空
-        if(couponDTO == null){
+        if(coupon == null){
             ExceptionCast.cast(MarketingCode.DATA_ERROR);
         }
-        Coupon coupon = new Coupon();
-        BeanUtils.copyProperties(couponDTO, coupon);
-        coupon.setCreated(null);
+        String upperCase = MyChineseCharUtil.getUpperCase(coupon.getTitle(), false);
+        coupon.setLetter(upperCase);
         coupon.setUpdated(new Date());
-        coupon.setValid(null);
         if(this.couponMapper.updateByPrimaryKeySelective(coupon) != 1){
             ExceptionCast.cast(MarketingCode.UPDATE_ERROR);
         }
@@ -147,10 +144,13 @@ public class CouponService {
      */
     @Transactional
     public void deleteCouponById(String cid) {
-        Coupon coupon = this.queryCouponById(cid);
-        coupon.setValid(false);
-        if(this.couponMapper.updateByPrimaryKeySelective(coupon) != 1){
+        try {
+            if(StringUtils.isNotBlank(cid)){
+                this.couponMapper.deleteByPrimaryKey(cid);
+            }
+        } catch (Exception e) {
             ExceptionCast.cast(MarketingCode.DELETE_ERROR);
+            e.printStackTrace();
         }
     }
 }

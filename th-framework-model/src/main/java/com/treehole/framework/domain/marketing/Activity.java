@@ -21,6 +21,7 @@ public class Activity implements Serializable {
     @KeySql(useGeneratedKeys = true)
     private String id;
     private String title;
+    private String letter;
     private String subTitle;
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date beginTime;
@@ -43,7 +44,6 @@ public class Activity implements Serializable {
     private Date created;
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date updated;
-    private Boolean valid;
 
 
 }

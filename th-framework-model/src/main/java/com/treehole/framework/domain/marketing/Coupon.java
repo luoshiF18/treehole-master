@@ -20,6 +20,7 @@ public class Coupon implements Serializable {
     @KeySql(useGeneratedKeys = true)
     private String id;
     private String title;
+    private String letter;
     private String icon;
     private String typeId;
     private Boolean withSpecial;
@@ -45,7 +46,6 @@ public class Coupon implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date updated;
     private Integer status;   //优惠券状态 0:已结束，1：生效，2：已结束
-    private Boolean valid;   //删除状态码  0:已删除，1：
 
   //usedByStr,statusStr 的set方法
 

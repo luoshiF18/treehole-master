@@ -3,21 +3,18 @@ package com.treehole.marketing.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.marketing.Activity;
-import com.treehole.framework.domain.marketing.dto.ActivityDTO;
 import com.treehole.framework.domain.marketing.response.MarketingCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.marketing.dao.ActivityMapper;
 import com.treehole.marketing.utils.MyNumberUtils;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,7 +28,7 @@ public class ActivityService {
     private ActivityMapper activityMapper;
 
 
-    public QueryResult<ActivityDTO> queryActivityByPage(String key, Integer status, Date beginTime, Date endTime, Integer page, Integer rows, String sortBy, Boolean desc) {
+    public QueryResult<Activity> queryActivityByPage(String key, Integer status, Date beginTime, Date endTime, Integer page, Integer rows, String sortBy, Boolean desc) {
         //
         Example example = new Example(Activity.class);
         Example.Criteria criteria = example.createCriteria();
@@ -63,34 +60,8 @@ public class ActivityService {
         if(CollectionUtils.isEmpty(activities)){
             ExceptionCast.cast(MarketingCode.SELECT_NULL);
         }
-        List<ActivityDTO>  activityDTOS = new ArrayList<>();
-        activities.forEach(activity -> {
-            ActivityDTO activityDTO = new ActivityDTO();
-            activityDTO.setId(activity.getId());
-            activityDTO.setTitle(activity.getTitle());
-            activityDTO.setSubTitle(activity.getSubTitle());
-            activityDTO.setBeginTime(activity.getBeginTime());
-            activityDTO.setEndTime(activity.getEndTime());
-            activityDTO.setDiscount(activity.getDiscount());
-            activityDTO.setFixedAmount(activity.getFixedAmount());
-            activityDTO.setReduction(activity.getReduction());
-            activityDTO.setLimitNum(activity.getLimitNum());
-            activityDTO.setWithCoupon(activity.getWithCoupon());
-            activityDTO.setCouponId(activity.getCouponId());
-            activityDTO.setPoint(activity.getPoint());
-            activityDTO.setTypeId(activity.getTypeId());
-            activityDTO.setImages(activity.getImages());
-            activityDTO.setGoods(activity.getGoods());
-            activityDTO.setRule(activity.getRule());
-            activityDTO.setStatus(activity.getStatus());
-            activityDTO.setDescription(activity.getDescription());
-            activityDTO.setCreated(activity.getCreated());
-            activityDTO.setUpdated(activity.getUpdated());
-           // BeanUtils.copyProperties(activity, activityDTO);
-            //activity.setValid(null);
-        });
-        PageInfo<ActivityDTO> pageInfo = new PageInfo<>(activityDTOS);
-        return new QueryResult(activityDTOS, pageInfo.getTotal());
+        PageInfo<Activity> pageInfo = new PageInfo<>(activities);
+        return new QueryResult(activities, pageInfo.getTotal());
     }
 
     /**
@@ -109,16 +80,12 @@ public class ActivityService {
     }
 
     @Transactional
-    public void saveActivity(ActivityDTO activityDTO) {
+    public void saveActivity(Activity activity) {
         //数据为空
-        if(activityDTO == null){
+        if(activity == null){
             ExceptionCast.cast(MarketingCode.DATA_ERROR);
         }
-        Activity activity = new Activity();
-        BeanUtils.copyProperties(activityDTO, activity);
-        //!!!!!!!!!不确定还有没有字段需要修改
         activity.setId(MyNumberUtils.getUUID());
-        activity.setValid(true);
         activity.setCreated(new Date());
         activity.setUpdated(activity.getCreated());
         if(this.activityMapper.insertSelective(activity) != 1){
@@ -127,16 +94,14 @@ public class ActivityService {
     }
 
     @Transactional
-    public void updateActivityInfo(ActivityDTO activityDTO) {
+    public void updateActivityInfo(Activity activity) {
         //数据为空
-        if(activityDTO == null){
+        if(activity == null){
             ExceptionCast.cast(MarketingCode.DATA_ERROR);
         }
-        Activity activity = new Activity();
-        BeanUtils.copyProperties(activityDTO, activity);
-        activity.setCreated(null);
+
+        //activity.setCreated(null);不能这样子设置空值
         activity.setUpdated(new Date());
-        activity.setValid(null);
         if(this.activityMapper.updateByPrimaryKeySelective(activity) != 1){
             ExceptionCast.cast(MarketingCode.UPDATE_ERROR);
         }
@@ -144,7 +109,6 @@ public class ActivityService {
     @Transactional
     public void deleteActivityById(String id) {
         Activity activity = this.queryActivityById(id);
-        activity.setValid(false);
         if(this.activityMapper.updateByPrimaryKeySelective(activity) != 1){
             ExceptionCast.cast(MarketingCode.DELETE_ERROR);
         }

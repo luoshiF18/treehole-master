@@ -2,7 +2,6 @@ package com.treehole.marketing.controller;
 
 import com.treehole.api.marketing.ActivityControllerApi;
 import com.treehole.framework.domain.marketing.Activity;
-import com.treehole.framework.domain.marketing.dto.ActivityDTO;
 import com.treehole.framework.domain.marketing.response.MarketingCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
@@ -19,7 +18,7 @@ import java.util.Date;
  * @author wanglu
  */
 @RestController
-@RequestMapping("/activity")
+@RequestMapping("/marketing/activity")
 public class ActivityController implements ActivityControllerApi {
 
     @Autowired
@@ -32,62 +31,47 @@ public class ActivityController implements ActivityControllerApi {
      * @param beginTime
      * @param endTime
      * @param page
-     * @param rows
+     * @param size
      * @param sortBy
      * @param desc
      * @return
      */
     @GetMapping("/page")
-    public QueryResponseResult queryActivityByPage(String key, Integer status, Date beginTime, Date endTime, Integer page, Integer rows, String sortBy, Boolean desc) {
-        QueryResult<ActivityDTO> queryResult = this.activityService.queryActivityByPage(key, status, beginTime, endTime, page, rows, sortBy, desc);
+    public QueryResponseResult queryActivityByPage(@RequestParam(value = "key", required = false)String key,
+                                                   @RequestParam(required = false)Integer status,
+                                                   @RequestParam(required = false)Date beginTime,
+                                                   @RequestParam(required = false)Date endTime,
+                                                   @RequestParam(value = "page", defaultValue = "1")Integer page,
+                                                   @RequestParam(value = "size", defaultValue = "5")Integer size,
+                                                   @RequestParam(value = "sortBy", required = false)String sortBy,
+                                                   @RequestParam(value = "desc", defaultValue = "false")Boolean desc) {
+        QueryResult<Activity> queryResult = this.activityService.queryActivityByPage(key, status, beginTime, endTime, page, size, sortBy, desc);
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 
-    @GetMapping("/id/{id}")
-    public ActivityDTO queryCouponById(String id) {
+    @GetMapping("/{id}")
+    public Activity queryCouponById(@PathVariable String id) {
         Activity activity = this.activityService.queryActivityById(id);
         if(activity == null){
             ExceptionCast.cast(MarketingCode.SELECT_NULL);
         }
-        ActivityDTO activityDTO = new ActivityDTO();
-        //BeanUtils.copyProperties(activity, activityDTO);
-        activityDTO.setId(activity.getId());
-        activityDTO.setTitle(activity.getTitle());
-        activityDTO.setSubTitle(activity.getSubTitle());
-        activityDTO.setBeginTime(activity.getBeginTime());
-        activityDTO.setEndTime(activity.getEndTime());
-        activityDTO.setDiscount(activity.getDiscount());
-        activityDTO.setFixedAmount(activity.getFixedAmount());
-        activityDTO.setReduction(activity.getReduction());
-        activityDTO.setLimitNum(activity.getLimitNum());
-        activityDTO.setWithCoupon(activity.getWithCoupon());
-        activityDTO.setCouponId(activity.getCouponId());
-        activityDTO.setPoint(activity.getPoint());
-        activityDTO.setTypeId(activity.getTypeId());
-        activityDTO.setImages(activity.getImages());
-        activityDTO.setGoods(activity.getGoods());
-        activityDTO.setRule(activity.getRule());
-        activityDTO.setStatus(activity.getStatus());
-        activityDTO.setDescription(activity.getDescription());
-        activityDTO.setCreated(activity.getCreated());
-        activityDTO.setUpdated(activity.getUpdated());
-        return activityDTO;
+        return activity;
     }
 
     @PostMapping
-    public ResponseResult saveActivity(ActivityDTO activityDTO) {
-        this.activityService.saveActivity(activityDTO);
+    public ResponseResult saveActivity(@RequestBody Activity activity) {
+        this.activityService.saveActivity(activity);
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
     @PutMapping
-    public ResponseResult updateActivityInfo(ActivityDTO activityDTO) {
-        this.activityService.updateActivityInfo(activityDTO);
+    public ResponseResult updateActivityInfo(@RequestBody Activity activity) {
+        this.activityService.updateActivityInfo(activity);
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
-    @DeleteMapping("/id")
-    public ResponseResult deleteActivityById(String id) {
+    @DeleteMapping("{id}")
+    public ResponseResult deleteActivityById(@PathVariable String id) {
         this.activityService.deleteActivityById(id);
         return new ResponseResult(CommonCode.SUCCESS);
     }

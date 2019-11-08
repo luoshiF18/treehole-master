@@ -10,7 +10,7 @@ public enum MarketingCode implements ResultCode {
     INSERT_FAILURE(false, 401, "插入数据库失败！"),
     UPDATE_ERROR(false, 404, "抱歉，更新失败！"),
     DELETE_ERROR(false, 404, "抱歉，删除失败！"),
-    COUPON_DATA_NULL(false, 401, "优惠券数据为空！")
+    COUPON_DATA_NULL(false, 401, "优惠券数据不存在")
 
 
 

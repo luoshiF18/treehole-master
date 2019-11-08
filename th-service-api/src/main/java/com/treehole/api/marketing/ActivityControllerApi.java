@@ -1,6 +1,6 @@
 package com.treehole.api.marketing;
 
-import com.treehole.framework.domain.marketing.dto.ActivityDTO;
+import com.treehole.framework.domain.marketing.Activity;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
@@ -18,13 +18,13 @@ public interface ActivityControllerApi {
     public QueryResponseResult queryActivityByPage(String key, Integer status, Date beginTime, Date endTime, Integer page, Integer rows, String sortBy, Boolean desc);
 
     @ApiOperation("根据活动id查询详细信息")
-    public ActivityDTO queryCouponById(String id);
+    public Activity queryCouponById(String id);
 
     @ApiOperation("添加活动")
-    public ResponseResult saveActivity(ActivityDTO activityDTO);
+    public ResponseResult saveActivity(Activity activity);
 
     @ApiOperation("更改活动信息")
-    public ResponseResult updateActivityInfo(ActivityDTO activityDTO);
+    public ResponseResult updateActivityInfo(Activity activity);
 
     @ApiOperation("根据id删除活动")
     public ResponseResult deleteActivityById(String id);

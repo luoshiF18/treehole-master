@@ -2,7 +2,6 @@ package com.treehole.marketing.controller;
 
 import com.treehole.api.marketing.CouponControllerApi;
 import com.treehole.framework.domain.marketing.Coupon;
-import com.treehole.framework.domain.marketing.dto.CouponDTO;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
  * @author wanglu
  */
 @RestController
-@RequestMapping("/coupon")
+@RequestMapping("/marketing/coupon")
 public class CouponController implements CouponControllerApi {
 
     @Autowired
@@ -34,7 +33,7 @@ public class CouponController implements CouponControllerApi {
                                                  @RequestParam(value = "page", defaultValue = "1")Integer page,
                                                  @RequestParam(value = "size", defaultValue = "5")Integer size,
                                                  @RequestParam(value = "sortBy", required = false)String sortBy,
-                                                 @RequestParam(value = "desc", required = false)Boolean desc) {
+                                                 @RequestParam(value = "desc", defaultValue = "false")Boolean desc) {
         QueryResult queryResult = this.couponService.queryCouponByPage(key, page, size, sortBy, desc);
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
@@ -44,8 +43,8 @@ public class CouponController implements CouponControllerApi {
      * @param cid
      * @return
      */
-    @GetMapping("/cid/{cid}")
-    public Coupon queryCouponById(String cid) {
+    @GetMapping("/{cid}")
+    public Coupon queryCouponById(@PathVariable String cid) {
         return this.couponService.queryCouponById(cid);
     }
 
@@ -53,23 +52,23 @@ public class CouponController implements CouponControllerApi {
 
     /**
      * 添加优惠券
-     * @param couponDTO
+     * @param coupon
      * @return
      */
     @PostMapping
-    public ResponseResult saveCoupon(CouponDTO couponDTO) {
-        this.couponService.saveCoupon(couponDTO);
+    public ResponseResult saveCoupon(@RequestBody Coupon coupon) {
+        this.couponService.saveCoupon(coupon);
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
     /**
      * 更新优惠券信息
-     * @param couponDTO
+     * @param coupon
      * @return
      */
     @PutMapping
-    public ResponseResult updateCouponInfo(CouponDTO couponDTO) {
-        this.couponService.updateCouponInfo(couponDTO);
+    public ResponseResult updateCouponInfo(@RequestBody Coupon coupon) {
+        this.couponService.updateCouponInfo(coupon);
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
@@ -78,8 +77,8 @@ public class CouponController implements CouponControllerApi {
      * @param cid
      * @return
      */
-    @DeleteMapping
-    public ResponseResult deleteCouponById(String cid) {
+    @DeleteMapping("{cid}")
+    public ResponseResult deleteCouponById(@PathVariable String cid) {
         this.couponService.deleteCouponById(cid);
         return new ResponseResult(CommonCode.SUCCESS);
     }
