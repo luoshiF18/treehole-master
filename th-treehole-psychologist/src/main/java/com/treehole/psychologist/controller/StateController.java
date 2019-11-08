@@ -22,43 +22,25 @@ public class StateController implements StateControllerApi {
     private StateService stateService;
 
     /**
-     * 根据自定义条件分页查询心理咨询师状态信息
+     * 分页查询心理咨询师状态信息列表
      *
-     * @param page    当前页码
-     * @param size    每页记录数
-     * @param id      心理咨询师状态id
-     * @param address 心理咨询师详细地址
      * @return
      */
     @Override
-    @GetMapping("/find/all")
-    public QueryResponseResult findStateByPage(
+    @GetMapping("/find/list")
+    public QueryResponseResult findStateList(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "size", defaultValue = "5") Integer size,
-            @RequestParam(value = "id", required = false) String id,
-            @RequestParam(value = "address", required = false) String address
+            @RequestParam(value = "name", required = false) String name
     ) {
-        QueryResult queryResult = this.stateService.findStateByPage(page, size, id, address);
+        QueryResult queryResult = this.stateService.findStateList(page, size, name);
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 
     /**
-     * 根据id更新心理咨询师状态信息
+     * 根据id查询心理咨询师状态信息
      *
-     * @param state 状态信息
-     * @return
-     */
-    @Override
-    @PutMapping("/update")
-    public ResponseResult updateState(@RequestBody State state) {
-        this.stateService.updateState(state);
-        return new ResponseResult(CommonCode.SUCCESS);
-    }
-
-    /**
-     * 根据状态id查询状态信息
-     *
-     * @param id 状态id
+     * @param id 心理咨询师id
      * @return
      */
     @Override
@@ -67,4 +49,42 @@ public class StateController implements StateControllerApi {
         return this.stateService.findStateById(id);
     }
 
+    /**
+     * 根据id删除心理咨询师状态信息
+     *
+     * @param id 心理咨询师id
+     * @return
+     */
+    @Override
+    @DeleteMapping("/del/{id}")
+    public ResponseResult delStateById(@PathVariable("id") String id) {
+        this.stateService.delStateById(id);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 添加心理咨询师简介信息
+     *
+     * @param state 心理咨询师简介信息
+     * @return
+     */
+    @Override
+    @PostMapping("/add")
+    public ResponseResult addState(@RequestBody State state) {
+        this.stateService.addState(state);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 根据id更新心理咨询师简介信息
+     *
+     * @param state 心理咨询师简介信息
+     * @return
+     */
+    @Override
+    @PutMapping("/update")
+    public ResponseResult updateState(@RequestBody State state) {
+        this.stateService.updateState(state);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
 }
