@@ -28,8 +28,11 @@ public class State implements Serializable {
     @Id
     private String id;
 
-    //心理咨询师是否空闲 0：是  1：否
-    private Integer free;
+    //心理咨询师状姓名
+    private String name;
+
+    //心理咨询师是否空闲
+    private String free;
 
     //心理咨询师咨询价格
     private BigDecimal price;
