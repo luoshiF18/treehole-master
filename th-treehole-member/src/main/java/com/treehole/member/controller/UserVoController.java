@@ -4,9 +4,6 @@ import com.treehole.api.member.UserVoControllerApi;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.resquest.UserListRequest;
-import com.treehole.framework.domain.member.result.Result;
-import com.treehole.framework.domain.member.result.ResultEnum;
-import com.treehole.framework.domain.member.result.ResultUtil;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
@@ -31,6 +28,7 @@ public class UserVoController implements UserVoControllerApi {
     @Autowired
     UserVoService userVoService;
 
+    @Override
     @GetMapping("/getAllUserVos/{page}/{size}")
     public QueryResponseResult findAllUserVo(@PathVariable("page") Integer page,
                                              @PathVariable("size") Integer size,
@@ -39,7 +37,9 @@ public class UserVoController implements UserVoControllerApi {
         return userVoService.findAllUserVos(page,size,userListRequest);
     }
 
-   /* @GetMapping("/getAllUserVos")
+   /*
+   @Override
+   @GetMapping("/getAllUserVos")
     public QueryResponseResult getAllUserVo(@RequestParam(value = "page", defaultValue = "1") Integer page,
                                             @RequestParam(value = "size", defaultValue = "5") Integer size){
         QueryResult queryResult = userVoService.findAllUserVos(page, size);
@@ -53,7 +53,7 @@ public class UserVoController implements UserVoControllerApi {
          return userVoService.getUserByUniqId(uniq_id);
 
     }*/
-
+   @Override
     @GetMapping("/find/userId/{user_id}")
     public UserVo getUserVoByUserId(@PathVariable("user_id") String user_id)  {
         //System.out.println("==========+++++++++11111   "+id);
@@ -61,14 +61,14 @@ public class UserVoController implements UserVoControllerApi {
         //System.out.println("==========+++++++++      "+res);
 
     }
-
+    @Override
     @GetMapping("/find/userPhone/{user_phone}")
     public UserVo getUserVoByUserPhone(@PathVariable("user_phone") String user_phone)  {
         //System.out.println("==========+++++++++11111   "+user_phone);
         return userVoService.getUserByUserPhone(user_phone);
 
     }
-
+    @Override
     @GetMapping("/find/nickname")
     public UserVo getUserVoByNickname(@RequestParam("nickname") String nickname)  {
         //System.out.println("==========+++++++++11111   "+user_phone);

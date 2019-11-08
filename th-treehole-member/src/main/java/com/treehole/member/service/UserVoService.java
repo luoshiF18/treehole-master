@@ -213,9 +213,9 @@ public class UserVoService {
         return uservo;
     }
 
-
+//自定义条件查询
     public QueryResponseResult findAllUserVos(Integer page, Integer size, UserListRequest userListRequest) {
-        //        分页
+        //分页
         Page pag =PageHelper.startPage(page,size);
         //判断请求条件的合法性
         if (userListRequest == null){
@@ -233,7 +233,6 @@ public class UserVoService {
         if(StringUtils.isNotEmpty(userListRequest.getUser_phone())){
             user1.setUser_phone(userListRequest.getUser_phone());
         }
-
 
         //查询
         List<User> users = userMapper.select(user1);

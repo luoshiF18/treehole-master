@@ -29,7 +29,8 @@ public enum MemberCode implements ResultCode {
     NICKNAME_EXIST(false,313,"该昵称已存在"),
     PHONE_NOT_EXIST(false,314,"手机号不存在"),
     POINT_NOT_FULL(false,315,"积分不足"),
-    CARD_NOT_EXIST(false,316,"会员卡信息不存在")
+    CARD_NOT_EXIST(false,316,"会员卡信息不存在"),
+    GRADE_NOT_EXIST(false,317,"等级信息不存在")
     ;
     //操作代码
     boolean success;

@@ -2,7 +2,6 @@ package com.treehole.api.member;
 
 import com.treehole.framework.domain.member.Checkin;
 import com.treehole.framework.domain.member.Role;
-import com.treehole.framework.domain.member.result.Result;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
