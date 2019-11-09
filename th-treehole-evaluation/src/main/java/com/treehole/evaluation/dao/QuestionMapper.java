@@ -22,7 +22,7 @@ public interface QuestionMapper extends Mapper<Question> {
     @Select("SELECT id,sort,question FROM test_question WHERE scaleId = #{scaleId} AND sort = #{sort}")
     public Question findQuestionInfo(Integer sort, String scaleId);
 
-    @Select("SELECT question FROM test_question WHERE id = #{id}")
-    public String findQuestionName(String questionId);
+    @Select("SELECT sort,question FROM test_question WHERE id = #{id}")
+    public Question findQuestionName(String questionId);
 
 }

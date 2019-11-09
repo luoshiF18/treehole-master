@@ -16,9 +16,9 @@ public enum ResultEnum {
     VERIFY_FAIL(7,"验证失败"),
     INSERT_FAIL(11,"添加失败"),
     POINT_NOT_EXIST(10,"积分信息不存在"),
-    Phone_IS_EXISTS(12,"手机号已绑定")
+    PHONE_IS_EXISTS(12,"手机号已绑定");
     //POINT_IS_EXISTS(2,"用户已存在"),
-    ;
+
     private Integer code;
     private String msg;
 

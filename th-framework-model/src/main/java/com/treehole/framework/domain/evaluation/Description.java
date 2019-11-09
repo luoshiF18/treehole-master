@@ -36,5 +36,6 @@ public class Description implements Serializable {
     private Date updateTime;
     private String updateUserId;
     private Integer warningLevel;
+    private String warningMessage;
 
 }

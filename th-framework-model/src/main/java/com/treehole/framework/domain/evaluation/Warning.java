@@ -21,7 +21,7 @@ public class Warning {
     private String userId;
     private  String ScaleId;
     private  Integer status;
-    private  Integer grade;
+    private  Integer warningLevel;
     private String wMessage;
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date createTime;
