@@ -53,7 +53,7 @@ public class State implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date updateTime;
 
-    //心理咨询师信息更新时间
+    //心理咨询师信息创建时间
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date createTime;
 
