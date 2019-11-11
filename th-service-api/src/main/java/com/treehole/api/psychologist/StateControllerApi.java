@@ -14,7 +14,7 @@ import io.swagger.annotations.ApiOperation;
 public interface StateControllerApi {
 
     @ApiOperation("根据条件分页查询心理咨询师状态信息列表")
-    QueryResponseResult findStateList(Integer page, Integer size, String name);
+    QueryResponseResult findStateList(Integer page, Integer size, String name, String price,String free);
 
     @ApiOperation("根据id查询心理咨询师状态信息")
     State findStateById(String id);
