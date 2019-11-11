@@ -31,9 +31,12 @@ public class StateController implements StateControllerApi {
     public QueryResponseResult findStateList(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "size", defaultValue = "5") Integer size,
-            @RequestParam(value = "name", required = false) String name
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "price", required = false) String price,
+            @RequestParam(value = "free", required = false) String free
+
     ) {
-        QueryResult queryResult = this.stateService.findStateList(page, size, name);
+        QueryResult queryResult = this.stateService.findStateList(page, size, name, price,free);
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 

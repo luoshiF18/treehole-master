@@ -31,13 +31,21 @@ public class StateService {
      *
      * @return
      */
-    public QueryResult findStateList(Integer page, Integer size, String name) {
+    public QueryResult findStateList(Integer page, Integer size, String name, String price, String free) {
         //通用mapper中的example用于条件查询，criteria用于添加条件
         Example example = new Example(State.class);
         Example.Criteria criteria = example.createCriteria();
         //添加姓名查询条件，实现模糊查询
         if (name != null) {
             criteria.andLike("name", "%" + name + "%");
+        }
+        //添加价格查询条件，实现模糊查询
+        if (price != null) {
+            criteria.andLike("price", "%" + price + "%");
+        }
+        //添加工作状态查询条件，实现精准查询
+        if (StringUtils.isNotBlank(free)) {
+            criteria.andEqualTo("free", free);
         }
         //分页参数
         PageHelper.startPage(page, size);
