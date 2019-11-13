@@ -97,4 +97,22 @@ public class ProfileController implements ProfileControllerApi {
         //更新成功，响应成功状态码
         return new ResponseResult(CommonCode.SUCCESS);
     }
+
+    /**
+     * 按照id自增查询所有简介信息
+     *
+     * @param page 当前页
+     * @param size 每页记录数
+     * @return
+     */
+    @Override
+    @GetMapping("get/all")
+    public QueryResponseResult findAll(
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "size", defaultValue = "5") Integer size
+    ) {
+        QueryResult result = this.profileService.findAll(page, size);
+        return new QueryResponseResult(CommonCode.SUCCESS, result);
+    }
+
 }

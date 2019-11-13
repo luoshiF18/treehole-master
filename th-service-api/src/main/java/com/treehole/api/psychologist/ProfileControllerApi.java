@@ -27,4 +27,8 @@ public interface ProfileControllerApi {
 
     @ApiOperation("根据id更新心理咨询师简介信息")
     ResponseResult updateProfile(Profile profile);
+
+    @ApiOperation("按照id自增查询所有简介信息")
+    QueryResponseResult findAll(Integer page, Integer size);
+
 }

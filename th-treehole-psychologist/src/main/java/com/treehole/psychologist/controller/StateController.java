@@ -36,7 +36,7 @@ public class StateController implements StateControllerApi {
             @RequestParam(value = "free", required = false) String free
 
     ) {
-        QueryResult queryResult = this.stateService.findStateList(page, size, name, price,free);
+        QueryResult queryResult = this.stateService.findStateList(page, size, name, price, free);
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 
@@ -89,5 +89,22 @@ public class StateController implements StateControllerApi {
     public ResponseResult updateState(@RequestBody State state) {
         this.stateService.updateState(state);
         return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 按照id自增查询所有简介信息
+     *
+     * @param page 当前页
+     * @param size 每页记录数
+     * @return
+     */
+    @Override
+    @GetMapping("get/all")
+    public QueryResponseResult getAll(
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "size", defaultValue = "5") Integer size
+    ) {
+        QueryResult result = this.stateService.findAll(page, size);
+        return new QueryResponseResult(CommonCode.SUCCESS, result);
     }
 }
