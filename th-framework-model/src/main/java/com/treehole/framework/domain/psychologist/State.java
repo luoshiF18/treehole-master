@@ -10,7 +10,6 @@ import tk.mybatis.mapper.code.Style;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -35,7 +34,7 @@ public class State implements Serializable {
     private String free;
 
     //心理咨询师咨询价格
-    private BigDecimal price;
+    private String price;
 
     //心理咨询师所执证书
     private String certificate;
