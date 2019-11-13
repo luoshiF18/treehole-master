@@ -28,4 +28,7 @@ public interface StateControllerApi {
     @ApiOperation("根据id更新心理咨询师状态信息")
     ResponseResult updateState(State state);
 
+    @ApiOperation("按照id自增查询所有状态信息")
+    QueryResponseResult getAll(Integer page, Integer size);
+
 }
