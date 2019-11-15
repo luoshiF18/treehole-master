@@ -1,6 +1,7 @@
 package com.treehole.member.api;
 
 import com.treehole.framework.domain.member.Vo.UserVo;
+import com.treehole.framework.domain.member.ext.UserExt;
 import com.treehole.framework.domain.member.result.Result;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,4 +28,6 @@ public interface UserVoApi {
 
     @GetMapping("/uservo/find/nickname")
     public UserVo getUserVoByNickname(@RequestParam("nickname") String nickname);
+    @GetMapping("/user/getUserExt")
+    public UserExt getUserExt(@RequestParam("userNickName") String userNickName);
 }

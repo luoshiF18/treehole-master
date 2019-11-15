@@ -6,7 +6,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.Collection;
-
+/**
+ * @Author: Qbl
+ * Created by 19:30 on 2019/11/12.
+ * Version: 1.0
+ */
 @Data
 @ToString
 public class UserJwt extends User {

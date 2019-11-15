@@ -17,7 +17,7 @@ spring:
         maxWait: -1
   datasource:
     druid:
-      url: jdbc:mysql://10.0.43.60:3306/th_member?useSSL=false&useUnicode=true&characterEncoding=utf-8
+      url: jdbc:mysql://10.0.43.60/th_member?useSSL=false&useUnicode=true&characterEncoding=utf-8
       username: root
       password: root
       driverClassName: com.mysql.jdbc.Driver
@@ -28,11 +28,11 @@ spring:
       testOnBorrow: true
       testOnReturn: false
       timeBetweenEvictionRunsMillis: 60000
-      minEvictableIdleTimeMillis: 300000
+      minEvictableIdleTimeMillis: 30000
 auth:
   tokenValiditySeconds: 1200
-  clientId: ThWebApp
-  clientSecret: ThWebApp
+  clientId: TreeHole
+  clientSecret: TreeHole
   cookieDomain: treehole.com
   cookieMaxAge: -1
 encrypt:

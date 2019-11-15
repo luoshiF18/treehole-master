@@ -11,7 +11,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-
+/*
+ * @Author: Qbl
+ * Created by 19:30 on 2019/11/12.
+ * Version: 1.0
+自定义用户身份验证转换器*/
 @Component
 public class CustomUserAuthenticationConverter extends DefaultUserAuthenticationConverter {
     @Autowired

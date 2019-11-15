@@ -40,9 +40,9 @@ public class AuthService {
     int tokenValiditySeconds;
     @Autowired
     RestTemplate restTemplate;
-    public AuthToken login(String username, String password, String clientId, String clientSecret) {
+    public AuthToken login(String userNickName, String password, String clientId, String clientSecret) {
         //请求Spring  security申请令牌
-        AuthToken authToken = this.applyToken( username, password, clientId, clientSecret );
+        AuthToken authToken = this.applyToken( userNickName, password, clientId, clientSecret );
         if(authToken==null){
             ExceptionCast.cast( AuthCode.AUTH_LOGIN_APPLYTOKEN_FAI);
         }
@@ -71,7 +71,7 @@ public class AuthService {
         return expire>0;
     }
     //申请令牌
-    private AuthToken applyToken(String username, String password, String clientId, String clientSecret){
+    private AuthToken applyToken(String userNickName, String password, String clientId, String clientSecret){
         //从eureka中获取认证服务的地址（因为spring security在认证服务中）
         //从eureka中获取认证服务的一个实例的地址
         ServiceInstance serviceInstance = loadBalancerClient.choose("th-treehole-member-auth");
@@ -87,7 +87,7 @@ public class AuthService {
         //定义body
         LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type","password");
-        body.add("username",username);
+        body.add("username",userNickName);
         body.add("password",password);
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(body, header);
@@ -122,7 +122,6 @@ public class AuthService {
             }
             return null;
         }
-
         AuthToken authToken = new AuthToken();
         authToken.setAccess_token((String) bodyMap.get("jti"));//用户身份令牌
         authToken.setRefresh_token((String) bodyMap.get("refresh_token"));//刷新令牌
@@ -130,14 +129,35 @@ public class AuthService {
         return authToken;
     }
 
-
-
     //获取httpbasic的串
     private String getHttpBasic(String clientId,String clientSecret){
         String string = clientId+":"+clientSecret;
         //将串进行base64编码
         byte[] encode = Base64Utils.encode(string.getBytes());
         return "Basic "+new String(encode);
+    }
+
+    //从redis查询令牌
+    public AuthToken getUserToken(String token) {
+        String key = "user_token:" + token;
+        //从redis中取到令牌信息
+        String value = stringRedisTemplate.opsForValue().get(key);
+        //转成对象
+        try {
+            value=JSON.parse(value).toString();
+            AuthToken authToken = JSON.parseObject(value, AuthToken.class);
+            return authToken;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+    //从redis中删除令牌
+    public boolean delToken(String access_token){
+        String name = "user_token:" + access_token;
+        stringRedisTemplate.delete(name);
+        return true;
     }
 
 

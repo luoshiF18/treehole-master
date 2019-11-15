@@ -1,6 +1,7 @@
 package com.treehole.api.auth;
 
 import com.treehole.framework.domain.member.request.LoginRequest;
+import com.treehole.framework.domain.member.result.JwtResult;
 import com.treehole.framework.domain.member.result.LoginResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
@@ -18,4 +19,6 @@ public interface AuthControllerApi {
 
     @ApiOperation("退出")
     public ResponseResult logout();
+    @ApiOperation("显示当前登录用户" )
+    public JwtResult userjwt();
 }

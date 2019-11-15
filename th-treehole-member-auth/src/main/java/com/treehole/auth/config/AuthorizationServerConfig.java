@@ -24,7 +24,11 @@ import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.security.KeyPair;
 
-
+/**
+ * @Author: Qbl
+ * Created by 19:30 on 2019/11/12.
+ * Version: 1.0
+ */
 @Configuration
 @EnableAuthorizationServer
 class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
@@ -57,38 +61,19 @@ class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
     public ClientDetailsService clientDetails() {
         return new JdbcClientDetailsService(dataSource);
     }
-    //客户端的配置
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        //客户端的id和密码从数据库中取 inMemory从内存中取
+        //客户端的id和密码从数据库中取
         clients.jdbc(this.dataSource).clients(this.clientDetails());
-       /* clients.inMemory()
-                .withClient("XcWebApp")//客户端id
-                .secret("XcWebApp")//密码，要保密
-                .accessTokenValiditySeconds(60)//访问令牌有效期
-                .refreshTokenValiditySeconds(60)//刷新令牌有效期
-                //授权客户端请求认证服务的类型authorization_code：根据授权码生成令牌，
-                // client_credentials:客户端认证，refresh_token：刷新令牌，password：密码方式认证
-                .authorizedGrantTypes("authorization_code", "client_credentials", "refresh_token", "password")
-                .scopes("app");//客户端范围，名称自定义，必填*/
     }
 
-    //token的存储方法
-//    @Bean
-//    public InMemoryTokenStore tokenStore() {
-//        //将令牌存储到内存
-//        return new InMemoryTokenStore();
-//    }
-//    @Bean
-//    public TokenStore tokenStore(RedisConnectionFactory redisConnectionFactory){
-//        RedisTokenStore redisTokenStore = new RedisTokenStore(redisConnectionFactory);
-//        return redisTokenStore;
-//    }
+    //Token存储的方法
     @Bean
     @Autowired
     public TokenStore tokenStore(JwtAccessTokenConverter jwtAccessTokenConverter) {
         return new JwtTokenStore(jwtAccessTokenConverter);
     }
+    //自定义Jwt
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter(CustomUserAuthenticationConverter customUserAuthenticationConverter) {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
@@ -104,23 +89,6 @@ class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
     //授权服务器端点配置
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        /*Collection<TokenEnhancer> tokenEnhancers = applicationContext.getBeansOfType(TokenEnhancer.class).values();
-        TokenEnhancerChain tokenEnhancerChain=new TokenEnhancerChain();
-        tokenEnhancerChain.setTokenEnhancers(new ArrayList<>(tokenEnhancers));
-
-        DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
-        defaultTokenServices.setReuseRefreshToken(true);
-        defaultTokenServices.setSupportRefreshToken(true);
-        defaultTokenServices.setTokenStore(tokenStore);
-        defaultTokenServices.setAccessTokenValiditySeconds(1111111);
-        defaultTokenServices.setRefreshTokenValiditySeconds(1111111);
-        defaultTokenServices.setTokenEnhancer(tokenEnhancerChain);
-
-        endpoints
-                .authenticationManager(authenticationManager)
-                .userDetailsService(userDetailsService)
-                        //.tokenStore(tokenStore);
-                .tokenServices(defaultTokenServices);*/
         endpoints.accessTokenConverter(jwtAccessTokenConverter)
                 .authenticationManager(authenticationManager)//认证管理器
                 .tokenStore(tokenStore)//令牌存储
@@ -130,14 +98,11 @@ class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
     //授权服务器的安全配置
     @Override
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-//        oauthServer.checkTokenAccess("isAuthenticated()");//校验token需要认证通过，可采用http basic认证
         oauthServer.allowFormAuthenticationForClients()
                 .passwordEncoder(new BCryptPasswordEncoder())
                 .tokenKeyAccess("permitAll()")
                 .checkTokenAccess("isAuthenticated()");
     }
-
-
 
 }
 

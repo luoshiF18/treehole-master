@@ -14,7 +14,7 @@ public enum  AuthCode implements ResultCode {
     AUTH_LOGIN_APPLYTOKEN_FAI(false,-1,"令牌为空！"),
     AUTH_LOGIN_TOKEN_SAVEFAI(false,-1,"用户令牌保存失败！"),
     AUTH_ACCOUNT_NOTEXISTS(false,-1,"用户不存在！"),
-    AUTH_CREDENTIAL_ERROR(false,-1,"申请令牌错误"),
+    AUTH_CREDENTIAL_ERROR(false,-1,"用户名或密码错误！"),
     AUTH_USERNAME_NONE(false,-1,"用户名为空！"),
     AUTH_PASSWORD_NONE(false,-1,"密码为空!")
             ;

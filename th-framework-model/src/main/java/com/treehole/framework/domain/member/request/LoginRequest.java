@@ -13,7 +13,7 @@ import lombok.ToString;
 @ToString
 public class LoginRequest extends RequestData{
 
-    String username;
+    String userNickName;
     String password;
     String verifycode;
 

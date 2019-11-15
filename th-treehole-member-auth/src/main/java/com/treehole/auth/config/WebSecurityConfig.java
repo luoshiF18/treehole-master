@@ -10,7 +10,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
+/**
+ * @Author: Qbl
+ * Created by 19:30 on 2019/11/12.
+ * Version: 1.0
+ * SpringSecurity的安全配置
+ */
 @Configuration
 @EnableWebSecurity
 @Order(-1)
