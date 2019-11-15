@@ -40,7 +40,7 @@ public class State implements Serializable {
     private String certificate;
 
     //心理咨询师微信
-    private String weChat;
+    private String we_chat;
 
     //心理咨询师qq
     private String qq;
@@ -50,10 +50,10 @@ public class State implements Serializable {
 
     //心理咨询师信息更新时间
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private Date updateTime;
+    private Date update_time;
 
     //心理咨询师信息创建时间
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private Date createTime;
+    private Date create_time;
 
 }
