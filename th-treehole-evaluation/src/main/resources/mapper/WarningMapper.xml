@@ -36,9 +36,6 @@
         left join test_scale   on warning.scale_id=test_scale.id
         where
         1=1
-        <if test="request.date1 != null and request.date2 != null ">
-            and create_time BETWEEN #{request.date1} and #{request.date2}
-        </if>
         <if test="request.userId!=null">
             AND warning.user_id=#{request.userId}
         </if>

@@ -1,15 +1,14 @@
 package com.treehole.api.member;
 
-import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.resquest.UserListRequest;
-import com.treehole.framework.domain.member.result.Result;
 import com.treehole.framework.model.response.QueryResponseResult;
-import com.treehole.framework.model.response.QueryResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  * @author shanhuijie
@@ -37,4 +36,6 @@ public interface UserVoControllerApi {
 
     @ApiOperation("根据用户user_nickname查询用户Vo信息")
     public UserVo getUserVoByNickname(@RequestParam("nickname") String nickname);
+    @ApiOperation("预警模块得到预警用户信息")
+    public List<UserVo> getAllUser(@RequestParam("listUserId") List listUserId );
 }

@@ -1,13 +1,13 @@
 package com.treehole.member.api;
 
-import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.resquest.UserListRequest;
-import com.treehole.framework.domain.member.result.Result;
 import com.treehole.framework.model.response.QueryResponseResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  * @author shanhuijie
@@ -36,4 +36,7 @@ public interface UserVoApi {
 
     @GetMapping("/uservo/find/nickname")
     public UserVo getUserVoByNickname(@RequestParam("nickname") String nickname);
+    @GetMapping("/uservo/get/warningUser")
+    public List<UserVo > getAllUser(@RequestParam("listUserId") List listUserId) ;
+
 }

@@ -75,5 +75,10 @@ public class UserVoController implements UserVoControllerApi {
         return userVoService.getUserByNickname(nickname);
 
     }
+    @Override
+    @GetMapping("/get/warningUser")
+    public List<UserVo> getAllUser(@RequestParam("listUserId") List listUserId) {
+        return userVoService.getAllUser(listUserId);
+    }
 
 }
