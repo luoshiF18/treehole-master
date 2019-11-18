@@ -1,0 +1,65 @@
+server:
+  port: 40400
+  servlet:
+    context-path: /auth
+spring:
+  application:
+    name: th-treehole-member-auth
+  redis:
+    host: 10.0.43.60
+    port: 6379
+    timeout: 5000
+    jedis:
+      pool:
+        maxActive: 3
+        maxIdle: 3
+        minIdle: 1
+        maxWait: -1
+  datasource:
+    druid:
+      url: jdbc:mysql://10.0.43.60/th_member?useSSL=false&useUnicode=true&characterEncoding=utf-8
+      username: root
+      password: root
+      driverClassName: com.mysql.jdbc.Driver
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      maxWait: 10000
+      testOnBorrow: true
+      testOnReturn: false
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 30000
+auth:
+  tokenValiditySeconds: 1200
+  clientId: TreeHole
+  clientSecret: TreeHole
+  cookieDomain: treehole.com
+  cookieMaxAge: -1
+encrypt:
+  key-store:
+    location: classpath:/th.keystore
+    secret: treeholekeystore
+    alias: thkey
+    password: treehole
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:50101/eureka/,http://localhost:50102/eureka/
+  instance:
+    prefer-ip-address:  true
+    ip-address: ${IP_ADDRESS:127.0.0.1}
+    instance-id: ${spring.application.name}:${server.port}
+ribbon:
+  MaxAutoRetries: 2
+  MaxAutoRetriesNextServer: 3
+  OkToRetryOnAllOperations: false
+  ConnectTimeout: 5000
+  ReadTimeout: 6000
+
+
+
+
+
+
