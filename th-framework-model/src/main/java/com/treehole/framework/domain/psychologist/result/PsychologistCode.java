@@ -19,7 +19,9 @@ public enum PsychologistCode implements ResultCode {
     DELETE_FAIL(false, 406, "删除失败!"),
     INSERT_FAIL(false, 407, "添加失败!"),
     UPDATE_FAIL(false, 408, "更新失败!"),
-    DATA_NULL(false, 409, "前台数据为空!");
+    DATA_NULL(false, 409, "前台数据为空!"),
+    SUGGESTION_NOT_EXIST(false, 410, "该建议信息不存在！"),
+    CONSULTATION_NOT_EXIST(false, 411, "该咨询记录不存在！");
 
     //操作是否成功,true为成功，false操作失败
     boolean success;
