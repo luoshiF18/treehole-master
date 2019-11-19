@@ -3,9 +3,11 @@ package com.treehole.psychologist;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.ComponentScan;
 import tk.mybatis.spring.annotation.MapperScan;
 
+@EnableDiscoveryClient
 @SpringBootApplication
 @EntityScan("com.treehole.framework.domain.psychologist") // 扫描实体类
 @ComponentScan(basePackages = {"com.treehole.api"}) // 扫描接口
