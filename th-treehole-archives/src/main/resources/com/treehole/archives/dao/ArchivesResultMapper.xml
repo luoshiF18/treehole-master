@@ -37,4 +37,13 @@
         AND scaleName = #{scaleName}
         ORDER BY createTime
     </select>
+    <select id="queryResultByUserId"
+            parameterType="java.lang.String"
+            resultType="java.lang.Integer">
+        SELECT
+          COUNT(id)
+        FROM
+          result
+        WHERE userId = #{userId}
+    </select>
 </mapper>

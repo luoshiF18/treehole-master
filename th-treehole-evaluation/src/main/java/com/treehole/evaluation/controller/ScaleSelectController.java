@@ -2,6 +2,7 @@ package com.treehole.evaluation.controller;
 
 import com.treehole.api.evaluation.ScaleSelectControllerApi;
 import com.treehole.evaluation.service.ScaleSelectService;
+import com.treehole.framework.domain.evaluation.Description;
 import com.treehole.framework.domain.evaluation.dto.OptionsDTO;
 import com.treehole.framework.domain.evaluation.response.*;
 import com.treehole.framework.domain.evaluation.vo.*;
@@ -44,9 +45,10 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
             @RequestParam(value = "size", defaultValue = "5") Integer size,
             @RequestParam(value = "sortBy", required = false) String sortBy,//排序方式
             @RequestParam(value = "desc", defaultValue = "false") Boolean desc,//是否降序,true是降序，false是升序
-            @RequestParam(value = "key", required = false) String key
+            @RequestParam(value = "key", required = false) String key,
+            @RequestParam(value = "typeId", required = false) String typeId
     ) {
-        QueryResult queryResult = scaleSelectService.findScale(page, size, sortBy, desc, key);
+        QueryResult queryResult = scaleSelectService.findScale(page, size, sortBy, desc, key, typeId);
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 
@@ -58,8 +60,8 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
      */
     @Override
     @GetMapping("detail")
-    public DetailResult findScaleDetail(@RequestParam(value = "scaleId",required = false) String scaleId,
-                                        @RequestParam(value = "scaleName",required = false) String scaleName) {
+    public DetailResult findScaleDetail(@RequestParam(value = "scaleId", required = false) String scaleId,
+                                        @RequestParam(value = "scaleName", required = false) String scaleName) {
         ScaleDetailVO2 scaleDetail = scaleSelectService.findScaleDetail(scaleId, scaleName);
         if (scaleDetail == null) {
             ExceptionCast.cast(EvaluationCode.SELECT_NULL);
@@ -81,20 +83,21 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
     }
 
     /**
-     * 开始测试，获取量表内容,简单类型
+     * 开始测试，获取量表内容,多选类型
      *
      * @param scaleId
      * @return
      */
     @Override
     @GetMapping("test/type1")
-    public StartTestResult startTestType1(@RequestParam(value = "scaleId", defaultValue = "") String scaleId) {
+    public StartTestResult startTestType1(@RequestParam(value = "scaleId") String scaleId,
+                                          @RequestParam(value = "nextQuestionSort", required = false) Integer nextQuestionSort) {
 //     TODO   只允许测试一次
-        TestDetailVO testDetailVO = scaleSelectService.startTestType1(scaleId);
-        if (testDetailVO == null) {
+        QuestionVO questionVO = scaleSelectService.startTestType1(scaleId, nextQuestionSort);
+        if (questionVO == null) {
             ExceptionCast.cast(EvaluationCode.SELECT_NULL);
         }
-        return new StartTestResult(CommonCode.SUCCESS, testDetailVO);
+        return new StartTestResult(CommonCode.SUCCESS, questionVO);
     }
 
     /**
@@ -186,5 +189,74 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
         }
         return new UpdateQuestionResult(CommonCode.SUCCESS, updateQuestions);
     }
+
+    /**
+     * 获取所有分类
+     *
+     * @return
+     */
+    @Override
+    @GetMapping("type/all")
+    public QueryResponseResult findScaleType() {
+        QueryResult scaleType = scaleSelectService.findScaleType();
+        return new QueryResponseResult(CommonCode.SUCCESS, scaleType);
+    }
+
+    /**
+     * 根据分类id查询量表
+     *
+     * @param page
+     * @param size
+     * @param scaleTypeId
+     * @return
+     */
+    @Override
+    @GetMapping("type")
+    public QueryResponseResult findScaleByType(
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "size", defaultValue = "5") Integer size,
+            @RequestParam(value = "scaleTypeId") String scaleTypeId,
+            @RequestParam(value = "isFree", defaultValue = "true") Boolean isFree) {
+        QueryResult queryResult = scaleSelectService.findScaleByType(page, size, scaleTypeId, isFree);
+        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
+    }
+
+    /**
+     * 根据量表id查询下一个要添加的问题id
+     *
+     * @param scaleId
+     * @return
+     */
+    @Override
+    @GetMapping("/next/sort")
+    public Integer findNextQuestionSort(@RequestParam("scaleId") String scaleId) {
+        return scaleSelectService.findNextQuestionSort(scaleId);
+    }
+
+    /**
+     * 获取一个问题的信息
+     *
+     * @param questionId
+     * @return
+     */
+    @Override
+    @GetMapping("/find/question")
+    public UpdateOneQuestionResult findOneQuestion(@RequestParam("questionId") String questionId) {
+        QuestionVO3 question = scaleSelectService.findOneQuestion(questionId);
+        return new UpdateOneQuestionResult(CommonCode.SUCCESS, question);
+    }
+
+    /**
+     * 获取一个得分描述的信息
+     *
+     * @param descId
+     * @return
+     */
+    @Override
+    @GetMapping("/find/one/desc")
+    public Description findOneDescription(@RequestParam("descId") String descId) {
+        return scaleSelectService.findOneDescription(descId);
+    }
+
 }
 
