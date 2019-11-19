@@ -12,9 +12,9 @@ import org.springframework.context.annotation.ComponentScan;
  * @date 2019/10/11 15:05
  * @description: 心理测评档案
  */
-@EnableFeignClients  //启动feign
 @EnableDiscoveryClient
 @SpringBootApplication
+@EnableFeignClients  //启动feign
 //@EntityScan(value = {"com.treehole.framework.domain.learning"})//扫描实体类
 @ComponentScan(basePackages={"com.treehole.api"})//扫描接口
 @ComponentScan(basePackages={"com.treehole.archives"})//扫描接口
