@@ -60,8 +60,14 @@ public class PointController implements PointControllerApi {
     public ResponseResult deletePointById(@PathVariable("points_id") String points_id) {
         pointService.deletePointById(points_id);
         return new ResponseResult(CommonCode.SUCCESS);
-
     }
+    @DeleteMapping("/delete/userid/{user_id}")
+    public ResponseResult deletePointByUserId(@PathVariable("user_id") String user_id){
+        pointService.deletePointByUserId(user_id);
+        return  new ResponseResult(CommonCode.SUCCESS);
+    }
+
+
 
 
 }

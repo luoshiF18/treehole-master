@@ -26,8 +26,8 @@ public class CheckinController implements CheckinControllerApi {
 
     @Override
     @GetMapping("/getAllCheckin")
-    public QueryResponseResult findAllCheckin(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                 @RequestParam(value = "size", defaultValue = "5") Integer size) {
+    public QueryResponseResult findAllCheckin(@PathVariable("page") Integer page,
+                                              @PathVariable("size") Integer size) {
         QueryResult queryResult = checkinService.findAllCheckins(page,size);
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }

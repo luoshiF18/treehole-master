@@ -2,6 +2,7 @@ package com.treehole.member.controller;
 
 import com.treehole.api.member.FreeGradeControllerApi;
 import com.treehole.framework.domain.member.FreeGrade;
+import com.treehole.framework.domain.member.resquest.GradeListRequest;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
@@ -26,9 +27,10 @@ public class FreeGradeController implements FreeGradeControllerApi {
 
     @Override
     @GetMapping("/find/all")
-    public QueryResponseResult findAllFreeGrade(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                                @RequestParam(value = "size", defaultValue = "5") Integer size) {
-        QueryResult queryResult = freegradeService.findAll(page,size);
+    public QueryResponseResult findAllFreeGrade(@PathVariable("page") Integer page,
+                                                @PathVariable("size") Integer size,
+                                                GradeListRequest gradeListRequest) {
+        QueryResult queryResult = freegradeService.findAll(page,size,gradeListRequest);
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 
@@ -41,13 +43,15 @@ public class FreeGradeController implements FreeGradeControllerApi {
     @Override
     @PostMapping("/insert")
     public ResponseResult insertFreeGrade(@RequestBody @Valid FreeGrade freeGrade) {
-        return null;
+        freegradeService.insert(freeGrade);
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
     @Override
     @DeleteMapping("/delete/{id}")
     public ResponseResult deleteFreeGrade(@PathVariable("id") String id) {
-        return null;
+        freegradeService.deleteGrade(id);
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
     @Override

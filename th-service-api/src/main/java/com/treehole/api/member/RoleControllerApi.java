@@ -23,12 +23,12 @@ public interface RoleControllerApi {
     public QueryResponseResult findAllRoles();
 
     @ApiOperation("插入一条角色信息")
-    public ResponseResult insertRole(@RequestBody @Valid Role role) ;
+    public ResponseResult insertRole(Role role) ;
 
     @ApiOperation("根据id删除角色信息")
-    public ResponseResult deleteRoleById(@PathVariable("role_id")String role_id);
+    public ResponseResult deleteRoleById(String role_id);
 
     @ApiOperation("更改角色信息")
-    public ResponseResult update(@RequestBody @Valid Role role);
+    public ResponseResult update(Role role);
 
 }

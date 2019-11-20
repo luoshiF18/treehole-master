@@ -33,6 +33,9 @@ public class CheckinService {
     @Autowired
     private PointService pointService;
 
+    /*
+    * 查询
+    * */
     public QueryResult findAllCheckins(Integer page, Integer size) {
 //        分页
         PageHelper.startPage(page, size);
@@ -47,7 +50,9 @@ public class CheckinService {
         return new QueryResult(checkins, pageInfo.getTotal());
     }
 
-
+    /*
+    * 增
+    * */
     public void insertCheckin(Checkin checkin) {
         checkin.setCheckin_id(MyNumberUtils.getUUID());
         checkin.setCheckin_time(new Date());
@@ -61,17 +66,26 @@ public class CheckinService {
         pointService.insertPoint(points);*/
     }
 
-
+    /*
+    * 根据user_id删除签到记录
+    * */
     public void deleteCheckinByUserId(String user_id) {
-
+        //1.先找
         Checkin checkin = new Checkin();
         checkin.setUser_id(user_id);
+        Checkin checkin1 = checkinMapper.selectOne(checkin);
+        if(checkin1 == null){
+            ExceptionCast.cast(MemberCode.DATA_IS_NULL);
+        }
+        //2.后删
         int del = checkinMapper.delete(checkin);
-        if(del != 1){
+        if(del < 1){
             ExceptionCast.cast(MemberCode.DELETE_FAIL);
         }
     }
-
+    /*
+    *根据user-id 查询签到记录
+    */
     public QueryResult getCheckinByUserId(String user_id, Integer page, Integer size) {
         if (StringUtils.isBlank(user_id)) {
             ExceptionCast.cast(MemberCode.SELECT_NULL);
@@ -81,13 +95,13 @@ public class CheckinService {
             Checkin checkin = new Checkin();
             checkin.setUser_id(user_id);
             List<Checkin> checkins = checkinMapper.select(checkin);
-            System.out.println("++++++++++++++++++check:" + checkins);
+            //System.out.println("++++++++++++++++++check:" + checkins);
             if (CollectionUtils.isEmpty(checkins)) {
                 ExceptionCast.cast(MemberCode.DATA_IS_NULL);
             }
             //解析分页结果
             PageInfo<Checkin> pageInfo = new PageInfo<>(pag.getResult());
-            //            获取总条数
+            //获取总条数
             //Long sizer = Long.valueOf(points.size());
             // System.out.println("+++++++++++++++++size:" +size);
             return new QueryResult(checkins, pageInfo.getTotal());

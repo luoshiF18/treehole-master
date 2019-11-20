@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.evaluation.Description;
 import com.treehole.framework.domain.evaluation.response.EvaluationCode;
 import com.treehole.framework.domain.member.Cards;
+import com.treehole.framework.domain.member.FreeGrade;
 import com.treehole.framework.domain.member.Points;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
@@ -39,6 +40,8 @@ public class PointService {
 
     @Autowired
     private CardsService cardsService;
+    @Autowired
+    private FreegradeService freegradeService;
 
 
     /**
@@ -87,6 +90,7 @@ public class PointService {
     }
     /**
      * 插入一条积分信息
+     * 前端需要传入本次操作num值、user_id
      * 会员注册后立即调用(会员)
      * 积分插入的步骤：
      *   先查询user表中的pointnow付给before，后修改
@@ -95,9 +99,6 @@ public class PointService {
      *            3.after    ：before+num
      *            4.userid   ：从前端获取
      *   最后:user表内的pointnow = after;   updateUserById() //
-     *
-     *
-     *
      * @param
      * @return int
      */
@@ -105,6 +106,21 @@ public class PointService {
     public void insertPoint(Points points)  {
         points.setPoints_id(MyNumberUtils.getUUID());
         points.setPoints_time(new Date());
+        //改变cards  目的：累计积分变化/等级变化
+        if(points.getPoints_num()>0){
+            Cards cards = cardsService.findCardsByUserId(points.getUser_id());
+
+            Integer sum =cards.getPoints_sum()+ points.getPoints_num();
+
+            //判断cars累计积分值是否大于现有等级的积分值,此功能在freegradeservice中，gradeChange()
+            String freegradeId = cardsService.findCardsByUserId(points.getUser_id()).getFreegrade_id();//通过user_id 查找用户的freegrade_id
+
+            freegradeService.gradeChange(points.getUser_id(),freegradeId,sum);
+
+            //cardsService.updateCard(cards);
+        }
+
+
         //User user = userService.getUserById(points.getUser_id());
         Cards cards = cardsService.findCardsByUserId(points.getUser_id());
         //当前用户的积分值
@@ -115,25 +131,22 @@ public class PointService {
         //points.setPoints_num("跨服务调用接口,从活动表里获取值");
         //System.out.println("++++++++++++++++benci:" +points.getPoints_num());
 
-
         points.setAct_id(points.getAct_id());
         //需要接口：根据活动id查询活动名称及活动积分值，从营销活动表内获取活动名称
-        points.setDesc("签到");
+        points.setDescription("签到");
         //later的值
         int later = points.getPoints_before() + points.getPoints_num();
         if(later < 0){  //积分值小于0 ，不可操作
             ExceptionCast.cast(MemberCode.POINT_NOT_FULL);
         }
         points.setPoints_later(later);
-        //与user表保持同步
+        //与cards表保持同步
         cards.setPoints_now(later);
-        points.setAct_id(points.getAct_id());
-        //需要接口：根据活动id查询活动名称及活动积分值，从营销活动表内获取活动名称
-        points.setDesc("签到");
 
         //System.out.println("++++++++++++++++later:" + later);
         //userService.updateUser(cards);
-        cardsService.updateCard(cards);
+
+        cardsService.updateCard(cards);//更新积分变化
         int ins = pointsMapper.insert(points);
         if( ins != 1){
             ExceptionCast.cast(MemberCode.INSERT_FAIL);
@@ -151,10 +164,27 @@ public class PointService {
      */
     public void deletePointById(String points_id) {
         //List<Points> points = this.getPointById(points_id);
+        //id不为空
+        if(org.apache.commons.lang3.StringUtils.isBlank(points_id)){
+            ExceptionCast.cast(MemberCode.DATA_ERROR);
+        }
         Points point = new Points();
         point.setPoints_id(points_id);
         int del = pointsMapper.delete(point);
-        if(del !=1){
+        if(del != 1){
+            ExceptionCast.cast(MemberCode. DELETE_FAIL);
+        }
+    }
+
+    public void deletePointByUserId(String user_id){
+        //id不为空
+        if(org.apache.commons.lang3.StringUtils.isBlank(user_id)){
+            ExceptionCast.cast(MemberCode.DATA_ERROR);
+        }
+        Points points = new Points();
+        points.setUser_id(user_id);
+        int del = pointsMapper.delete(points);
+        if(del <0 ||del==0){
             ExceptionCast.cast(MemberCode. DELETE_FAIL);
         }
     }

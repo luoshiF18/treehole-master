@@ -22,12 +22,13 @@ public interface PointControllerApi {
     public QueryResponseResult findAllPoint(Integer page, Integer size);
 
     @ApiOperation("通过user_id查询积分")
-    public QueryResponseResult getPointById(@PathVariable("user_id") String user_id,Integer page, Integer size);
+    public QueryResponseResult getPointById(String user_id,Integer page, Integer size);
 
     @ApiOperation("创建一条积分信息")
-    public ResponseResult insertPoint(@RequestBody @Valid Points points) ;
+    public ResponseResult insertPoint(Points points) ;
 
     /*@ApiOperation("通过id删除积分") 定时删除老旧数据
     public ResponseResult deletePointById(@PathVariable("points_id") String points_id);*/
-
+    @ApiOperation("通过user_id删除积分")
+    public ResponseResult deletePointByUserId(String user_id);
 }

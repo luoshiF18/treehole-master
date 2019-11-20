@@ -1,4 +1,4 @@
-package com.treehole.framework.domain.member;
+package com.treehole.framework.domain.member.Vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,12 +23,12 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @NameStyle(Style.normal)
-public class Cards implements Serializable {
+public class CardsVo implements Serializable {
     @Id //声明主键字段
     private String card_id;  //会员卡id
     private String user_id;  //用户id
-    private String paygrade_id;  //付费等级id
-    private String freegrade_id;  //非付费等级id
+    private String paygrade;  //付费等级名称
+    private String freegrade;  //非付费等级名称
     private BigDecimal consum_all;  //总消费金额
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date paygrade_start;  //付费会员办卡时间
@@ -36,5 +36,7 @@ public class Cards implements Serializable {
     private Date paygrade_end;  //付费会员到期日
     private Integer points_now;//现有积分
     private Integer points_sum;  //累计积分
+
+
 
 }

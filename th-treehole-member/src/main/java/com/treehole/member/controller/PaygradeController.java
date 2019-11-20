@@ -3,6 +3,7 @@ package com.treehole.member.controller;
 import com.treehole.api.member.PayGradeControllerApi;
 import com.treehole.framework.domain.member.PayGrade;
 import com.treehole.framework.domain.member.User;
+import com.treehole.framework.domain.member.resquest.GradeListRequest;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
@@ -27,9 +28,10 @@ public class PaygradeController implements PayGradeControllerApi {
 
     @Override
     @GetMapping("/find/all")
-    public QueryResponseResult findAllPayGrade(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                               @RequestParam(value = "size", defaultValue = "5") Integer size) {
-        QueryResult queryResult = paygradeService.findAll(page,size);
+    public QueryResponseResult findAllPayGrade(@PathVariable("page") Integer page,
+                                               @PathVariable("size") Integer size,
+                                               GradeListRequest gradeListRequest) {
+        QueryResult queryResult = paygradeService.findAll(page,size,gradeListRequest);
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 
@@ -42,14 +44,15 @@ public class PaygradeController implements PayGradeControllerApi {
     @Override
     @PostMapping ("/insert")
     public ResponseResult insertPayGrade(@RequestBody @Valid PayGrade payGrade) {
-
-        return null;
+        paygradeService.insert(payGrade);
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
     @Override
     @DeleteMapping("/delete/{id}")
     public ResponseResult deletePayGrade(@PathVariable("id") String paygrade_id) {
-        return null;
+        paygradeService.deleteGrade(paygrade_id);
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
 

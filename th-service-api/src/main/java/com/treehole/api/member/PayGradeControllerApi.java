@@ -2,6 +2,7 @@ package com.treehole.api.member;
 
 import com.treehole.framework.domain.member.FreeGrade;
 import com.treehole.framework.domain.member.PayGrade;
+import com.treehole.framework.domain.member.resquest.GradeListRequest;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
@@ -20,8 +21,10 @@ import javax.validation.Valid;
 
 public interface PayGradeControllerApi {
 
-    @ApiOperation("查询所有付费会员等级信息")
-    public QueryResponseResult findAllPayGrade(Integer page, Integer size) ;
+    @ApiOperation("根据rank,id,name查询所有付费会员等级信息")
+    public QueryResponseResult findAllPayGrade(Integer page,
+                                               Integer size,
+                                               GradeListRequest gradeListRequest) ;
 
     @ApiOperation("根据id查询付费会员等级信息")
     public PayGrade findPayGradeById(String id) ;
