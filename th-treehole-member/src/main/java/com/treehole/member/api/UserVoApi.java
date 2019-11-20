@@ -1,10 +1,7 @@
 package com.treehole.member.api;
 
-import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
-import com.treehole.framework.domain.member.resquest.UserListRequest;
 import com.treehole.framework.domain.member.result.Result;
-import com.treehole.framework.model.response.QueryResponseResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,8 +19,7 @@ public interface UserVoApi {
                                              UserListRequest userListRequest);
     /*查找所有用户*//*
     @GetMapping("/uservo/getAllUserVos")
-    public QueryResponseResult getAllUserVo();*/
-
+    public Result findAllUserVo();
     /*根据id查找用户*/
     @GetMapping("/uservo/find/userId/{user_id}")
     public UserVo getUserVoByUserId(@PathVariable("user_id") String user_id);
@@ -32,7 +28,7 @@ public interface UserVoApi {
     public UserVo getUserVoByUniqId(@PathVariable("uniq_id") String uniq_id);*/
     /*根据user_phone查找用户*/
     @GetMapping("/uservo/find/userPhone/{user_phone}")
-    public UserVo getUserVoByUserPhone(@PathVariable("user_phone") String user_phone);
+    public Result getUserVoByUserPhone(@PathVariable("user_phone") String user_phone);
 
     @GetMapping("/uservo/find/nickname")
     public UserVo getUserVoByNickname(@RequestParam("nickname") String nickname);
