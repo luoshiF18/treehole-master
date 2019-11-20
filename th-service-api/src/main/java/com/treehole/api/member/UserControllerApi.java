@@ -1,16 +1,16 @@
 package com.treehole.api.member;
 
 import com.treehole.framework.domain.member.User;
-import com.treehole.framework.domain.member.result.Result;
+import com.treehole.framework.domain.member.ext.UserExt;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * @author shanhuijie
@@ -39,7 +39,7 @@ public interface UserControllerApi {
 
     @ApiOperation("根据user对象查询用户信息")
     public User getUser(@RequestBody @Valid User user);
-
-
+    @ApiOperation( "根据用户昵称得到用户扩展对象" )
+    public UserExt getUserExt(@RequestParam("userNickName") String userNickName);
 
 }

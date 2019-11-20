@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.treehole.evaluation.dao.WarningMapper">
+
+    <delete id="deleteMoreWarning" parameterType="map">
+        DELETE FROM
+        warning
+        WHERE
+        warning.id IN
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+    <select id="findScaleWarning" resultType="com.treehole.framework.domain.evaluation.vo.WarningVo">
+        select
+        warning.id,
+        scaleName,
+        warning.user_id as userId,
+        scale_id as scaleId,
+        warning_level as warningLevel,
+        w_message as Wmessage,
+        warning.create_time as createTime
+        from warning
+        inner join test_scale on warning.scale_id=test_scale.id
+    </select>
+    <select id="getWaning" parameterType="com.treehole.framework.domain.evaluation.request.WarnRequest" resultType="com.treehole.framework.domain.evaluation.vo.WarningVo">
+        select
+        warning.id,
+        test_scale.scaleName,
+        warning.status,
+        user_id as userId,
+        warning_level as warningLevel,
+        w_message as wMessage,
+        create_time as createTime
+        from warning
+        left join test_scale   on warning.scale_id=test_scale.id
+        where
+        1=1
+        <if test="request.date1 != null and request.date2 != null ">
+            and create_time BETWEEN #{request.date1} and #{request.date2}
+        </if>
+        <if test="request.userId!=null">
+            AND warning.user_id=#{request.userId}
+        </if>
+        <if test="request.scaleName != null and request.scaleName !=''">
+            and test_scale.scaleName =#{request.scaleName}
+        </if>
+        <if test="request.warningLevel != 0">
+            and warning.warning_level=#{request.warningLevel}
+        </if>
+    </select>
+
+
+
+
+</mapper>
+
+
+
+
+
+
