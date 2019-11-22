@@ -29,7 +29,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     UserClient userClient;
-   @Autowired
+    @Autowired
     ClientDetailsService clientDetailsService;
 
     @Override

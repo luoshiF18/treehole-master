@@ -1,21 +1,13 @@
 package com.treehole.member.controller;
 
 import com.treehole.api.member.UserVoControllerApi;
-import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.resquest.UserListRequest;
-import com.treehole.framework.domain.member.result.Result;
-import com.treehole.framework.domain.member.result.ResultEnum;
-import com.treehole.framework.domain.member.result.ResultUtil;
-import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
-import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.service.UserService;
 import com.treehole.member.service.UserVoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * @author shanhuijie
