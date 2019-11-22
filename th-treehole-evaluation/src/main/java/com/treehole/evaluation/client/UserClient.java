@@ -20,13 +20,10 @@ public interface UserClient {
     public UserVo getUserVoByNickname(@RequestParam("nickname") String nickname);
 
     @GetMapping("/uservo/get/warningUser")
-    public List<UserVo > getAllUser(@RequestParam("listUserId") List listUserId) ;
+    public List<UserVo> getAllUser(@RequestParam("listUserId") List listUserId);
 
     @GetMapping("/uservo/find/userId/{user_id}")
     public UserVo getUserVoByUserId(@PathVariable("user_id") String user_id);
-
-
-
 
 
 }

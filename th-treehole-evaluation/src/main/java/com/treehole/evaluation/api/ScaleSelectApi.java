@@ -47,4 +47,27 @@ public interface ScaleSelectApi {
     @GetMapping("/scale/select/option")
     public UserOptionResult findUserOption(@RequestParam("scaleName") String scaleName,
                                            @RequestParam("userId") String userId);
+
+    /**
+     * 获取所有分类
+     *
+     * @return
+     */
+    @GetMapping("/scale/select/type/all")
+    public QueryResponseResult findScaleType();
+
+    /**
+     * 根据分类id查询量表
+     *
+     * @param page
+     * @param size
+     * @param scaleTypeId
+     * @return
+     */
+    @GetMapping("/scale/select/type")
+    public QueryResponseResult findScaleByType(
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "size", defaultValue = "5") Integer size,
+            @RequestParam(value = "scaleTypeId") String scaleTypeId,
+            @RequestParam(value = "isFree", defaultValue = "true") Boolean isFree);
 }
