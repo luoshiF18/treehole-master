@@ -55,7 +55,6 @@ public class UserVoService {
         if (userListRequest == null){
             userListRequest = new UserListRequest();
         }
-
         User user1 = new User();
         //判断不为空字符串
         if(StringUtils.isNotEmpty(userListRequest.getUser_id())){
@@ -67,7 +66,6 @@ public class UserVoService {
         if(StringUtils.isNotEmpty(userListRequest.getUser_phone())){
             user1.setUser_phone(userListRequest.getUser_phone());
         }
-
         //查询
         List<User> users = userMapper.select(user1);
 
@@ -86,7 +84,7 @@ public class UserVoService {
             uservo.setUser_image(user.getUser_image());
             uservo.setUser_name(user.getUser_name());
             uservo.setUser_nickname(user.getUser_nickname());
-            uservo.setGender(user.getGender());
+            uservo.setGender(user.getGender() == 0 ? "男":"女");
             try {
                 uservo.setAge(GetAgeByBirthUtils.getAgeByBirth(user.getUser_birth()));
             } catch (ParseException e) {
@@ -101,17 +99,9 @@ public class UserVoService {
             uservo.setUser_createtime(user.getUser_createtime());
             uservo.setCompany_id(user.getCompany_id());
             //显示user类型
-             if(user.getUser_type() == 0){
-                uservo.setUser_type("个人");
-            }else if(user.getUser_type() == 1){
-                uservo.setUser_type("企业");
-            }
+            uservo.setUser_type(user.getUser_type() == 0 ? "个人":"企业");
             //显示user状态
-            if(user.getUser_status() == 0){
-                uservo.setUser_status("正常");
-            }else if(user.getUser_status() == 1){
-                uservo.setUser_status("禁止");
-            }
+            uservo.setUser_status(user.getUser_status() == 0 ? "正常":"禁止");
             userVos.add(uservo);
         }
         //解析分页结果
@@ -132,9 +122,9 @@ public class UserVoService {
     public UserVo getUserByUserId(String user_id) {
 
         User user = userService.getUserById(user_id);
-        if(user == null){
+        /*if(user == null){
             ExceptionCast.cast(MemberCode.USER_NOT_EXIST);
-        }
+        }*/
         String roleId=user.getRole_id();
         Role role = new Role();
         role.setRole_id(roleId);
@@ -144,7 +134,7 @@ public class UserVoService {
         uservo.setUser_image(user.getUser_image());
         uservo.setUser_name(user.getUser_name());
         uservo.setUser_nickname(user.getUser_nickname());
-        uservo.setGender(user.getGender());
+        uservo.setGender(user.getGender() == 0 ? "男":"女");
         try {
             uservo.setAge(GetAgeByBirthUtils.getAgeByBirth(user.getUser_birth()));
         } catch (ParseException e) {
@@ -158,6 +148,10 @@ public class UserVoService {
         uservo.setUser_region(user.getUser_region());
         uservo.setUser_createtime(user.getUser_createtime());
         uservo.setCompany_id(user.getCompany_id());
+        //显示user类型
+        uservo.setUser_type(user.getUser_type() == 0 ? "个人":"企业");
+        //显示user状态
+        uservo.setUser_status(user.getUser_status() == 0 ? "正常":"禁止");
         return uservo;
     }
 
@@ -180,7 +174,7 @@ public class UserVoService {
         uservo.setUser_image(user.getUser_image());
         uservo.setUser_name(user.getUser_name());
         uservo.setUser_nickname(user.getUser_nickname());
-        uservo.setGender(user.getGender());
+        uservo.setGender(user.getGender() == 0 ? "男":"女");
         try {
             uservo.setAge(GetAgeByBirthUtils.getAgeByBirth(user.getUser_birth()));
         } catch (ParseException e) {
@@ -194,7 +188,10 @@ public class UserVoService {
         uservo.setUser_region(user.getUser_region());
         uservo.setUser_createtime(user.getUser_createtime());
         uservo.setCompany_id(user.getCompany_id());
-
+        //显示user类型
+        uservo.setUser_type(user.getUser_type() == 0 ? "个人":"企业");
+        //显示user状态
+        uservo.setUser_status(user.getUser_status() == 0 ? "正常":"禁止");
         return uservo;
     }
 
@@ -217,7 +214,7 @@ public class UserVoService {
         uservo.setUser_image(user.getUser_image());
         uservo.setUser_name(user.getUser_name());
         uservo.setUser_nickname(user.getUser_nickname());
-        uservo.setGender(user.getGender());
+        uservo.setGender(user.getGender() == 0 ? "男":"女");
         try {
             uservo.setAge(GetAgeByBirthUtils.getAgeByBirth(user.getUser_birth()));
         } catch (ParseException e) {
@@ -232,18 +229,9 @@ public class UserVoService {
         uservo.setUser_createtime(user.getUser_createtime());
         uservo.setCompany_id(user.getCompany_id());
         //显示user类型
-        if(user.getUser_type() == 0){
-            uservo.setUser_type("个人");
-        }else if(user.getUser_type() == 1){
-            uservo.setUser_type("企业");
-        }
+        uservo.setUser_type(user.getUser_type() == 0 ? "个人":"企业");
         //显示user状态
-        if(user.getUser_status() == 0){
-            uservo.setUser_status("正常");
-        }else if(user.getUser_status() == 1){
-            uservo.setUser_status("禁止");
-        }
-
+        uservo.setUser_status(user.getUser_status() == 0 ? "正常":"禁止");
         return uservo;
     }
 

@@ -32,16 +32,16 @@ public interface UserControllerApi {
     public User getUserById(@PathVariable("id") String id)  ;*/
 
     @ApiOperation("创建一条用户信息")
-    public ResponseResult insertUser(@RequestBody @Valid User user);
+    public ResponseResult insertUser(User user);
 
     @ApiOperation("通过id删除用户")
-    public ResponseResult deleteUserById(@PathVariable("user_id")String user_id) ;
+    public ResponseResult deleteUserById(String user_id) ;
 
     @ApiOperation("更新用户基本信息")
-    public ResponseResult update(@RequestBody @Valid User user);
+    public ResponseResult update(User user);
 
     @ApiOperation("更新用户手机号")
-    public ResponseResult updateUserPhone(@RequestBody @Valid User user);
+    public ResponseResult updateUserPhone(User user);
 
 
 

@@ -20,7 +20,7 @@ import javax.validation.Valid;
  * @Date 2019.11.07 16:31
  */
 @RestController
-@RequestMapping("paygrade")
+@RequestMapping("member/paygrade")
 public class PaygradeController implements PayGradeControllerApi {
 
     @Autowired

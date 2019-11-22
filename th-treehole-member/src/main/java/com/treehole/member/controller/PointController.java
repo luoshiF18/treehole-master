@@ -21,32 +21,22 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("point")
+@RequestMapping("member/point")
 public class PointController implements PointControllerApi {
 
     @Autowired
     private PointService pointService;
 
-    @Override
-    @GetMapping("/getAllPoints")
-    public QueryResponseResult findAllPoint(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                            @RequestParam(value = "size", defaultValue = "5") Integer size)
-    {
-        QueryResult queryResult = pointService.findAllPoints(page,size);
-        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
-    }
-
 
     //http://localhost:40300/point/find/id/2?page=2
     @Override
-    @GetMapping("/find/id/{user_id}")
-    public QueryResponseResult getPointById(@PathVariable("user_id") String user_id,
-                                            @RequestParam(value = "page", defaultValue = "1") Integer page,
-                                            @RequestParam(value = "size", defaultValue = "5") Integer size)  {
-        QueryResult pointById= pointService.getPointById(user_id,page,size);
-        return new QueryResponseResult(CommonCode.SUCCESS, pointById);
-    }
+    @GetMapping("/find/id/{page}/{size}")
+    public QueryResponseResult findAllPoint(@PathVariable("page") Integer page,
+                                            @PathVariable("size") Integer size,
+                                            String user_id)  {
+         return pointService.findAllPoints(page,size,user_id);
 
+    }
 
     @Override
     @PostMapping("/insert")
@@ -57,10 +47,10 @@ public class PointController implements PointControllerApi {
     /*该删除方法保留，暂时不用！！*/
     //@Override
     //@DeleteMapping(value = "/delete/id/{points_id}")
-    public ResponseResult deletePointById(@PathVariable("points_id") String points_id) {
+    /*public ResponseResult deletePointById(@PathVariable("points_id") String points_id) {
         pointService.deletePointById(points_id);
         return new ResponseResult(CommonCode.SUCCESS);
-    }
+    }*/
     @DeleteMapping("/delete/userid/{user_id}")
     public ResponseResult deletePointByUserId(@PathVariable("user_id") String user_id){
         pointService.deletePointByUserId(user_id);

@@ -19,10 +19,10 @@ import javax.validation.Valid;
 @Api(value = "用户积分信息管理", description = "对用户积分信息进行增、删、查")
 public interface PointControllerApi {
     @ApiOperation("查询所有积分")
-    public QueryResponseResult findAllPoint(Integer page, Integer size);
+    public QueryResponseResult findAllPoint(Integer page, Integer size,String user_id);
 
-    @ApiOperation("通过user_id查询积分")
-    public QueryResponseResult getPointById(String user_id,Integer page, Integer size);
+    /*@ApiOperation("通过user_id查询积分")
+    public QueryResponseResult getPointById(String user_id,Integer page, Integer size);*/
 
     @ApiOperation("创建一条积分信息")
     public ResponseResult insertPoint(Points points) ;

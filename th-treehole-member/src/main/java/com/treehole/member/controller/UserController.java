@@ -23,7 +23,7 @@ import java.util.List;
  * @Date
  */
 @RestController
-@RequestMapping("user")
+@RequestMapping("member/user")
 public class UserController implements UserControllerApi {
     @Autowired
     private UserService userService;

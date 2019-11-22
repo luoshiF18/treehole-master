@@ -92,7 +92,7 @@ public class UserService {
         User user = new User();
         user.setUser_id(user_id);
         User users = userMapper.selectOne(user);
-        if(user == null){
+        if(users == null){
             ExceptionCast.cast(MemberCode.USER_NOT_EXIST);
         }
         return users;
@@ -133,6 +133,7 @@ public class UserService {
      * @param user
      * @return int
      */
+    @Transactional
     public void insertUser(User user)  {
         if(user == null){
             //抛出异常，非法参数异常。指定异常信息的内容

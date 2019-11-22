@@ -2,6 +2,7 @@ package com.treehole.member.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.treehole.framework.domain.member.Cards;
 import com.treehole.framework.domain.member.PayGrade;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.resquest.GradeListRequest;
@@ -10,13 +11,19 @@ import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.mapper.PaygradeMapper;
+import com.treehole.member.myUtil.AddDateUtil;
 import com.treehole.member.myUtil.MyNumberUtils;
+import io.swagger.models.auth.In;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,6 +37,9 @@ public class PaygradeService {
 
     @Autowired
     private PaygradeMapper paygradeMapper;
+
+    @Autowired
+    private CardsService cardsService;
     //根据id查询等级
     public PayGrade getById(String id){
         PayGrade payGrade = new PayGrade();
@@ -136,6 +146,29 @@ public class PaygradeService {
 
     /*
     *
-    * 等级变化*/
+    * 等级变化
+    *
+    * */
+    public void gradeChange(String user_id,String  paygrade_id){
+        //通过paygrade_id得到等级对象
+        PayGrade payGrade1 = this.getById(paygrade_id);
+        Integer day =payGrade1.getCard_legality();
+        long day1 = day.longValue();
+        Date dateStart = new Date();
+        Date end = new Date();
+        try {
+            Date dateEnd = AddDateUtil.addDate(dateStart,day1);
+            end = dateEnd;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Cards cards = cardsService.findCardsByUserId(user_id);
+        cards.setPaygrade_start(dateStart);
+        cards.setPaygrade_end(end);
+
+        //修改cards
+        cardsService.updateCard(cards);
+
+    }
 
 }

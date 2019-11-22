@@ -8,6 +8,7 @@ import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -21,8 +22,8 @@ import javax.validation.Valid;
 @Api(value = "会员卡信息管理", description = "对会员卡信息进行增/删/改/查")
 public interface CardsControllerApi {
     @ApiOperation("查询所有会员卡信息(user_id,card_id,phone)")
-    public QueryResponseResult findAllCards( int page,
-                                             int size,
+    public QueryResponseResult findAllCards( Integer page,
+                                             Integer size,
                                             CardListRequest cardListRequest) ;
 
     @ApiOperation("插入一条会员卡信息")

@@ -19,7 +19,7 @@ import javax.validation.Valid;
  * @Date 2019.11.07 19:35
  */
 @RestController
-@RequestMapping("freegrade")
+@RequestMapping("member/freegrade")
 public class FreeGradeController implements FreeGradeControllerApi {
 
     @Autowired

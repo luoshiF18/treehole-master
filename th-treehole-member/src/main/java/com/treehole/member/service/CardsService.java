@@ -1,5 +1,6 @@
 package com.treehole.member.service;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.evaluation.Scale;
@@ -7,10 +8,13 @@ import com.treehole.framework.domain.member.Cards;
 import com.treehole.framework.domain.member.FreeGrade;
 import com.treehole.framework.domain.member.PayGrade;
 import com.treehole.framework.domain.member.User;
+import com.treehole.framework.domain.member.Vo.CardsVo;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.resquest.CardListRequest;
 import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.exception.ExceptionCast;
+import com.treehole.framework.model.response.CommonCode;
+import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.mapper.CardsMapper;
 import com.treehole.member.mapper.FreegradeMapper;
@@ -25,6 +29,7 @@ import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,46 +51,6 @@ public class CardsService {
     private  UserVoService userVoService;
     @Autowired
     private  PointService pointService;
-    /*
-    *查询
-    * */
-    public QueryResult findAllCards(Integer page,
-                                    Integer size,
-                                    CardListRequest cardListRequest) {
-        //分页
-        PageHelper.startPage(page, size);
-        Example example = new Example(Cards.class);
-        //
-        if(cardListRequest == null){
-            cardListRequest =new CardListRequest();
-        }
-        Cards cards = new Cards();
-        if(StringUtils.isNotEmpty(cardListRequest.getCard_id())){
-            cards.setCard_id(cardListRequest.getCard_id());
-        }
-        if(StringUtils.isNotEmpty(cardListRequest.getUser_id())){
-            cards.setUser_id(cardListRequest.getUser_id());
-        }
-        if (StringUtils.isNotEmpty(cardListRequest.getUser_phone())) {
-            UserVo user = userVoService.getUserByUserPhone(cardListRequest.getUser_phone());
-            String id1=user.getUser_id();
-            String id2=cardListRequest.getUser_id();
-
-            if(user.getUser_id().equals(cardListRequest.getUser_id()) ){
-                cards.setUser_id(user.getUser_id());
-            }else{
-                ExceptionCast.cast(MemberCode.DATA_IS_NULL);
-            }
-        }
-        //查询
-        List<Cards> cardsList = cardsMapper.select(cards);
-        if (CollectionUtils.isEmpty(cardsList)) {
-            ExceptionCast.cast(MemberCode.DATA_IS_NULL);
-        }
-        //        解析分页结果
-        PageInfo<Cards> pageInfo = new PageInfo<>(cardsList);
-        return new QueryResult(cardsList, pageInfo.getTotal());
-    }
 
 
     /*
@@ -116,9 +81,10 @@ public class CardsService {
         cards.setCard_id(MyNumberUtils.getUUID());
         cards.setUser_id(id);
         //int paygrade_id = CardsService.findGradeByRank(1);
-        PayGrade payGrade = new PayGrade();
+        /*PayGrade payGrade = new PayGrade();
         payGrade.setRank(0);
-        cards.setPaygrade_id(paygradeMapper.selectOne(payGrade).getPaygrade_id());
+        cards.setPaygrade_id(paygradeMapper.selectOne(payGrade).getPaygrade_id());*/
+        cards.setPaygrade_id(null);
         FreeGrade freeGrade = new FreeGrade();
         freeGrade.setRank(0);
         cards.setFreegrade_id(freegradeMapper.selectOne(freeGrade).getFreegrade_id());
@@ -130,6 +96,9 @@ public class CardsService {
         }
     }
 
+    /*
+    * 根据userID查找cards
+    * */
     public Cards findCardsByUserId(String id){
        Cards cards = new Cards();
        cards.setUser_id(id);

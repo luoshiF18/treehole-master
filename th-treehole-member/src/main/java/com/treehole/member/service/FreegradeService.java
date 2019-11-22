@@ -64,7 +64,7 @@ public class FreegradeService {
 
         return new QueryResult(grades, pageInfo.getTotal());
     }
-
+    /*通过等级id查询等级对象*/
     public FreeGrade getById(String id) {
         FreeGrade freeGrade = new FreeGrade();
         freeGrade.setFreegrade_id(id);

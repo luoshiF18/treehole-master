@@ -19,26 +19,28 @@ import javax.validation.Valid;
  * @Date 2019.10.25 10:00
  */
 @RestController
-@RequestMapping("checkin")
+@RequestMapping("member/checkin")
 public class CheckinController implements CheckinControllerApi {
     @Autowired
     private CheckinService checkinService;
 
     @Override
-    @GetMapping("/getAllCheckin")
+    @GetMapping("/getAllCheckin/{page}/{size}")
     public QueryResponseResult findAllCheckin(@PathVariable("page") Integer page,
-                                              @PathVariable("size") Integer size) {
-        QueryResult queryResult = checkinService.findAllCheckins(page,size);
-        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
+                                              @PathVariable("size") Integer size,
+                                              String user_id) {
+        return checkinService.findAllCheckins(page,size,user_id);
+
     }
 
-    @Override
-    @GetMapping("/find/id/{user_id}")
-    public QueryResponseResult findCheckinByUserId(@PathVariable("user_id") String user_id, @RequestParam(value = "page", defaultValue = "1") Integer page,
-                                              @RequestParam(value = "size", defaultValue = "5") Integer size) {
+  /*  @Override
+    @GetMapping("/find/id/{page}/{size}/{user_id}")
+    public QueryResponseResult findCheckinByUserId(@PathVariable("user_id") String user_id,
+                                                   @PathVariable("page") Integer page,
+                                                  @PathVariable("size") Integer size) {
         QueryResult checkinById= checkinService.getCheckinByUserId(user_id,page,size);
         return new QueryResponseResult(CommonCode.SUCCESS, checkinById);
-    }
+    }*/
 
     @Override
     @PostMapping("/insert")

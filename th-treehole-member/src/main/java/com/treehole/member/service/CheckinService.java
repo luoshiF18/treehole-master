@@ -6,8 +6,13 @@ import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.evaluation.response.EvaluationCode;
 import com.treehole.framework.domain.member.Checkin;
 import com.treehole.framework.domain.member.Points;
+import com.treehole.framework.domain.member.User;
+import com.treehole.framework.domain.member.Vo.CheckinVo;
+import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.exception.ExceptionCast;
+import com.treehole.framework.model.response.CommonCode;
+import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.mapper.CheckinMapper;
 import com.treehole.member.myUtil.MyNumberUtils;
@@ -18,6 +23,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,22 +38,43 @@ public class CheckinService {
     private CheckinMapper checkinMapper;
     @Autowired
     private PointService pointService;
+    @Autowired
+    private UserVoService userVoService;
 
     /*
     * 查询
     * */
-    public QueryResult findAllCheckins(Integer page, Integer size) {
-//        分页
-        PageHelper.startPage(page, size);
-        //查询
-        List<Checkin> checkins = checkinMapper.selectAll();
+    public QueryResponseResult findAllCheckins(Integer page,
+                                       Integer size,
+                                       String user_id) {
+        List<Checkin> checkins = new ArrayList<Checkin>();
+        //分页
+        Page pag =PageHelper.startPage(page,size);
+        if(StringUtils.isNotEmpty(user_id)){
+            Checkin ch = new Checkin();
+            ch.setUser_id(user_id);
+            checkins = checkinMapper.select(ch);
+        }else{
+            checkins = checkinMapper.selectAll();
+        }
         if (CollectionUtils.isEmpty(checkins)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
-        //        解析分页结果
-        PageInfo<Checkin> pageInfo = new PageInfo<>(checkins);
-
-        return new QueryResult(checkins, pageInfo.getTotal());
+        List<CheckinVo> checkinVos = new ArrayList<CheckinVo>();
+        for(Checkin check : checkins){
+            CheckinVo cv = new CheckinVo();
+            UserVo uservo = userVoService.getUserByUserId(check.getUser_id());
+            cv.setNickname(uservo.getUser_nickname());
+            cv.setCheckin_id(check.getUser_id());
+            cv.setCheckin_time(check.getCheckin_time());
+            checkinVos.add(cv);
+        }
+        //解析分页结果
+        PageInfo<CheckinVo> pageInfo = new PageInfo<CheckinVo>(pag.getResult());
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(checkinVos);
+        queryResult.setTotal(pageInfo.getTotal());
+        return new QueryResponseResult(CommonCode.SUCCESS,queryResult);
     }
 
     /*

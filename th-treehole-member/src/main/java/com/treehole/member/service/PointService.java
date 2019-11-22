@@ -5,13 +5,13 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.evaluation.Description;
 import com.treehole.framework.domain.evaluation.response.EvaluationCode;
-import com.treehole.framework.domain.member.Cards;
-import com.treehole.framework.domain.member.FreeGrade;
-import com.treehole.framework.domain.member.Points;
-import com.treehole.framework.domain.member.User;
+import com.treehole.framework.domain.member.*;
+import com.treehole.framework.domain.member.Vo.CheckinVo;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.exception.ExceptionCast;
+import com.treehole.framework.model.response.CommonCode;
+import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.mapper.PointsMapper;
 import com.treehole.member.mapper.UserMapper;
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -50,7 +51,9 @@ public class PointService {
      * @param
      * @return List<Points>
      */
-    public QueryResult findAllPoints(Integer page, Integer size){
+    public QueryResult findAllPoints1(Integer page,
+                                     Integer size,
+                                     String user_id){
 //        分页
         PageHelper.startPage(page, size);
         //查询
@@ -71,22 +74,29 @@ public class PointService {
      * @return List<Points>
      */
 
-    public QueryResult getPointById(String user_id,Integer page, Integer size){
-        if (StringUtils.isNotBlank(user_id)) {
-            Page pag =PageHelper.startPage(page,size);
+    public QueryResponseResult findAllPoints(Integer page,
+                                            Integer size,
+                                            String user_id){
+
+        List<Points> points = new ArrayList<Points>();
+        Page pag =PageHelper.startPage(page,size);
+        if (StringUtils.isNotEmpty(user_id)) {
             Points point = new Points();
             point.setUser_id(user_id);
-            List<Points> points = pointsMapper.select(point);
-            //解析分页结果
-            PageInfo<Points> pageInfo = new PageInfo<>(pag.getResult());
-            //            获取总条数
-            //Long sizer = Long.valueOf(points.size());
-           // System.out.println("+++++++++++++++++size:" +size);
-            return new QueryResult(points, pageInfo.getTotal());
+            points = pointsMapper.select(point);
         } else {
-            ExceptionCast.cast(MemberCode.SELECT_NULL);
-            return null;
+            points = pointsMapper.selectAll();
         }
+        if (CollectionUtils.isEmpty(points)) {
+            ExceptionCast.cast(MemberCode.DATA_IS_NULL);
+        }
+
+        //解析分页结果
+        PageInfo<Points> pageInfo = new PageInfo<Points>(pag.getResult());
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(points);
+        queryResult.setTotal(pageInfo.getTotal());
+        return new QueryResponseResult(CommonCode.SUCCESS,queryResult);
     }
     /**
      * 插入一条积分信息

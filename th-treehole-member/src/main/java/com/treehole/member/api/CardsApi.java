@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  */
 public interface CardsApi {
     /*根据user_id,cards_id,user_phone,查询所有Vo用户信息*/
-    @GetMapping("/card/getAllCards/{page}/{size}")
+    @GetMapping("member/card/getAllCards/{page}/{size}")
     public QueryResponseResult findAllUserVo(@PathVariable("page") Integer page,
                                              @PathVariable("size") Integer size,
                                              CardListRequest cardListRequest);

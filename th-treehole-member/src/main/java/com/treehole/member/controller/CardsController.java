@@ -21,7 +21,7 @@ import javax.validation.Valid;
  * @Date 2019.10.25 18:18
  */
 @RestController
-@RequestMapping("card")
+@RequestMapping("member/card")
 public class CardsController implements CardsControllerApi {
     @Autowired
     private CardsService cardsService;
@@ -29,8 +29,8 @@ public class CardsController implements CardsControllerApi {
     private CardsVoService cardsVoService;
     @Override
     @GetMapping("/getAllCards/{page}/{size}")
-        public QueryResponseResult findAllCards(@PathVariable("page") int page,
-                                                @PathVariable("size") int size,
+        public QueryResponseResult findAllCards(@PathVariable("page") Integer page,
+                                                @PathVariable("size") Integer size,
                                                 CardListRequest cardListRequest) {
         return cardsVoService.findAllCardVos(page,size,cardListRequest);
     }
