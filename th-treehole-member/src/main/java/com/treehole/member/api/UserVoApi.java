@@ -1,13 +1,13 @@
 package com.treehole.member.api;
 
-import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.resquest.UserListRequest;
-import com.treehole.framework.domain.member.result.Result;
 import com.treehole.framework.model.response.QueryResponseResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  * @author shanhuijie
@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 public interface UserVoApi {
     /*根据user_id,user_nickname,user_phone,查询所有Vo用户信息*/
-    @GetMapping("/getAllUserVos")
-    public QueryResponseResult findAllUserVo(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                             @RequestParam(value = "size", defaultValue = "5") Integer size,
+    @GetMapping("/uservo/getAllUserVos/{page}/{size}")
+    public QueryResponseResult findAllUserVo(@PathVariable("page") Integer page,
+                                             @PathVariable("size") Integer size,
                                              UserListRequest userListRequest);
     /*查找所有用户*//*
     @GetMapping("/uservo/getAllUserVos")
@@ -36,4 +36,7 @@ public interface UserVoApi {
 
     @GetMapping("/uservo/find/nickname")
     public UserVo getUserVoByNickname(@RequestParam("nickname") String nickname);
+    @GetMapping("/uservo/get/warningUser")
+    public List<UserVo > getAllUser(@RequestParam("listUserId") List listUserId) ;
+
 }

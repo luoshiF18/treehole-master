@@ -3,7 +3,9 @@ package com.treehole.archives.controller;
 import com.treehole.api.archives.PersonArchivesApi;
 import com.treehole.archives.service.PersonArchivesService;
 import com.treehole.framework.domain.archives.ext.ArchivesExt;
+import com.treehole.framework.domain.archives.response.ArchivesCountResult;
 import com.treehole.framework.domain.archives.resquest.ArchivesListRequest;
+import com.treehole.framework.domain.member.resquest.UserListRequest;
 import com.treehole.framework.model.response.QueryResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -47,5 +49,32 @@ public class PersonArchivesController implements PersonArchivesApi {
     public ArchivesExt findArchivesExt(
             ArchivesListRequest archivesListRequest) {
         return personArchivesService.findArchivesExt(archivesListRequest);
+    }
+
+    /**
+     * 查询所有用户的档案接口
+     * @param page
+     * @param size
+     * @param userListRequest
+     * @return
+     */
+    @Override
+    @GetMapping("/person/allUser/{page}/{size}")
+    public QueryResponseResult findAllUserArchivesList(
+            @PathVariable("page") Integer page,
+            @PathVariable("size") Integer size,
+            UserListRequest userListRequest) {
+        return personArchivesService.findAllUserArchivesList(page,size,userListRequest);
+    }
+
+    /**
+     * 根据用户id查询用户是否有作答记录
+     * @param userId
+     * @return
+     */
+    @Override
+    @GetMapping("/person/findCount")
+    public ArchivesCountResult findArchivesCount(@RequestParam("userId") String userId) {
+        return personArchivesService.findArchivesCount(userId);
     }
 }

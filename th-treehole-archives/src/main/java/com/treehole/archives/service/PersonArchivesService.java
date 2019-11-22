@@ -1,5 +1,6 @@
 package com.treehole.archives.service;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.treehole.archives.client.ScaleSelectClient;
 import com.treehole.archives.client.UserVoClient;
@@ -8,10 +9,12 @@ import com.treehole.framework.domain.archives.ext.ArchivesExt;
 import com.treehole.framework.domain.archives.ext.ArchivesList;
 import com.treehole.framework.domain.archives.ext.ResultTiny;
 import com.treehole.framework.domain.archives.response.ArchivesCode;
+import com.treehole.framework.domain.archives.response.ArchivesCountResult;
 import com.treehole.framework.domain.archives.resquest.ArchivesListRequest;
 import com.treehole.framework.domain.evaluation.response.DetailResult;
 import com.treehole.framework.domain.evaluation.vo.ScaleDetailVO2;
 import com.treehole.framework.domain.member.Vo.UserVo;
+import com.treehole.framework.domain.member.resquest.UserListRequest;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
@@ -50,11 +53,9 @@ public class PersonArchivesService {
            ExceptionCast.cast(CommonCode.INVALID_PARAM);
         }
         //判断页码是否合法
-        if (page <= 0){
-            page = 1;
+        if (page < 0){
+            page = 0;
         }
-        //因为传来的页码是从1开始的,所以在这里需要减1
-        page--;
         //判断size是否合法,默认值为8页
         if (size <= 0){
             size = 8;
@@ -62,8 +63,8 @@ public class PersonArchivesService {
         //设置分页
         PageHelper.startPage(page,size);
         //查询用户做的量表档案
-        List<ArchivesList> archivesLists = archivesResultMapper.findArchivesListByUserId(archivesListRequest.getUserId());
-        if (archivesLists == null){
+        Page<ArchivesList> pageInfo = archivesResultMapper.findArchivesListByUserId(archivesListRequest.getUserId());
+        if (pageInfo == null){
             ExceptionCast.cast(ArchivesCode.ARCHIVES_PERSONRESULTVO_ISNULL);
         }
         //暂时先不设置用户数据
@@ -72,8 +73,8 @@ public class PersonArchivesService {
 
         //构建返回查询对象
         QueryResult<ArchivesList> queryResult = new QueryResult<>();
-        queryResult.setList(archivesLists);
-        queryResult.setTotal(archivesLists.size());
+        queryResult.setList(pageInfo.getResult());
+        queryResult.setTotal(pageInfo.getTotal());
         return new QueryResponseResult(CommonCode.SUCCESS,queryResult);
     }
 
@@ -122,5 +123,45 @@ public class PersonArchivesService {
         //设置主题描述
         archivesExt.setTopicBackground(scaleDetail.getTopicBackground());
         return archivesExt;
+    }
+
+    /**
+     * 查询所有用户档案
+     * @param page
+     * @param size
+     * @param userListRequest
+     * @return
+     */
+    public QueryResponseResult findAllUserArchivesList(
+            Integer page,
+            Integer size,
+            UserListRequest userListRequest) {
+        //判断请求条件的合法性
+        if (userListRequest == null){
+            userListRequest = new UserListRequest();
+        }
+        //判断页码是否合法
+        if (page < 0){
+            page = 0;
+        }
+        //判断size是否合法,默认值为8页
+        if (size <= 0){
+            size = 8;
+        }
+        //远程调用用户查询接口
+        return userVoClient.findAllUserVo(page,size,userListRequest);
+    }
+
+    /**
+     * 根据用户id查询用户是否有作答记录
+     * @param userId
+     * @return
+     */
+    public ArchivesCountResult findArchivesCount(String userId) {
+        if (StringUtils.isEmpty(userId)){
+            ExceptionCast.cast(CommonCode.INVALID_PARAM);
+        }
+        Integer count = archivesResultMapper.queryResultByUserId(userId);
+        return new ArchivesCountResult(CommonCode.SUCCESS,count>0 ? true : false);
     }
 }

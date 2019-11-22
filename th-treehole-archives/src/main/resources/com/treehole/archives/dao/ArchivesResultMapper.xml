@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.treehole.archives.dao.ArchivesResultMapper">
-    <select id="findAll" resultType="com.treehole.framework.domain.evaluation.Result">
+    <select id="findAll" resultType="com.treehole.framework.domain.evaluation.Result"
+            parameterType="com.treehole.framework.domain.archives.resquest.ResultListRequest">
         select * from result
+        <where>
+            <if test="userId != null and userId != '' ">
+                and userId = #{userId}
+            </if>
+            <if test="scaleName != null and scaleName != ''">
+                and scaleName = #{scaleName}
+            </if>
+        </where>
     </select>
     <select id="findResultById" parameterType="java.lang.String"
             resultType="com.treehole.framework.domain.archives.ext.ResultBase">
@@ -27,5 +36,14 @@
         WHERE userId = #{userId}
         AND scaleName = #{scaleName}
         ORDER BY createTime
+    </select>
+    <select id="queryResultByUserId"
+            parameterType="java.lang.String"
+            resultType="java.lang.Integer">
+        SELECT
+          COUNT(id)
+        FROM
+          result
+        WHERE userId = #{userId}
     </select>
 </mapper>

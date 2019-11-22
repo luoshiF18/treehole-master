@@ -3,7 +3,6 @@ package com.treehole.member.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.treehole.framework.domain.archives.resquest.ResultListRequest;
 import com.treehole.framework.domain.member.Role;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
@@ -16,6 +15,7 @@ import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.mapper.RoleMapper;
 import com.treehole.member.mapper.UserMapper;
 import com.treehole.member.mapper.UserVoMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -223,9 +223,18 @@ public class UserVoService {
         }
 
         User user1 = new User();
-        user1.setUser_id(userListRequest.getUser_id());
-        user1.setUser_nickname(userListRequest.getUser_nickname());
-        user1.setUser_phone(userListRequest.getUser_phone());
+        //判断不为空字符串
+        if(StringUtils.isNotEmpty(userListRequest.getUser_id())){
+            user1.setUser_id(userListRequest.getUser_id());
+        }
+        if(StringUtils.isNotEmpty(userListRequest.getUser_nickname())){
+            user1.setUser_nickname(userListRequest.getUser_nickname());
+        }
+        if(StringUtils.isNotEmpty(userListRequest.getUser_phone())){
+            user1.setUser_phone(userListRequest.getUser_phone());
+        }
+
+
         //查询
         List<User> users = userMapper.select(user1);
 
@@ -261,6 +270,14 @@ public class UserVoService {
         QueryResult queryResult = new QueryResult();
         queryResult.setList(userVos);
         queryResult.setTotal(pageInfo.getTotal());
+
+
         return new QueryResponseResult(CommonCode.SUCCESS,queryResult);
+
     }
+    //预警模块得到预警用户信息
+    public List<UserVo> getAllUser(List listUserId) {
+        return userVoMapper.getAllUser( listUserId );
+    }
+
 }

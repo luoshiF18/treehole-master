@@ -1,9 +1,11 @@
 package com.treehole.archives.service;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.treehole.archives.client.ScaleSelectClient;
 import com.treehole.archives.client.UserVoClient;
 import com.treehole.archives.dao.ArchivesResultMapper;
+import com.treehole.framework.domain.archives.ext.ResuAnswer;
 import com.treehole.framework.domain.archives.ext.ResultBase;
 import com.treehole.framework.domain.archives.ext.ResultExt;
 import com.treehole.framework.domain.archives.ext.ResultList;
@@ -18,6 +20,7 @@ import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author 任志强
@@ -46,7 +50,7 @@ public class ArchivesSelectService {
 
     /**
      * 查询出个体报告的列表(需要,昵称,姓名,量表名称,提交时间)
-     * @param page 页码从1开始
+     * @param page
      * @param size
      * @return
      */
@@ -60,25 +64,33 @@ public class ArchivesSelectService {
             resultListRequest = new ResultListRequest();
         }
         //判断页码是否合法
-        if (page <= 0){
-            page = 1;
+        if (page < 0){
+            page = 0;
         }
-        //因为传来的页码是从1开始的,所以在这里需要减1
-        page--;
         //判断size是否合法,默认值为8页
         if (size <= 0){
             size = 8;
         }
+        //根据用户昵称进行搜索用户信息
+        if (StringUtils.isNotEmpty(resultListRequest.getUser_nickname())){
+            //如果用户昵称不为空时搜索出用户信息,将用户id添加至查询对象中
+            UserVo userVoByNickname = userVoClient.getUserVoByNickname(resultListRequest.getUser_nickname());
+            if (userVoByNickname == null){
+                ExceptionCast.cast(CommonCode.INVALID_PARAM);  //查询不到用户数据
+            }
+            resultListRequest.setUserId(userVoByNickname.getUser_id());
+        }
         //设置分页
         PageHelper.startPage(page,size);
         //进行查询
-        List<Result> allResult = archivesResultMapper.findAll();
+        Page<Result> allResult = archivesResultMapper.findAll(resultListRequest);
         if (allResult == null){
             ExceptionCast.cast(CommonCode.INVALID_PARAM);
         }
+        List<Result> results = allResult.getResult();
         //将allResult转成ArchivesList
         List<ResultList> resultLists = new ArrayList<>();
-        for (Result result : allResult){
+        for (Result result : results){
             ResultList resultList = new ResultList();
             //设置result_id
             resultList.setId(result.getId());
@@ -94,13 +106,14 @@ public class ArchivesSelectService {
             resultList.setRole_name(userVo.getRole_name());
             //设置量表名称
             resultList.setScaleName(result.getScaleName());
-
+            //设置创建时间
+            resultList.setCreate_date(result.getCreateTime());
             //将archivesList对象添加到集合中
             resultLists.add(resultList);
         }
         QueryResult queryResult = new QueryResult();
         queryResult.setList(resultLists);
-        queryResult.setTotal(allResult.size());
+        queryResult.setTotal(allResult.getTotal());
         return new QueryResponseResult(CommonCode.SUCCESS,queryResult);
     }
 
@@ -151,9 +164,24 @@ public class ArchivesSelectService {
         UserOptionResult userOption = scaleSelectClient.findUserOption(result.getScaleName(), result.getUserId());
         //设置选项题
         UserOptionVO userOptionVO = userOption.getUserOptionVO();
-        Map userOptionVOResult = userOptionVO.getResult();
+        Map<String,List<String>> userOptionVOResult = userOptionVO.getResult();
+
+        Set<Map.Entry<String, List<String>>> entrySet = userOptionVOResult.entrySet();
+        List<ResuAnswer> resuAnswers = new ArrayList<>();
+        for (Map.Entry<String, List<String>> entry: entrySet){
+            ResuAnswer resuAnswer = new ResuAnswer();
+            String key = entry.getKey();
+            List<String> value = entry.getValue();
+            String[] split = key.split("：");
+            String resuValue = value.toString();
+            resuAnswer.setSort(split[0]);       //设置题号
+            resuAnswer.setQuestion(split[1]);  //设置问题
+            resuAnswer.setAnswer(resuValue);  //设置回答
+            resuAnswers.add(resuAnswer);
+        }
+
         //设置选项答案
-        resultExt.setQuestionAndOption(userOptionVOResult);
+        resultExt.setQuestionAndOption(resuAnswers);
 
         //这里先将健康等级设置为1级
         resultExt.setHeal_level("一级");
