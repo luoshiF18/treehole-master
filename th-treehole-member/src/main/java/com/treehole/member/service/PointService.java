@@ -51,21 +51,7 @@ public class PointService {
      * @param
      * @return List<Points>
      */
-    public QueryResult findAllPoints1(Integer page,
-                                     Integer size,
-                                     String user_id){
-//        分页
-        PageHelper.startPage(page, size);
-        //查询
-        List<Points> points = pointsMapper.selectAll();
-        if (CollectionUtils.isEmpty(points)) {
-            ExceptionCast.cast(MemberCode.DATA_IS_NULL);
-        }
-        //        解析分页结果
-        PageInfo<Points> pageInfo = new PageInfo<>(points);
 
-        return new QueryResult(points, pageInfo.getTotal());
-    }
 
     /**
      * 根据id查询积分信息
@@ -98,6 +84,8 @@ public class PointService {
         queryResult.setTotal(pageInfo.getTotal());
         return new QueryResponseResult(CommonCode.SUCCESS,queryResult);
     }
+
+
     /**
      * 插入一条积分信息
      * 前端需要传入本次操作num值、user_id
@@ -197,6 +185,18 @@ public class PointService {
         if(del <0 ||del==0){
             ExceptionCast.cast(MemberCode. DELETE_FAIL);
         }
+    }
+    /*不报错版根据user——id查询*/
+    public QueryResult findAllPoints1(Integer page,
+                                      Integer size,
+                                      String user_id){
+        Page pag =PageHelper.startPage(page,size);
+        Points point = new Points();
+        point.setUser_id(user_id);
+        List<Points> points = pointsMapper.select(point);
+        //解析分页结果
+        PageInfo<Points> pageInfo = new PageInfo<Points>(pag.getResult());
+        return new QueryResult(points, pageInfo.getTotal());
     }
 
 

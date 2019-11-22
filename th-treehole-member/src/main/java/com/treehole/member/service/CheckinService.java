@@ -19,6 +19,7 @@ import com.treehole.member.myUtil.MyNumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -96,17 +97,25 @@ public class CheckinService {
     /*
     * 根据user_id删除签到记录
     * */
+    @Transactional
     public void deleteCheckinByUserId(String user_id) {
         //1.先找
         Checkin checkin = new Checkin();
         checkin.setUser_id(user_id);
-        Checkin checkin1 = checkinMapper.selectOne(checkin);
-        if(checkin1 == null){
+        List<Checkin> select = checkinMapper.select(checkin);
+        if(CollectionUtils.isEmpty(select)){
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
         //2.后删
-        int del = checkinMapper.delete(checkin);
-        if(del < 1){
+        int i= 0;
+        int sum = select.size();
+        for(Checkin ch : select){
+            int del = checkinMapper.delete(ch);
+            if(del == 1){
+                i++;
+            }
+        }
+        if(i != sum){
             ExceptionCast.cast(MemberCode.DELETE_FAIL);
         }
     }
@@ -133,6 +142,16 @@ public class CheckinService {
             // System.out.println("+++++++++++++++++size:" +size);
             return new QueryResult(checkins, pageInfo.getTotal());
 
+    }
+    /*不报错版根据userid查签到对象*/
+    public QueryResult getCheckinByUserId1(String user_id, Integer page, Integer size) {
+        Page pag =PageHelper.startPage(page,size);
+        Checkin checkin = new Checkin();
+        checkin.setUser_id(user_id);
+        List<Checkin> checkins = checkinMapper.select(checkin);
+        //解析分页结果
+        PageInfo<Checkin> pageInfo = new PageInfo<>(pag.getResult());
+        return new QueryResult(checkins, pageInfo.getTotal());
     }
 
     /*按时间删除  未实现*/

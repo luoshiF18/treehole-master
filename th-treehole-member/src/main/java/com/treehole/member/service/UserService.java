@@ -161,6 +161,7 @@ public class UserService {
         if(this.findUserByNickname(nickname1) != null){
             ExceptionCast.cast(MemberCode.NICKNAME_EXIST);
         }
+        user.setRole_id(user.getRole_id());
         user.setUser_nickname(nickname1);
         user.setUser_createtime(new Date());
         user.setUser_type(user.getUser_type());

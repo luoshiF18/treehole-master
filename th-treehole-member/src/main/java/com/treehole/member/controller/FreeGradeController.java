@@ -26,7 +26,7 @@ public class FreeGradeController implements FreeGradeControllerApi {
     private FreegradeService freegradeService;
 
     @Override
-    @GetMapping("/find/all")
+    @GetMapping("/find/all/{page}/{size}")
     public QueryResponseResult findAllFreeGrade(@PathVariable("page") Integer page,
                                                 @PathVariable("size") Integer size,
                                                 GradeListRequest gradeListRequest) {
@@ -34,11 +34,11 @@ public class FreeGradeController implements FreeGradeControllerApi {
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 
-    @Override
+   /* @Override
     @GetMapping("/find/id/{id}")
     public FreeGrade findPayGradeById(@PathVariable("id") String id) {
         return freegradeService.getById(id);
-    }
+    }*/
 
     @Override
     @PostMapping("/insert")

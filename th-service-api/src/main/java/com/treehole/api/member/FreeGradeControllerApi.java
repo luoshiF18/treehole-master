@@ -24,8 +24,8 @@ public interface FreeGradeControllerApi {
     public QueryResponseResult findAllFreeGrade(Integer page, Integer size,
                                                 GradeListRequest gradeListRequest);
 
-    @ApiOperation("根据id查询普通会员等级信息")
-    public FreeGrade findPayGradeById(String id) ;
+    /*@ApiOperation("根据id查询普通会员等级信息")
+    public FreeGrade findPayGradeById(String id) ;*/
 
     @ApiOperation("插入一条普通会员等级信息")
     public ResponseResult insertFreeGrade(FreeGrade freeGrade) ;

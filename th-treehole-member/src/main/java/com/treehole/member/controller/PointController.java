@@ -30,7 +30,7 @@ public class PointController implements PointControllerApi {
 
     //http://localhost:40300/point/find/id/2?page=2
     @Override
-    @GetMapping("/find/id/{page}/{size}")
+    @GetMapping("/getAllPoints/{page}/{size}")
     public QueryResponseResult findAllPoint(@PathVariable("page") Integer page,
                                             @PathVariable("size") Integer size,
                                             String user_id)  {

@@ -85,10 +85,14 @@ public class UserVoService {
             uservo.setUser_name(user.getUser_name());
             uservo.setUser_nickname(user.getUser_nickname());
             uservo.setGender(user.getGender() == 0 ? "男":"女");
+            if(user.getUser_birth() == null){
+                user.setUser_birth(null);
+            }else{
             try {
                 uservo.setAge(GetAgeByBirthUtils.getAgeByBirth(user.getUser_birth()));
             } catch (ParseException e) {
                 ExceptionCast.cast(MemberCode.BIRTH_ERROR);
+            }
             }
             uservo.setUser_birth(user.getUser_birth());
             uservo.setUser_email(user.getUser_email());
@@ -135,10 +139,14 @@ public class UserVoService {
         uservo.setUser_name(user.getUser_name());
         uservo.setUser_nickname(user.getUser_nickname());
         uservo.setGender(user.getGender() == 0 ? "男":"女");
-        try {
-            uservo.setAge(GetAgeByBirthUtils.getAgeByBirth(user.getUser_birth()));
-        } catch (ParseException e) {
-            ExceptionCast.cast(MemberCode.BIRTH_ERROR);
+        if(user.getUser_birth() == null){
+            user.setUser_birth(null);
+        }else{
+            try {
+                uservo.setAge(GetAgeByBirthUtils.getAgeByBirth(user.getUser_birth()));
+            } catch (ParseException e) {
+                ExceptionCast.cast(MemberCode.BIRTH_ERROR);
+            }
         }
         uservo.setUser_birth(user.getUser_birth());
         uservo.setUser_email(user.getUser_email());
@@ -175,10 +183,14 @@ public class UserVoService {
         uservo.setUser_name(user.getUser_name());
         uservo.setUser_nickname(user.getUser_nickname());
         uservo.setGender(user.getGender() == 0 ? "男":"女");
-        try {
-            uservo.setAge(GetAgeByBirthUtils.getAgeByBirth(user.getUser_birth()));
-        } catch (ParseException e) {
-            ExceptionCast.cast(MemberCode.BIRTH_ERROR);
+        if(user.getUser_birth() == null){
+            user.setUser_birth(null);
+        }else{
+            try {
+                uservo.setAge(GetAgeByBirthUtils.getAgeByBirth(user.getUser_birth()));
+            } catch (ParseException e) {
+                ExceptionCast.cast(MemberCode.BIRTH_ERROR);
+            }
         }
         uservo.setUser_birth(user.getUser_birth());
         uservo.setUser_email(user.getUser_email());
@@ -215,10 +227,14 @@ public class UserVoService {
         uservo.setUser_name(user.getUser_name());
         uservo.setUser_nickname(user.getUser_nickname());
         uservo.setGender(user.getGender() == 0 ? "男":"女");
-        try {
-            uservo.setAge(GetAgeByBirthUtils.getAgeByBirth(user.getUser_birth()));
-        } catch (ParseException e) {
-            ExceptionCast.cast(MemberCode.BIRTH_ERROR);
+        if(user.getUser_birth() == null){
+            user.setUser_birth(null);
+        }else{
+            try {
+                uservo.setAge(GetAgeByBirthUtils.getAgeByBirth(user.getUser_birth()));
+            } catch (ParseException e) {
+                ExceptionCast.cast(MemberCode.BIRTH_ERROR);
+            }
         }
         uservo.setUser_birth(user.getUser_birth());
         uservo.setUser_email(user.getUser_email());

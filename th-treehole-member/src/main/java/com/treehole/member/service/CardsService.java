@@ -4,10 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.evaluation.Scale;
-import com.treehole.framework.domain.member.Cards;
-import com.treehole.framework.domain.member.FreeGrade;
-import com.treehole.framework.domain.member.PayGrade;
-import com.treehole.framework.domain.member.User;
+import com.treehole.framework.domain.member.*;
 import com.treehole.framework.domain.member.Vo.CardsVo;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.resquest.CardListRequest;
@@ -121,9 +118,15 @@ public class CardsService {
                 ExceptionCast.cast(MemberCode.USER_NOT_EXIST);
             }
         //签到信息删除
-        checkinService.deleteCheckinByUserId(id);
+        QueryResult checkin = checkinService.getCheckinByUserId1(id, 1, 5);
+        if(checkin.getTotal() != 0){
+            checkinService.deleteCheckinByUserId(id);
+        }
         //会员积分信息删除！！！
-        pointService.deletePointByUserId(id);
+        QueryResult points = pointService.findAllPoints1(1, 5, id);
+        if (points.getTotal() != 0) {
+            pointService.deletePointByUserId(id);
+        }
             int del= cardsMapper.delete(card);
             if(del < 1){
                 ExceptionCast.cast(MemberCode.DELETE_FAIL);

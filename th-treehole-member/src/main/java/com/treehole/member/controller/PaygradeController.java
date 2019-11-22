@@ -27,7 +27,7 @@ public class PaygradeController implements PayGradeControllerApi {
     private PaygradeService paygradeService;
 
     @Override
-    @GetMapping("/find/all")
+    @GetMapping("/find/all/{page}/{size}")
     public QueryResponseResult findAllPayGrade(@PathVariable("page") Integer page,
                                                @PathVariable("size") Integer size,
                                                GradeListRequest gradeListRequest) {
@@ -35,11 +35,11 @@ public class PaygradeController implements PayGradeControllerApi {
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 
-    @Override
+   /* @Override
     @GetMapping("/find/id/{id}")
     public PayGrade findPayGradeById(@PathVariable("id") String id) {
         return paygradeService.getById(id);
-    }
+    }*/
 
     @Override
     @PostMapping ("/insert")

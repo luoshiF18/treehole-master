@@ -26,8 +26,8 @@ public interface PayGradeControllerApi {
                                                Integer size,
                                                GradeListRequest gradeListRequest) ;
 
-    @ApiOperation("根据id查询付费会员等级信息")
-    public PayGrade findPayGradeById(String id) ;
+    /*@ApiOperation("根据id查询付费会员等级信息")
+    public PayGrade findPayGradeById(String id) ;*/
 
     @ApiOperation("插入一条付费会员等级信息")
     public ResponseResult insertPayGrade(PayGrade payGrade) ;
