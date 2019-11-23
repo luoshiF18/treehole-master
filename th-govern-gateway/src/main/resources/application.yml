@@ -6,7 +6,7 @@ spring:
   application:
     name: th-govern-gateway
   redis:
-    host: ${REDIS_HOST:10.0.43.106}
+    host: ${REDIS_HOST:10.0.43.60}
     port: ${REDIS_PORT:6379}
     timeout: 5000 #连接超时 毫秒
     jedis:

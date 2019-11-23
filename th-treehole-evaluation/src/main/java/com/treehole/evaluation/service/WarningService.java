@@ -1,14 +1,15 @@
 package com.treehole.evaluation.service;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.evaluation.MyUtils.MyNumberUtils;
 import com.treehole.evaluation.client.UserClient;
-import com.treehole.evaluation.dao.DescriptionMapper;
 import com.treehole.evaluation.dao.ScaleMapper;
 import com.treehole.evaluation.dao.WarningMapper;
 import com.treehole.framework.domain.evaluation.Scale;
 import com.treehole.framework.domain.evaluation.Warning;
+import com.treehole.framework.domain.evaluation.request.PieData;
 import com.treehole.framework.domain.evaluation.request.WarnRequest;
 import com.treehole.framework.domain.evaluation.response.EvaluationCode;
 import com.treehole.framework.domain.evaluation.vo.WarnReportVo;
@@ -37,7 +38,7 @@ import java.util.List;
 @AllArgsConstructor
 public class WarningService {
 
-    private final DescriptionMapper descriptionMapper;
+
     private final WarningMapper warningMapper;
     private final ScaleMapper scaleMapper;
     private final UserClient userClient;
@@ -147,14 +148,17 @@ public class WarningService {
             UserVo userVoByNickname = userClient.getUserVoByNickname( warnRequest.getUserNickName());
             warnRequest.setUserId(userVoByNickname.getUser_id());
         }
-        System.out.println(warnRequest);
         PageHelper.startPage(page,size);
+        System.out.println(warnRequest);
         List<WarningVo> warning = warningMapper.getWaning(warnRequest);
+        if(warning.size()==0){
+            return null;
+        }
         List listUserId = new ArrayList();
         for (WarningVo vo : warning) {
             listUserId.add(vo.getUserId());
         }
-        List<UserVo> allUser = userClient.getAllUser( listUserId );
+        List<UserVo> allUser = userClient.getAllUser(listUserId);
         for (WarningVo warningVo : warning) {
             for (UserVo userVo : allUser){
                 if(warningVo.getUserId().equals(userVo.getUser_id())){
@@ -273,4 +277,79 @@ public class WarningService {
         }
         else return null;
     }
+    //拼接饼状图数据返回给前台
+    public String getPieData(String userNickName) {
+        //根据用户名得到该用户id
+        UserVo userVoByNickname = userClient.getUserVoByNickname( userNickName );
+        if(userVoByNickname==null){
+            //用户不存在，先返回Null
+            return  null;
+        }
+        //得到用户id，去查询该用户在预警表产生的所有预警信息，关联查询量表得到量表信息
+        String uid=userVoByNickname.getUser_id();
+        List<PieData> pieData = warningMapper.getPieData(uid);
+        //还可以拼接咨询师给他服务的次数，拿到咨询师服务的简要内容
+        //将list<PieData> 转换为json格式 返给前端
+        String data = JSON.toJSONString(pieData);
+        System.out.println(data);
+        return data;
+    }
+
+    //得到量表饼状图数据
+    public String getPieScaData(String scaleName){
+        //根据输出的量表名称得到数据
+        List<PieData> pieScaData = warningMapper.getPieScaData( scaleName );
+        if(pieScaData==null||pieScaData.size()<0){
+            return null;
+        }
+        System.out.println(pieScaData);
+        //遍历list，取出预警等级并且为其赋值,先硬编码
+        for (PieData pieScaDatum : pieScaData) {
+            switch (pieScaDatum.getName()){
+                case "1":
+                    pieScaDatum.setName("正常");
+                    break;
+                case "2":
+                    pieScaDatum.setName("关注");
+                    break;
+                case "3":
+                    pieScaDatum.setName("追踪");
+                    break;
+                case "4":
+                    pieScaDatum.setName("严重");
+                    break;
+                case "5":
+                    pieScaDatum.setName("警戒");
+                    break;
+                    default:break;
+            }
+        }
+        System.out.println(pieScaData);
+        //将集合转化为JSON格式 返回给前端
+        String data=JSON.toJSONString(pieScaData);
+        System.out.println(data);
+        return  data;
+    }
+    //得到用户最常做量表类型的数据
+    public String getUserPieData(String userNickName){
+        //远程调用用户服务根据用户登录名得到用户id
+        UserVo usersByName = this.getUsersByName( userNickName );
+        String uid=usersByName.getUser_id();
+        //从数据库得到数据
+        List<PieData> userPieData = warningMapper.getUserPieData( uid );
+        if(userPieData==null){
+            return null;
+        }
+        //得到最多的类型
+       /* Optional<PieData> userPie=userPieData.stream().filter( Objects::nonNull).max( Comparator.comparingInt(PieData ::getValue));
+            PieData maxPie=userPie.get();
+        System.out.println(maxPie);*/
+
+        //转换为json格式便于前台接收
+        String data=JSON.toJSONString(userPieData);
+
+
+            return data;
+    }
+
 }

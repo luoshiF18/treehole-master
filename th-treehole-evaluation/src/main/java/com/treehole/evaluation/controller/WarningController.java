@@ -67,6 +67,25 @@ public class WarningController implements WarningControllerApi
     public WarnReportVo lookWaring(@PathVariable("warningId") String warningId) {
         return warningService.lookWaring( warningId );
     }
+
+    @Override
+    @GetMapping("/getPieDate")
+    public String getPieData(@RequestParam("userNickName") String userNickName) {
+        return warningService.getPieData(userNickName);
+    }
+
+    @Override
+    @GetMapping("/getPieScaData")
+    public String getPieScaData(@RequestParam("scaleName") String scaleName) {
+        return warningService.getPieScaData(scaleName);
+    }
+
+    @Override
+    @GetMapping("/getUserPieData")
+    public String getUserPieData(@RequestParam("userNickName") String userNickName) {
+        return warningService.getUserPieData( userNickName );
+    }
+
     @Override
     @PostMapping("addWarningByPsy")
     public ResponseResult addWarningByPsy(@RequestBody Warning warning) {
