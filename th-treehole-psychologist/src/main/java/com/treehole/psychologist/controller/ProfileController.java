@@ -33,14 +33,14 @@ public class ProfileController implements ProfileControllerApi {
      */
     @Override
     @GetMapping("/find/all")
-    public QueryResponseResult findAllProfile(
+    public QueryResponseResult findAllProfiles(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "size", defaultValue = "5") Integer size,
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "sex", required = false) String sex,
             @RequestParam(value = "qualification", required = false) String qualification
     ) {
-        QueryResult queryResult = this.profileService.findAllProfile(page, size, name, sex, qualification);
+        QueryResult queryResult = this.profileService.findAllProfiles(page, size, name, sex, qualification);
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 
@@ -107,11 +107,11 @@ public class ProfileController implements ProfileControllerApi {
      */
     @Override
     @GetMapping("get/all")
-    public QueryResponseResult findAll(
+    public QueryResponseResult getAllProfiles(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
-            @RequestParam(value = "size", defaultValue = "5") Integer size
+            @RequestParam(value = "size", defaultValue = "10") Integer size
     ) {
-        QueryResult result = this.profileService.findAll(page, size);
+        QueryResult result = this.profileService.getAllProfiles(page, size);
         return new QueryResponseResult(CommonCode.SUCCESS, result);
     }
 
