@@ -109,7 +109,7 @@ public class ProfileController implements ProfileControllerApi {
     @GetMapping("get/all")
     public QueryResponseResult getAllProfiles(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
-            @RequestParam(value = "size", defaultValue = "10") Integer size
+            @RequestParam(value = "size", defaultValue = "5") Integer size
     ) {
         QueryResult result = this.profileService.getAllProfiles(page, size);
         return new QueryResponseResult(CommonCode.SUCCESS, result);
