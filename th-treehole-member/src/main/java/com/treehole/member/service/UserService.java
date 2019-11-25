@@ -139,6 +139,7 @@ public class UserService {
             //抛出异常，非法参数异常。指定异常信息的内容
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
+
         user.setUser_id(MyNumberUtils.getUUID());
         //将密码MD5加密！！！！
         String pw=user.getPassword();
@@ -169,8 +170,10 @@ public class UserService {
         //用户注册，角色已经默认为1，普通用户 前端按钮携带传入role的值
 
         int ins = userMapper.insert(user);
-        //会员卡表内新增数据
-        cardsService.insertCard(user.getUser_id());
+        if(user.getRole_id().equals("1")) {
+            //会员卡表内新增数据
+            cardsService.insertCard(user.getUser_id());
+        }
         //
         if( ins != 1){
             ExceptionCast.cast(MemberCode.INSERT_FAIL);

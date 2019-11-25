@@ -37,7 +37,7 @@ public interface UserControllerApi {
     public ResponseResult insertUser(User user);
 
     @ApiOperation("通过id删除用户")
-    public ResponseResult deleteUserById(String user_id) ;
+    public ResponseResult deleteUserById(String user_id);
 
     @ApiOperation("更新用户基本信息")
     public ResponseResult update(User user);
