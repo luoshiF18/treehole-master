@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 /**
  * @auther: Yan Hao
  * @date: 2019/10/18
@@ -27,13 +25,7 @@ public class ScaleDetailVO2 {
     private String updateTime;
     private String updateUserId;
     private String images;
-    private Integer status;
-    private String statusName;
-    private String typeId;
     private String type;
     private Integer scaleType;
-    private String scaleTypeName;
-    private BigDecimal price;
     private String remark;
-
 }

@@ -3,6 +3,7 @@ package com.treehole.framework.domain.evaluation.dto;
 import com.treehole.framework.domain.evaluation.Option;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,11 +17,11 @@ public class QuestionDTO {
     private String scaleId;
     private Integer sort;
     private String question;
-/*    private Date createTime;
+    private Date createTime;
     private String createUserId;
     private Date updateTime;
     private String updateUserId;
-    private String remark;*/
+    private String remark;
     //    增加选项
     private List<Option> options;
 }

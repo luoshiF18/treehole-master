@@ -29,9 +29,6 @@ public interface OptionMapper extends Mapper<Option> {
     @Select("SELECT id,sort,answer FROM test_option WHERE questionId = #{questionId}")
     public List<OptionVO> findOptionByQuestionId(String questionId);
 
-    @Select("SELECT id FROM test_option WHERE skipId = #{skipId}")
-    public List<Option> findOptionBySkipId(String skipId);
-
  /*   @Select("SELECT id,score FROM test_option WHERE id = #{id}")
     public Option getOptionList2(String id);*/
 

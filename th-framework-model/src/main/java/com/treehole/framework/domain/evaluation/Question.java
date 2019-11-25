@@ -1,6 +1,7 @@
 package com.treehole.framework.domain.evaluation;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 import tk.mybatis.mapper.annotation.KeySql;
 import tk.mybatis.mapper.annotation.NameStyle;
 import tk.mybatis.mapper.code.Style;
@@ -8,6 +9,7 @@ import tk.mybatis.mapper.code.Style;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 量表问题
@@ -26,11 +28,11 @@ public class Question implements Serializable {
     private String scaleId;
     private Integer sort;
     private String question;
-/*    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date createTime;
     private String createUserId;
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date updateTime;
     private String updateUserId;
-    private String remark;*/
+    private String remark;
 }
