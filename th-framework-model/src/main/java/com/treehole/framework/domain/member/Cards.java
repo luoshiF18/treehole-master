@@ -10,6 +10,7 @@ import tk.mybatis.mapper.code.Style;
 
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -28,12 +29,13 @@ public class Cards implements Serializable {
     private String user_id;  //用户id
     private String paygrade_id;  //付费等级id
     private String freegrade_id;  //非付费等级id
-    private Double consum_all;  //总消费金额
+    private BigDecimal consum_all;  //总消费金额
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date paygrade_start;  //付费会员办卡时间
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date paygrade_end;  //付费会员到期日
     private Integer points_now;//现有积分
+
 
 
 }

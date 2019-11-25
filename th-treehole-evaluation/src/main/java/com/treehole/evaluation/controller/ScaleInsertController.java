@@ -8,10 +8,7 @@ import com.treehole.framework.domain.evaluation.dto.QuestionDTO;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 量表增删改查等
@@ -59,7 +56,34 @@ public class ScaleInsertController implements ScaleInsertControllerApi {
     @PostMapping("description")
     public ResponseResult insertDescription(
             @RequestBody Description description) {
-        return scaleInsertService.insertDescription(description);
+        scaleInsertService.insertDescription(description);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 添加量表分类
+     *
+     * @param type
+     * @return
+     */
+    @Override
+    @PostMapping("type")
+    public ResponseResult insertScaleType(@RequestParam("type") String type) {
+        scaleInsertService.insertScaleType(type);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 处理跳题，把问题序号转为问题id
+     *
+     * @param scaleId
+     * @return
+     */
+    @Override
+    @PostMapping("handle/skip")
+    public ResponseResult handleOptionSkip(@RequestParam("scaleId") String scaleId) {
+        scaleInsertService.handleOptionSkip(scaleId);
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
 

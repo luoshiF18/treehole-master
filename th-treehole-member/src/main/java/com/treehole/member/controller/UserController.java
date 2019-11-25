@@ -48,8 +48,6 @@ public class UserController implements UserControllerApi {
     public User getUserById(@PathVariable("id") String id) {
 
          return userService.getUserById(id);
-
-
     }
     @GetMapping("/find")
     public User getUser(@RequestBody @Valid User user){

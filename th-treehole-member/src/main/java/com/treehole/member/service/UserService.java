@@ -34,6 +34,9 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private CardsService cardsService;
+
     /**
      * 查询所有用户
      *
@@ -83,9 +86,7 @@ public class UserService {
         User user = new User();
         user.setUser_nickname(nickname);
         User use = userMapper.selectOne(user);
-        if(use == null){
-            ExceptionCast.cast(MemberCode.DATA_IS_NULL);
-        }
+
         return use;
     }
 
@@ -171,7 +172,6 @@ public UserExt getUserExt(String userNickName){
            // ExceptionCast.cast(MemberCode.NICKNAME_EXIST);
             Random random = new Random();
             String nickname2 = nickname1 + random.nextInt(1000);
-
         }
         if(this.findUserByNickname(nickname2) != null){
             ExceptionCast.cast(MemberCode.NICKNAME_EXIST);
@@ -182,11 +182,13 @@ public UserExt getUserExt(String userNickName){
         user.setUser_nickname(nickname1);
 
         user.setUser_createtime(new Date());
-        user.setPoints_now(0);
+        //
         int ins = userMapper.insert(user);
         if( ins != 1){
             ExceptionCast.cast(MemberCode.INSERT_FAIL);
         }
+        //往cards表中插入数据
+       //cardsService.insertCard(user);
     }
 
     /**

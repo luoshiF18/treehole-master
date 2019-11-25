@@ -40,6 +40,7 @@
           request.startTime!='' and  request.endTime !=''">
             and
             create_time BETWEEN #{request.startTime} and #{request.endTime}
+
         </if>
         <if test="request.scaleName != null and request.scaleName !=''">
             AND

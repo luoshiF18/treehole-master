@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.math.BigDecimal;
+
 /**
  * @auther: Yan Hao
  * @date: 2019/10/17
@@ -26,5 +28,6 @@ public class ScaleDetailVO {
     private String images;
     private String type;
     private Integer scaleType;
+    private BigDecimal price;
     private String remark;
 }

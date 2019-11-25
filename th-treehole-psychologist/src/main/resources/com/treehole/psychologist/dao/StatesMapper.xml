@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.treehole.psychologist.dao.StatesMapper">
+
+    <select id="getAll" resultType="com.treehole.framework.domain.psychologist.State">
+        select * from state order by id+0
+    </select>
+
+</mapper>
