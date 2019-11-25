@@ -11,6 +11,7 @@ import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
+import io.swagger.annotations.ApiImplicitParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.treehole.member.service.*;
@@ -41,7 +42,13 @@ public class UserController implements UserControllerApi {
     }
 
     @Override
-    @DeleteMapping(value ="/delete/id/{user_id}")
+    @GetMapping("/getUserByNicknames")
+    //@ApiImplicitParam(name = "name", value = "name集合",  allowMultiple = true, dataType = "String", paramType = "query")
+    public List<UserVo> findUserByNicknames(@RequestParam(value ="name")List<String> names){
+        return userVoService.getUserByNicknames(names);
+    }
+    @Override
+    @DeleteMapping(value ="/delete/{user_id}")
     public ResponseResult deleteUserById(@PathVariable("user_id") String user_id) {
          userService.deleteUserById(user_id);
          //再判断用户是否存在

@@ -32,7 +32,8 @@ public interface CheckinControllerApi {
 
     @ApiOperation("根据user_id删除签到信息")
     public ResponseResult deleteCheckinById(String user_id) ;
-
+    @ApiOperation("根据check_id删除签到信息")
+    public ResponseResult deleteByCheckId(String check_id);
     /*定时删除老旧数据*/
 
 }

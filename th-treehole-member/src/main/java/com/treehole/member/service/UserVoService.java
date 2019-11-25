@@ -3,6 +3,7 @@ package com.treehole.member.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.treehole.framework.domain.evaluation.Scale;
 import com.treehole.framework.domain.member.Role;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
@@ -20,6 +21,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.PathVariable;
+import tk.mybatis.mapper.entity.Example;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -55,19 +58,26 @@ public class UserVoService {
         if (userListRequest == null){
             userListRequest = new UserListRequest();
         }
-        User user1 = new User();
+        //        把字节码传给example，就可以通过反射获取数据库信息
+        Example example = new Example(User.class);
+        //User user1 = new User();
         //判断不为空字符串
         if(StringUtils.isNotEmpty(userListRequest.getUser_id())){
-            user1.setUser_id(userListRequest.getUser_id());
+           // user1.setUser_id(userListRequest.getUser_id());
+            //过滤条件
+            example.createCriteria().andLike("user_id", "%" + userListRequest.getUser_id() + "%");
         }
         if(StringUtils.isNotEmpty(userListRequest.getUser_nickname())){
-            user1.setUser_nickname(userListRequest.getUser_nickname());
+           // user1.setUser_nickname(userListRequest.getUser_nickname());
+            example.createCriteria().andLike("user_nickname", "%" + userListRequest.getUser_nickname() + "%");
         }
         if(StringUtils.isNotEmpty(userListRequest.getUser_phone())){
-            user1.setUser_phone(userListRequest.getUser_phone());
+           // user1.setUser_phone(userListRequest.getUser_phone());
+            example.createCriteria().andLike("user_phone", "%" + userListRequest.getUser_phone() + "%");
         }
         //查询
-        List<User> users = userMapper.select(user1);
+        //List<User> users = userMapper.select(user1);
+        List<User> users = userMapper.selectByExample(example);
 
         if (CollectionUtils.isEmpty(users)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
@@ -251,6 +261,26 @@ public class UserVoService {
         return uservo;
     }
 
+    /*
+    * 参数：nickname list集合
+    * 返回：对象的集合
+    * */
+    public List<UserVo> getUserByNicknames(List<String> nicknames){
+        //判断请求条件的合法性
+        if (nicknames == null){
+            nicknames = new ArrayList<String>();
+        }
+        List<UserVo> res = new ArrayList<UserVo>();
+        for (String nickname : nicknames){
+            res.add(this.getUserByNickname(nickname));
+        }
+
+        if (CollectionUtils.isEmpty(res)) {
+            ExceptionCast.cast(MemberCode.DATA_IS_NULL);
+        }
+
+        return res;
+    }
 
 
 }

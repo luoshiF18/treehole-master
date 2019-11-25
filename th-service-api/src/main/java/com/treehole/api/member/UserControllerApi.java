@@ -9,6 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -30,7 +31,8 @@ public interface UserControllerApi {
     public QueryResponseResult getAllUser(Integer page, Integer size);
     @ApiOperation("通过id查询用户")
     public User getUserById(@PathVariable("id") String id)  ;*/
-
+   @ApiOperation("根据nickname集合得到对象的集合")
+   public List<UserVo> findUserByNicknames( List<String> names);
     @ApiOperation("创建一条用户信息")
     public ResponseResult insertUser(User user);
 

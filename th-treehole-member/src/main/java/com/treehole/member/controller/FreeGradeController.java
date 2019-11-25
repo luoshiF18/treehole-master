@@ -30,8 +30,8 @@ public class FreeGradeController implements FreeGradeControllerApi {
     public QueryResponseResult findAllFreeGrade(@PathVariable("page") Integer page,
                                                 @PathVariable("size") Integer size,
                                                 GradeListRequest gradeListRequest) {
-        QueryResult queryResult = freegradeService.findAll(page,size,gradeListRequest);
-        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
+        return  freegradeService.findAll(page,size,gradeListRequest);
+
     }
 
    /* @Override

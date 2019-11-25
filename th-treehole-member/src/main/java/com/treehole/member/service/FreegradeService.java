@@ -8,10 +8,12 @@ import com.treehole.framework.domain.member.PayGrade;
 import com.treehole.framework.domain.member.resquest.GradeListRequest;
 import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.exception.ExceptionCast;
+import com.treehole.framework.model.response.CommonCode;
+import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.mapper.FreegradeMapper;
 import com.treehole.member.myUtil.MyNumberUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -34,7 +36,7 @@ public class FreegradeService {
 /*
 * 根据rank,id,name查询所有普通会员等级信息
 * */
-    public QueryResult findAll(Integer page,
+    public QueryResponseResult findAll(Integer page,
                                Integer size,
                                GradeListRequest gradeListRequest) {
         //        分页
@@ -45,13 +47,13 @@ public class FreegradeService {
         }
         FreeGrade freeGrade = new FreeGrade();
         //判断不为空字符串
-        if(org.apache.commons.lang3.StringUtils.isNotEmpty(gradeListRequest.getGrade_id())){
+        if(StringUtils.isNotEmpty(gradeListRequest.getGrade_id())){
             freeGrade.setFreegrade_id(gradeListRequest.getGrade_id());
         }
-        if(org.apache.commons.lang3.StringUtils.isNotEmpty(gradeListRequest.getGrade_name())){
+        if(StringUtils.isNotEmpty(gradeListRequest.getGrade_name())){
             freeGrade.setFreegrade_name(gradeListRequest.getGrade_name());
         }
-        if(org.apache.commons.lang3.StringUtils.isNotEmpty(String.valueOf(gradeListRequest.getRank()))){
+        if(StringUtils.isNotEmpty(String.valueOf(gradeListRequest.getRank()))){
             freeGrade.setRank(gradeListRequest.getRank());
         }
 
@@ -61,9 +63,13 @@ public class FreegradeService {
         }
         //        解析分页结果
         PageInfo<FreeGrade> pageInfo = new PageInfo<>(grades);
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(grades);
+        queryResult.setTotal(pageInfo.getTotal());
+        return new QueryResponseResult(CommonCode.SUCCESS,queryResult);
 
-        return new QueryResult(grades, pageInfo.getTotal());
     }
+
     /*通过等级id查询等级对象*/
     public FreeGrade getById(String id) {
         FreeGrade freeGrade = new FreeGrade();
@@ -87,7 +93,7 @@ public class FreegradeService {
         }
     }
 
-
+/*根据Freegrade_id删除*/
     public void deleteGrade(String id) {
         //id不为空
         if(org.apache.commons.lang3.StringUtils.isBlank(id)){

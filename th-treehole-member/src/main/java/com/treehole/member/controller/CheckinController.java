@@ -28,8 +28,8 @@ public class CheckinController implements CheckinControllerApi {
     @GetMapping("/getAllCheckin/{page}/{size}")
     public QueryResponseResult findAllCheckin(@PathVariable("page") Integer page,
                                               @PathVariable("size") Integer size,
-                                              String user_id) {
-        return checkinService.findAllCheckins(page,size,user_id);
+                                             @RequestParam(value = "nickname") String nickname) {
+        return checkinService.findAllCheckins(page,size,nickname);
 
     }
 
@@ -42,6 +42,7 @@ public class CheckinController implements CheckinControllerApi {
         return new QueryResponseResult(CommonCode.SUCCESS, checkinById);
     }*/
 
+
     @Override
     @PostMapping("/insert")
     public ResponseResult insertCheckin(@RequestBody  @Valid Checkin checkin) {
@@ -51,9 +52,15 @@ public class CheckinController implements CheckinControllerApi {
     }
 
     @Override
-    @DeleteMapping(value = "delete/user/{user_id}")
+    @DeleteMapping(value = "/deleteByUserId/{user_id}")
     public ResponseResult deleteCheckinById(@PathVariable("user_id") String user_id) {
         checkinService.deleteCheckinByUserId(user_id);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+    @Override
+    @DeleteMapping(value = "/deleteByCheckId/{check_id}")
+    public ResponseResult deleteByCheckId(@PathVariable("check_id") String check_id){
+        checkinService.deleteByCheckId(check_id);
         return new ResponseResult(CommonCode.SUCCESS);
     }
 }

@@ -57,6 +57,12 @@ public class PointController implements PointControllerApi {
         return  new ResponseResult(CommonCode.SUCCESS);
     }
 
+    @DeleteMapping("/deleteByPointId/{point_id}")
+    public ResponseResult deletePointByPointId(@PathVariable("point_id") String point_id){
+        pointService.deletePointById(point_id);
+        return   new ResponseResult(CommonCode.SUCCESS);
+    }
+
 
 
 

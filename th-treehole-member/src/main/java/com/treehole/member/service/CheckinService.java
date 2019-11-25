@@ -3,6 +3,7 @@ package com.treehole.member.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.netflix.discovery.converters.Auto;
 import com.treehole.framework.domain.evaluation.response.EvaluationCode;
 import com.treehole.framework.domain.member.Checkin;
 import com.treehole.framework.domain.member.Points;
@@ -41,19 +42,22 @@ public class CheckinService {
     private PointService pointService;
     @Autowired
     private UserVoService userVoService;
+    @Autowired
+    private UserService userService;
 
     /*
     * 查询
     * */
     public QueryResponseResult findAllCheckins(Integer page,
                                        Integer size,
-                                       String user_id) {
+                                       String nickname) {
         List<Checkin> checkins = new ArrayList<Checkin>();
         //分页
         Page pag =PageHelper.startPage(page,size);
-        if(StringUtils.isNotEmpty(user_id)){
+        if(StringUtils.isNotEmpty(nickname)){
+            UserVo uservo = userVoService.getUserByNickname(nickname);
             Checkin ch = new Checkin();
-            ch.setUser_id(user_id);
+            ch.setUser_id(uservo.getUser_id());
             checkins = checkinMapper.select(ch);
         }else{
             checkins = checkinMapper.selectAll();
@@ -66,7 +70,7 @@ public class CheckinService {
             CheckinVo cv = new CheckinVo();
             UserVo uservo = userVoService.getUserByUserId(check.getUser_id());
             cv.setNickname(uservo.getUser_nickname());
-            cv.setCheckin_id(check.getUser_id());
+            cv.setCheckin_id(check.getCheckin_id());
             cv.setCheckin_time(check.getCheckin_time());
             checkinVos.add(cv);
         }
@@ -116,6 +120,25 @@ public class CheckinService {
             }
         }
         if(i != sum){
+            ExceptionCast.cast(MemberCode.DELETE_FAIL);
+        }
+    }
+
+    /*
+    *
+    * */
+    @Transactional
+    public void deleteByCheckId(String id){
+        //1.先找
+        Checkin checkin = new Checkin();
+        checkin.setCheckin_id(id);
+        Checkin select = checkinMapper.selectOne(checkin);
+        if(select == null){
+            ExceptionCast.cast(MemberCode.DATA_IS_NULL);
+        }
+        //2.后删
+        int del= checkinMapper.delete(select);
+        if(del != 1){
             ExceptionCast.cast(MemberCode.DELETE_FAIL);
         }
     }

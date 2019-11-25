@@ -31,8 +31,8 @@ public class PaygradeController implements PayGradeControllerApi {
     public QueryResponseResult findAllPayGrade(@PathVariable("page") Integer page,
                                                @PathVariable("size") Integer size,
                                                GradeListRequest gradeListRequest) {
-        QueryResult queryResult = paygradeService.findAll(page,size,gradeListRequest);
-        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
+        return paygradeService.findAll(page,size,gradeListRequest);
+
     }
 
    /* @Override

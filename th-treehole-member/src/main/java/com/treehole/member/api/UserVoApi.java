@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 /**
  * @author shanhuijie
  * @Description:暴露UserVo查询接口
@@ -20,6 +22,8 @@ public interface UserVoApi {
                                              @PathVariable("size") Integer size,
                                              UserListRequest userListRequest);
 
+    @GetMapping("member/user/getUserByNicknames")
+    public QueryResponseResult findUserByNicknames(List<String> names);
     /*
     根据id查找用户*//*
     @GetMapping("/uservo/find/userId/{user_id}")

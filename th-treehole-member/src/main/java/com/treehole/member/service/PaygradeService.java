@@ -3,12 +3,15 @@ package com.treehole.member.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.member.Cards;
+import com.treehole.framework.domain.member.FreeGrade;
 import com.treehole.framework.domain.member.PayGrade;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.resquest.GradeListRequest;
 import com.treehole.framework.domain.member.resquest.UserListRequest;
 import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.exception.ExceptionCast;
+import com.treehole.framework.model.response.CommonCode;
+import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.mapper.PaygradeMapper;
 import com.treehole.member.myUtil.AddDateUtil;
@@ -67,9 +70,9 @@ public class PaygradeService {
     /*
      * 根据rank,id,name查询所有付费会员等级信息
      * */
-    public QueryResult findAll(Integer page,
-                               Integer size,
-                               GradeListRequest gradeListRequest) {
+    public QueryResponseResult findAll(Integer page,
+                                       Integer size,
+                                       GradeListRequest gradeListRequest) {
         //        分页
         PageHelper.startPage(page, size);
 
@@ -96,8 +99,10 @@ public class PaygradeService {
         }
         //        解析分页结果
         PageInfo<PayGrade> pageInfo = new PageInfo<>(grades);
-
-        return new QueryResult(grades, pageInfo.getTotal());
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(grades);
+        queryResult.setTotal(pageInfo.getTotal());
+        return new QueryResponseResult(CommonCode.SUCCESS,queryResult);
     }
         /*删除*/
     public void deleteGrade(String id) {

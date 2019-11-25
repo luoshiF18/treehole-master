@@ -34,7 +34,7 @@ public enum MemberCode implements ResultCode {
     GRADE_RANK_EXIST(false,318,"等级排名重复"),
     BIRTH_ERROR(false,319,"出生日期晚于当前时间，无法计算"),
     TEST1(false,0000,"测试报错1"),
-    TEST2(false,0001,"测试报错2"),
+    TEST2(false,6690,"测试报错2"),
     TEST3(false,0002,"测试报错3")
     ;
     //操作代码

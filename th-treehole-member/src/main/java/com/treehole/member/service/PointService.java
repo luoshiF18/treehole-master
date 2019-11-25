@@ -52,7 +52,6 @@ public class PointService {
      * @return List<Points>
      */
 
-
     /**
      * 根据id查询积分信息
      *
@@ -130,7 +129,8 @@ public class PointService {
         //System.out.println("++++++++++++++++benci:" +points.getPoints_num());
 
         points.setAct_id(points.getAct_id());
-        //需要接口：根据活动id查询活动名称及活动积分值，从营销活动表内获取活动名称
+
+        //活动描述需要接口：根据活动id查询活动名称及活动积分值，从营销活动表内获取活动名称
         points.setDescription("签到");
         //later的值
         int later = points.getPoints_before() + points.getPoints_num();

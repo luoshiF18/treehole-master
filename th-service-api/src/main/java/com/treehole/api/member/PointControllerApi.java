@@ -18,7 +18,7 @@ import javax.validation.Valid;
  */
 @Api(value = "用户积分信息管理", description = "对用户积分信息进行增、删、查")
 public interface PointControllerApi {
-    @ApiOperation("查询所有积分")
+    @ApiOperation("查询所有积分UserId条件查询")
     public QueryResponseResult findAllPoint(Integer page, Integer size,String user_id);
 
     /*@ApiOperation("通过user_id查询积分")
@@ -31,4 +31,6 @@ public interface PointControllerApi {
     public ResponseResult deletePointById(@PathVariable("points_id") String points_id);*/
     @ApiOperation("通过user_id删除积分")
     public ResponseResult deletePointByUserId(String user_id);
+    @ApiOperation("通过point_id删除积分")
+    public ResponseResult deletePointByPointId( String point_id);
 }
