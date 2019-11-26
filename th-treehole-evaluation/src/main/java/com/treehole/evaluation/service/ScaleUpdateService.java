@@ -1,6 +1,7 @@
 package com.treehole.evaluation.service;
 
 import com.treehole.evaluation.MyUtils.MyChineseCharUtil;
+import com.treehole.evaluation.MyUtils.MyNumberUtils;
 import com.treehole.evaluation.dao.*;
 import com.treehole.framework.domain.evaluation.*;
 import com.treehole.framework.domain.evaluation.dto.QuestionDTO;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -40,9 +42,14 @@ public class ScaleUpdateService {
     @Transactional
     public void updateScaleInfo(Scale scale) {
 //        如果名字更改，更改对应的letter
-        if (!StringUtils.equals(scale.getScaleName(), scaleMapper.selectByPrimaryKey(scale.getId()).getScaleName())) {
+        Scale scaleOld = scaleMapper.selectByPrimaryKey(scale.getId());
+        if (!StringUtils.equals(scale.getScaleName(), scaleOld.getScaleName())) {
             String upperCase = MyChineseCharUtil.getUpperCase(scale.getScaleName(), false);
             scale.setLetter(upperCase);
+        }
+//        如果金额更改并且小于0
+        if (scale.getPrice().compareTo(BigDecimal.ZERO) == -1) {
+            ExceptionCast.cast(EvaluationCode.DATA_ERROR);
         }
 //        设置更新时间
         scale.setUpdateTime(new Date());
@@ -65,9 +72,9 @@ public class ScaleUpdateService {
         question.setId(questionDTO.getId());
         question.setQuestion(questionDTO.getQuestion());
         question.setSort(questionDTO.getSort());
-        question.setRemark(questionDTO.getRemark());
+/*        question.setRemark(questionDTO.getRemark());
         question.setUpdateTime(new Date());
-        question.setUpdateUserId(null); //  TODO 获取用户id
+        question.setUpdateUserId(null); // */
 //        判断是否成功
         if (questionMapper.updateByPrimaryKeySelective(question) != 1) {
             ExceptionCast.cast(EvaluationCode.UPDATE_ERROR);
@@ -75,6 +82,13 @@ public class ScaleUpdateService {
 //        处理选项
         List<Option> options = questionDTO.getOptions();
         for (Option option : options) {
+            if (StringUtils.isEmpty(option.getId())) {
+                option.setId(MyNumberUtils.getUUID());
+                option.setQuestionId(questionDTO.getId());
+                option.setScaleId(questionDTO.getScaleId());
+                optionMapper.insert(option);
+                break;
+            }
             //        判断是否成功
             if (optionMapper.updateByPrimaryKeySelective(option) != 1) {
                 ExceptionCast.cast(EvaluationCode.UPDATE_ERROR);
@@ -90,8 +104,15 @@ public class ScaleUpdateService {
      */
     @Transactional
     public void updateDesc(Description description) {
-        description.setUpdateTime(new Date());
-        description.setUpdateUserId(null); //TODO 获取用户id
+//        从新增那里搬来的验证，应该能用，nice!!
+        if (StringUtils.isEmpty(description.getDescription())
+                || StringUtils.isEmpty(description.getScaleId())
+                || description.getWarningLevel() == null
+                || description.getWarningLevel() < 0
+        ) {
+            ExceptionCast.cast(EvaluationCode.DATA_MISS);
+        }
+//       验证没事就更新
         if (descriptionMapper.updateByPrimaryKeySelective(description) != 1) {
             ExceptionCast.cast(EvaluationCode.UPDATE_ERROR);
         }

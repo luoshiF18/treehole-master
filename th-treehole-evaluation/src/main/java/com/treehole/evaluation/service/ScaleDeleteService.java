@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 /**
  * @auther: Yan Hao
@@ -22,17 +23,17 @@ public class ScaleDeleteService {
     private QuestionMapper questionMapper;
     @Autowired
     private OptionMapper optionMapper;
-    @Autowired
-    private DescriptionMapper descriptionMapper;
-    @Autowired
-    private ResultMapper resultMapper;
-    @Autowired
-    private UserOptionMapper userOptionMapper;
+     @Autowired
+     private DescriptionMapper descriptionMapper;
+     @Autowired
+     private ResultMapper resultMapper;
+     @Autowired
+     private UserOptionMapper userOptionMapper;
 
-    /**
-     * 删除量表
-     *
-     * @param scaleId
+     /**
+      * 删除量表
+      *
+      * @param scaleId
      * @return
      */
     @Transactional
@@ -95,16 +96,16 @@ public class ScaleDeleteService {
     @Transactional
     public void deleteQuestion(String questionId) {
 //        不废话，删起来
-        try {
-            if (StringUtils.isNotBlank(questionId)) {
+        if (StringUtils.isNotBlank(questionId)) {
+//                检查是否被绑定跳题
+            if (!CollectionUtils.isEmpty(optionMapper.findOptionBySkipId(questionId))) {
+                ExceptionCast.cast(EvaluationCode.QUESTION_USED);
+            } else {
                 Option option = new Option();
                 option.setQuestionId(questionId);
                 optionMapper.delete(option);
                 questionMapper.deleteByPrimaryKey(questionId);
             }
-        } catch (Exception e) {
-            ExceptionCast.cast(EvaluationCode.DELETE_ERROR);
-            e.printStackTrace();
         }
     }
 

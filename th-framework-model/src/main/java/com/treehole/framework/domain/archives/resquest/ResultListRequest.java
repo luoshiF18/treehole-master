@@ -14,5 +14,9 @@ import lombok.ToString;
 public class ResultListRequest {
 
     //需要时添加
+    private String userId;  //用户id
 
+    private String scaleName; //量表名称
+
+    private String user_nickname;  //用户昵称
 }

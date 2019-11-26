@@ -1,23 +1,26 @@
 package com.treehole.member.controller;
 
 import com.treehole.api.member.UserControllerApi;
-import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.User;
+import com.treehole.framework.domain.member.ext.UserExt;
 import com.treehole.framework.domain.member.result.MemberCode;
-import com.treehole.framework.domain.member.result.Result;
-import com.treehole.framework.domain.member.result.ResultEnum;
-import com.treehole.framework.domain.member.result.ResultUtil;
-
-import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
+import com.treehole.member.service.UserService;
+import com.treehole.member.service.UserVoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import com.treehole.member.service.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * @author shanhuijie
@@ -45,8 +48,6 @@ public class UserController implements UserControllerApi {
     public User getUserById(@PathVariable("id") String id) {
 
          return userService.getUserById(id);
-
-
     }
     @GetMapping("/find")
     public User getUser(@RequestBody @Valid User user){
@@ -99,8 +100,15 @@ public class UserController implements UserControllerApi {
 
 
     }
+    @GetMapping("/findUser/nickname")
+    public User findUserByNickname(@RequestParam("nickname") String nickname){
 
-    //public Result updateUserPassWord()
+        return  userService.findUserByNickname( nickname );
+    }
+    @GetMapping("/getUserExt")
+    public UserExt getUserExt( @RequestParam("userNickName") String userNickName){
+        return userService.getUserExt(userNickName);
+    }
 
 
 

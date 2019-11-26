@@ -8,6 +8,7 @@ import tk.mybatis.mapper.code.Style;
 
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * @author shanhuijie
@@ -23,7 +24,8 @@ public class FreeGrade implements Serializable {
     private String freegrade_id; //等级id
     private String freegrade_name; // 等级名称
     private Integer points_judge; //判断积分数
-    private Double consum_judge; //判定消费金额
+    private BigDecimal consum_judge; //判定消费金额
+    private Integer rank;
 
 
 }

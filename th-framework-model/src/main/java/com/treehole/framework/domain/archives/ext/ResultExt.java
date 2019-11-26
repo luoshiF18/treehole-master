@@ -3,7 +3,7 @@ package com.treehole.framework.domain.archives.ext;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author 任志强
@@ -29,7 +29,8 @@ public class ResultExt extends ResultBase{
     //原始答卷
     //问题
     //答案
-    private Map questionAndOption;  //整体的原始答卷
+
+    private List<ResuAnswer> questionAndOption; //整体原始答卷
 
     private String heal_level;    //健康等级
 

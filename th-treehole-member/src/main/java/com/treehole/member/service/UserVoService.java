@@ -6,12 +6,16 @@ import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.member.Role;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
+import com.treehole.framework.domain.member.resquest.UserListRequest;
 import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.exception.ExceptionCast;
+import com.treehole.framework.model.response.CommonCode;
+import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.mapper.RoleMapper;
 import com.treehole.member.mapper.UserMapper;
 import com.treehole.member.mapper.UserVoMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -44,7 +48,7 @@ public class UserVoService {
      * @return List<UserVo>
      */
 
-    public QueryResult findAllUserVos(Integer page, Integer size) {
+    /*public QueryResult findAllUserVos(Integer page, Integer size) {
         //        分页
         //PageHelper.startPage(page, size);
         Page pag =PageHelper.startPage(page,size);
@@ -79,7 +83,7 @@ public class UserVoService {
         //解析分页结果
         PageInfo<UserVo> pageInfo = new PageInfo<>(pag.getResult());
         return  new QueryResult(userVos, pageInfo.getTotal());
-    }
+    }*/
 
     /**
      * 通过uniq_id查询用户拓展类
@@ -183,7 +187,6 @@ public class UserVoService {
      * @return List<UserVo>
      */
     public UserVo getUserByNickname(String nickname) {
-
         User user = userService.findUserByNickname(nickname);
         if(user == null){
             ExceptionCast.cast(MemberCode.USER_NOT_EXIST);
@@ -211,6 +214,70 @@ public class UserVoService {
     }
 
 
+    public QueryResponseResult findAllUserVos(Integer page, Integer size, UserListRequest userListRequest) {
+        //        分页
+        Page pag =PageHelper.startPage(page,size);
+        //判断请求条件的合法性
+        if (userListRequest == null){
+            userListRequest = new UserListRequest();
+        }
 
+        User user1 = new User();
+        //判断不为空字符串
+        if(StringUtils.isNotEmpty(userListRequest.getUser_id())){
+            user1.setUser_id(userListRequest.getUser_id());
+        }
+        if(StringUtils.isNotEmpty(userListRequest.getUser_nickname())){
+            user1.setUser_nickname(userListRequest.getUser_nickname());
+        }
+        if(StringUtils.isNotEmpty(userListRequest.getUser_phone())){
+            user1.setUser_phone(userListRequest.getUser_phone());
+        }
+
+
+        //查询
+        List<User> users = userMapper.select(user1);
+
+        if (CollectionUtils.isEmpty(users)) {
+            ExceptionCast.cast(MemberCode.DATA_IS_NULL);
+        }
+        List<UserVo> userVos = new ArrayList<UserVo>();
+        for(User user:users){
+            UserVo uservo = new UserVo();
+            String roleId=user.getRole_id();
+            Role role = new Role();
+            role.setRole_id(roleId);
+            //uservo.setUniq_id(user.getUniq_id());
+            uservo.setUser_id(user.getUser_id());
+            uservo.setRole_name(roleMapper.selectOne(role).getRole_name());
+            uservo.setUser_image(user.getUser_image());
+            uservo.setUser_name(user.getUser_name());
+            uservo.setUser_nickname(user.getUser_nickname());
+            uservo.setGender(user.getGender());
+            uservo.setUser_birth(user.getUser_birth());
+            uservo.setUser_email(user.getUser_email());
+            uservo.setUser_phone(user.getUser_phone());
+            uservo.setUser_qq(user.getUser_qq());
+            uservo.setUser_wechat(user.getUser_wechat());
+            uservo.setUser_region(user.getUser_region());
+            uservo.setUser_createtime(user.getUser_createtime());
+            uservo.setCompany_id(user.getCompany_id());
+            userVos.add(uservo);
+        }
+        //解析分页结果
+        PageInfo<UserVo> pageInfo = new PageInfo<>(pag.getResult());
+
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(userVos);
+        queryResult.setTotal(pageInfo.getTotal());
+
+
+        return new QueryResponseResult(CommonCode.SUCCESS,queryResult);
+
+    }
+    //预警模块得到预警用户信息
+    public List<UserVo> getAllUser(List listUserId) {
+        return userVoMapper.getAllUser(listUserId);
+    }
 
 }

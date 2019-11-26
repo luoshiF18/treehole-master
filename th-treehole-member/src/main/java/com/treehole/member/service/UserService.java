@@ -6,6 +6,7 @@ import com.treehole.framework.domain.evaluation.Scale;
 import com.treehole.framework.domain.evaluation.response.EvaluationCode;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
+import com.treehole.framework.domain.member.ext.UserExt;
 import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
@@ -14,6 +15,7 @@ import com.treehole.member.myUtil.MyMd5Utils;
 import com.treehole.member.myUtil.MyNumberUtils;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -31,6 +33,9 @@ public class UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private CardsService cardsService;
 
     /**
      * 查询所有用户
@@ -81,11 +86,22 @@ public class UserService {
         User user = new User();
         user.setUser_nickname(nickname);
         User use = userMapper.selectOne(user);
-        if(use == null){
-            ExceptionCast.cast(MemberCode.DATA_IS_NULL);
-        }
+
         return use;
     }
+
+public UserExt getUserExt(String userNickName){
+        if (StringUtils.isBlank(userNickName)){
+            ExceptionCast.cast( MemberCode.DATA_ERROR);
+        }
+     User user = new User();
+     user.setUser_nickname(userNickName);
+    User use = userMapper.selectOne(user);
+    UserExt userExt = new UserExt();
+    BeanUtils.copyProperties(use,userExt);
+    return userExt;
+}
+
 
     /**
      * 根据user_iphone查询所有user记录
@@ -156,7 +172,6 @@ public class UserService {
            // ExceptionCast.cast(MemberCode.NICKNAME_EXIST);
             Random random = new Random();
             String nickname2 = nickname1 + random.nextInt(1000);
-
         }
         if(this.findUserByNickname(nickname2) != null){
             ExceptionCast.cast(MemberCode.NICKNAME_EXIST);
@@ -167,11 +182,13 @@ public class UserService {
         user.setUser_nickname(nickname1);
 
         user.setUser_createtime(new Date());
-        user.setPoints_now(0);
+        //
         int ins = userMapper.insert(user);
         if( ins != 1){
             ExceptionCast.cast(MemberCode.INSERT_FAIL);
         }
+        //往cards表中插入数据
+       //cardsService.insertCard(user);
     }
 
     /**
