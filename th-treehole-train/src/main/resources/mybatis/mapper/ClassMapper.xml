@@ -66,14 +66,14 @@
     <select id="findClassCourse"
             parameterType="com.treehole.framework.domain.train.ext.CourseExt"
             resultType="com.treehole.framework.domain.train.ext.CourseTeacher">
-        	SELECT *
+    SELECT *
 	FROM(
 	       SELECT
            co.*,
            t.`teacher_name`,
            ct.`course_type_name`
-           FROM class c
-           LEFT JOIN class_course cc
+           FROM class_course cc
+           LEFT JOIN class c
            ON c.`class_id` = cc.`class_id`
            LEFT JOIN course co
            ON cc.`course_id` = co.`course_id`
@@ -94,9 +94,10 @@
             AND n.course_type = #{courseType}
         </if>
         <if test=" courseTeacher != null and courseTeacher != '' ">
-            AND n.course_Teacher = #{courseTeacher}
+            AND n.course_teacher = #{courseTeacher}
         </if>
     </where>
+
 
     </select>
 

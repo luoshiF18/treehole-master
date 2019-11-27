@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class ClassController implements ClassControllerApi {
    @Autowired
     ClassService classService;
-//=============================================徐公瑾最帅========================================
+
     @Override
     @PostMapping("/add")
     public ResponseResult addClass(@RequestBody Class class1) {

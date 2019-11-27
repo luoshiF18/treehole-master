@@ -64,16 +64,9 @@ public class ClassCourseService {
 
     //退课
     public ResponseResult deleteClassCourse(String classId, String courseId) {
-      Optional<ClassCourse> optional =  classCourseRepository.findByClassIdAndCourseId(classId,courseId);
-      ClassCourse classCourse = null;
-      if(optional.isPresent()){
-            classCourse = optional.get();
-        }
-      if(classCourse == null){
-          return new ResponseResult(CommonCode.FAIL);
-      }
-        classCourseRepository.deleteById(classCourse.getId());
-      //课程数-1
+         classCourseMapper.deleteClassCourse(classId, courseId);
+
+        //课程数-1
         Optional<Class> classOptional = classRepository.findById(classId);
         Class class1 = null;
         if(classOptional.isPresent()){
