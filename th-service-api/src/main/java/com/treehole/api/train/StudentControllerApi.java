@@ -1,8 +1,9 @@
 package com.treehole.api.train;
 import com.treehole.framework.domain.train.Cost;
-import com.treehole.framework.domain.train.Course;
 import com.treehole.framework.domain.train.Student;
-import com.treehole.framework.domain.train.ext.StudentCourse;
+import com.treehole.framework.domain.train.ext.CourseTeacher;
+import com.treehole.framework.domain.train.ext.StudentCourseParams;
+import com.treehole.framework.domain.train.ext.StudentExt;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
@@ -18,17 +19,16 @@ public interface StudentControllerApi {
     @ApiOperation("修改学生信息")
     public ResponseResult updateStudent(String studentId,Student student);
     @ApiOperation("根据id和模糊查询学生信息")
-    public QueryResponseResult<Student> findStudentByFuzzyQuery(int page , Student student);
-    @ApiOperation("查询所有学生信息")
-    public QueryResponseResult<Student> findAllStudent(int page);
-
+    public QueryResponseResult<StudentExt> findStudentByFuzzyQuery(int page , int size, Student student);
+    @ApiOperation("学生毕业（个人）")
+    public ResponseResult studentGraduation(String studentId);
+    @ApiOperation("学生毕业（全班）")
+    public ResponseResult studentGraduationAllClass(String classId);
 
     @ApiOperation("学生课程统计")
-    public QueryResponseResult<StudentCourse> findStudentCourse(int page,String studentId);
-    @ApiOperation("学生交费记录")
-    public QueryResponseResult<Cost> findPay(int page,String studentId);
-    @ApiOperation("学生欠费记录")
-    public QueryResponseResult<Cost> findArrears(int page,String studentId);
+    public QueryResponseResult<CourseTeacher> findStudentCourse(int page, int size, StudentCourseParams studentCourseParams);
+    @ApiOperation("学生交费记录(欠费记录)")
+    public QueryResponseResult<Cost> findPay(int page,int size,Cost cost);
 
 
 

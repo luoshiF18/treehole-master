@@ -17,8 +17,6 @@ public interface TeacherControllerApi {
     @ApiOperation("修改老师信息")
     public ResponseResult updateTeacher(String teacherId,Teacher teacher);
     @ApiOperation("通过id和模糊查询查询老师信息")
-    public QueryResponseResult<Teacher> findTeacherByFuzzyQuery(int page, Teacher teacher);
-    @ApiOperation("查询所有老师信息")
-    public QueryResponseResult<Teacher> findAllTeacher(int page);
+    public QueryResponseResult<Teacher> findTeacherByFuzzyQuery(int page,int size, Teacher teacher);
 
 }

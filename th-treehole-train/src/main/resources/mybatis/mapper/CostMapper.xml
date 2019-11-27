@@ -14,4 +14,25 @@
         ORDER BY c.`cost_time` DESC
     </select>
 
+
+    <!--查询查询交费信息-->
+    <select id="findInfoByStudentId"
+            resultMap="findInfo"
+            parameterType="java.lang.String">
+        SELECT
+        s.`student_name`,
+        p.`phase_tuition`,
+        p.`phase_preferential_amount`
+        FROM student s
+        LEFT JOIN phase p
+        ON s.`student_phase` = p.`phase_id`
+        WHERE s.`student_id` = #{studentId}
+    </select>
+    <resultMap id="findInfo" type="com.treehole.framework.domain.train.Cost">
+        <result property="costStudentName" column="student_name"></result>
+        <result property="costArrears" column="phase_tuition"></result>
+        <result property="costPreferentialAmount" column="phase_preferential_amount"></result>
+    </resultMap>
+
+
 </mapper>

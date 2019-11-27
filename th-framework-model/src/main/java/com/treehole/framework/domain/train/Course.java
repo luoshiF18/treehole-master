@@ -12,15 +12,14 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @Table(name="course")
-@GenericGenerator(name = "jpa-uuid", strategy = "uuid")
 public class Course implements Serializable {
-    private static final long serialVersionUID = -916357110051689587L;
     @Id
-    @GeneratedValue(generator = "jpa-uuid")
     @Column(name = "course_id")
     private String courseId;
-    @Column(name = "courseName")
+    @Column(name = "course_name")
     private String courseName;
+    @Column(name = "course_describe")
+    private String courseDescribe;
     @Column(name = "course_type")
     private String courseType;
     @Column(name = "course_begin_time")

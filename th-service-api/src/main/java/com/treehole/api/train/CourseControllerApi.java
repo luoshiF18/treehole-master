@@ -1,6 +1,7 @@
 package com.treehole.api.train;
 
 import com.treehole.framework.domain.train.Course;
+import com.treehole.framework.domain.train.ext.CourseTeacher;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
@@ -17,11 +18,6 @@ public interface CourseControllerApi {
     @ApiOperation("修改课程信息")
     public ResponseResult updateCourse(String courseId,Course course);
     @ApiOperation("通过id和模糊查询 查询课程信息")
-    public QueryResponseResult<Course> findCourseByFuzzyQuery(int page ,Course course);
-    @ApiOperation("查询所有课程信息")
-    public QueryResponseResult<Course> findAllCourse(int page);
-
-
-
+    public QueryResponseResult<CourseTeacher> findCourseByFuzzyQuery(int page , int size , Course course);
 
 }

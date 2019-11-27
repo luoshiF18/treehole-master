@@ -4,16 +4,43 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.treehole.train.dao.LeaveMapper">
 
-    <!--请假信息统计-->
-    <select id="findByLeavePeopleIdAndLeavePeopleType"
+    <!--请假信息统计(请假中的人员信息统计)-->
+    <select id="findLeaveByFuzzyQuery"
             resultType="com.treehole.framework.domain.train.Leave"
-            parameterType="java.util.HashMap">
-        SELECT *
-        FROM leaves
-        WHERE leave_people_type=#{peopleType}
-        AND leave_people_id = #{peopleId}
-
+            parameterType="com.treehole.framework.domain.train.Leave">
+            SELECT *
+            FROM leaves l
+            <where>
+                and  l.`leave_state` = '2'
+                <if test=" leavePeopleId != null and leavePeopleId != '' ">
+                    AND  l.`leave_people_id` =#{leavePeopleId}
+                </if>
+                <if test=" leavePeopleName != null and leavePeopleName != '' ">
+                    AND l.`leave_people_name` LIKE '%${leavePeopleName}%'
+                </if>
+                <if test=" leavePeopleType != null and leavePeopleType != '' ">
+                    AND l.`leave_people_type` =#{leavePeopleType}
+                </if>
+            </where>
     </select>
 
-    
+    <!--请假信息统计(所有人员信息统计)-->
+    <select id="findLeaveAll"
+            resultType="com.treehole.framework.domain.train.Leave"
+            parameterType="com.treehole.framework.domain.train.Leave">
+        SELECT *
+        FROM leaves l
+        <where>
+            <if test=" leavePeopleId != null and leavePeopleId != '' ">
+                AND  l.`leave_people_id` =#{leavePeopleId}
+            </if>
+            <if test=" leavePeopleName != null and leavePeopleName != '' ">
+                AND l.`leave_people_name` LIKE '%${leavePeopleName}%'
+            </if>
+            <if test=" leavePeopleType != null and leavePeopleType != '' ">
+                AND l.`leave_people_type` =#{leavePeopleType}
+            </if>
+        </where>
+    </select>
+
 </mapper>

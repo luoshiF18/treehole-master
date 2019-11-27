@@ -14,11 +14,8 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @Table(name="class")
-@GenericGenerator(name = "jpa-uuid", strategy = "uuid")
 public class Class implements Serializable {
-    private static final long serialVersionUID = -916357110051689587L;
     @Id
-    @GeneratedValue(generator = "jpa-uuid")
     @Column(name="class_id")
     private String classId;
     @Column(name="class_name")
@@ -27,10 +24,14 @@ public class Class implements Serializable {
     private  String classPlan;
     @Column(name="class_number")
     private  Integer classNumber;
+    @Column(name="class_planned_number")
+    private  Integer classPlannedNumber;//计划人数
     @Column(name= "class_creat_time")
     private Date classCreatTime;
-    @Column(name="class_teacher_id")
-    private String classTeacherId;
+    @Column(name="class_course_number")
+    private Integer classCourseNumber;
+    @Column(name="class_headmaster")
+    private String classHeadmaster;
     @Column(name="class_other")
     private  String classOther;
 

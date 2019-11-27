@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.treehole.train.dao.PhaseMapper">
+
+    <!--查询期数-->
+    <select id="findPhase"
+            parameterType="com.treehole.framework.domain.train.Phase"
+            resultType="com.treehole.framework.domain.train.Phase">
+                   SELECT *
+                   FROM phase p
+                    <where>
+                       <if test="phaseId !=null and phaseId !='' ">
+                           AND p.`phase_id` = #{phaseId}
+                        </if>
+                        <if test="phaseName !=null and phaseName !='' ">
+                           AND p.`phase_name` = '%${phaseName}%'
+                        </if>
+
+                    </where>
+    </select>
+
+
+</mapper>

@@ -25,14 +25,16 @@ public class Cost implements Serializable {
     private String costStudentId;
     @Column(name = "cost_student_name")
     private String costStudentName;
-    @Column(name = "cost_amount_payable")
+
+    @Column(name = "cost_amount_payable") //应付金额
     private double costAmountPayable;
-    @Column(name = "cost_preferential_amount")
+    @Column(name = "cost_preferential_amount") //优惠金额
     private double costPreferentialAmount;
-    @Column(name = "cost_amount_received")
+    @Column(name = "cost_amount_received") //实收金额
     private double costAmountReceived;
-    @Column(name = "cost_arrears")
+    @Column(name = "cost_arrears") //欠费金额
     private double costArrears;
+
     @Column(name = "cost_time")
     private Date costTime;
     @Column(name = "cost_operator_id")

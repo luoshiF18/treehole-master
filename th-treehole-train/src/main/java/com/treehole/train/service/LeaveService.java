@@ -3,6 +3,7 @@ package com.treehole.train.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.treehole.framework.domain.train.CourseType;
 import com.treehole.framework.domain.train.Leave;
 import com.treehole.framework.domain.train.Student;
 import com.treehole.framework.domain.train.Teacher;
@@ -48,8 +49,8 @@ public class LeaveService {
         //得到请假人的姓名
        String peopleName = null;
 
-        //修改状态
-        if(leave.getLeavePeopleType().equals("学生")){
+        //修改状态  1 代表学生
+        if(leave.getLeavePeopleType() == 1){
             if (leave.getLeavePeopleId()!=null){
                 //修改学生状态
                 Optional<Student> optional = studentRepository.findById(leave.getLeavePeopleId());
@@ -58,11 +59,11 @@ public class LeaveService {
                     student = optional.get();
                 }
                 peopleName = student.getStudentName();
-                student.setStudentState("请假中");
+                student.setStudentState(2);
                 student.setStudentId(leave.getLeavePeopleId());
                 studentRepository.save(student);
             }
-        }else if(leave.getLeavePeopleType().equals("老师")){
+        }else if(leave.getLeavePeopleType() == 2){ // 2 代表老师
             if (leave.getLeavePeopleId()!=null ){
                 //修改老师状态
                 Optional<Teacher> optional = teacherRepository.findById(leave.getLeavePeopleId());
@@ -71,17 +72,20 @@ public class LeaveService {
                     teacher = optional.get();
                 }
                 peopleName = teacher.getTeacherName();
-                teacher.setTeacherState("请假中");
+                teacher.setTeacherState(2);
                 teacher.setTeacherId(leave.getLeavePeopleId());
                 teacherRepository.save(teacher);
             }
         }
 
 
-        leave.setLeaveState("请假中");
+        leave.setLeaveState(2);
         if(leave.getLeavePeopleName()==null ||leave.getLeavePeopleName().equals("") ){
             leave.setLeavePeopleName(peopleName);
         }
+        //添加请假时间
+        Date date = new Date();
+        leave.setLeaveTime(date);
         Leave save = leaveRepository.save(leave);
 
 
@@ -99,13 +103,13 @@ public class LeaveService {
        if(optional.isPresent()){
            leave = optional.get();
        }
-        leave.setLeaveState("已消假");
+       //消假
+        leave.setLeaveState(1);
         Date date = new Date();
         leave.setLeaveRemoveTime(date);
         leaveRepository.save(leave);
-        //修改状态
-        //修改状态
-        if(leave.getLeavePeopleType().equals("学生")){
+        //修改状态 1 代表老师
+        if(leave.getLeavePeopleType() == 1){
             if (leave.getLeavePeopleId()!=null){
                 //修改学生状态
                 Optional<Student> studentOptional= studentRepository.findById(leave.getLeavePeopleId());
@@ -113,11 +117,11 @@ public class LeaveService {
                 if(studentOptional.isPresent()){
                     student = studentOptional.get();
                 }
-                student.setStudentState("正常");
+                student.setStudentState(1);
                 student.setStudentId(leave.getLeavePeopleId());
                 studentRepository.save(student);
             }
-        }else if(leave.getLeavePeopleType().equals("老师")){
+        }else if(leave.getLeavePeopleType() == 2){ // 2 代表老师
             if (leave.getLeavePeopleId()!=null){
                 //修改老师状态
                 Optional<Teacher> teacherOptional = teacherRepository.findById(leave.getLeavePeopleId());
@@ -125,7 +129,7 @@ public class LeaveService {
                 if(teacherOptional.isPresent()){
                     teacher = teacherOptional.get();
                 }
-                teacher.setTeacherState("正常");
+                teacher.setTeacherState(1);
                 teacher.setTeacherId(leave.getLeavePeopleId());
                 teacherRepository.save(teacher);
             }
@@ -133,25 +137,83 @@ public class LeaveService {
        return new ResponseResult(CommonCode.SUCCESS);
     }
 
-    //请假信息统计
+    //请假信息统计(请假中的人员信息统计)
     @Transactional
-    public QueryResponseResult LeaveStatistics(int page,String type ,String id){
+    public QueryResponseResult<Leave> LeaveStatistics(int page,int size ,Leave leave){
         if(page<=0){
             page=1;
         }
-     //   page = page - 1;
-        Page<Leave> leavePage = PageHelper.startPage(page, rootPropeties.getPageSize());
-        QueryResult<Leave> queryResult = new QueryResult<>();
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("peopleType",type);
-        hashMap.put("peopleId",id);
-        List<Leave> list = leaveMapper.findByLeavePeopleIdAndLeavePeopleType(hashMap);
+        Page<Leave> leavePage = PageHelper.startPage(page, size);
+        List<Leave> list = leaveMapper.findLeaveByFuzzyQuery(leave);
         PageInfo<Leave> info = new PageInfo<>(leavePage.getResult());
         long total = info.getTotal();
-        queryResult.setTotal(total);
+        QueryResult queryResult = new QueryResult();
         queryResult.setList(list);
-        return  new QueryResponseResult(CommonCode.SUCCESS,queryResult);
+        queryResult.setTotal(total);
+        if(list!=null){
+            return new QueryResponseResult<Leave>(CommonCode.SUCCESS,queryResult);
+        }else {
+            return new QueryResponseResult<Leave>(CommonCode.FAIL,null);
+        }
 
     }
+
+    //请假信息统计(所有人员信息统计)
+    public QueryResponseResult<Leave> LeaveAllStatistics(int page,int size ,Leave leave){
+        if(page<=0){
+            page=1;
+        }
+        Page<Leave> leavePage = PageHelper.startPage(page, size);
+        List<Leave> list = leaveMapper.findLeaveAll(leave);
+        PageInfo<Leave> info = new PageInfo<>(leavePage.getResult());
+        long total = info.getTotal();
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(list);
+        queryResult.setTotal(total);
+        if(list!=null){
+            return new QueryResponseResult<Leave>(CommonCode.SUCCESS,queryResult);
+        }else {
+            return new QueryResponseResult<Leave>(CommonCode.FAIL,null);
+        }
+
+    }
+
+    //根据Id得到请假人信息
+    public Leave findInfo(String id){
+        String typeId = id.substring(0, 1);
+        int type = Integer.parseInt(typeId);
+
+        if(typeId .equals("1")){
+            //
+            Student student = null;
+            Optional<Student> optionalStudent = studentRepository.findById(id);
+            if(optionalStudent.isPresent()){
+             student = optionalStudent.get();
+            }
+            String studentName = student.getStudentName();
+            Leave leave = new Leave();
+            leave.setLeavePeopleName(studentName);
+            leave.setLeavePeopleType(type);
+            return leave;
+
+        }else if(typeId .equals("2")){
+            //
+            Teacher teacher = null;
+            Optional<Teacher> optionalTeacher = teacherRepository.findById(id);
+            if(optionalTeacher.isPresent()){
+                teacher = optionalTeacher.get();
+            }
+            String teacherName = teacher.getTeacherName();
+            Leave leave = new Leave();
+            leave.setLeavePeopleName(teacherName);
+            leave.setLeavePeopleType(type);
+            return leave;
+        }
+    return null;
+
+    }
+
+
+
 
 }

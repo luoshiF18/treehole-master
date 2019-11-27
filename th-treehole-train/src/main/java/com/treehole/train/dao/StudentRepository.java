@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface StudentRepository extends JpaRepository<Student,String> {
 
-
-
+    //查询目前班级未毕业的学生
+    List<Student> findByStudentClassAndStudentGraduation(String classId , int studentGraduation);
 
 }

@@ -7,29 +7,31 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @ToString
 @Entity
 @NoArgsConstructor
 @Table(name="teacher")
-@GenericGenerator(name = "jpa-uuid", strategy = "uuid")
 public class Teacher implements Serializable {
-    private static final long serialVersionUID = -916357110051689587L;
     @Id
-    @GeneratedValue(generator = "jpa-uuid")
     @Column(name = "teacher_id")
     private String teacherId;
     @Column(name = "teacher_name")
     private String teacherName;
     @Column(name = "teacher_gender")
-    private String teacherGender;
+    private Integer teacherGender;//0:空 1:男 2:女
+    @Column(name = "teacher_birth_bate")
+    private Date teacherBirthDate;
+    @Column(name = "teacher_telephone")
+    private String teacherTelephone;
     @Column(name = "teacher_state")
-    private String teacherState;
+    private Integer teacherState;//1:正常 2:请假中
     @Column(name = "teacher_address")
     private String teacherAddress;
     @Column(name = "teacher_type")
-    private String teacherType;
+    private Integer teacherType;//1:讲师 2:班主任
     @Column(name = "teacher_other")
     private String teacherOther;
 

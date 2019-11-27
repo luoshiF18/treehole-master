@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.treehole.train.dao.CourseTypeMapper">
+
+    <!--模糊查询课程信息信息-->
+    <select id="findCourseTypeByFuzzyQuery"
+            resultType="com.treehole.framework.domain.train.CourseType">
+            SELECT *
+            FROM course_type c
+            <where>
+                <if test=" courseTypeId != null and courseTypeId != '' ">
+                    AND c.`course_type_id` =  #{courseTypeId}
+                </if>
+                <if test=" courseTypeName != null and courseTypeName != '' ">
+                    AND c.`course_type_name` LIKE  '%${courseTypeName}%'
+                </if>
+            </where>
+    </select>
+
+</mapper>

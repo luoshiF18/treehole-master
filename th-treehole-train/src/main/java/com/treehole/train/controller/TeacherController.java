@@ -34,14 +34,9 @@ public class TeacherController implements TeacherControllerApi {
     }
 
     @Override
-    @PostMapping("/find/{page}")
-    public QueryResponseResult<Teacher> findTeacherByFuzzyQuery(@PathVariable("page") int page,@RequestBody Teacher teacher) {
-        return teacherService.findTeacherByFuzzyQuery(page,teacher);
+    @PostMapping("/find/{page}/{size}")
+    public QueryResponseResult<Teacher> findTeacherByFuzzyQuery(@PathVariable("page") int page,@PathVariable("size") int size,@RequestBody Teacher teacher) {
+        return teacherService.findTeacherByFuzzyQuery(page,size,teacher);
     }
 
-    @Override
-    @GetMapping("/findall/{page}")
-    public QueryResponseResult<Teacher> findAllTeacher(int page) {
-        return teacherService.findAllTeacher(page);
-    }
 }

@@ -10,65 +10,135 @@
             SELECT * from class
     </select>
 
+    <!--模糊查询班级信息-->
+    <select id="findClassByFuzzyQuery"
+            resultType="com.treehole.framework.domain.train.ext.ClassHeadmaster">
+            SELECT
+            c.*,
+            t.`teacher_name`
+            FROM class c
+            LEFT JOIN teacher t
+            ON c.`class_headmaster` = t.`teacher_id`
+            <where>
+                <if test="classId !=null and classId !='' ">
+                   and c.`class_id` = #{classId}
+                </if>
+
+                <if test=" className !=null and className !='' ">
+                    AND c.`class_name` LIKE '%${className}%'
+                </if>
+            </where>
+    </select>
+
     <!--班级学生统计-->
     <select id="findClassStudent"
             resultType="com.treehole.framework.domain.train.Student"
-            parameterType="java.lang.String">
-        SELECT
-        s.`student_id`,
-        s.`student_name`,
-        s.`student_gender`,
-        s.`student_birth_date`,
-        s.`student_type`,
-        s.`student_state`,
-        s.`student_telephone`,
-        s.`student_address`,
-        s.`student_enrollment_time`
-        FROM class c
-        LEFT JOIN student s
-        ON c.`class_id` = s.`student_class`
-        WHERE c.`class_id`=#{id}
+            parameterType="com.treehole.framework.domain.train.ext.StudentExt">
 
+        SELECT *
+        FROM (
+            SELECT *
+            FROM class c
+            LEFT JOIN student s
+            ON c.`class_id` = s.`student_class`
+            WHERE c.`class_id`=#{classId}
+        ) s
+        <where>
+            <if test=" studentId !=null and studentId !='' "  >
+                AND s.`student_id`=#{studentId}
+            </if>
+            <if test=" studentName !=null and studentName !='' ">
+                AND s.`student_name` like '%${studentName}%'
+            </if>
+            <if test=" studentGender !=null and studentGender !='' ">
+                AND s.`student_gender`=#{studentGender}
+            </if>
+            <if test=" studentState !=null and studentState !='' ">
+                AND s.`student_state`=#{studentState}
+            </if>
+            <if test=" studentClass !=null and studentClass !='' ">
+                AND s.`student_class`=#{studentClass}
+            </if>
+        </where>
     </select>
 
     <!--班级课程统计-->
     <select id="findClassCourse"
-            parameterType="java.lang.String"
-            resultType="com.treehole.framework.domain.train.ext.StudentCourse">
-        SELECT
-        co.*,
-        t.`teacher_name`
-        FROM class c
-        LEFT JOIN class_course cc
-        ON c.`class_id` = cc.`class_id`
-        LEFT JOIN course co
-        ON cc.`course_id` = co.`course_id`
-        LEFT JOIN teacher t
-        ON co.course_teacher = t.teacher_id
-        WHERE c.`class_id` = #{id}
+            parameterType="com.treehole.framework.domain.train.ext.CourseExt"
+            resultType="com.treehole.framework.domain.train.ext.CourseTeacher">
+        	SELECT *
+	FROM(
+	       SELECT
+           co.*,
+           t.`teacher_name`,
+           ct.`course_type_name`
+           FROM class c
+           LEFT JOIN class_course cc
+           ON c.`class_id` = cc.`class_id`
+           LEFT JOIN course co
+           ON cc.`course_id` = co.`course_id`
+           LEFT JOIN teacher t
+           ON co.course_teacher = t.teacher_id
+           LEFT JOIN `course_type` ct
+           ON co.`course_type` = ct.`course_type_id`
+           WHERE c.`class_id` = #{classId}
+	) n
+	<where>
+        <if test=" courseId != null and courseId != '' ">
+            AND n.course_id = #{courseId}
+        </if>
+	    <if test=" courseName != null and courseName != '' ">
+            AND n.course_name LIKE '%${courseName}%'
+	     </if>
+        <if test=" courseType != null and courseType != '' ">
+            AND n.course_type = #{courseType}
+        </if>
+        <if test=" courseTeacher != null and courseTeacher != '' ">
+            AND n.course_Teacher = #{courseTeacher}
+        </if>
+    </where>
 
     </select>
 
     <!--班级老师统计-->
     <select id="findClassTeacher"
-            parameterType="java.lang.String"
+            parameterType="com.treehole.framework.domain.train.ext.CourseTeacher"
             resultType="com.treehole.framework.domain.train.Teacher">
-        SELECT t.*
-        FROM class c
-        LEFT JOIN teacher t
-        ON c.`class_teacher_id` = t.`teacher_id`
-        WHERE c.`class_id`= #{id}
-        UNION
-        SELECT t.*
-        FROM class c
-        LEFT JOIN class_course cc
-        ON c.`class_id` = cc.`class_id`
-        LEFT JOIN course co
-        ON cc.`course_id` = co.`course_id`
-        LEFT JOIN teacher t
-        ON co.course_teacher = t.teacher_id
-        WHERE c.`class_id` = #{id}
 
+        SELECT *
+        FROM (
+            SELECT t.*
+            FROM class c
+            LEFT JOIN teacher t
+            ON c.`class_headmaster` = t.`teacher_id`
+            WHERE c.`class_id`= #{classId}
+            UNION
+            SELECT t.*
+            FROM class c
+            LEFT JOIN class_course cc
+            ON c.`class_id` = cc.`class_id`
+            LEFT JOIN course co
+            ON cc.`course_id` = co.`course_id`
+            LEFT JOIN teacher t
+            ON co.course_teacher = t.teacher_id
+            WHERE c.`class_id` = #{classId}
+        ) t
+        <where>
+            <if test="teacherId !=null and teacherId !='' ">
+                AND t.`teacher_id` = #{teacherId}
+            </if>
+            <if test="teacherName !=null and teacherName !='' ">
+                AND t.`teacher_name` LIKE '%${teacherName}%'
+            </if>
+            <if test=" teacherGender !=null and teacherGender !='' ">
+                AND t.`teacher_gender` = #{teacherGender}
+            </if>
+            <if test=" teacherState !=null and teacherState !='' ">
+                AND t.`teacher_state` = #{teacherState}
+            </if>
+            <if test=" teacherType !=null and teacherType !='' ">
+                AND t.`teacher_type` = #{teacherType}
+            </if>
+        </where>
     </select>
-
 </mapper>

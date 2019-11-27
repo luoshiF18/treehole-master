@@ -10,36 +10,42 @@
             SELECT * from course
     </select>
 
-    <!--模糊查询-->
+    <!--模糊查询课程-->
     <select id="findCourseByFuzzyQuery"
-            parameterType="com.treehole.framework.domain.train.Course"
-            resultType="com.treehole.framework.domain.train.Course">
-
-        select * from course
-        <where>
-            <if test=" courseId != null and courseId !='' ">
-                and course_id = #{courseId}
-            </if>
-
-            <if test=" courseName != null and courseName !='' ">
-                and course_name = like concat('%',#{courseName}, '%')
-            </if>
-            <if test=" courseType != null and courseType !='' ">
-                and course_type = #{courseType}
-            </if>
-            <if test=" courseBeginTime != null and courseBeginTime !='' ">
-                and course_begin_time = #{courseBeginTime}
-            </if>
-            <if test=" courseEndTime != null and courseEndTime !='' ">
-                and course_end_time = #{courseEndTime}
-            </if>
-            <if test=" courseTime != null and courseTime !='' ">
-                and course_time = #{courseTime}
-            </if>
-            <if test=" courseTeacher != null and courseTeacher !='' ">
-                and course_teacher = #{courseTeacher}
-            </if>
-        </where>
+            resultType="com.treehole.framework.domain.train.ext.CourseTeacher"
+            parameterType="com.treehole.framework.domain.train.Course">
+            SELECT
+            c.`course_id`,
+            c.`course_name`,
+            c.`course_type`,
+            c.`course_describe`,
+            c.`course_begin_time`,
+            c.`course_end_time`,
+            c.`course_time`,
+            c.`course_teacher`,
+            c.`course_other`,
+            t.`teacher_name`,
+            ct.`course_type_name`
+            FROM course c
+            LEFT JOIN teacher t
+            ON c.`course_teacher` = t.`teacher_id`
+            LEFT JOIN course_type ct
+            ON c.`course_type` = ct.`course_type_id`
+            <where>
+             <if test=" courseId !=null and courseId !='' ">
+                AND c.`course_id` = #{courseId}
+             </if>
+             <if test=" courseName !=null and courseName !='' ">
+                AND c.`course_name` LIKE '%${courseName}%'
+             </if>
+             <if test=" courseType !=null and courseType !='' ">
+                AND c.`course_type` = #{courseType}
+             </if>
+             <if test=" courseTeacher !=null and courseTeacher !='' ">
+                AND c.`course_teacher` = #{courseTeacher}
+             </if>
+            </where>
     </select>
+
 
 </mapper>

@@ -9,7 +9,10 @@ import java.util.List;
 @Component
 public interface LeaveMapper {
 
-   List<Leave> findByLeavePeopleIdAndLeavePeopleType(HashMap<String,String> hashMap);
+   //请假信息统计(请假中的人员信息统计)
+   List<Leave> findLeaveByFuzzyQuery(Leave leave);
 
+   //请假信息统计(请假中的人员信息统计)
+   List<Leave> findLeaveAll(Leave leave);
 
 }

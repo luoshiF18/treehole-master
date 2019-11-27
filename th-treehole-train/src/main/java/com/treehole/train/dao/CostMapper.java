@@ -12,7 +12,8 @@ public interface CostMapper {
   //查询cost按时间降序
     List<Cost> findCostByStudentId(String studentId);
 
-
+  //查询交费信息
+  Cost findInfoByStudentId(String studentId);
 
 
 }

@@ -19,21 +19,21 @@ public class Leave implements Serializable {
     @Column(name = "leave_id")
     private String leaveId;
     @Column(name = "leave_people_type")
-    private String leavePeopleType;
+    private Integer leavePeopleType;  //请假类型 1 学生 2 老师
     @Column(name = "leave_people_id")
     private String leavePeopleId;
     @Column(name = "leave_people_name")
     private String leavePeopleName;
     @Column(name = "leave_time")
-    private Date leaveTime;
+    private Date leaveTime;  //请假时间
     @Column(name = "leave_start_time")
-    private Date leaveStartTime;
+    private Date leaveStartTime; //开始时间
     @Column(name = "leave_end_time")
-    private Date leaveEndTime;
+    private Date leaveEndTime;  //结束时间
     @Column(name = "leave_remove_time")
-    private Date leaveRemoveTime;
+    private Date leaveRemoveTime; //消假时间
     @Column(name = "leave_state")
-    private String leaveState;
+    private Integer leaveState;   // 1 已消假  2 请假中
     @Column(name = "leave_operator_id")
     private String  leaveOperatorId;
     @Column(name = "leave_other")

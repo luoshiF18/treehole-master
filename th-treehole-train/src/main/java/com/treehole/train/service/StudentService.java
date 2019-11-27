@@ -1,25 +1,26 @@
 package com.treehole.train.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.treehole.framework.domain.train.Class;
 import com.treehole.framework.domain.train.Cost;
+import com.treehole.framework.domain.train.Phase;
 import com.treehole.framework.domain.train.Student;
-import com.treehole.framework.domain.train.ext.StudentCourse;
+import com.treehole.framework.domain.train.ext.CourseTeacher;
+import com.treehole.framework.domain.train.ext.StudentCourseParams;
+import com.treehole.framework.domain.train.ext.StudentExt;
+import com.treehole.framework.domain.train.response.TrainCode;
+import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.train.config.RootPropeties;
-import com.treehole.train.dao.CostRepository;
-import com.treehole.train.dao.StudentMapper;
-import com.treehole.train.dao.StudentRepository;
+import com.treehole.train.dao.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.*;
 
 @Service
@@ -28,147 +29,243 @@ public class StudentService {
 
     @Autowired
     CostRepository costRepository;
-
     @Autowired
     StudentRepository studentRepository;
-
+    @Autowired
+    ClassRepository classRepository;
     @Autowired
     StudentMapper studentMapper;
     @Autowired
     RootPropeties rootPropeties;
+    @Autowired
+    CostService costService;
+    @Autowired
+    PhaseRepository phaseRepository;
+    @Autowired
+    GenerateNumberService generateNumberService;
 
 //信息管理
    //学员管理
        //基本信息管理
 
     //添加学生信息
+    /**
+     * 自动生成学生id，添加学生信息 ，班级人数加1
+     * @param student
+     * @return
+     */
+    @Transactional
     public ResponseResult addStudent(Student student){
         Date date = new Date();
+        student.setStudentState(1);
+        student.setStudentType(1);
         student.setStudentEnrollmentTime(date);
+        student.setStudentGraduation(1);
+        //添加生成的Id
+        String sId = generateNumberService.GenerateNumber("1");
+        student.setStudentId(sId);
+
+        //添加学生信息
         Student save = studentRepository.save(student);
-        if(save!=null){
-            return new ResponseResult(CommonCode.SUCCESS);
+
+        //先交费0元生成欠费信息
+        this.payZero(sId,student);
+
+        //班级人数加1
+        String studentClass = student.getStudentClass();
+        Optional<Class> optionalClass = classRepository.findById(studentClass);
+        Class newClass = null;
+        if(optionalClass.isPresent()){
+             newClass = optionalClass.get();
         }
-        return new ResponseResult(CommonCode.FAIL);
+        Integer classPlannedNumber = newClass.getClassPlannedNumber();
+        Integer classNumber = newClass.getClassNumber();
+        if(classNumber >= classPlannedNumber){
+            ExceptionCast.cast(TrainCode.CLASS_IS_FULL);
+        }
+        classNumber++;
+        newClass.setClassNumber(classNumber);
+        classRepository.save(newClass);
+
+        if(save != null){
+            return new ResponseResult(CommonCode.SUCCESS);
+        }else {
+            return new ResponseResult(CommonCode.FAIL);
+        }
+
     }
+
+    //先交费0元生成欠费信息
+    public void payZero(String sId , Student student){
+        String studentPhase = student.getStudentPhase();
+        Optional<Phase> optionalPhase = phaseRepository.findById(studentPhase);
+        Phase phase = null;
+        if(optionalPhase.isPresent()){
+            phase = optionalPhase.get();
+        }
+
+        Cost cost = new Cost();
+        cost.setCostStudentId(sId);
+        //应付金额
+        cost.setCostAmountPayable(phase.getPhaseTuition());
+        //优惠金额
+        cost.setCostPreferentialAmount( phase.getPhasePreferentialAmount());
+        cost.setCostOther("新生信息录入系统,自动欠费");
+        ResponseResult pay = costService.pay(cost);
+    }
+
     //删除学生信息
+    @Transactional
     public ResponseResult deleteStudent(String studentId){
-        studentRepository.deleteById(studentId);
-        return new ResponseResult(CommonCode.SUCCESS);
+        //如果学生有欠费 不能删除
+        Cost cost1 = new Cost();
+        cost1.setCostStudentId(studentId);
+        QueryResponseResult<Cost> pay = this.findPay(1, 0,cost1);
+        QueryResult<Cost> queryResult = pay.getQueryResult();
+        List<Cost> list = queryResult.getList();
+        if(list.size() == 0){
+            ExceptionCast.cast(TrainCode.NO_TUITION_FEES);
+        }
+         //得到欠费金额
+        Cost cost = list.get(list.size()-1);
+        double costArrears = cost.getCostArrears();
+        if(costArrears == 0 || costArrears == 0.0 || costArrears == 0.00){
+            //班级人数减1
+            Optional<Student> optionalStudent = studentRepository.findById(studentId);
+            Student student =null;
+            if(optionalStudent.isPresent()){
+                student = optionalStudent.get();
+            }
+            String studentClass = student.getStudentClass();
+            Optional<Class> optionalClass = classRepository.findById(studentClass);
+            Class newClass = null;
+            if(optionalClass.isPresent()){
+                newClass = optionalClass.get();
+            }
+            Integer classNumber = newClass.getClassNumber() - 1;
+            newClass.setClassNumber(classNumber);
+            classRepository.save(newClass);
+            //删除学生
+            studentRepository.deleteById(studentId);
+            return new ResponseResult(CommonCode.SUCCESS);
+        }else {
+            ExceptionCast.cast(TrainCode.TUITION_IS_NOT_PAID);
+        }
+        return null;
     }
+
     //修改学生信息
     public ResponseResult updateStudent(String studentId,Student student){
-        Optional<Student> optional = studentRepository.findById(studentId);
-        Student returnStudent = null;
-        if(optional.isPresent()){
-            returnStudent = optional.get();
-        }
-        //拷贝
-        BeanUtils.copyProperties(student,returnStudent);
-        returnStudent.setStudentId(studentId);
-        studentRepository.save(returnStudent);
+        student.setStudentId(studentId);
+        studentRepository.save(student);
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
     //通过id查询学生信息
-    public QueryResponseResult<Student> findStudentByFuzzyQuery(int page ,Student student){
+    public QueryResponseResult<StudentExt> findStudentByFuzzyQuery(int page ,int size,Student student){
 
-        if(student.getStudentId()==null){
-
-        }else  if(student.getStudentId().equals("") ){
-            student.setStudentId(null);
-        }
-
-        //定义适配器
-        ExampleMatcher exampleMatcher = ExampleMatcher.matching()
-                .withMatcher("studentName", ExampleMatcher.GenericPropertyMatchers.contains());
-        Example<Student> example = Example.of(student, exampleMatcher);
-
-        if(page<=0){
-            page = 1;
-        }
-        page = page - 1;
-        //分页
-        PageRequest pageRequest = new PageRequest(page,rootPropeties.getPageSize());
-        Page<Student> all = studentRepository.findAll(example, pageRequest);
-
-        QueryResult queryResult = new QueryResult();
-        queryResult.setList(all.getContent());
-        queryResult.setTotal(all.getTotalElements());
-        return new QueryResponseResult<Student>(CommonCode.SUCCESS, queryResult);
-    }
-
-
-    //查询所有学生信息
-    public QueryResponseResult<Student> findAllStudent(int page) {
-        if(page<=0){
-            page=1;
-        }
-       // page = page - 1;
-        com.github.pagehelper.Page<Student> studentPage = PageHelper.startPage(page, rootPropeties.getPageSize());
-        List<Student> list = studentMapper.findAllStudent();
-        PageInfo<Student> info = new PageInfo<>(studentPage.getResult());
+        com.github.pagehelper.Page<StudentExt> studentPage = PageHelper.startPage(page, size);
+        List<StudentExt> studentByFuzzyQuery = studentMapper.findStudentByFuzzyQuery(student);
+        PageInfo<StudentExt> info = new PageInfo<>(studentPage.getResult());
         long total = info.getTotal();
         QueryResult queryResult = new QueryResult();
-        queryResult.setList(list);
+        queryResult.setList(studentByFuzzyQuery);
         queryResult.setTotal(total);
-        if(list!=null){
-            return new QueryResponseResult<Student>(CommonCode.SUCCESS,queryResult);
+        if(studentByFuzzyQuery!=null){
+            return new QueryResponseResult<StudentExt>(CommonCode.SUCCESS,queryResult);
         }else {
 
-            return new QueryResponseResult<Student>(CommonCode.FAIL,null);
+            return new QueryResponseResult<StudentExt>(CommonCode.FAIL,null);
         }
     }
+
+
+    //学生毕业(个人）
+    @Transactional
+    public ResponseResult studentGraduation(String studentId){
+        Optional<Student> studentOptional = studentRepository.findById(studentId);
+        Student student = null;
+        if(studentOptional.isPresent()) {
+             student = studentOptional.get();
+        }
+        student.setStudentGraduation(2);
+        Date date = new Date();
+        student.setStudentGraduationTime(date);
+        studentRepository.save(student);
+
+        //班级人数 -1
+        String studentClass = student.getStudentClass();
+        Optional<Class> optionalClass = classRepository.findById(studentClass);
+        Class newClass = null;
+        if(optionalClass.isPresent()){
+            newClass = optionalClass.get();
+        }
+        Integer classNumber = newClass.getClassNumber() - 1;
+        newClass.setClassNumber(classNumber);
+        classRepository.save(newClass);
+
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+
+    //学生毕业(全班）
+    @Transactional
+    public ResponseResult studentGraduationAllClass(String classId){
+        //查询改班目前的学生
+        List<Student> students = studentRepository.findByStudentClassAndStudentGraduation(classId, 1);
+
+        for(int i=0;i<students.size();i++){
+            Student student = students.get(i);
+            student.setStudentGraduation(2);
+            Date date = new Date();
+            student.setStudentGraduationTime(date);
+            studentRepository.save(student);
+        }
+
+        //班级人数清0
+        Optional<Class> optionalClass = classRepository.findById(classId);
+        Class newClass = null;
+        if(optionalClass.isPresent()){
+            newClass = optionalClass.get();
+        }
+        newClass.setClassNumber(0);
+        classRepository.save(newClass);
+
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
 //==============================
     //统计报表
         //学员信息统计
 
     //查询学生课程
-    public QueryResponseResult<StudentCourse> findStudentCourse(int page,String studentId) {
+    public QueryResponseResult<CourseTeacher> findStudentCourse(int page, int size, StudentCourseParams studentCourseParams) {
         if(page<=0){
             page=1;
         }
-       // page = page - 1;
-        com.github.pagehelper.Page<StudentCourse> studentCoursePage = PageHelper.startPage(page, rootPropeties.getPageSize());
-        List<StudentCourse>  studentCourses = studentMapper.findStudentCourse(studentId);
-        PageInfo<StudentCourse> info = new PageInfo<>(studentCoursePage.getResult());
+        com.github.pagehelper.Page<CourseTeacher> studentCoursePage = PageHelper.startPage(page, size);
+        List<CourseTeacher>  studentCourses = studentMapper.findStudentCourse(studentCourseParams);
+        PageInfo<CourseTeacher> info = new PageInfo<>(studentCoursePage.getResult());
         long total = info.getTotal();
         QueryResult queryResult = new QueryResult();
         queryResult.setList(studentCourses);
         queryResult.setTotal(total);
-        return new QueryResponseResult<StudentCourse>(CommonCode.SUCCESS,queryResult);
+        return new QueryResponseResult<CourseTeacher>(CommonCode.SUCCESS,queryResult);
     }
 
 //=================================
 //统计报表
     //学员信息统计
-        //交费统计
+        //交费统计(欠费记录)
 
-    //学生交费记录
-    public QueryResponseResult<Cost> findPay(int page,String studentId){
+    //学生交费记录(欠费记录)
+    public QueryResponseResult<Cost> findPay(int page,int size,Cost cost){
         if(page<=0){
             page=1;
         }
-      //  page = page - 1;
-        com.github.pagehelper.Page<HashMap<String, Object>> hashMapPage = PageHelper.startPage(page, rootPropeties.getPageSize());
-        List<HashMap<String, Object>> costs = studentMapper.findPay(studentId);
-        PageInfo<HashMap<String, Object>> info = new PageInfo<>(hashMapPage.getResult());
-        long total = info.getTotal();
-        QueryResult queryResult = new QueryResult();
-        queryResult.setList(costs);
-        queryResult.setTotal(total);
-        return new QueryResponseResult<Cost>(CommonCode.SUCCESS,queryResult);
-    }
-
-    //学生欠费记录
-    public QueryResponseResult<Cost> findArrears(int page,String studentId){
-        if(page<=0){
-            page=1;
-        }
-     //   page = page - 1;
-        com.github.pagehelper.Page<HashMap<String, Object>> hashMapPage = PageHelper.startPage(page, rootPropeties.getPageSize());
-        List<HashMap<String, Object>> costs =  studentMapper.findArrears(studentId);
-        PageInfo<HashMap<String, Object>> info = new PageInfo<>(hashMapPage.getResult());
+        com.github.pagehelper.Page<Cost> hashMapPage = PageHelper.startPage(page, size);
+        List<Cost> costs = studentMapper.findPay(cost);
+        PageInfo<Cost> info = new PageInfo<>(hashMapPage.getResult());
         long total = info.getTotal();
         QueryResult queryResult = new QueryResult();
         queryResult.setList(costs);

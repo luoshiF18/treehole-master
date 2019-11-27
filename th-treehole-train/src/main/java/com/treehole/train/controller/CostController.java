@@ -15,8 +15,16 @@ public class CostController implements CostControllerApi {
     CostService costService;
 
     @Override
-    @PostMapping("/pay/{studentId}")
-    public ResponseResult pay(@PathVariable("studentId") String studentId,@RequestBody Cost cost) {
-        return costService.pay(studentId,cost);
+    @PostMapping("/pay")
+    public ResponseResult pay(@RequestBody Cost cost) {
+        return costService.pay(cost);
     }
+
+    @Override
+    @GetMapping("/find/{studentId}")
+    public Cost findTuition(@PathVariable("studentId") String studentId) {
+        return costService.findTuition(studentId);
+    }
+
+
 }

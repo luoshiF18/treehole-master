@@ -9,4 +9,29 @@
        select * from teacher
 
     </select>
+
+    <!--模糊学所有老师-->
+    <select id="findTeacherByFuzzyQuery"
+            resultType="com.treehole.framework.domain.train.Teacher">
+        SELECT *
+        FROM teacher t
+        <where>
+           <if test="teacherId !=null and teacherId !='' ">
+               AND t.`teacher_id` = #{teacherId}
+           </if>
+            <if test="teacherName !=null and teacherName !='' ">
+                AND t.`teacher_name` LIKE '%${teacherName}%'
+            </if>
+            <if test=" teacherGender !=null and teacherGender !='' ">
+                AND t.`teacher_gender` = #{teacherGender}
+            </if>
+            <if test=" teacherState !=null and teacherState !='' ">
+                AND t.`teacher_state` = #{teacherState}
+            </if>
+            <if test=" teacherType !=null and teacherType !='' ">
+                AND t.`teacher_type` = #{teacherType}
+            </if>
+        </where>
+    </select>
+
 </mapper>

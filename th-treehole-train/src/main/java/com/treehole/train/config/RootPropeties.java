@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RootPropeties {
-    @Value("${root.pageSize}")
     private Integer pageSize;
 
     public Integer getPageSize() {

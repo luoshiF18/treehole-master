@@ -7,8 +7,8 @@ import lombok.ToString;
 @ToString
 public enum CostCode implements ResultCode{
 
-    NoPAYMENTISREQUIRED(false,10004,"学费已经交齐");
-
+    NoPAYMENTISREQUIRED(false,10004,"学费已经交齐"),
+    MOREMONEY(false,10005,"钱交多了");
     //操作是否成功
     boolean success;
     //操作代码

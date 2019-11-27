@@ -27,9 +27,21 @@ public class LeaveController implements LeaveControllerApi {
     }
 
     @Override
-    @GetMapping("/find/{type}/{page}/{peopleId}")
-    public QueryResponseResult<Leave> LeaveStatistics(@PathVariable("page") int page,@PathVariable("type") String type,@PathVariable("peopleId") String id) {
-        return leaveService.LeaveStatistics(page,type,id);
+    @PostMapping("/find/{page}/{size}")
+    public QueryResponseResult<Leave> LeaveStatistics(@PathVariable("page") int page,@PathVariable("size") int size,@RequestBody Leave leave) {
+        return leaveService.LeaveStatistics(page,size,leave);
+    }
+
+    @Override
+    @PostMapping("/findAll/{page}/{size}")
+    public QueryResponseResult<Leave> LeaveAllStatistics(@PathVariable("page") int page,@PathVariable("size") int size,@RequestBody Leave leave) {
+        return leaveService.LeaveAllStatistics(page,size,leave);
+    }
+
+    @Override
+    @GetMapping("/findInfo/{id}")
+    public Leave findInfo(@PathVariable("id") String id) {
+        return leaveService.findInfo(id);
     }
 
 

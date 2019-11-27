@@ -1,75 +1,111 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.treehole.train.dao.StudentMapper">
 
-
-    <!--查询学所有学生-->
+    <!--查询所有学生-->
     <select id="findAllStudent"
             resultType="com.treehole.framework.domain.train.Student">
        select * from student
     </select>
 
-
+    <!--模糊查询生-->
+    <select id="findStudentByFuzzyQuery"
+            parameterType="com.treehole.framework.domain.train.Student"
+            resultType="com.treehole.framework.domain.train.ext.StudentExt">
+        SELECT
+        s.*,
+        c.`class_name`,
+        p.phase_name
+        FROM student s
+        LEFT JOIN class c
+        ON s.`student_class`= c.`class_id`
+        LEFT JOIN phase p
+        ON s.student_phase = p.phase_id
+        <where>
+            <if test=" studentId !=null and studentId !='' "  >
+                AND s.`student_id`=#{studentId}
+            </if>
+            <if test=" studentName !=null and studentName !='' ">
+                 AND s.`student_name` like '%${studentName}%'
+            </if>
+            <if test=" studentGender !=null and studentGender !='' ">
+                 AND s.`student_gender`=#{studentGender}
+            </if>
+            <if test=" studentState !=null and studentState !='' ">
+                AND s.`student_state`=#{studentState}
+            </if>
+            <if test=" studentClass !=null and studentClass !='' ">
+                AND s.`student_class`=#{studentClass}
+            </if>
+            <if test=" studentPhase !=null and studentPhase !='' ">
+                AND s.`student_phase`=#{studentPhase}
+            </if>
+            <if test=" studentGraduation !=null and studentGraduation !='' ">
+                AND s.`student_graduation`=#{studentGraduation}
+            </if>
+        </where>
+    </select>
 
     <!--查询学生课程-->
     <select id="findStudentCourse"
-            resultType="com.treehole.framework.domain.train.ext.StudentCourse"
-            parameterType="java.lang.String">
-        SELECT
-        co.*,
-        t.teacher_name
-        FROM student s
-        LEFT JOIN class c
-        ON s.`student_class` = c.`class_id`
-        LEFT JOIN class_course cc
-        ON c.`class_id` = cc.`class_id`
-        LEFT JOIN course co
-        ON cc.`course_id` = co.`course_id`
-        LEFT JOIN teacher t
-        ON co.course_teacher = t.teacher_id
-        WHERE s.`student_id` = #{id}
+            resultType="com.treehole.framework.domain.train.ext.CourseTeacher"
+            parameterType="com.treehole.framework.domain.train.ext.StudentCourseParams">
+
+        SELECT *
+        FROM (
+                SELECT
+                co.*,
+                t.teacher_name,
+                ct.`course_type_name`
+                FROM student s
+                LEFT JOIN class c
+                ON s.`student_class` = c.`class_id`
+                LEFT JOIN class_course cc
+                ON c.`class_id` = cc.`class_id`
+                LEFT JOIN course co
+                ON cc.`course_id` = co.`course_id`
+                LEFT JOIN teacher t
+                ON co.course_teacher = t.teacher_id
+                LEFT JOIN course_type ct
+                 ON co.`course_type` = ct.`course_type_id`
+                WHERE s.`student_id` = #{studentId}
+        ) c
+        <where>
+            <if test=" courseId !=null and courseId !='' ">
+                AND c.`course_id` = #{courseId}
+            </if>
+            <if test=" courseName !=null and courseName !='' ">
+                AND c.`course_name` LIKE '%${courseName}%'
+            </if>
+            <if test=" courseType !=null and courseType !='' ">
+                AND c.`course_type` = #{courseType}
+            </if>
+            <if test=" courseTeacher !=null and courseTeacher !='' ">
+                AND c.`course_teacher` = #{courseTeacher}
+            </if>
+        </where>
 
     </select>
 
-    <!--学生交费记录-->
+
+    <!--学生交费记录(欠费记录)-->
     <select id="findPay"
-            resultMap="PayMap"
-            parameterType="java.lang.String">
-        SELECT
-        c.`cost_time`,
-        c.`cost_amount_payable`,
-        c.`cost_preferential_amount`,
-        c.`cost_amount_received`,
-        c.`cost_other`
+            resultType="com.treehole.framework.domain.train.Cost"
+            parameterType="com.treehole.framework.domain.train.Cost">
+        SELECT *
         FROM cost c
-        WHERE c.`cost_student_id`= #{id}
-    </select>
-    <resultMap id="PayMap" type="java.util.HashMap">
-        <result column="cost_time" property="costTime" jdbcType="DATE" />
-        <result column="cost_amount_payable" property="costAmountPayable" jdbcType="DOUBLE" />
-        <result column="cost_preferential_amount" property="costPreferentialAmount" jdbcType="DOUBLE" />
-        <result column="cost_amount_received" property="costAmountReceived" jdbcType="DOUBLE" />
-        <result column="cost_other" property="costOther" jdbcType="VARCHAR" />
-    </resultMap>
+        <where>
+            <if test=" costStudentId !=null and costStudentId !='' ">
+                AND c.`cost_student_id`= #{costStudentId}
+            </if>
+            <if test=" costStudentName !=null and costStudentName !=''  ">
+                AND c.`cost_student_name` LIKE '%${costStudentName}%'
+            </if>
+        </where>
+        ORDER BY
+        c.`cost_student_id` ASC,
+	    c.`cost_time` ASC
 
-    <!--学生欠费记录-->
-    <select id="findArrears"
-            resultMap="ArrearsMap"
-            parameterType="java.lang.String">
-        SELECT
-        c.`cost_time`,
-        c.`cost_arrears`,
-        c.`cost_other`
-        FROM cost c
-        WHERE c.`cost_student_id`=  #{id}
     </select>
-
-    <resultMap id="ArrearsMap" type="java.util.HashMap">
-        <result column="cost_time" property="costTime" jdbcType="DATE" />
-        <result column="cost_arrears" property="costArrears" jdbcType="DOUBLE" />
-        <result column="cost_other" property="costOther" jdbcType="VARCHAR" />
-    </resultMap>
 
 </mapper>

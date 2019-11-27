@@ -1,6 +1,7 @@
 package com.treehole.api.train;
 
 import com.treehole.framework.domain.train.Cost;
+import com.treehole.framework.domain.train.Phase;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -9,8 +10,10 @@ import io.swagger.annotations.ApiOperation;
 public interface CostControllerApi {
 
     @ApiOperation("交费")
-    public ResponseResult pay(String studentId,Cost cost);
+    public ResponseResult pay(Cost cost);
 
+    @ApiOperation("查询应付金额")
+    public Cost findTuition(String studentId);
 
 
 

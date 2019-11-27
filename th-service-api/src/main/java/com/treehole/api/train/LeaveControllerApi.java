@@ -14,7 +14,13 @@ public interface LeaveControllerApi {
     @ApiOperation("消假")
     public ResponseResult removeLeave(String leaveId);
 
-    @ApiOperation("请假信息统计")
-    public QueryResponseResult<Leave> LeaveStatistics(int page,String type , String Id);
+    @ApiOperation("请假信息统计(请假中人员信息)")
+    public QueryResponseResult<Leave> LeaveStatistics(int page,int size ,Leave leave);
+
+    @ApiOperation("请假信息统计(所有人员信息)")
+    public QueryResponseResult<Leave> LeaveAllStatistics(int page,int size ,Leave leave);
+
+    @ApiOperation("得到请假人的信息")
+    public Leave findInfo(String id);
 
 }

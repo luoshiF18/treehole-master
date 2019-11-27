@@ -3,6 +3,7 @@ package com.treehole.train.controller;
 import com.treehole.api.train.CourseControllerApi;
 import com.treehole.framework.domain.train.Course;
 import com.treehole.framework.domain.train.Student;
+import com.treehole.framework.domain.train.ext.CourseTeacher;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.train.service.CourseService;
@@ -35,16 +36,11 @@ public class CourseController implements CourseControllerApi {
     }
 
     @Override
-    @PostMapping("/find/{page}")
-    public QueryResponseResult<Course> findCourseByFuzzyQuery(@PathVariable("page") int page ,@RequestBody Course course) {
-        return courseService.findCourseByFuzzyQuery(page,course);
+    @PostMapping("/find/{page}/{size}")
+    public QueryResponseResult<CourseTeacher> findCourseByFuzzyQuery(@PathVariable("page") int page , @PathVariable("size") int size, @RequestBody Course course) {
+        return courseService.findCourseByFuzzyQuery(page,size,course);
     }
 
-    @Override
-    @GetMapping("/findall/{page}")
-    public QueryResponseResult<Course> findAllCourse(@PathVariable("page") int page) {
-        return courseService.findAllCourse(page);
-    }
 
 
 }
