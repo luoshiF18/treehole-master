@@ -30,11 +30,11 @@ public class DetailController implements DetailControllerApi {
      */
     @Override
     @GetMapping("/get/list")
-    public QueryResponseResult getAllByPage(
+    public QueryResponseResult getAllDetails(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "size", defaultValue = "5") Integer size
     ) {
-        QueryResult queryResult = this.detailService.getAllByPage(page, size);
+        QueryResult queryResult = this.detailService.getAllDetails(page, size);
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 

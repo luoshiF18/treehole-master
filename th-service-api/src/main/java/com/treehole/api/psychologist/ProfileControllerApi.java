@@ -14,7 +14,7 @@ import io.swagger.annotations.ApiOperation;
 public interface ProfileControllerApi {
 
     @ApiOperation("根据条件分页查询心理咨询师简介信息")
-    QueryResponseResult findAllProfile(Integer page, Integer size, String name, String sex, String qualification);
+    QueryResponseResult findAllProfiles(Integer page, Integer size, String name, String sex, String qualification);
 
     @ApiOperation("根据id查询心理咨询师简介信息")
     Profile findProfileById(String id);
@@ -29,6 +29,6 @@ public interface ProfileControllerApi {
     ResponseResult updateProfile(Profile profile);
 
     @ApiOperation("按照id自增查询所有简介信息")
-    QueryResponseResult findAll(Integer page, Integer size);
+    QueryResponseResult getAllProfiles(Integer page, Integer size);
 
 }

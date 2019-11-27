@@ -14,6 +14,7 @@ import com.treehole.psychologist.dao.ProfileMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -48,7 +49,8 @@ public class ConsultationService {
         PageHelper.startPage(page, size);
         //开始查询
         List<Consultation> consultationList = this.consultationMapper.getConsultationListById(user_id);
-        if (consultationList == null) {
+        //判断集合是否为空
+        if (CollectionUtils.isEmpty(consultationList)) {
             ExceptionCast.cast(PsychologistCode.CONSULTATION_NOT_EXIST);
         }
         //将List<Consultation>转成List<ConsultationExt>
@@ -60,9 +62,6 @@ public class ConsultationService {
             String psychologist_id = consultations.getPsychologist_id();
             //根据id查询咨询师信息
             Profile profile = this.profileMapper.selectByPrimaryKey(psychologist_id);
-            if (profile == null) {
-                ExceptionCast.cast(PsychologistCode.PSYCHOLOGIST_NOT_EXIST);
-            }
             //开始设置数据
             //咨询记录id
             consultationExt.setConsultation_id(consultations.getConsultation_id());

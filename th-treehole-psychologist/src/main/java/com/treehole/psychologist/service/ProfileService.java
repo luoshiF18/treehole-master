@@ -7,7 +7,6 @@ import com.treehole.framework.domain.psychologist.result.PsychologistCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.psychologist.dao.ProfileMapper;
-import com.treehole.psychologist.dao.ProfilesMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,9 +26,6 @@ public class ProfileService {
     @Autowired
     private ProfileMapper profileMapper;
 
-    @Autowired
-    private ProfilesMapper profilesMapper;
-
     /**
      * 根据条件分页查询心理咨询师简介信息
      *
@@ -40,7 +36,7 @@ public class ProfileService {
      * @param qualification 心理咨询师资质
      * @return
      */
-    public QueryResult findAllProfile(Integer page, Integer size, String name, String sex, String qualification) {
+    public QueryResult findAllProfiles(Integer page, Integer size, String name, String sex, String qualification) {
         //通用mapper中的example用于条件查询，criteria用于添加条件
         Example example = new Example(Profile.class);
         Example.Criteria criteria = example.createCriteria();
@@ -175,10 +171,10 @@ public class ProfileService {
      * @param size 每页记录数
      * @return
      */
-    public QueryResult findAll(Integer page, Integer size) {
+    public QueryResult getAllProfiles(Integer page, Integer size) {
         //分页参数
         PageHelper.startPage(page, size);
-        List<Profile> all = this.profilesMapper.findAll();
+        List<Profile> all = this.profileMapper.getAllProfiles();
         if (CollectionUtils.isEmpty(all)) {
             //如果数据为空页面，抛出异常，异常内容为查询数据为空！
             ExceptionCast.cast(PsychologistCode.DATA_IS_NULL);

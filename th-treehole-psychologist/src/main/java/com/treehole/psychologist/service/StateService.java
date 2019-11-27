@@ -7,7 +7,6 @@ import com.treehole.framework.domain.psychologist.result.PsychologistCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.psychologist.dao.StateMapper;
-import com.treehole.psychologist.dao.StatesMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,9 +25,6 @@ public class StateService {
 
     @Autowired
     private StateMapper stateMapper;
-
-    @Autowired
-    private StatesMapper statesMapper;
 
     /**
      * 查询心理咨询师状态信息列表
@@ -147,10 +143,10 @@ public class StateService {
      * @param size 每页记录数
      * @return
      */
-    public QueryResult findAll(Integer page, Integer size) {
+    public QueryResult getAllStates(Integer page, Integer size) {
         //分页参数
         PageHelper.startPage(page, size);
-        List<State> states = this.statesMapper.getAll();
+        List<State> states = this.stateMapper.getAllStates();
         if (CollectionUtils.isEmpty(states)) {
             //如果数据为空页面，抛出异常，异常内容为查询数据为空！
             ExceptionCast.cast(PsychologistCode.DATA_IS_NULL);
