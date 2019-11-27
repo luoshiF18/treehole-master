@@ -26,13 +26,8 @@ public class Swagger2Configuration {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-<<<<<<< Updated upstream
                 .title("树洞心理api文档")
-                .description("树洞心理api文档")
-=======
-                .title("心理网api文档")
                 .description("心理网api文档")
->>>>>>> Stashed changes
 //                .termsOfServiceUrl("/")
                 .version("1.0")
                 .build();
