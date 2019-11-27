@@ -1,0 +1,17 @@
+server:
+  port: 10001
+spring:
+  application:
+    name: th-appointment-order
+  datasource:
+    druid:
+      url: jdbc:mysql://10.0.43.60:3306/th_appointment?zeroDateTimeBehavior=convertToNull
+      username: root
+      password: root
+      driverClassName: com.mysql.jdbc.Driver
+  jpa:
+    hibernate:
+      #更新或创建数据库表结构
+      ddl-auto: update
+    #控制台显示SQL
+    show-sql: true
