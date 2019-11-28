@@ -13,11 +13,21 @@ import java.util.List;
  */
 public interface CommentMapper extends Mapper<Comment> {
 
-    //根据咨询师id分页查询该咨询师的评价信息
-    @Select("select *  from comment where psychologist_id = #{psychologist_id}")
+    /**
+     * 查询所有评价信息
+     *
+     * @return
+     */
+    @Select("select * from comment order by comment_id+0")
+    List<Comment> getAllComments();
+
+    /**
+     * 根据咨询师id分页查询该咨询师的评价信息
+     *
+     * @param psychologist_id 咨询师id
+     * @return
+     */
+    @Select("select *  from comment where psychologist_id = #{psychologist_id} order by comment_id+0")
     List<Comment> getCommentsByPsyId(@Param("psychologist_id") String psychologist_id);
 
-    //根据用户id分页查询该咨询师的评价信息
-    @Select("select *  from comment where user_id = #{user_id}")
-    List<Comment> getCommentsByUserId(@Param("user_id") String user_id);
 }
