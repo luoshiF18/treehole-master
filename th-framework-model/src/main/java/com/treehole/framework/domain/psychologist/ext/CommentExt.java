@@ -12,4 +12,7 @@ public class CommentExt extends Comment {
 
     //咨询师姓名
     private String psychologist_name;
+
+    //用户昵称
+    private String user_nickname;
 }
