@@ -5,7 +5,10 @@ import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.psychologist.Profile;
 import com.treehole.framework.domain.psychologist.result.PsychologistCode;
 import com.treehole.framework.exception.ExceptionCast;
+import com.treehole.framework.model.response.CommonCode;
+import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
+import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.psychologist.dao.ProfileMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +39,7 @@ public class ProfileService {
      * @param qualification 心理咨询师资质
      * @return
      */
-    public QueryResult findAllProfiles(Integer page, Integer size, String name, String sex, String qualification) {
+    public QueryResponseResult findAllProfiles(Integer page, Integer size, String name, String sex, String qualification) {
         //通用mapper中的example用于条件查询，criteria用于添加条件
         Example example = new Example(Profile.class);
         Example.Criteria criteria = example.createCriteria();
@@ -64,7 +67,10 @@ public class ProfileService {
         //包装成pageInfo
         PageInfo<Profile> pageInfo = new PageInfo<>(profiles);
         //包装成分页结果集返回
-        return new QueryResult(pageInfo.getList(), pageInfo.getTotal());
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(pageInfo.getList());
+        queryResult.setTotal(pageInfo.getTotal());
+        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 
     /**
@@ -93,7 +99,7 @@ public class ProfileService {
      * @return
      */
     @Transactional
-    public void delProfileById(String id) {
+    public ResponseResult delProfileById(String id) {
         //首先判断id是否为空
         if (StringUtils.isBlank(id)) {
             //如果id为空，抛出异常，异常内容为前台数据有误！
@@ -115,6 +121,8 @@ public class ProfileService {
             //如果受影响行数不为1，抛出异常，异常内容为删除失败！
             ExceptionCast.cast(PsychologistCode.DELETE_FAIL);
         }
+        //删除成功，响应操作成功状态码
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
     /**
@@ -124,7 +132,7 @@ public class ProfileService {
      * @return
      */
     @Transactional
-    public void addProfile(Profile profile) {
+    public ResponseResult addProfile(Profile profile) {
         //判断传入的数据是否为空
         if (profile == null) {
             //如果为空，抛出异常，异常信息为插入数据为空!
@@ -137,6 +145,8 @@ public class ProfileService {
             //如果受影响行数不为1，抛出异常，异常内容为添加失败!
             ExceptionCast.cast(PsychologistCode.INSERT_FAIL);
         }
+        //添加成功，响应成功状态码
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
     /**
@@ -146,7 +156,7 @@ public class ProfileService {
      * @return
      */
     @Transactional
-    public void updateProfile(Profile profile) {
+    public ResponseResult updateProfile(Profile profile) {
         //通用mapper中的example用于条件查询，criteria用于添加条件
         Example example = new Example(Profile.class);
         Example.Criteria criteria = example.createCriteria();
@@ -162,6 +172,8 @@ public class ProfileService {
         if (key != 1) {
             ExceptionCast.cast(PsychologistCode.UPDATE_FAIL);
         }
+        //更新成功，响应成功状态码
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
     /**
@@ -171,7 +183,7 @@ public class ProfileService {
      * @param size 每页记录数
      * @return
      */
-    public QueryResult getAllProfiles(Integer page, Integer size) {
+    public QueryResponseResult getAllProfiles(Integer page, Integer size) {
         //分页参数
         PageHelper.startPage(page, size);
         List<Profile> all = this.profileMapper.getAllProfiles();
@@ -182,6 +194,9 @@ public class ProfileService {
         //包装成pageInfo
         PageInfo<Profile> pageInfo = new PageInfo<>(all);
         //包装成分页结果集返回
-        return new QueryResult(pageInfo.getList(), pageInfo.getTotal());
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(pageInfo.getList());
+        queryResult.setTotal(pageInfo.getTotal());
+        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 }

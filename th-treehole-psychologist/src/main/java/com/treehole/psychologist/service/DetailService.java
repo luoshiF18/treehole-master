@@ -5,7 +5,10 @@ import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.psychologist.Detail;
 import com.treehole.framework.domain.psychologist.result.PsychologistCode;
 import com.treehole.framework.exception.ExceptionCast;
+import com.treehole.framework.model.response.CommonCode;
+import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
+import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.psychologist.dao.DetailMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +36,7 @@ public class DetailService {
      * @param size 每页记录数
      * @return
      */
-    public QueryResult getAllDetails(Integer page, Integer size) {
+    public QueryResponseResult getAllDetails(Integer page, Integer size) {
         //分页参数
         PageHelper.startPage(page, size);
         List<Detail> all = this.detailMapper.getAllDetails();
@@ -43,9 +46,10 @@ public class DetailService {
         //包装成pageInfo
         PageInfo<Detail> pageInfo = new PageInfo<>(all);
         //包装成分页结果集返回
-        List<Detail> list = pageInfo.getList();
-        long total = pageInfo.getTotal();
-        return new QueryResult(list, total);
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(pageInfo.getList());
+        queryResult.setTotal(pageInfo.getTotal());
+        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 
     /**
@@ -68,7 +72,7 @@ public class DetailService {
      * @param psychologist_id
      */
     @Transactional
-    public void delDetailById(String psychologist_id) {
+    public ResponseResult delDetailById(String psychologist_id) {
         if (StringUtils.isBlank(psychologist_id)) {
             ExceptionCast.cast(PsychologistCode.DATA_NULL);
         }
@@ -80,6 +84,7 @@ public class DetailService {
         if (i != 1) {
             ExceptionCast.cast(PsychologistCode.DELETE_FAIL);
         }
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
     /**
@@ -89,7 +94,7 @@ public class DetailService {
      * @return
      */
     @Transactional
-    public void addDetail(Detail detail) {
+    public ResponseResult addDetail(Detail detail) {
         if (detail == null) {
             ExceptionCast.cast(PsychologistCode.INSERT_DATA_NULL);
         }
@@ -97,6 +102,7 @@ public class DetailService {
         if (i != 1) {
             ExceptionCast.cast(PsychologistCode.INSERT_FAIL);
         }
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
     /**
@@ -106,7 +112,7 @@ public class DetailService {
      * @return
      */
     @Transactional
-    public void updateDetail(Detail detail) {
+    public ResponseResult updateDetail(Detail detail) {
         //通用mapper中的example用于条件查询，criteria用于添加条件
         Example example = new Example(Detail.class);
         Example.Criteria criteria = example.createCriteria();
@@ -122,6 +128,7 @@ public class DetailService {
         if (key != 1) {
             ExceptionCast.cast(PsychologistCode.UPDATE_FAIL);
         }
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
     /**
@@ -130,7 +137,7 @@ public class DetailService {
      * @param psychologist_name 咨询师姓名
      * @return
      */
-    public QueryResult getDetailByName(Integer page, Integer size, String psychologist_name) {
+    public QueryResponseResult getDetailByName(Integer page, Integer size, String psychologist_name) {
         //通用mapper中的example用于条件查询，criteria用于添加条件
         Example example = new Example(Detail.class);
         Example.Criteria criteria = example.createCriteria();
@@ -149,6 +156,9 @@ public class DetailService {
         //包装成pageInfo
         PageInfo<Detail> pageInfo = new PageInfo<>(details);
         //包装成分页结果集返回
-        return new QueryResult(pageInfo.getList(), pageInfo.getTotal());
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(pageInfo.getList());
+        queryResult.setTotal(pageInfo.getTotal());
+        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 }

@@ -5,7 +5,10 @@ import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.psychologist.State;
 import com.treehole.framework.domain.psychologist.result.PsychologistCode;
 import com.treehole.framework.exception.ExceptionCast;
+import com.treehole.framework.model.response.CommonCode;
+import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
+import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.psychologist.dao.StateMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +34,7 @@ public class StateService {
      *
      * @return
      */
-    public QueryResult findStateList(Integer page, Integer size, String name, String price, String free) {
+    public QueryResponseResult findStateList(Integer page, Integer size, String name, String price, String free) {
         //通用mapper中的example用于条件查询，criteria用于添加条件
         Example example = new Example(State.class);
         Example.Criteria criteria = example.createCriteria();
@@ -56,7 +59,10 @@ public class StateService {
         //包装成pageInfo
         PageInfo<State> pageInfo = new PageInfo<>(list);
         //包装成分页结果集返回
-        return new QueryResult(pageInfo.getList(), pageInfo.getTotal());
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(pageInfo.getList());
+        queryResult.setTotal(pageInfo.getTotal());
+        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 
     /**
@@ -82,7 +88,7 @@ public class StateService {
      * @return
      */
     @Transactional
-    public void delStateById(String id) {
+    public ResponseResult delStateById(String id) {
         if (StringUtils.isBlank(id)) {
             ExceptionCast.cast(PsychologistCode.DATA_ERROR);
         }
@@ -96,6 +102,7 @@ public class StateService {
         if (i != 1) {
             ExceptionCast.cast(PsychologistCode.DELETE_FAIL);
         }
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
     /**
@@ -105,7 +112,7 @@ public class StateService {
      * @return
      */
     @Transactional
-    public void addState(State state) {
+    public ResponseResult addState(State state) {
         if (state == null) {
             ExceptionCast.cast(PsychologistCode.INSERT_DATA_NULL);
         }
@@ -113,6 +120,7 @@ public class StateService {
         if (i != 1) {
             ExceptionCast.cast(PsychologistCode.INSERT_FAIL);
         }
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
     /**
@@ -122,7 +130,7 @@ public class StateService {
      * @return
      */
     @Transactional
-    public void updateState(State state) {
+    public ResponseResult updateState(State state) {
         Example example = new Example(State.class);
         Example.Criteria criteria = example.createCriteria();
         State one = this.findStateById(state.getId());
@@ -134,6 +142,7 @@ public class StateService {
         if (key != 1) {
             ExceptionCast.cast(PsychologistCode.UPDATE_FAIL);
         }
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
     /**
@@ -143,7 +152,7 @@ public class StateService {
      * @param size 每页记录数
      * @return
      */
-    public QueryResult getAllStates(Integer page, Integer size) {
+    public QueryResponseResult getAllStates(Integer page, Integer size) {
         //分页参数
         PageHelper.startPage(page, size);
         List<State> states = this.stateMapper.getAllStates();
@@ -154,6 +163,9 @@ public class StateService {
         //包装成pageInfo
         PageInfo<State> pageInfo = new PageInfo<>(states);
         //包装成分页结果集返回
-        return new QueryResult(pageInfo.getList(), pageInfo.getTotal());
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(pageInfo.getList());
+        queryResult.setTotal(pageInfo.getTotal());
+        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 }

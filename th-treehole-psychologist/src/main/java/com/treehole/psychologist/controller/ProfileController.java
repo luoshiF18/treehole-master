@@ -2,9 +2,7 @@ package com.treehole.psychologist.controller;
 
 import com.treehole.api.psychologist.ProfileControllerApi;
 import com.treehole.framework.domain.psychologist.Profile;
-import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
-import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.psychologist.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +38,7 @@ public class ProfileController implements ProfileControllerApi {
             @RequestParam(value = "sex", required = false) String sex,
             @RequestParam(value = "qualification", required = false) String qualification
     ) {
-        QueryResult queryResult = this.profileService.findAllProfiles(page, size, name, sex, qualification);
-        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
+        return this.profileService.findAllProfiles(page, size, name, sex, qualification);
     }
 
     /**
@@ -65,9 +62,7 @@ public class ProfileController implements ProfileControllerApi {
     @Override
     @DeleteMapping("/del/{id}")
     public ResponseResult delProfileById(@PathVariable("id") String id) {
-        this.profileService.delProfileById(id);
-        //删除成功，响应成功状态码
-        return new ResponseResult(CommonCode.SUCCESS);
+        return this.profileService.delProfileById(id);
     }
 
     /**
@@ -79,9 +74,7 @@ public class ProfileController implements ProfileControllerApi {
     @Override
     @PostMapping("/add")
     public ResponseResult addProfile(@RequestBody Profile profile) {
-        this.profileService.addProfile(profile);
-        //添加成功，响应成功状态码
-        return new ResponseResult(CommonCode.SUCCESS);
+        return this.profileService.addProfile(profile);
     }
 
     /**
@@ -93,9 +86,7 @@ public class ProfileController implements ProfileControllerApi {
     @Override
     @PutMapping("/update")
     public ResponseResult updateProfile(@RequestBody Profile profile) {
-        this.profileService.updateProfile(profile);
-        //更新成功，响应成功状态码
-        return new ResponseResult(CommonCode.SUCCESS);
+        return this.profileService.updateProfile(profile);
     }
 
     /**
@@ -111,8 +102,7 @@ public class ProfileController implements ProfileControllerApi {
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "size", defaultValue = "5") Integer size
     ) {
-        QueryResult result = this.profileService.getAllProfiles(page, size);
-        return new QueryResponseResult(CommonCode.SUCCESS, result);
+        return this.profileService.getAllProfiles(page, size);
     }
 
 }

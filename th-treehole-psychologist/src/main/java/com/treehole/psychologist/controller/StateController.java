@@ -2,9 +2,7 @@ package com.treehole.psychologist.controller;
 
 import com.treehole.api.psychologist.StateControllerApi;
 import com.treehole.framework.domain.psychologist.State;
-import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
-import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.psychologist.service.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +34,7 @@ public class StateController implements StateControllerApi {
             @RequestParam(value = "free", required = false) String free
 
     ) {
-        QueryResult queryResult = this.stateService.findStateList(page, size, name, price, free);
-        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
+        return this.stateService.findStateList(page, size, name, price, free);
     }
 
     /**
@@ -61,8 +58,7 @@ public class StateController implements StateControllerApi {
     @Override
     @DeleteMapping("/del/{id}")
     public ResponseResult delStateById(@PathVariable("id") String id) {
-        this.stateService.delStateById(id);
-        return new ResponseResult(CommonCode.SUCCESS);
+        return this.stateService.delStateById(id);
     }
 
     /**
@@ -74,8 +70,7 @@ public class StateController implements StateControllerApi {
     @Override
     @PostMapping("/add")
     public ResponseResult addState(@RequestBody State state) {
-        this.stateService.addState(state);
-        return new ResponseResult(CommonCode.SUCCESS);
+        return this.stateService.addState(state);
     }
 
     /**
@@ -87,8 +82,7 @@ public class StateController implements StateControllerApi {
     @Override
     @PutMapping("/update")
     public ResponseResult updateState(@RequestBody State state) {
-        this.stateService.updateState(state);
-        return new ResponseResult(CommonCode.SUCCESS);
+        return this.stateService.updateState(state);
     }
 
     /**
@@ -104,7 +98,6 @@ public class StateController implements StateControllerApi {
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "size", defaultValue = "5") Integer size
     ) {
-        QueryResult result = this.stateService.getAllStates(page, size);
-        return new QueryResponseResult(CommonCode.SUCCESS, result);
+        return this.stateService.getAllStates(page, size);
     }
 }

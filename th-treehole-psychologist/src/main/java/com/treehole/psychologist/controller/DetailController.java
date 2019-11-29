@@ -2,9 +2,7 @@ package com.treehole.psychologist.controller;
 
 import com.treehole.api.psychologist.DetailControllerApi;
 import com.treehole.framework.domain.psychologist.Detail;
-import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
-import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.psychologist.service.DetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +32,7 @@ public class DetailController implements DetailControllerApi {
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "size", defaultValue = "5") Integer size
     ) {
-        QueryResult queryResult = this.detailService.getAllDetails(page, size);
-        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
+        return this.detailService.getAllDetails(page, size);
     }
 
     /**
@@ -59,8 +56,7 @@ public class DetailController implements DetailControllerApi {
     @Override
     @DeleteMapping("/del/{psychologist_id}")
     public ResponseResult delDetailById(@PathVariable("psychologist_id") String psychologist_id) {
-        this.detailService.delDetailById(psychologist_id);
-        return new ResponseResult(CommonCode.SUCCESS);
+        return this.detailService.delDetailById(psychologist_id);
     }
 
     /**
@@ -72,8 +68,7 @@ public class DetailController implements DetailControllerApi {
     @Override
     @PostMapping("/add")
     public ResponseResult addDetail(@RequestBody Detail detail) {
-        this.detailService.addDetail(detail);
-        return new ResponseResult(CommonCode.SUCCESS);
+        return this.detailService.addDetail(detail);
     }
 
     /**
@@ -85,8 +80,7 @@ public class DetailController implements DetailControllerApi {
     @Override
     @PutMapping("/update")
     public ResponseResult updateDetail(@RequestBody Detail detail) {
-        this.detailService.updateDetail(detail);
-        return new ResponseResult(CommonCode.SUCCESS);
+        return this.detailService.updateDetail(detail);
     }
 
     /**
@@ -102,7 +96,6 @@ public class DetailController implements DetailControllerApi {
             @RequestParam(value = "size", defaultValue = "5") Integer size,
             @RequestParam(value = "psychologist_name", required = false) String psychologist_name
     ) {
-        QueryResult queryResult = this.detailService.getDetailByName(page, size, psychologist_name);
-        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
+        return this.detailService.getDetailByName(page, size, psychologist_name);
     }
 }
