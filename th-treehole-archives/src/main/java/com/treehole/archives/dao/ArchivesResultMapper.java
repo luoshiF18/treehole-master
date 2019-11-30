@@ -31,4 +31,7 @@ public interface ArchivesResultMapper {
 
     //根据用户id和量表名查询答该量表的历次作答记录
     List<ResultTiny> finArchivesByUserIdAndScaleName(ArchivesListRequest archivesListRequest);
+
+    //根据用户id查询用户作答记录数
+    Integer queryResultByUserId(String userId);
 }

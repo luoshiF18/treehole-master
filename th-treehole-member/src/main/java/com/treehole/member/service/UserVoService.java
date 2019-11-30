@@ -296,6 +296,10 @@ public class UserVoService {
 
         return res;
     }
+    //预警模块得到预警用户信息
+    public List<UserVo> getAllUser(List listUserId) {
+        return userVoMapper.getAllUser( listUserId );
+    }
 
 
 }

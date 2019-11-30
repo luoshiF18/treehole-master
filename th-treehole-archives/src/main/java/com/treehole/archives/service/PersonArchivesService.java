@@ -9,6 +9,7 @@ import com.treehole.framework.domain.archives.ext.ArchivesExt;
 import com.treehole.framework.domain.archives.ext.ArchivesList;
 import com.treehole.framework.domain.archives.ext.ResultTiny;
 import com.treehole.framework.domain.archives.response.ArchivesCode;
+import com.treehole.framework.domain.archives.response.ArchivesCountResult;
 import com.treehole.framework.domain.archives.resquest.ArchivesListRequest;
 import com.treehole.framework.domain.evaluation.response.DetailResult;
 import com.treehole.framework.domain.evaluation.vo.ScaleDetailVO2;
@@ -149,5 +150,18 @@ public class PersonArchivesService {
         }
         //远程调用用户查询接口
         return userVoClient.findAllUserVo(page,size,userListRequest);
+    }
+
+    /**
+     * 根据用户id查询用户是否有作答记录
+     * @param userId
+     * @return
+     */
+    public ArchivesCountResult findArchivesCount(String userId) {
+        if (StringUtils.isEmpty(userId)){
+            ExceptionCast.cast(CommonCode.INVALID_PARAM);
+        }
+        Integer count = archivesResultMapper.queryResultByUserId(userId);
+        return new ArchivesCountResult(CommonCode.SUCCESS,count>0 ? true : false);
     }
 }

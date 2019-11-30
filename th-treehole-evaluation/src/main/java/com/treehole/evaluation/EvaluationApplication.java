@@ -3,6 +3,8 @@ package com.treehole.evaluation;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import tk.mybatis.spring.annotation.MapperScan;
 
@@ -12,6 +14,8 @@ import tk.mybatis.spring.annotation.MapperScan;
  * @date 2019/10/11 15:32
  * @description: 心理测评
  */
+@EnableFeignClients //开始feignClient
+@EnableDiscoveryClient
 @SpringBootApplication
 @EntityScan("com.treehole.framework.domain.evaluation")//扫描实体类
 @ComponentScan(basePackages = {"com.treehole.api"})//扫描接口

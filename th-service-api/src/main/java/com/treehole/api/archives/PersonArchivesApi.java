@@ -1,6 +1,7 @@
 package com.treehole.api.archives;
 
 import com.treehole.framework.domain.archives.ext.ArchivesExt;
+import com.treehole.framework.domain.archives.response.ArchivesCountResult;
 import com.treehole.framework.domain.archives.resquest.ArchivesListRequest;
 import com.treehole.framework.domain.member.resquest.UserListRequest;
 import com.treehole.framework.model.response.QueryResponseResult;
@@ -33,6 +34,11 @@ public interface PersonArchivesApi {
             Integer page,
             Integer size,
             UserListRequest userListRequest
+    );
+
+    @ApiOperation("根据用户id查询用户是否有作答记录")
+    public ArchivesCountResult findArchivesCount(
+            String userId
     );
 
 }
