@@ -33,6 +33,8 @@ public interface UserControllerApi {
     public User getUserById(@PathVariable("id") String id)  ;*/
    @ApiOperation("根据nickname集合得到对象的集合")
    public List<UserVo> findUserByNicknames( List<String> names);
+    @ApiOperation("根据nickname得到对象")
+    public UserVo getUserVoByNickname(String nickname);
     @ApiOperation("根据user_id得到user对象")
     public UserVo findUserById(String user_id);
     @ApiOperation("创建一条用户信息")

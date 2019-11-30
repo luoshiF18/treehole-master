@@ -53,6 +53,11 @@ public class UserController implements UserControllerApi {
        return userVoService.getUserByUserId(user_id);
     }
     @Override
+    @GetMapping("/getUserByNickname")
+    public UserVo getUserVoByNickname(@RequestParam(value = "nickname") String nickname){
+        return userVoService.getUserByNickname(nickname);
+    }
+    @Override
     @DeleteMapping(value ="/delete/{user_id}")
     public ResponseResult deleteUserById(@PathVariable("user_id") String user_id) {
          userService.deleteUserById(user_id);

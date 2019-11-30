@@ -234,7 +234,7 @@ public class UserVoService {
 
 
     /**
-     * 通过user_phone查询用户拓展类信息
+     * 通过user_查询用户拓展类信息
      * @return List<UserVo>
      */
     public UserVo getUserByNickname(String nickname) {
