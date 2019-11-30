@@ -43,6 +43,10 @@ public class CardsService {
     @Autowired
     private FreegradeMapper freegradeMapper;
     @Autowired
+    private FreegradeService freegradeService;
+    @Autowired
+    private PaygradeService paygradeService;
+    @Autowired
     private CheckinService checkinService;
     @Autowired
     private  UserVoService userVoService;
@@ -54,12 +58,50 @@ public class CardsService {
     *更新
     * */
     @Transactional
+    public void updateCardVo(CardsVo cardsVo) {
+
+        Cards cards = new Cards();
+        cards.setCard_id(cardsVo.getCard_id());
+        cards.setUser_id(cardsVo.getUser_id());
+
+        FreeGrade byName1 = freegradeService.getByName(cardsVo.getFreegrade());
+        cards.setFreegrade_id(byName1.getFreegrade_id());
+
+        if(cardsVo.getPaygrade().equals("无")){
+            cards.setPaygrade_id(null);
+            cards.setPaygrade_start(null);
+            cards.setPaygrade_end(null);
+        }else{
+            PayGrade byName2 = paygradeService.getByName(cardsVo.getPaygrade());
+            cards.setPaygrade_id(byName2.getPaygrade_id());
+            cards.setPaygrade_start(cardsVo.getPaygrade_start());
+            cards.setPaygrade_end(cardsVo.getPaygrade_end());
+            cards.setPaygrade_end(cardsVo.getPaygrade_end());
+        }
+        cards.setConsum_all(cardsVo.getConsum_all());
+        cards.setPoints_sum(cardsVo.getPoints_sum());
+        cards.setPoints_now(cardsVo.getPoints_now());
+        Example example =new Example(Cards.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("card_id",cards.getCard_id());
+
+        int upd= cardsMapper.updateByExampleSelective(cards,example);
+        if(upd != 1){
+            ExceptionCast.cast(MemberCode.UPDATE_FAIL);
+        }
+    }
+
+    @Transactional
     public void updateCard(Cards cards) {
 
         Example example =new Example(Cards.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("card_id",cards.getCard_id());
-
+        //昵称
+        /*String nickname = user.getUser_nickname();
+        if(this.findUserByNickname(nickname) != null){
+            ExceptionCast.cast(MemberCode.NICKNAME_EXIST);
+        }*/
         int upd= cardsMapper.updateByExampleSelective(cards,example);
         if(upd != 1){
             ExceptionCast.cast(MemberCode.UPDATE_FAIL);
@@ -102,6 +144,19 @@ public class CardsService {
        Cards cards1 = cardsMapper.selectOne(cards);
         if(cards1 == null){
             return null;
+        }
+        return cards1;
+    }
+    /**
+     * 通过id查询用户
+     * @return List<User>
+     */
+    public Cards getCardById(String card_id){
+        Cards cards = new Cards();
+        cards.setCard_id(card_id);
+        Cards cards1 = cardsMapper.selectOne(cards);
+        if(cards1 == null){
+            ExceptionCast.cast(MemberCode.CARD_NOT_EXIST);
         }
         return cards1;
     }

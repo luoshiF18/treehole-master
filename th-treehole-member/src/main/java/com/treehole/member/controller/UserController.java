@@ -48,6 +48,11 @@ public class UserController implements UserControllerApi {
         return userVoService.getUserByNicknames(names);
     }
     @Override
+    @GetMapping("/getUserById/{user_id}")
+    public UserVo findUserById(@PathVariable("user_id") String user_id){
+       return userVoService.getUserByUserId(user_id);
+    }
+    @Override
     @DeleteMapping(value ="/delete/{user_id}")
     public ResponseResult deleteUserById(@PathVariable("user_id") String user_id) {
          userService.deleteUserById(user_id);
@@ -76,20 +81,17 @@ public class UserController implements UserControllerApi {
     /*接收到的数据为前端update后的*/
     @Override
     @PutMapping("/update")
-    public ResponseResult update(@RequestBody @Valid User user){
+    public ResponseResult update(@RequestBody @Valid UserVo uservo){
         //System.out.println("前端传来的+++++++++++++"+user);
-        userService.updateUser(user);
+        userService.updateUser(uservo);
 
         return new ResponseResult(CommonCode.SUCCESS);
     }
     /*更新手机号绑定*/
     @Override
     @PutMapping("/update/phone")
-    public ResponseResult updateUserPhone(@RequestBody @Valid User user){
-        if (userService.findUserByPhone(user.getUser_phone())!= null){  /*手机号唯一*/
-            return new ResponseResult(MemberCode.PHONE_IS_EXIST);
-        }
-         userService.updateUser(user);
+    public ResponseResult updateUserPhone(@RequestBody @Valid UserVo userVo){
+         userService.updateUser(userVo);
         return new ResponseResult(CommonCode.SUCCESS);
 
 

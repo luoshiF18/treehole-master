@@ -22,9 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author shanhuijie
@@ -75,7 +73,13 @@ public class PointService {
         if (CollectionUtils.isEmpty(points)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
-
+        /*时间倒序排  最近的时间的放在最前面*/
+        Collections.sort(points, new Comparator<Points>() {
+            @Override
+            public int compare(Points p1, Points p2) {
+                return p2.getPoints_time().compareTo(p1.getPoints_time());  //大于返回1；小于返回-1；等于返回0
+            }
+        });
         //解析分页结果
         PageInfo<Points> pageInfo = new PageInfo<Points>(pag.getResult());
         QueryResult queryResult = new QueryResult();

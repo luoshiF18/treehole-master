@@ -3,6 +3,8 @@ package com.treehole.member.controller;
 import com.treehole.api.member.CardsControllerApi;
 import com.treehole.framework.domain.member.Cards;
 import com.treehole.framework.domain.member.User;
+import com.treehole.framework.domain.member.Vo.CardsVo;
+import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.resquest.CardListRequest;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
@@ -34,7 +36,11 @@ public class CardsController implements CardsControllerApi {
                                                 CardListRequest cardListRequest) {
         return cardsVoService.findAllCardVos(page,size,cardListRequest);
     }
-
+    @Override
+    @GetMapping("/getCardById/{card_id}")
+    public CardsVo findCardById(@PathVariable("card_id") String card_id){
+        return cardsVoService.getCardByCardId(card_id);
+    }
     @Override
     @PostMapping("/insert/id/{id}")
     public ResponseResult insertCard(@PathVariable("id") String id) {
@@ -51,8 +57,8 @@ public class CardsController implements CardsControllerApi {
 
     @Override
     @PutMapping("/update")
-    public ResponseResult update(@RequestBody @Valid Cards cards) {
-        cardsService.updateCard(cards);
+    public ResponseResult update(@RequestBody @Valid CardsVo cardsvo) {
+        cardsService.updateCardVo(cardsvo);
         return new ResponseResult(CommonCode.SUCCESS);
     }
 

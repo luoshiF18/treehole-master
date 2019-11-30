@@ -54,6 +54,16 @@ public class PaygradeService {
         return grade;
 
     }
+    /*通过等级名称查询等级对象*/
+    public PayGrade getByName(String name) {
+        PayGrade payGrade = new PayGrade();
+        payGrade.setPaygrade_name(name);
+        PayGrade grade = paygradeMapper.selectOne(payGrade);
+        if(grade == null){
+            ExceptionCast.cast(MemberCode.GRADE_NAME_NOT_EXIST);
+        }
+        return grade;
+    }
     //修改等级信息
     public void updateGrade(PayGrade payGrade){
         Example example =new Example(PayGrade.class);

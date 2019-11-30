@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.evaluation.Scale;
+import com.treehole.framework.domain.member.Cards;
 import com.treehole.framework.domain.member.Role;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
@@ -26,6 +27,8 @@ import tk.mybatis.mapper.entity.Example;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -75,6 +78,10 @@ public class UserVoService {
            // user1.setUser_phone(userListRequest.getUser_phone());
             example.createCriteria().andLike("user_phone", "%" + userListRequest.getUser_phone() + "%");
         }
+        if(StringUtils.isNotEmpty(userListRequest.getRole_id())){
+            // user1.setUser_phone(userListRequest.getUser_phone());
+            example.createCriteria().andLike("role_id", "%" + userListRequest.getRole_id() + "%");
+        }
         //查询
         //List<User> users = userMapper.select(user1);
         List<User> users = userMapper.selectByExample(example);
@@ -82,6 +89,14 @@ public class UserVoService {
         if (CollectionUtils.isEmpty(users)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
+        /*时间倒序排  最近的时间的放在最前面*/
+        Collections.sort(users, new Comparator<User>() {
+            @Override
+            public int compare(User c1, User c2) {
+                return c2.getUser_createtime().compareTo(c1.getUser_createtime());  //大于返回1；小于返回-1；等于返回0
+            }
+        });
+
         List<UserVo> userVos = new ArrayList<UserVo>();
         for(User user:users){
             UserVo uservo = new UserVo();
@@ -115,7 +130,7 @@ public class UserVoService {
             //显示user类型
             uservo.setUser_type(user.getUser_type() == 0 ? "个人":"企业");
             //显示user状态
-            uservo.setUser_status(user.getUser_status() == 0 ? "正常":"禁止");
+            uservo.setUser_status(user.getUser_status() == 0 ? "正常":"异常");
             userVos.add(uservo);
         }
         //解析分页结果

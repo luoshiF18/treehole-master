@@ -3,6 +3,7 @@ package com.treehole.api.member;
 import com.treehole.framework.domain.member.Cards;
 import com.treehole.framework.domain.member.Role;
 import com.treehole.framework.domain.member.User;
+import com.treehole.framework.domain.member.Vo.CardsVo;
 import com.treehole.framework.domain.member.resquest.CardListRequest;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
@@ -25,7 +26,8 @@ public interface CardsControllerApi {
     public QueryResponseResult findAllCards( Integer page,
                                              Integer size,
                                             CardListRequest cardListRequest) ;
-
+    @ApiOperation("根据cardId查询cardVo对象")
+    public CardsVo findCardById(String card_id);
     @ApiOperation("插入一条会员卡信息")
     public ResponseResult insertCard(String id);
 
@@ -33,7 +35,7 @@ public interface CardsControllerApi {
     public ResponseResult deleteCardById(String user_id);
 
     @ApiOperation("更改会员卡信息")
-    public ResponseResult update(Cards cards) ;
+    public ResponseResult update(CardsVo cardsvo) ;
 
  /*   @ApiOperation("根据user_id查找cards")
     public Cards findCardsByUserId(String user_id);*/

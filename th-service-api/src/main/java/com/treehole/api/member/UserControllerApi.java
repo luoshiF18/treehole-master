@@ -33,6 +33,8 @@ public interface UserControllerApi {
     public User getUserById(@PathVariable("id") String id)  ;*/
    @ApiOperation("根据nickname集合得到对象的集合")
    public List<UserVo> findUserByNicknames( List<String> names);
+    @ApiOperation("根据user_id得到user对象")
+    public UserVo findUserById(String user_id);
     @ApiOperation("创建一条用户信息")
     public ResponseResult insertUser(User user);
 
@@ -40,10 +42,10 @@ public interface UserControllerApi {
     public ResponseResult deleteUserById(String user_id);
 
     @ApiOperation("更新用户基本信息")
-    public ResponseResult update(User user);
+    public ResponseResult update(UserVo userVo);
 
     @ApiOperation("更新用户手机号")
-    public ResponseResult updateUserPhone(User user);
+    public ResponseResult updateUserPhone(UserVo userVo);
 
 
 
