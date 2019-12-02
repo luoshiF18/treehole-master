@@ -14,4 +14,11 @@ public class ConsultationExt extends Consultation {
 
     //咨询师姓名
     private String psychologist_name;
+
+    //心理咨询师资质
+    private String qualification;
+
+    //用户昵称
+    private String user_nickname;
+
 }

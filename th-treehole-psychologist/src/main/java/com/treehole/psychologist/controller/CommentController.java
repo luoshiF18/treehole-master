@@ -3,7 +3,6 @@ package com.treehole.psychologist.controller;
 import com.treehole.api.psychologist.CommentControllerApi;
 import com.treehole.framework.domain.psychologist.Comment;
 import com.treehole.framework.domain.psychologist.ext.CommentExt;
-import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.psychologist.service.CommentService;
@@ -76,33 +75,30 @@ public class CommentController implements CommentControllerApi {
     @Override
     @DeleteMapping("/del/{comment_id}")
     public ResponseResult delCommentByCommentId(@PathVariable("comment_id") String comment_id) {
-        this.commentService.delCommentByCommentId(comment_id);
-        return new ResponseResult(CommonCode.SUCCESS);
+        return this.commentService.delCommentByCommentId(comment_id);
     }
 
     /**
      * 更新评价信息
      *
-     * @param comment
+     * @param comment 评价信息
      * @return
      */
     @Override
     @PutMapping("/update")
     public ResponseResult updateComment(@RequestBody Comment comment) {
-        this.commentService.updateComment(comment);
-        return new ResponseResult(CommonCode.SUCCESS);
+        return this.commentService.updateComment(comment);
     }
 
     /**
      * 添加评价信息
      *
-     * @param comment
+     * @param comment 评价信息
      * @return
      */
     @Override
     @PostMapping("/add")
     public ResponseResult addComment(@RequestBody Comment comment) {
-        this.commentService.addComment(comment);
-        return new ResponseResult(CommonCode.SUCCESS);
+        return this.commentService.addComment(comment);
     }
 }

@@ -11,6 +11,7 @@ import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
+import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.psychologist.client.UserClient;
 import com.treehole.psychologist.dao.CommentMapper;
 import com.treehole.psychologist.dao.ProfileMapper;
@@ -140,7 +141,11 @@ public class CommentService {
      * @return
      */
     @Transactional
-    public void delCommentByCommentId(String comment_id) {
+    public ResponseResult delCommentByCommentId(String comment_id) {
+        Comment comment = this.commentMapper.selectByPrimaryKey(comment_id);
+        if (comment == null) {
+            ExceptionCast.cast(PsychologistCode.COMMENT_NOT_EXIST);
+        }
         if (StringUtils.isBlank(comment_id)) {
             ExceptionCast.cast(PsychologistCode.DATA_ERROR);
         }
@@ -148,6 +153,7 @@ public class CommentService {
         if (i != 1) {
             ExceptionCast.cast(PsychologistCode.DELETE_FAIL);
         }
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
     /**
@@ -156,7 +162,7 @@ public class CommentService {
      * @param comment 评价信息
      */
     @Transactional
-    public void updateComment(Comment comment) {
+    public ResponseResult updateComment(Comment comment) {
         Example example = new Example(Comment.class);
         Example.Criteria criteria = example.createCriteria();
         Comment one = this.commentMapper.selectByPrimaryKey(comment.getComment_id());
@@ -165,10 +171,16 @@ public class CommentService {
         }
         //根据id更新
         criteria.andEqualTo("comment_id", comment.getComment_id());
+        one.setComment_id(one.getComment_id());
+        one.setOrder_id(one.getOrder_id());
+        one.setConsultation_id(one.getConsultation_id());
+        one.setUser_id(one.getUser_id());
+        one.setPsychologist_id(one.getPsychologist_id());
         int key = this.commentMapper.updateByExample(comment, example);
         if (key != 1) {
             ExceptionCast.cast(PsychologistCode.UPDATE_FAIL);
         }
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
     /**
@@ -177,7 +189,7 @@ public class CommentService {
      * @param comment 评价信息
      */
     @Transactional
-    public void addComment(Comment comment) {
+    public ResponseResult addComment(Comment comment) {
         if (comment == null) {
             ExceptionCast.cast(PsychologistCode.INSERT_DATA_NULL);
         }
@@ -185,6 +197,7 @@ public class CommentService {
         if (i != 1) {
             ExceptionCast.cast(PsychologistCode.INSERT_FAIL);
         }
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
     /**
