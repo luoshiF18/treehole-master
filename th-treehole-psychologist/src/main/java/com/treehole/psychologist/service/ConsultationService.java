@@ -186,6 +186,7 @@ public class ConsultationService {
      * @param consultation 咨询记录
      * @return
      */
+    @Transactional
     public ResponseResult addConsultation(Consultation consultation) {
         if (consultation == null) {
             ExceptionCast.cast(PsychologistCode.DATA_NULL);
