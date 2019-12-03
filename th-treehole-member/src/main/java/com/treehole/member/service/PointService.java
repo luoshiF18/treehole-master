@@ -22,9 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author shanhuijie
@@ -75,7 +73,13 @@ public class PointService {
         if (CollectionUtils.isEmpty(points)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
-
+        /*时间倒序排  最近的时间的放在最前面*/
+        Collections.sort(points, new Comparator<Points>() {
+            @Override
+            public int compare(Points p1, Points p2) {
+                return p2.getPoints_time().compareTo(p1.getPoints_time());  //大于返回1；小于返回-1；等于返回0
+            }
+        });
         //解析分页结果
         PageInfo<Points> pageInfo = new PageInfo<Points>(pag.getResult());
         QueryResult queryResult = new QueryResult();
@@ -116,8 +120,6 @@ public class PointService {
 
             //cardsService.updateCard(cards);
         }
-
-
         //User user = userService.getUserById(points.getUser_id());
         Cards cards = cardsService.findCardsByUserId(points.getUser_id());
         //当前用户的积分值
@@ -127,9 +129,7 @@ public class PointService {
         points.setPoints_num(points.getPoints_num());  //手写代码，后期需完善
         //points.setPoints_num("跨服务调用接口,从活动表里获取值");
         //System.out.println("++++++++++++++++benci:" +points.getPoints_num());
-
         points.setAct_id(points.getAct_id());
-
         //活动描述需要接口：根据活动id查询活动名称及活动积分值，从营销活动表内获取活动名称
         points.setDescription("签到");
         //later的值
@@ -140,17 +140,14 @@ public class PointService {
         points.setPoints_later(later);
         //与cards表保持同步
         cards.setPoints_now(later);
-
         //System.out.println("++++++++++++++++later:" + later);
         //userService.updateUser(cards);
-
         cardsService.updateCard(cards);//更新积分变化
         int ins = pointsMapper.insert(points);
         if( ins != 1){
             ExceptionCast.cast(MemberCode.INSERT_FAIL);
         }
     }
-
     /**
      * 根据id删除积分信息
      * 暂时不可行

@@ -2,6 +2,7 @@ package com.treehole.member.controller;
 
 import com.treehole.api.member.FreeGradeControllerApi;
 import com.treehole.framework.domain.member.FreeGrade;
+import com.treehole.framework.domain.member.Vo.CardsVo;
 import com.treehole.framework.domain.member.resquest.GradeListRequest;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
@@ -29,11 +30,15 @@ public class FreeGradeController implements FreeGradeControllerApi {
     @GetMapping("/find/all/{page}/{size}")
     public QueryResponseResult findAllFreeGrade(@PathVariable("page") Integer page,
                                                 @PathVariable("size") Integer size,
-                                                GradeListRequest gradeListRequest) {
+                                                 GradeListRequest gradeListRequest) {
         return  freegradeService.findAll(page,size,gradeListRequest);
 
     }
-
+    @Override
+    @GetMapping("/getGradeById/{id}")
+    public FreeGrade findGradeById(@PathVariable("id") String id){
+        return freegradeService.getById(id);
+    }
    /* @Override
     @GetMapping("/find/id/{id}")
     public FreeGrade findPayGradeById(@PathVariable("id") String id) {

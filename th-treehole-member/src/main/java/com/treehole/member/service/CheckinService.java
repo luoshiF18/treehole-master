@@ -25,9 +25,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author shanhuijie
@@ -65,6 +63,7 @@ public class CheckinService {
         if (CollectionUtils.isEmpty(checkins)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
+
         List<CheckinVo> checkinVos = new ArrayList<CheckinVo>();
         for(Checkin check : checkins){
             CheckinVo cv = new CheckinVo();

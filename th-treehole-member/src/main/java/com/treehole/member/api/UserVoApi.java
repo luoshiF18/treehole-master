@@ -31,9 +31,9 @@ public interface UserVoApi {
 
     *//*根据user_phone查找用户*//*
     @GetMapping("/uservo/find/userPhone/{user_phone}")
-    public UserVo getUserVoByUserPhone(@PathVariable("user_phone") String user_phone);
+    public UserVo getUserVoByUserPhone(@PathVariable("user_phone") String user_phone);*/
 
-    @GetMapping("/uservo/find/nickname")
+    @GetMapping("member/user/getUserByNickname")
     public UserVo getUserVoByNickname(@RequestParam("nickname") String nickname);
-    */
+
 }

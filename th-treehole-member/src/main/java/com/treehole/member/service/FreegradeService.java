@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -33,6 +34,9 @@ public class FreegradeService {
     private FreegradeMapper freegradeMapper;
     @Autowired
     private CardsService cardsService;
+    @Autowired
+    private CardsVoService cardsVoService;
+
 /*
 * 根据rank,id,name查询所有普通会员等级信息
 * */
@@ -81,8 +85,20 @@ public class FreegradeService {
         return grade;
     }
 
+    /*通过等级名称查询等级对象*/
+    public FreeGrade getByName(String name) {
+        FreeGrade freeGrade = new FreeGrade();
+        freeGrade.setFreegrade_name(name);
+        FreeGrade grade = freegradeMapper.selectOne(freeGrade);
+        if(grade == null){
+            ExceptionCast.cast(MemberCode.GRADE_NAME_NOT_EXIST);
+        }
+        return grade;
+    }
+
     public void updateGrade(FreeGrade freeGrade) {
-        Example example =new Example(PayGrade.class);
+        //freeGrade.setFreegrade_id();
+        Example example =new Example(FreeGrade.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("freegrade_id",freeGrade.getFreegrade_id());
         //根据id从数据库中查询等级信息
@@ -117,6 +133,13 @@ public class FreegradeService {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
         freeGrade.setFreegrade_id(MyNumberUtils.getUUID());
+        if(freeGrade.getPoints_judge() == null){
+            freeGrade.setPoints_judge(0);
+        }
+        if(freeGrade.getConsum_judge() == null){
+            int judge = 0;
+            freeGrade.setConsum_judge(BigDecimal.valueOf((int)judge));
+        }
         //判断rank是否存在
         FreeGrade freeGrade1 = new FreeGrade();
         freeGrade1.setRank(freeGrade.getRank());
@@ -146,6 +169,7 @@ public class FreegradeService {
         FreeGrade fg1 = freegradeMapper.selectOne(fg2);
 
         Cards card1= cardsService.findCardsByUserId(user_id);
+
         card1.setPoints_sum(sum);
         //card1.setPoints_sum(sum);
         //bigdimical比较大小 1大于 0等于 -1小于
@@ -157,8 +181,6 @@ public class FreegradeService {
                 //根据user_id获取cards对象
                 //card1.setPoints_sum(sum);
                 card1.setFreegrade_id(fg1.getFreegrade_id());
-
-
                 /*//通过card等级id 获取freegrade对象，再获取对象rank值
                 FreeGrade fgbyId = this.getById(card1.getFreegrade_id());
                 //获取rank+1的gradeid值

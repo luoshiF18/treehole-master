@@ -1,7 +1,6 @@
 package com.treehole.member.api;
 
 import com.treehole.framework.domain.member.resquest.CardListRequest;
-import com.treehole.framework.domain.member.resquest.UserListRequest;
 import com.treehole.framework.model.response.QueryResponseResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,16 +17,5 @@ public interface CardsApi {
                                              @PathVariable("size") Integer size,
                                              CardListRequest cardListRequest);
 
-    /*
-    根据id查找用户*//*
-    @GetMapping("/uservo/find/userId/{user_id}")
-    public UserVo getUserVoByUserId(@PathVariable("user_id") String user_id);
 
-    *//*根据user_phone查找用户*//*
-    @GetMapping("/uservo/find/userPhone/{user_phone}")
-    public UserVo getUserVoByUserPhone(@PathVariable("user_phone") String user_phone);
-
-    @GetMapping("/uservo/find/nickname")
-    public UserVo getUserVoByNickname(@RequestParam("nickname") String nickname);
-    */
 }
