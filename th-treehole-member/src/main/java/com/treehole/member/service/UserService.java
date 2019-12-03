@@ -16,9 +16,12 @@ import com.treehole.member.mapper.UserMapper;
 import com.treehole.member.myUtil.MyMd5Utils;
 import com.treehole.member.myUtil.MyNumberUtils;
 
+import com.treehole.member.myUtil.MyPassword;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -76,7 +79,7 @@ public class UserService {
         return use;
     }
 
-public UserExt getUserExt(String userNickName){
+    public UserExt getUserExt(String userNickName){
         if (StringUtils.isBlank(userNickName)){
             ExceptionCast.cast( MemberCode.DATA_ERROR);
         }
@@ -161,9 +164,9 @@ public UserExt getUserExt(String userNickName){
         //将密码MD5加密！！！！
         String pw=user.getPassword();
         try {
-            user.setPassword(MyMd5Utils.getMd5(pw));
+            user.setPassword(MyPassword.PasswrodEncoder(pw));
         } catch (Exception e) {
-            ExceptionCast.cast(MemberCode.INSERT_FAIL);
+            ExceptionCast.cast(MemberCode.PASSWORD_ERROR);
         }
         //昵称唯一性！！
         String nickname1 = user.getUser_nickname();
@@ -172,6 +175,7 @@ public UserExt getUserExt(String userNickName){
         }else {
             user.setUser_nickname(nickname1);
         }
+        //手机号唯一性
         if(this.findUserByPhone(user.getUser_phone()) == null){
             user.setUser_phone(user.getUser_phone());
         }else{
@@ -215,12 +219,13 @@ public UserExt getUserExt(String userNickName){
     }
 
     /**
-     * 更新用户基本信息  手机号除外
+     * 更新用户基本信息  手机号、密码除外
      *
      *
      * @param uservo
      * @return int
      */
+    @Transactional
     public void updateUser(UserVo uservo){
 
         User user = new User();
@@ -291,13 +296,54 @@ public UserExt getUserExt(String userNickName){
         }
         return flag;
     }
+
     /*更改密码 */
+    @Transactional
     public void updatePass(String id,String OldPass,String NewPass){
+        System.out.println(id + "++++++" + OldPass + "++++++"+ NewPass);
+        User user = this.getUserById(id);
+        //判断旧密码
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        boolean f = passwordEncoder.matches(OldPass, user.getPassword());
+        if(f){
+            String newPa = null;
+            try {
+                newPa = MyPassword.PasswrodEncoder(NewPass);
+            } catch (Exception e) {
+                ExceptionCast.cast(MemberCode.PASSWORD_ERROR);
+            }
+            user.setPassword(newPa);
+            System.out.println("++++++++++++++++++" + newPa);
+            Example example =new Example(User.class);
+            Example.Criteria criteria = example.createCriteria();
+            criteria.andEqualTo("user_id",id);
+            int upd= userMapper.updateByExampleSelective(user,example);
+            //int upd= userMapper.updateByPrimaryKeySelective(user);
+            if(upd != 1){
+                ExceptionCast.cast(MemberCode.UPDATE_FAIL);
+            }
+        }else{
+            ExceptionCast.cast(MemberCode.PASSWORD_OLD_ERROR);
+        }
 
     }
 
-    /*更改手机号 未实现*/
-
+    /*更改手机号 */
+    @Transactional
+    public void updatePhone(User user){
+        if(this.findUserByPhone(user.getUser_phone()) == null){
+            user.setUser_phone(user.getUser_phone());
+        }else{
+            ExceptionCast.cast(MemberCode.PHONE_IS_EXIST);
+        }
+        Example example =new Example(User.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("user_id",user.getUser_id());
+        int upd= userMapper.updateByExampleSelective(user,example);
+        if(upd != 1){
+            ExceptionCast.cast(MemberCode.UPDATE_FAIL);
+        }
+    }
     /*忘记密码 未实现*/
 
 }

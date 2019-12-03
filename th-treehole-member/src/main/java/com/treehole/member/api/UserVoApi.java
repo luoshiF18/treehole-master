@@ -33,7 +33,7 @@ public interface UserVoApi {
     @GetMapping("/uservo/find/userPhone/{user_phone}")
     public UserVo getUserVoByUserPhone(@PathVariable("user_phone") String user_phone);*/
 
-    @GetMapping("member/user/find/nickname")
+    @GetMapping("member/user/getUserByNickname")
     public UserVo getUserVoByNickname(@RequestParam("nickname") String nickname);
 
 }

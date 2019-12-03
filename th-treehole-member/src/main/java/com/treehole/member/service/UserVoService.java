@@ -142,8 +142,6 @@ public class UserVoService {
 
     }
 
-
-
     /**
      * 通过user_id查询用户拓展类
      * @return List<UserVo>
@@ -231,8 +229,6 @@ public class UserVoService {
         uservo.setUser_status(user.getUser_status() == 0 ? "正常":"禁止");
         return uservo;
     }
-
-
     /**
      * 通过user_查询用户拓展类信息
      * @return List<UserVo>
@@ -278,7 +274,7 @@ public class UserVoService {
 
     /*
     * 参数：nickname list集合
-    * 返回：对象的集合
+    * @return 对象的集合
     * */
     public List<UserVo> getUserByNicknames(List<String> nicknames){
         //判断请求条件的合法性

@@ -160,9 +160,7 @@ public class PaygradeService {
     }
 
     /*
-    *
     * 等级变化
-    *
     * */
     public void gradeChange(String user_id,String  paygrade_id){
         //通过paygrade_id得到等级对象

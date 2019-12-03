@@ -2,6 +2,7 @@ package com.treehole.api.member;
 
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
+import com.treehole.framework.domain.member.ext.UserExt;
 import com.treehole.framework.domain.member.resquest.UserListRequest;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
@@ -47,8 +48,9 @@ public interface UserControllerApi {
     public ResponseResult update(UserVo userVo);
 
     @ApiOperation("更新用户手机号")
-    public ResponseResult updateUserPhone(UserVo userVo);
-
-
-
+    public ResponseResult updateUserPhone(User user);
+    @ApiOperation("更新用户密码")
+    public ResponseResult updateUserPass(String id,String OldPass,String NewPass);
+    @ApiOperation("用户验证根据昵称查询userExt")
+    public UserExt getUserExt(@RequestParam("userNickName") String userNickName);
 }

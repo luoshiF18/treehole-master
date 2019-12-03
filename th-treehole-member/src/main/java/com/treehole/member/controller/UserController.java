@@ -3,6 +3,7 @@ package com.treehole.member.controller;
 import com.treehole.api.member.UserControllerApi;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.User;
+import com.treehole.framework.domain.member.ext.UserExt;
 import com.treehole.framework.domain.member.resquest.UserListRequest;
 import com.treehole.framework.domain.member.result.MemberCode;
 
@@ -48,15 +49,21 @@ public class UserController implements UserControllerApi {
         return userVoService.getUserByNicknames(names);
     }
     @Override
+    @GetMapping("/getUserByNickname")
+    public UserVo getUserVoByNickname(@RequestParam(value = "nickname") String nickname){
+        return userVoService.getUserByNickname(nickname);
+    }
+    @Override
     @GetMapping("/getUserById/{user_id}")
     public UserVo findUserById(@PathVariable("user_id") String user_id){
        return userVoService.getUserByUserId(user_id);
     }
     @Override
-    @GetMapping("/getUserByNickname")
-    public UserVo getUserVoByNickname(@RequestParam(value = "nickname") String nickname){
-        return userVoService.getUserByNickname(nickname);
+    @GetMapping("/getUserExt")
+    public UserExt getUserExt( @RequestParam("userNickName") String userNickName){
+        return userService.getUserExt(userNickName);
     }
+
     @Override
     @DeleteMapping(value ="/delete/{user_id}")
     public ResponseResult deleteUserById(@PathVariable("user_id") String user_id) {
@@ -95,14 +102,22 @@ public class UserController implements UserControllerApi {
     /*更新手机号绑定*/
     @Override
     @PutMapping("/update/phone")
-    public ResponseResult updateUserPhone(@RequestBody @Valid UserVo userVo){
-         userService.updateUser(userVo);
+    public ResponseResult updateUserPhone(@RequestBody @Valid User user){
+         userService.updatePhone(user);
         return new ResponseResult(CommonCode.SUCCESS);
 
+    }
+    /*更新密码*/
+    @Override
+    @PutMapping("/update/password")
+    public ResponseResult updateUserPass(@RequestParam("id") String id,
+                                         @RequestParam("OldPass") String OldPass,
+                                         @RequestParam("NewPass") String NewPass){
+        userService.updatePass(id,OldPass,NewPass);
+        return new ResponseResult(CommonCode.SUCCESS);
 
     }
 
-    //public Result updateUserPassWord()
 
 
 
