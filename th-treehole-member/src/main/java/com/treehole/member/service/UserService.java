@@ -194,7 +194,7 @@ public class UserService {
         if(this.findUserByNickname(nickname2) != null){
             ExceptionCast.cast(MemberCode.NICKNAME_EXIST);
         }*/
-        if(user.getRole_id().equals("2")) {  //2管理员
+        if(!user.getRole_id().equals("1")) {  //2管理员
             user.setUser_image(user.getUser_image());
             user.setGender(user.getGender());
             user.setUser_birth(user.getUser_birth());
@@ -203,9 +203,7 @@ public class UserService {
         if(user.getRole_id().equals("1")) {  //1普通会员
             //会员卡表内新增数据
             cardsService.insertCard(user.getUser_id());
-
         }
-
         //用户注册，角色已经默认为1，普通用户 前端按钮携带传入role的值
 
         int ins = userMapper.insert(user);
@@ -300,7 +298,6 @@ public class UserService {
     /*更改密码 */
     @Transactional
     public void updatePass(String id,String OldPass,String NewPass){
-        System.out.println(id + "++++++" + OldPass + "++++++"+ NewPass);
         User user = this.getUserById(id);
         //判断旧密码
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -313,12 +310,10 @@ public class UserService {
                 ExceptionCast.cast(MemberCode.PASSWORD_ERROR);
             }
             user.setPassword(newPa);
-            System.out.println("++++++++++++++++++" + newPa);
             Example example =new Example(User.class);
             Example.Criteria criteria = example.createCriteria();
             criteria.andEqualTo("user_id",id);
             int upd= userMapper.updateByExampleSelective(user,example);
-            //int upd= userMapper.updateByPrimaryKeySelective(user);
             if(upd != 1){
                 ExceptionCast.cast(MemberCode.UPDATE_FAIL);
             }

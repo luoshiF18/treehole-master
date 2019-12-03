@@ -49,10 +49,7 @@ public class CardsService {
     @Autowired
     private CheckinService checkinService;
     @Autowired
-    private  UserVoService userVoService;
-    @Autowired
     private  PointService pointService;
-
 
     /*
     *更新
@@ -97,11 +94,7 @@ public class CardsService {
         Example example =new Example(Cards.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("card_id",cards.getCard_id());
-        //昵称
-        /*String nickname = user.getUser_nickname();
-        if(this.findUserByNickname(nickname) != null){
-            ExceptionCast.cast(MemberCode.NICKNAME_EXIST);
-        }*/
+
         int upd= cardsMapper.updateByExampleSelective(cards,example);
         if(upd != 1){
             ExceptionCast.cast(MemberCode.UPDATE_FAIL);
