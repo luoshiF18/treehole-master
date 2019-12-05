@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -107,6 +108,8 @@ public class SuggestionService {
         if (suggestion == null) {
             ExceptionCast.cast(PsychologistCode.DATA_NULL);
         }
+        suggestion.setCreate_time(new Date());
+        suggestion.setUpdate_time(suggestion.getCreate_time());
         int i = this.suggestionMapper.insert(suggestion);
         if (i != 1) {
             ExceptionCast.cast(PsychologistCode.INSERT_FAIL);

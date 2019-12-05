@@ -154,7 +154,7 @@ public class ProfileService {
         profileExt.setId(id);
         profileExt.setCreate_time(new Date());
         profileExt.setUpdate_time(profileExt.getCreate_time());
-        int i1 = this.profileMapper.insertSelective(profileExt);
+        int i1 = this.profileMapper.insert(profileExt);
         if (i1 != 1) {
             ExceptionCast.cast(PsychologistCode.INSERT_FAIL);
         }
@@ -164,7 +164,7 @@ public class ProfileService {
         state.setName(profileExt.getName());
         state.setCreate_time(profileExt.getCreate_time());
         state.setUpdate_time(profileExt.getCreate_time());
-        int i2 = this.stateMapper.insertSelective(state);
+        int i2 = this.stateMapper.insert(state);
         if (i2 != 1) {
             ExceptionCast.cast(PsychologistCode.INSERT_FAIL);
         }
@@ -174,7 +174,7 @@ public class ProfileService {
         detail.setPsychologist_name(profileExt.getName());
         detail.setCreate_time(profileExt.getCreate_time());
         detail.setUpdate_time(profileExt.getCreate_time());
-        int i3 = this.detailMapper.insertSelective(detail);
+        int i3 = this.detailMapper.insert(detail);
         if (i3 != 1) {
             ExceptionCast.cast(PsychologistCode.INSERT_FAIL);
         }

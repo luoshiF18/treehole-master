@@ -15,6 +15,7 @@ import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.psychologist.client.UserClient;
 import com.treehole.psychologist.dao.ConsultationMapper;
 import com.treehole.psychologist.dao.ProfileMapper;
+import com.treehole.psychologist.util.MyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -191,6 +193,10 @@ public class ConsultationService {
         if (consultation == null) {
             ExceptionCast.cast(PsychologistCode.DATA_NULL);
         }
+        String id = MyUtils.getId();
+        consultation.setConsultation_id(id);
+        consultation.setSuggestion_id(consultation.getConsultation_id());
+        consultation.setConsultation_time(new Date());
         int i = this.consultationMapper.insert(consultation);
         if (i != 1) {
             ExceptionCast.cast(PsychologistCode.INSERT_FAIL);

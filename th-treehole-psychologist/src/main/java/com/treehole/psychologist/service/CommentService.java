@@ -15,6 +15,7 @@ import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.psychologist.client.UserClient;
 import com.treehole.psychologist.dao.CommentMapper;
 import com.treehole.psychologist.dao.ProfileMapper;
+import com.treehole.psychologist.util.MyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -193,6 +195,10 @@ public class CommentService {
         if (comment == null) {
             ExceptionCast.cast(PsychologistCode.INSERT_DATA_NULL);
         }
+        String id = MyUtils.getId();
+        comment.setComment_id(id);
+        comment.setCreate_time(new Date());
+        comment.setUpdate_time(comment.getCreate_time());
         int i = this.commentMapper.insert(comment);
         if (i != 1) {
             ExceptionCast.cast(PsychologistCode.INSERT_FAIL);
