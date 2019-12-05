@@ -92,33 +92,13 @@ public class StateService {
         if (StringUtils.isBlank(id)) {
             ExceptionCast.cast(PsychologistCode.DATA_ERROR);
         }
-        State state = new State();
-        state.setId(id);
-        State state1 = this.findStateById(id);
-        if (state1 == null) {
+        State state = this.findStateById(id);
+        if (state == null) {
             ExceptionCast.cast(PsychologistCode.STATE_NOT_EXIST);
         }
         int i = this.stateMapper.delete(state);
         if (i != 1) {
             ExceptionCast.cast(PsychologistCode.DELETE_FAIL);
-        }
-        return new ResponseResult(CommonCode.SUCCESS);
-    }
-
-    /**
-     * 添加心理咨询师状态信息
-     *
-     * @param state 心理咨询师状态信息
-     * @return
-     */
-    @Transactional
-    public ResponseResult addState(State state) {
-        if (state == null) {
-            ExceptionCast.cast(PsychologistCode.INSERT_DATA_NULL);
-        }
-        int i = this.stateMapper.insert(state);
-        if (i != 1) {
-            ExceptionCast.cast(PsychologistCode.INSERT_FAIL);
         }
         return new ResponseResult(CommonCode.SUCCESS);
     }
@@ -145,27 +125,4 @@ public class StateService {
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
-    /**
-     * 按照id自增查询所有简介信息
-     *
-     * @param page 当前页
-     * @param size 每页记录数
-     * @return
-     */
-    public QueryResponseResult getAllStates(Integer page, Integer size) {
-        //分页参数
-        PageHelper.startPage(page, size);
-        List<State> states = this.stateMapper.getAllStates();
-        if (CollectionUtils.isEmpty(states)) {
-            //如果数据为空页面，抛出异常，异常内容为查询数据为空！
-            ExceptionCast.cast(PsychologistCode.DATA_IS_NULL);
-        }
-        //包装成pageInfo
-        PageInfo<State> pageInfo = new PageInfo<>(states);
-        //包装成分页结果集返回
-        QueryResult queryResult = new QueryResult();
-        queryResult.setList(pageInfo.getList());
-        queryResult.setTotal(pageInfo.getTotal());
-        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
-    }
 }

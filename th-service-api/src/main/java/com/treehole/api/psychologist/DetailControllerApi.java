@@ -13,17 +13,11 @@ import io.swagger.annotations.ApiOperation;
 @Api(value = "心理咨询师详情信息管理", description = "对心理咨询师详情信息进行增、删、改、查")
 public interface DetailControllerApi {
 
-    @ApiOperation("按照id自增分页查询所有咨询师详情信息")
-    QueryResponseResult getAllDetails(Integer page, Integer size);
-
     @ApiOperation("根据咨询师id查询咨询师详情信息")
     Detail getDetailById(String psychologist_id);
 
     @ApiOperation("根据咨询师id删除咨询师详情信息")
     ResponseResult delDetailById(String psychologist_id);
-
-    @ApiOperation("添加咨询师详情信息")
-    ResponseResult addDetail(Detail detail);
 
     @ApiOperation("根据id更新咨询师详情信息")
     ResponseResult updateDetail(Detail detail);

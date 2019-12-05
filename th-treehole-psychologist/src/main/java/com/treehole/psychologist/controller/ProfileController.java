@@ -2,6 +2,7 @@ package com.treehole.psychologist.controller;
 
 import com.treehole.api.psychologist.ProfileControllerApi;
 import com.treehole.framework.domain.psychologist.Profile;
+import com.treehole.framework.domain.psychologist.ext.ProfileExt;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.psychologist.service.ProfileService;
@@ -66,15 +67,15 @@ public class ProfileController implements ProfileControllerApi {
     }
 
     /**
-     * 添加心理咨询师简介信息
+     * 添加心理咨询师信息（包括简介、状态、详情）
      *
-     * @param profile 心理咨询师简介信息
+     * @param profileExt 心理咨询师信息扩展类
      * @return
      */
     @Override
     @PostMapping("/add")
-    public ResponseResult addProfile(@RequestBody Profile profile) {
-        return this.profileService.addProfile(profile);
+    public ResponseResult addProfileExt(@RequestBody ProfileExt profileExt) {
+        return this.profileService.addProfileExt(profileExt);
     }
 
     /**
@@ -87,22 +88,6 @@ public class ProfileController implements ProfileControllerApi {
     @PutMapping("/update")
     public ResponseResult updateProfile(@RequestBody Profile profile) {
         return this.profileService.updateProfile(profile);
-    }
-
-    /**
-     * 按照id自增查询所有简介信息
-     *
-     * @param page 当前页
-     * @param size 每页记录数
-     * @return
-     */
-    @Override
-    @GetMapping("get/all")
-    public QueryResponseResult getAllProfiles(
-            @RequestParam(value = "page", defaultValue = "1") Integer page,
-            @RequestParam(value = "size", defaultValue = "5") Integer size
-    ) {
-        return this.profileService.getAllProfiles(page, size);
     }
 
 }

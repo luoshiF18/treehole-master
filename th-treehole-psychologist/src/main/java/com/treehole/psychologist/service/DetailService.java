@@ -30,29 +30,6 @@ public class DetailService {
     private DetailMapper detailMapper;
 
     /**
-     * 按照id自增分页查询所有咨询师详情信息
-     *
-     * @param page 当前页
-     * @param size 每页记录数
-     * @return
-     */
-    public QueryResponseResult getAllDetails(Integer page, Integer size) {
-        //分页参数
-        PageHelper.startPage(page, size);
-        List<Detail> all = this.detailMapper.getAllDetails();
-        if (CollectionUtils.isEmpty(all)) {
-            ExceptionCast.cast(PsychologistCode.DATA_IS_NULL);
-        }
-        //包装成pageInfo
-        PageInfo<Detail> pageInfo = new PageInfo<>(all);
-        //包装成分页结果集返回
-        QueryResult queryResult = new QueryResult();
-        queryResult.setList(pageInfo.getList());
-        queryResult.setTotal(pageInfo.getTotal());
-        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
-    }
-
-    /**
      * 根据咨询师id查询详情信息
      *
      * @param psychologist_id 咨询师id
@@ -80,27 +57,9 @@ public class DetailService {
         if (detail == null) {
             ExceptionCast.cast(PsychologistCode.PSYCHOLOGIST_NOT_EXIST);
         }
-        int i = this.detailMapper.deleteByPrimaryKey(psychologist_id);
+        int i = this.detailMapper.delete(detail);
         if (i != 1) {
             ExceptionCast.cast(PsychologistCode.DELETE_FAIL);
-        }
-        return new ResponseResult(CommonCode.SUCCESS);
-    }
-
-    /**
-     * 添加咨询师详情信息
-     *
-     * @param detail 详情信息
-     * @return
-     */
-    @Transactional
-    public ResponseResult addDetail(Detail detail) {
-        if (detail == null) {
-            ExceptionCast.cast(PsychologistCode.INSERT_DATA_NULL);
-        }
-        int i = this.detailMapper.insert(detail);
-        if (i != 1) {
-            ExceptionCast.cast(PsychologistCode.INSERT_FAIL);
         }
         return new ResponseResult(CommonCode.SUCCESS);
     }

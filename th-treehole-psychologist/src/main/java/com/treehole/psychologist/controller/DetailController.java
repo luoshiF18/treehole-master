@@ -20,22 +20,6 @@ public class DetailController implements DetailControllerApi {
     private DetailService detailService;
 
     /**
-     * 按照id自增分页查询所有咨询师详情信息
-     *
-     * @param page 当前页
-     * @param size 每页记录数
-     * @return
-     */
-    @Override
-    @GetMapping("/get/list")
-    public QueryResponseResult getAllDetails(
-            @RequestParam(value = "page", defaultValue = "1") Integer page,
-            @RequestParam(value = "size", defaultValue = "5") Integer size
-    ) {
-        return this.detailService.getAllDetails(page, size);
-    }
-
-    /**
      * 根据咨询师id查询咨询师详情信息
      *
      * @param psychologist_id 咨询师id
@@ -57,18 +41,6 @@ public class DetailController implements DetailControllerApi {
     @DeleteMapping("/del/{psychologist_id}")
     public ResponseResult delDetailById(@PathVariable("psychologist_id") String psychologist_id) {
         return this.detailService.delDetailById(psychologist_id);
-    }
-
-    /**
-     * 添加咨询师详情信息
-     *
-     * @param detail 详情信息
-     * @return
-     */
-    @Override
-    @PostMapping("/add")
-    public ResponseResult addDetail(@RequestBody Detail detail) {
-        return this.detailService.addDetail(detail);
     }
 
     /**

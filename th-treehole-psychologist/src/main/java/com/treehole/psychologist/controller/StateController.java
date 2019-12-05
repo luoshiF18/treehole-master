@@ -62,18 +62,6 @@ public class StateController implements StateControllerApi {
     }
 
     /**
-     * 添加心理咨询师简介信息
-     *
-     * @param state 心理咨询师简介信息
-     * @return
-     */
-    @Override
-    @PostMapping("/add")
-    public ResponseResult addState(@RequestBody State state) {
-        return this.stateService.addState(state);
-    }
-
-    /**
      * 根据id更新心理咨询师简介信息
      *
      * @param state 心理咨询师简介信息
@@ -85,19 +73,4 @@ public class StateController implements StateControllerApi {
         return this.stateService.updateState(state);
     }
 
-    /**
-     * 按照id自增查询所有简介信息
-     *
-     * @param page 当前页
-     * @param size 每页记录数
-     * @return
-     */
-    @Override
-    @GetMapping("get/all")
-    public QueryResponseResult getAllStates(
-            @RequestParam(value = "page", defaultValue = "1") Integer page,
-            @RequestParam(value = "size", defaultValue = "5") Integer size
-    ) {
-        return this.stateService.getAllStates(page, size);
-    }
 }

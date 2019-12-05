@@ -2,14 +2,20 @@ package com.treehole.psychologist.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.treehole.framework.domain.psychologist.Detail;
 import com.treehole.framework.domain.psychologist.Profile;
+import com.treehole.framework.domain.psychologist.State;
+import com.treehole.framework.domain.psychologist.ext.ProfileExt;
 import com.treehole.framework.domain.psychologist.result.PsychologistCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
+import com.treehole.psychologist.dao.DetailMapper;
 import com.treehole.psychologist.dao.ProfileMapper;
+import com.treehole.psychologist.dao.StateMapper;
+import com.treehole.psychologist.util.MyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,6 +35,12 @@ public class ProfileService {
 
     @Autowired
     private ProfileMapper profileMapper;
+
+    @Autowired
+    private StateMapper stateMapper;
+
+    @Autowired
+    private DetailMapper detailMapper;
 
     /**
      * 根据条件分页查询心理咨询师简介信息
@@ -105,12 +118,10 @@ public class ProfileService {
             //如果id为空，抛出异常，异常内容为前台数据有误！
             ExceptionCast.cast(PsychologistCode.DATA_ERROR);
         }
-        Profile profile = new Profile();
-        profile.setId(id);
         //先查询要删除的心理咨询师
-        Profile profile1 = this.findProfileById(id);
+        Profile profile = this.findProfileById(id);
         //判断查询结果是否为空
-        if (profile1 == null) {
+        if (profile == null) {
             //如果为空，抛出异常，异常内容为该心理咨询师不存在！
             ExceptionCast.cast(PsychologistCode.PSYCHOLOGIST_NOT_EXIST);
         }
@@ -126,23 +137,45 @@ public class ProfileService {
     }
 
     /**
-     * 添加心理咨询师简介信息
+     * 添加心理咨询师信息（包括简介、状态、详情）
      *
-     * @param profile 心理咨询师简介信息
+     * @param profileExt 心理咨询师信息扩展类
      * @return
      */
     @Transactional
-    public ResponseResult addProfile(Profile profile) {
+    public ResponseResult addProfileExt(ProfileExt profileExt) {
         //判断传入的数据是否为空
-        if (profile == null) {
+        if (profileExt == null) {
             //如果为空，抛出异常，异常信息为插入数据为空!
             ExceptionCast.cast(PsychologistCode.INSERT_DATA_NULL);
         }
-        //新增
-        int i = this.profileMapper.insert(profile);
-        //判断受影响行数是否为1
-        if (i != 1) {
-            //如果受影响行数不为1，抛出异常，异常内容为添加失败!
+        //新增简介信息
+        String id = MyUtils.getId();//生成32位随机id
+        profileExt.setId(id);
+        profileExt.setCreate_time(new Date());
+        profileExt.setUpdate_time(profileExt.getCreate_time());
+        int i1 = this.profileMapper.insertSelective(profileExt);
+        if (i1 != 1) {
+            ExceptionCast.cast(PsychologistCode.INSERT_FAIL);
+        }
+        //新增状态信息
+        State state = profileExt.getState();
+        state.setId(profileExt.getId());
+        state.setName(profileExt.getName());
+        state.setCreate_time(profileExt.getCreate_time());
+        state.setUpdate_time(profileExt.getCreate_time());
+        int i2 = this.stateMapper.insertSelective(state);
+        if (i2 != 1) {
+            ExceptionCast.cast(PsychologistCode.INSERT_FAIL);
+        }
+        //新增详情信息
+        Detail detail = profileExt.getDetail();
+        detail.setPsychologist_id(profileExt.getId());
+        detail.setPsychologist_name(profileExt.getName());
+        detail.setCreate_time(profileExt.getCreate_time());
+        detail.setUpdate_time(profileExt.getCreate_time());
+        int i3 = this.detailMapper.insertSelective(detail);
+        if (i3 != 1) {
             ExceptionCast.cast(PsychologistCode.INSERT_FAIL);
         }
         //添加成功，响应成功状态码
@@ -176,27 +209,4 @@ public class ProfileService {
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
-    /**
-     * 按照id自增查询所有简介信息
-     *
-     * @param page 当前页
-     * @param size 每页记录数
-     * @return
-     */
-    public QueryResponseResult getAllProfiles(Integer page, Integer size) {
-        //分页参数
-        PageHelper.startPage(page, size);
-        List<Profile> all = this.profileMapper.getAllProfiles();
-        if (CollectionUtils.isEmpty(all)) {
-            //如果数据为空页面，抛出异常，异常内容为查询数据为空！
-            ExceptionCast.cast(PsychologistCode.DATA_IS_NULL);
-        }
-        //包装成pageInfo
-        PageInfo<Profile> pageInfo = new PageInfo<>(all);
-        //包装成分页结果集返回
-        QueryResult queryResult = new QueryResult();
-        queryResult.setList(pageInfo.getList());
-        queryResult.setTotal(pageInfo.getTotal());
-        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
-    }
 }
