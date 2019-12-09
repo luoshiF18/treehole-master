@@ -2,6 +2,7 @@ package com.treehole.marketing.controller;
 
 import com.treehole.api.marketing.CouponControllerApi;
 import com.treehole.framework.domain.marketing.Coupon;
+import com.treehole.framework.domain.marketing.bo.CouponBo;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
@@ -33,21 +34,26 @@ public class CouponController implements CouponControllerApi {
                                                  @RequestParam(value = "page", defaultValue = "1")Integer page,
                                                  @RequestParam(value = "size", defaultValue = "5")Integer size,
                                                  @RequestParam(value = "sortBy", required = false)String sortBy,
-                                                 @RequestParam(value = "desc", defaultValue = "false")Boolean desc) {
-        QueryResult queryResult = this.couponService.queryCouponByPage(key, page, size, sortBy, desc);
+                                                 @RequestParam(value = "desc", defaultValue = "true")Boolean desc,
+                                                 @RequestParam(value = "status", required = false)Integer status) {
+        QueryResult queryResult = this.couponService.queryCouponByPage(key, page, size, sortBy, desc, status);
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 
     /**
      * 根据优惠券id查询优惠券信息
-     * @param cid
+     * @param id
      * @return
      */
-    @GetMapping("/{cid}")
-    public Coupon queryCouponById(@PathVariable String cid) {
-        return this.couponService.queryCouponById(cid);
+    @GetMapping("/{id}")
+    public Coupon queryCouponById(@PathVariable("id") String id) {
+        return this.couponService.queryCouponById(id);
     }
 
+    @GetMapping("/cdetail/{id}")
+    public CouponBo queryCouponBoById(@PathVariable("id") String id) {
+        return this.couponService.queryCouponBoById(id);
+    }
 
 
     /**
@@ -73,13 +79,23 @@ public class CouponController implements CouponControllerApi {
     }
 
     /**
-     * 根据id删除优惠券
-     * @param cid
+     * 修改优惠券状态为结束
      * @return
      */
-    @DeleteMapping("{cid}")
-    public ResponseResult deleteCouponById(@PathVariable String cid) {
-        this.couponService.deleteCouponById(cid);
+    @PutMapping("{id}")
+    public ResponseResult updateStatusToFinished(@PathVariable("id") String id) {
+        this.couponService.updateStatusToFinished(id);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 根据id删除优惠券
+     * @param id
+     * @return
+     */
+    @DeleteMapping("{id}")
+    public ResponseResult deleteCouponById(@PathVariable("id") String id) {
+        this.couponService.deleteCouponById(id);
         return new ResponseResult(CommonCode.SUCCESS);
     }
 

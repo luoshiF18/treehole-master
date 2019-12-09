@@ -9,13 +9,15 @@ import javax.persistence.Table;
 /**
  * @author wanglu
  */
-
 @Data
-@Table(name = "tb_type")
-public class Type {
+@Table(name = "tb_email")
+public class Email {
     @Id
     @KeySql(useGeneratedKeys = true)
     private String id;
-    private String name;
+    private String title;
+    private String content;
     private Boolean usedFor;
+    private String resId;
+    private Integer memberCount;
 }

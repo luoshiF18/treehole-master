@@ -9,7 +9,6 @@ import com.treehole.framework.domain.marketing.response.MarketingCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.marketing.dao.CouponMapper;
-import com.treehole.marketing.dao.TypeMapper;
 import com.treehole.marketing.dao.UserCouponMapper;
 import com.treehole.marketing.utils.MyNumberUtils;
 import org.apache.commons.lang.StringUtils;
@@ -36,8 +35,8 @@ public class UserCouponService {
     private CouponMapper couponMapper;
     @Autowired
     private CouponService couponService;
-    @Autowired
-    private TypeMapper typeMapper;
+   // @Autowired
+   // private TypeMapper typeMapper;
 
     public QueryResult queryUserCoupons(String userId, Boolean status, Boolean usedStatus) {
         if(StringUtils.isBlank(userId)){
@@ -65,7 +64,7 @@ public class UserCouponService {
             userCouponBo.setIcon(coupon.getIcon());
             userCouponBo.setWithAmount(coupon.getWithAmount());
             userCouponBo.setUsedAmount(coupon.getUsedAmount());
-            userCouponBo.setTypeName(this.typeMapper.selectByPrimaryKey(coupon.getTypeId()).getName());
+          //  userCouponBo.setTypeName(this.typeMapper.selectByPrimaryKey(coupon.getTypeId()).getName());
             userCouponBo.setValidStartTime(uCoupon.getValidStartTime());
             userCouponBo.setValidEndTime(uCoupon.getValidEndTime());
             userCouponBo.setStatus(uCoupon.getStatus());
@@ -104,7 +103,7 @@ public class UserCouponService {
         Coupon coupon = this.couponMapper.selectByPrimaryKey(couponBo.getId());
         Integer stock = coupon.getStock();
         if(stock < 1){
-            ExceptionCast.cast(MarketingCode.COUPON_DATA_NULL);
+            ExceptionCast.cast(MarketingCode.DATA_NULL);
         }
         userCoupon.setUserId(userId);
         userCoupon.setCouponId(couponBo.getId());
