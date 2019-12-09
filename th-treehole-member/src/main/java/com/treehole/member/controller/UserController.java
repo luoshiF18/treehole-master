@@ -37,9 +37,11 @@ public class UserController implements UserControllerApi {
     @GetMapping("/getAllUserVos/{page}/{size}")
     public QueryResponseResult findAllUserVo(@PathVariable("page") Integer page,
                                              @PathVariable("size") Integer size,
+                                             String sortBy,
+                                             Boolean desc,
                                              UserListRequest userListRequest){
 
-        return userVoService.findAllUserVos(page,size,userListRequest);
+        return userVoService.findAllUserVos(page,size,sortBy,desc,userListRequest);
     }
 
     @Override
@@ -48,11 +50,11 @@ public class UserController implements UserControllerApi {
     public List<UserVo> findUserByNicknames(@RequestParam(value ="name")List<String> names){
         return userVoService.getUserByNicknames(names);
     }
-    @Override
+    /*@Override
     @GetMapping("/getUserByNickname")
     public UserVo getUserVoByNickname(@RequestParam(value = "nickname") String nickname){
         return userVoService.getUserByNickname(nickname);
-    }
+    }*/
     @Override
     @GetMapping("/getUserById/{user_id}")
     public UserVo findUserById(@PathVariable("user_id") String user_id){

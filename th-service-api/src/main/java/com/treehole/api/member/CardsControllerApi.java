@@ -36,6 +36,7 @@ public interface CardsControllerApi {
 
     @ApiOperation("更改会员卡信息")
     public ResponseResult update(CardsVo cardsvo) ;
+   // public ResponseResult update(Cards cards) ;
 
  /*   @ApiOperation("根据user_id查找cards")
     public Cards findCardsByUserId(String user_id);*/

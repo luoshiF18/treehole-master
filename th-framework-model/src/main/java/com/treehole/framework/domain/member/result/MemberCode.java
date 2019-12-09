@@ -13,7 +13,7 @@ import lombok.ToString;
 public enum MemberCode implements ResultCode {
 
     UNKNOWN_ERROR(false,-1,"未知错误"),
-    SUCCESS(false,200,"成功"),
+    SUCCESS(true,200,"成功"),
     DATA_ERROR(false, 301, "前台数据有误！"),
     USER_NOT_EXIST(false,302,"用户不存在"),
     USER_IS_EXISTS(false,303,"用户已存在"),

@@ -63,8 +63,7 @@ public class CardsService {
 
         FreeGrade byName1 = freegradeService.getByName(cardsVo.getFreegrade());
         cards.setFreegrade_id(byName1.getFreegrade_id());
-
-        if(cardsVo.getPaygrade().equals("无")){
+        if(cardsVo.getPaygrade() == null||cardsVo.getPaygrade().equals("")||cardsVo.getPaygrade().equals("无")){
             cards.setPaygrade_id(null);
             cards.setPaygrade_start(null);
             cards.setPaygrade_end(null);
@@ -72,7 +71,6 @@ public class CardsService {
             PayGrade byName2 = paygradeService.getByName(cardsVo.getPaygrade());
             cards.setPaygrade_id(byName2.getPaygrade_id());
             cards.setPaygrade_start(cardsVo.getPaygrade_start());
-            cards.setPaygrade_end(cardsVo.getPaygrade_end());
             cards.setPaygrade_end(cardsVo.getPaygrade_end());
         }
         cards.setConsum_all(cardsVo.getConsum_all());
@@ -160,24 +158,24 @@ public class CardsService {
         if(org.apache.commons.lang3.StringUtils.isBlank(id)){
             ExceptionCast.cast(MemberCode.DATA_ERROR);
         }
-            //如果通过user-id查找到card对象
-            Cards card = this.findCardsByUserId(id);
-            if(card == null){
-                ExceptionCast.cast(MemberCode.USER_NOT_EXIST);
-            }
-        //签到信息删除
+        //如果通过user-id查找到card对象
+        Cards card = this.findCardsByUserId(id);
+        if(card == null){
+            ExceptionCast.cast(MemberCode.USER_NOT_EXIST);
+        }
+        //签到信息删除 1找2删
         QueryResult checkin = checkinService.getCheckinByUserId1(id, 1, 5);
         if(checkin.getTotal() != 0){
             checkinService.deleteCheckinByUserId(id);
         }
-        //会员积分信息删除！！！
+        //会员积分信息删除 1找2删
         QueryResult points = pointService.findAllPoints1(1, 5, id);
         if (points.getTotal() != 0) {
             pointService.deletePointByUserId(id);
         }
-            int del= cardsMapper.delete(card);
-            if(del < 1){
-                ExceptionCast.cast(MemberCode.DELETE_FAIL);
-            }
+        int del= cardsMapper.delete(card);
+        if(del < 1){
+            ExceptionCast.cast(MemberCode.DELETE_FAIL);
+        }
     }
 }

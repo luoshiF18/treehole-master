@@ -38,9 +38,9 @@ public class FreegradeService {
     private CardsVoService cardsVoService;
 
 /*
-* 根据rank,id,name查询所有普通会员等级信息
+* 根据rank,id,name查询所有用户等级信息
 * */
-    public QueryResponseResult findAll(Integer page,
+    public QueryResponseResult findAll1(Integer page,
                                Integer size,
                                GradeListRequest gradeListRequest) {
         //        分页
@@ -74,6 +74,19 @@ public class FreegradeService {
 
     }
 
+    /*
+     * 查询所有用户等级信息
+     * */
+    public QueryResult findAll2(){
+
+        List<FreeGrade> grades = freegradeMapper.selectAll();
+        if (CollectionUtils.isEmpty(grades)) {
+            ExceptionCast.cast(MemberCode.DATA_IS_NULL);
+        }
+        //        解析分页结果
+        PageInfo<FreeGrade> pageInfo = new PageInfo<>(grades);
+        return new QueryResult(grades,pageInfo.getTotal());
+    }
     /*通过等级id查询等级对象*/
     public FreeGrade getById(String id) {
         FreeGrade freeGrade = new FreeGrade();

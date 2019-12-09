@@ -25,6 +25,8 @@ public interface PayGradeControllerApi {
     public QueryResponseResult findAllPayGrade(Integer page,
                                                Integer size,
                                                GradeListRequest gradeListRequest) ;
+    @ApiOperation("查询所有VIP等级信息")
+    public QueryResponseResult findAll();
     @ApiOperation("根据id查询会员等级信息")
     public PayGrade findGradeById(String id);
     /*@ApiOperation("根据id查询付费会员等级信息")

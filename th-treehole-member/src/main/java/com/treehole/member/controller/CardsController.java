@@ -61,5 +61,11 @@ public class CardsController implements CardsControllerApi {
         cardsService.updateCardVo(cardsvo);
         return new ResponseResult(CommonCode.SUCCESS);
     }
+    /*@Override
+    @PutMapping("/update")
+    public ResponseResult update(@RequestBody @Valid Cards cards) {
+        cardsService.updateCard(cards);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }*/
 
 }

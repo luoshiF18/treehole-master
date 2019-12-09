@@ -21,6 +21,7 @@ import com.treehole.member.myUtil.MyNumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
@@ -71,8 +72,8 @@ public class PointService {
         }
         Points points1 = new Points();
         if(StringUtils.isNotEmpty(pointListRequest.getUser_nickname())){
-            UserVo uservo = userVoService.getUserByNickname(pointListRequest.getUser_nickname());
-            points1.setUser_id(uservo.getUser_id());
+            User user = userService.findUserByNickname(pointListRequest.getUser_nickname());
+            points1.setUser_id(user.getUser_id());
         }
         //pagehelper需要放在离查询最近的地方，中间不能隔着查询去查询，数据会一直为1
         Page pag =PageHelper.startPage(page,size);
@@ -114,21 +115,18 @@ public class PointService {
      * @param
      * @return int
      */
-
+    @Transactional
     public void insertPoint(Points points)  {
         points.setPoints_id(MyNumberUtils.getUUID());
         points.setPoints_time(new Date());
         //改变cards  目的：累计积分变化/等级变化
         if(points.getPoints_num()>0){
             Cards cards = cardsService.findCardsByUserId(points.getUser_id());
-
             Integer sum =cards.getPoints_sum()+ points.getPoints_num();
-
             //判断cars累计积分值是否大于现有等级的积分值,此功能在freegradeservice中，gradeChange()
-            String freegradeId = cardsService.findCardsByUserId(points.getUser_id()).getFreegrade_id();//通过user_id 查找用户的freegrade_id
-
+            // 通过user_id 查找用户的freegrade_id
+            String freegradeId = cardsService.findCardsByUserId(points.getUser_id()).getFreegrade_id();
             freegradeService.gradeChange(points.getUser_id(),freegradeId,sum);
-
             //cardsService.updateCard(cards);
         }
         //User user = userService.getUserById(points.getUser_id());
@@ -168,6 +166,7 @@ public class PointService {
      * @param points_id
      * @return int
      */
+    @Transactional
     public void deletePointById(String points_id) {
         //List<Points> points = this.getPointById(points_id);
         //id不为空
@@ -181,18 +180,31 @@ public class PointService {
             ExceptionCast.cast(MemberCode. DELETE_FAIL);
         }
     }
-
+    @Transactional
     public void deletePointByUserId(String user_id){
         //id不为空
         if(org.apache.commons.lang3.StringUtils.isBlank(user_id)){
             ExceptionCast.cast(MemberCode.DATA_ERROR);
         }
+        //1.先找
         Points points = new Points();
         points.setUser_id(user_id);
-        int del = pointsMapper.delete(points);
-        if(del <0 ||del==0){
-            ExceptionCast.cast(MemberCode. DELETE_FAIL);
-        }
+        List<Points> select = pointsMapper.select(points);
+        //2.后删
+        int i= 0;
+        int sum = select.size();
+        //if(sum !=0) {
+            for (Points po : select) {
+                int del = pointsMapper.delete(po);
+                if (del == 1) {
+                    i++;
+                }
+            }
+            if(i != sum){
+                ExceptionCast.cast(MemberCode.DELETE_FAIL);
+            }
+        //}
+
     }
     /*不报错版根据user——id查询*/
     public QueryResult findAllPoints1(Integer page,

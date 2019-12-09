@@ -43,6 +43,7 @@ public class PaygradeService {
 
     @Autowired
     private CardsService cardsService;
+
     //根据id查询等级
     public PayGrade getById(String id){
         PayGrade payGrade = new PayGrade();
@@ -80,7 +81,7 @@ public class PaygradeService {
     /*
      * 根据rank,id,name查询所有付费会员等级信息
      * */
-    public QueryResponseResult findAll(Integer page,
+    public QueryResponseResult findAll1(Integer page,
                                        Integer size,
                                        GradeListRequest gradeListRequest) {
         //        分页
@@ -114,6 +115,21 @@ public class PaygradeService {
         queryResult.setTotal(pageInfo.getTotal());
         return new QueryResponseResult(CommonCode.SUCCESS,queryResult);
     }
+
+    /*
+    * 查询所有VIP等级信息
+    * */
+    public QueryResult findAll2(){
+
+        List<PayGrade> grades = paygradeMapper.selectAll();
+        if (CollectionUtils.isEmpty(grades)) {
+            ExceptionCast.cast(MemberCode.DATA_IS_NULL);
+        }
+        //        解析分页结果
+        PageInfo<PayGrade> pageInfo = new PageInfo<>(grades);
+        return new QueryResult(grades,pageInfo.getTotal());
+    }
+
         /*删除*/
     public void deleteGrade(String id) {
         //id不为空
