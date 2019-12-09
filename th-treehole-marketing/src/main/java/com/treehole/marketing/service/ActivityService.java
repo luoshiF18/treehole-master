@@ -180,8 +180,12 @@ public class ActivityService {
     }
 
     @Transactional
-    public void updateActivityInfo(Activity activity, ActivityRule activityRule, ActivityGoods activityGoods) {
+    public void updateActivityInfo(ActivityRequest activityRequest) {
+        Activity activity = activityRequest.getActivity();
+        ActivityRule activityRule = activityRequest.getActivityRule();
+        List<ActivityGoods> activityGoodsList = activityRequest.getActivityGoodsList();
         //数据为空
+        //判断需要修改
         if(activity == null){
             ExceptionCast.cast(MarketingCode.DATA_ERROR);
         }
@@ -197,21 +201,22 @@ public class ActivityService {
                 ExceptionCast.cast(MarketingCode.UPDATE_ERROR);
             }
         }
-
-        /*if(activityGoods != null){
-            Map<String, List<String>> goodsMap = activityGoods.getGoodsMap();
-            if(CollectionUtils.isEmpty(goodsMap)){
-                return;
+        //若是商品不为空，则将商品表中该活动的商品都删掉，再加入
+        if(!CollectionUtils.isEmpty(activityGoodsList)){
+            ActivityGoods ag = new ActivityGoods();
+            ag.setActivityId(activity.getId());
+            List<ActivityGoods> select = this.activityGoodsMapper.select(ag);
+            if(!CollectionUtils.isEmpty(select)){
+                select.forEach(s -> {
+                    this.activityGoodsMapper.delete(s);
+                });
             }
-            try {
-                activityGoods.setGoods(MAPPER.writeValueAsString(goodsMap));
-                this.activityGoodsMapper.updateByPrimaryKeySelective(activityGoods);
-            } catch (JsonProcessingException e) {
-                //e.printStackTrace();
-                ExceptionCast.cast(MarketingCode.UPDATE_ERROR);
-            }
-
-        }*/
+            activityGoodsList.forEach(goods -> {
+                goods.setActivityId(activity.getId());
+                goods.setId(MyNumberUtils.getUUID());
+                this.activityGoodsMapper.insertSelective(goods);
+            });
+        }
     }
 
     /**

@@ -13,6 +13,7 @@ import com.treehole.marketing.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.activity.ActivityRequiredException;
 import java.util.Date;
 
 /**
@@ -81,7 +82,7 @@ public class ActivityController implements ActivityControllerApi {
 
     @PutMapping
     public ResponseResult updateActivityInfo(@RequestBody ActivityRequest activityRequest) {
-        this.activityService.updateActivityInfo(activityRequest.getActivity(), activityRequest.getActivityRule(), activityRequest.getActivityGoods());
+        this.activityService.updateActivityInfo(activityRequest);
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
