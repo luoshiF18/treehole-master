@@ -20,7 +20,7 @@ public interface ProfileControllerApi {
     @ApiOperation("根据id查询心理咨询师简介信息")
     Profile findProfileById(String id);
 
-    @ApiOperation("根据id删除心理咨询师简介信息")
+    @ApiOperation("根据id删除心理咨询师所有信息")
     ResponseResult delProfileById(String id);
 
     @ApiOperation("添加心理咨询师信息")

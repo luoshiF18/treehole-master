@@ -18,7 +18,7 @@ public interface CommentMapper extends Mapper<Comment> {
      *
      * @return
      */
-    @Select("select * from comment order by comment_id+0")
+    @Select("select * from comment")
     List<Comment> getAllComments();
 
     /**
@@ -27,7 +27,7 @@ public interface CommentMapper extends Mapper<Comment> {
      * @param psychologist_id 咨询师id
      * @return
      */
-    @Select("select *  from comment where psychologist_id = #{psychologist_id} order by comment_id+0")
+    @Select("select *  from comment where psychologist_id = #{psychologist_id}")
     List<Comment> getCommentsByPsyId(@Param("psychologist_id") String psychologist_id);
 
 }

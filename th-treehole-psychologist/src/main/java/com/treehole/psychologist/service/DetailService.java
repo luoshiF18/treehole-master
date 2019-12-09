@@ -18,6 +18,7 @@ import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Helay
@@ -41,27 +42,6 @@ public class DetailService {
         }
         Detail detail = this.detailMapper.selectByPrimaryKey(psychologist_id);
         return detail;
-    }
-
-    /**
-     * 根据咨询师id删除咨询师详情信息
-     *
-     * @param psychologist_id
-     */
-    @Transactional
-    public ResponseResult delDetailById(String psychologist_id) {
-        if (StringUtils.isBlank(psychologist_id)) {
-            ExceptionCast.cast(PsychologistCode.DATA_NULL);
-        }
-        Detail detail = this.getDetailById(psychologist_id);
-        if (detail == null) {
-            ExceptionCast.cast(PsychologistCode.PSYCHOLOGIST_NOT_EXIST);
-        }
-        int i = this.detailMapper.delete(detail);
-        if (i != 1) {
-            ExceptionCast.cast(PsychologistCode.DELETE_FAIL);
-        }
-        return new ResponseResult(CommonCode.SUCCESS);
     }
 
     /**
@@ -119,5 +99,41 @@ public class DetailService {
         queryResult.setList(pageInfo.getList());
         queryResult.setTotal(pageInfo.getTotal());
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
+    }
+
+    /**
+     * 查询所有咨询师的姓名
+     *
+     * @return
+     */
+    public QueryResponseResult getPsychologistNames() {
+        List<Detail> psychologists = this.detailMapper.getPsychologists();
+        if (CollectionUtils.isEmpty(psychologists)) {
+            ExceptionCast.cast(PsychologistCode.DATA_IS_NULL);
+        }
+        //遍历list中对象的某一字段添加到另一个list
+        List<String> nameList = psychologists.stream().map(Detail::getPsychologist_name).collect(Collectors.toList());
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(nameList);
+        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
+
+    }
+
+    /**
+     * 查询所有咨询师的好评数
+     *
+     * @return
+     */
+    public QueryResponseResult getPraiseNumber() {
+        List<Detail> psychologists = this.detailMapper.getPsychologists();
+        if (CollectionUtils.isEmpty(psychologists)) {
+            ExceptionCast.cast(PsychologistCode.DATA_IS_NULL);
+        }
+        //遍历list中对象的某一字段添加到另一个list
+        List<String> praiseList = psychologists.stream().map(Detail::getPraise_number).collect(Collectors.toList());
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(praiseList);
+        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
+
     }
 }

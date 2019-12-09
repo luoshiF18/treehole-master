@@ -106,7 +106,7 @@ public class ProfileService {
     }
 
     /**
-     * 根据id删除心理咨询师简介信息
+     * 根据id删除心理咨询师所有信息，包括简介信息、状态信息，详情信息
      *
      * @param id 心理咨询师id
      * @return
@@ -125,11 +125,21 @@ public class ProfileService {
             //如果为空，抛出异常，异常内容为该心理咨询师不存在！
             ExceptionCast.cast(PsychologistCode.PSYCHOLOGIST_NOT_EXIST);
         }
-        //删除
-        int i = this.profileMapper.delete(profile);
+        //删除简介信息
+        int i1 = this.profileMapper.delete(profile);
         //判断受影响行数是否为1
-        if (i != 1) {
+        if (i1 != 1) {
             //如果受影响行数不为1，抛出异常，异常内容为删除失败！
+            ExceptionCast.cast(PsychologistCode.DELETE_FAIL);
+        }
+        //删除状态信息
+        int i2 = this.stateMapper.deleteByPrimaryKey(id);
+        if (i2 != 1) {
+            ExceptionCast.cast(PsychologistCode.DELETE_FAIL);
+        }
+        //删除详情信息
+        int i3 = this.detailMapper.deleteByPrimaryKey(id);
+        if (i3 != 1) {
             ExceptionCast.cast(PsychologistCode.DELETE_FAIL);
         }
         //删除成功，响应操作成功状态码

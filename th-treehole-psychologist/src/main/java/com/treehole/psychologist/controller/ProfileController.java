@@ -55,7 +55,7 @@ public class ProfileController implements ProfileControllerApi {
     }
 
     /**
-     * 根据id删除心理咨询师简介信息
+     * 根据id删除心理咨询师所有信息，包括简介信息、状态信息，详情信息
      *
      * @param id 心理咨询师id
      * @return

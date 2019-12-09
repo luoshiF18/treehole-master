@@ -19,9 +19,6 @@ public interface StateControllerApi {
     @ApiOperation("根据id查询心理咨询师状态信息")
     State findStateById(String id);
 
-    @ApiOperation("根据id删除心理咨询师状态信息")
-    ResponseResult delStateById(String id);
-
     @ApiOperation("根据id更新心理咨询师状态信息")
     ResponseResult updateState(State state);
 

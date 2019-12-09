@@ -82,28 +82,6 @@ public class StateService {
     }
 
     /**
-     * 根据id删除心理咨询师状态信息
-     *
-     * @param id 心理咨询师id
-     * @return
-     */
-    @Transactional
-    public ResponseResult delStateById(String id) {
-        if (StringUtils.isBlank(id)) {
-            ExceptionCast.cast(PsychologistCode.DATA_ERROR);
-        }
-        State state = this.findStateById(id);
-        if (state == null) {
-            ExceptionCast.cast(PsychologistCode.STATE_NOT_EXIST);
-        }
-        int i = this.stateMapper.delete(state);
-        if (i != 1) {
-            ExceptionCast.cast(PsychologistCode.DELETE_FAIL);
-        }
-        return new ResponseResult(CommonCode.SUCCESS);
-    }
-
-    /**
      * 根据id更新心理咨询师状态信息
      *
      * @param state 心理咨询师状态

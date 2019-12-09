@@ -32,18 +32,6 @@ public class DetailController implements DetailControllerApi {
     }
 
     /**
-     * 根据咨询师id删除咨询师详情信息
-     *
-     * @param psychologist_id 咨询师id
-     * @return
-     */
-    @Override
-    @DeleteMapping("/del/{psychologist_id}")
-    public ResponseResult delDetailById(@PathVariable("psychologist_id") String psychologist_id) {
-        return this.detailService.delDetailById(psychologist_id);
-    }
-
-    /**
      * 根据咨询师id更新其详情信息
      *
      * @param detail 详情信息
@@ -69,5 +57,27 @@ public class DetailController implements DetailControllerApi {
             @RequestParam(value = "psychologist_name", required = false) String psychologist_name
     ) {
         return this.detailService.getDetailByName(page, size, psychologist_name);
+    }
+
+    /**
+     * 查询所有咨询师的姓名
+     *
+     * @return
+     */
+    @Override
+    @GetMapping("/get/names")
+    public QueryResponseResult getPsychologistNames() {
+        return this.detailService.getPsychologistNames();
+    }
+
+    /**
+     * 查询所有咨询师的好评数
+     *
+     * @return
+     */
+    @Override
+    @GetMapping("/get/praises")
+    public QueryResponseResult getPraiseNumber() {
+        return this.detailService.getPraiseNumber();
     }
 }

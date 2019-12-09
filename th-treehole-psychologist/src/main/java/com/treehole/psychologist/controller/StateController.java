@@ -50,18 +50,6 @@ public class StateController implements StateControllerApi {
     }
 
     /**
-     * 根据id删除心理咨询师状态信息
-     *
-     * @param id 心理咨询师id
-     * @return
-     */
-    @Override
-    @DeleteMapping("/del/{id}")
-    public ResponseResult delStateById(@PathVariable("id") String id) {
-        return this.stateService.delStateById(id);
-    }
-
-    /**
      * 根据id更新心理咨询师简介信息
      *
      * @param state 心理咨询师简介信息

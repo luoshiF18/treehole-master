@@ -13,6 +13,6 @@ import java.util.List;
 public interface SuggestionMapper extends Mapper<Suggestion> {
 
     //分页查询所有建议信息
-    @Select("select * from suggestion order by suggestion_id+0")
+    @Select("select * from suggestion")
     List<Suggestion> getAllSuggestions();
 }
