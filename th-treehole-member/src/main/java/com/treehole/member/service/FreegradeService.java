@@ -15,7 +15,10 @@ import com.treehole.member.mapper.FreegradeMapper;
 import com.treehole.member.myUtil.MyNumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
@@ -29,6 +32,7 @@ import java.util.List;
  */
 
 @Service
+@Cacheable(value="MemberFreeGrade")
 public class FreegradeService {
     @Autowired
     private FreegradeMapper freegradeMapper;
@@ -38,9 +42,9 @@ public class FreegradeService {
     private CardsVoService cardsVoService;
 
 /*
-* 根据rank,id,name查询所有普通会员等级信息
+* 根据rank,id,name查询所有用户等级信息
 * */
-    public QueryResponseResult findAll(Integer page,
+    public QueryResponseResult findAll1(Integer page,
                                Integer size,
                                GradeListRequest gradeListRequest) {
         //        分页
@@ -74,6 +78,19 @@ public class FreegradeService {
 
     }
 
+    /*
+     * 查询所有用户等级信息
+     * */
+    public QueryResult findAll2(){
+
+        List<FreeGrade> grades = freegradeMapper.selectAll();
+        if (CollectionUtils.isEmpty(grades)) {
+            ExceptionCast.cast(MemberCode.DATA_IS_NULL);
+        }
+        //        解析分页结果
+        PageInfo<FreeGrade> pageInfo = new PageInfo<>(grades);
+        return new QueryResult(grades,pageInfo.getTotal());
+    }
     /*通过等级id查询等级对象*/
     public FreeGrade getById(String id) {
         FreeGrade freeGrade = new FreeGrade();
@@ -96,6 +113,9 @@ public class FreegradeService {
         return grade;
     }
 
+
+    @Transactional
+    @CacheEvict(value="MemberFreeGrade",allEntries=true)
     public void updateGrade(FreeGrade freeGrade) {
         //freeGrade.setFreegrade_id();
         Example example =new Example(FreeGrade.class);
@@ -110,6 +130,8 @@ public class FreegradeService {
     }
 
 /*根据Freegrade_id删除*/
+    @Transactional
+    @CacheEvict(value="MemberFreeGrade",allEntries=true)
     public void deleteGrade(String id) {
         //id不为空
         if(org.apache.commons.lang3.StringUtils.isBlank(id)){
@@ -128,6 +150,8 @@ public class FreegradeService {
         }
     }
 
+    @Transactional
+    @CacheEvict(value="MemberFreeGrade",allEntries=true)
     public void insert(FreeGrade freeGrade) {
         if(freeGrade == null){
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
@@ -157,6 +181,8 @@ public class FreegradeService {
     }
 
     //注册用户等级变化
+    @Transactional
+    @CacheEvict(value="MemberFreeGrade",allEntries=true)
     public void gradeChange(String user_id,String freegrade_id,Integer sum){
 
         FreeGrade freeGrade = new FreeGrade();

@@ -27,7 +27,8 @@ public class CardsVo implements Serializable {
     @Id //声明主键字段
     private String card_id;  //会员卡id
     private String user_id;  //用户id
-    //private String user_nickname;  //用户昵称
+
+    private String user_nickname;  //用户昵称
 
     private String paygrade;  //付费等级名称
     private String freegrade;  //非付费等级名称

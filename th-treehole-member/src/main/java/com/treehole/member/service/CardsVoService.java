@@ -3,10 +3,7 @@ package com.treehole.member.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.treehole.framework.domain.member.Cards;
-import com.treehole.framework.domain.member.Checkin;
-import com.treehole.framework.domain.member.FreeGrade;
-import com.treehole.framework.domain.member.PayGrade;
+import com.treehole.framework.domain.member.*;
 import com.treehole.framework.domain.member.Vo.CardsVo;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.resquest.CardListRequest;
@@ -22,6 +19,7 @@ import com.treehole.member.mapper.PaygradeMapper;
 import com.treehole.member.myUtil.MyNumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
@@ -38,6 +36,7 @@ import java.util.List;
  * @Date
  */
 @Service
+@Cacheable(value="MemberCard")
 public class CardsVoService {
     @Autowired
     private CardsMapper cardsMapper;
@@ -46,7 +45,7 @@ public class CardsVoService {
     @Autowired
     private FreegradeMapper freegradeMapper;
     @Autowired
-    private  UserVoService userVoService;
+    private  UserService userService;
 
     @Autowired
     private CardsService cardsService;
@@ -54,7 +53,6 @@ public class CardsVoService {
      * 查询所有CardsVo信息
      * 自定义条件查询 user_id/card_id/手机号码
      */
-
     public QueryResponseResult findAllCardVos(Integer page,
                                               Integer size,
                                               CardListRequest cardListRequest) {
@@ -72,8 +70,12 @@ public class CardsVoService {
             cards.setUser_id(cardListRequest.getUser_id());
         }
         if (StringUtils.isNotEmpty(cardListRequest.getUser_phone())) {
-            UserVo uservo = userVoService.getUserByUserPhone(cardListRequest.getUser_phone());
-            cards.setUser_id(uservo.getUser_id());
+            User user = userService.findUserByPhone(cardListRequest.getUser_phone());
+            cards.setUser_id(user.getUser_id());
+        }
+        if (StringUtils.isNotEmpty(cardListRequest.getUser_nickname())) {
+            User user = userService.findUserByNickname(cardListRequest.getUser_nickname());
+            cards.setUser_id(user.getUser_id());
         }
         //查询
         List<Cards> cardsList = cardsMapper.select(cards);
@@ -86,6 +88,7 @@ public class CardsVoService {
             CardsVo cardsVo = new CardsVo();
             cardsVo.setCard_id(cards1.getCard_id());
             cardsVo.setUser_id(cards1.getUser_id());
+            cardsVo.setUser_nickname((userService.getUserById(cards1.getUser_id()).getUser_nickname()));
             //cardsVo.setUser_nickname(userService.getUserById(cards1.getUser_id()).getUser_nickname());
             String freegradeId = cards1.getFreegrade_id();
             FreeGrade freeGrade = new FreeGrade();
@@ -96,7 +99,7 @@ public class CardsVoService {
             cardsVo.setPoints_sum(cards1.getPoints_sum());
             //付费会员的等级变化在payGardeService中
             String paygradeId = cards1.getPaygrade_id();
-            if(StringUtils.isEmpty(paygradeId) || (cards1.getPaygrade_id()).equals("")){
+            if(StringUtils.isEmpty(paygradeId) || (cards1.getPaygrade_id()).equals("")||paygradeId == null){
                 cardsVo.setPaygrade("无");
                 cardsVo.setPaygrade_start(null);
                 cardsVo.setPaygrade_end(null);
@@ -147,6 +150,7 @@ public class CardsVoService {
         }
         return cardsVo;
     }
+
 
     /*根据id 获取cardsVo对象*/
     public CardsVo getCardByUserId(String id){

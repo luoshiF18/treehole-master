@@ -17,5 +17,4 @@ public interface CardsApi {
                                              @PathVariable("size") Integer size,
                                              CardListRequest cardListRequest);
 
-
 }

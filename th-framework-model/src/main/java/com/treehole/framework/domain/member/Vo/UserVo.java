@@ -27,7 +27,7 @@ public class UserVo implements Serializable {
     private Integer gender; //用户性别 0：男 1：女
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date user_birth; //用户出生年月
-    private int age;
+    private Integer age;
     private String user_email; //用户邮箱
     private String user_phone; //用户电话
     private String user_qq; //用户qq

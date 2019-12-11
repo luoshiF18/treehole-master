@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.treehole.member.service.*;
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,9 +38,11 @@ public class UserController implements UserControllerApi {
     @GetMapping("/getAllUserVos/{page}/{size}")
     public QueryResponseResult findAllUserVo(@PathVariable("page") Integer page,
                                              @PathVariable("size") Integer size,
+                                             String sortBy,
+                                             Boolean desc,
                                              UserListRequest userListRequest){
 
-        return userVoService.findAllUserVos(page,size,userListRequest);
+        return userVoService.findAllUserVos(page,size,sortBy,desc,userListRequest);
     }
 
     @Override
@@ -48,15 +51,26 @@ public class UserController implements UserControllerApi {
     public List<UserVo> findUserByNicknames(@RequestParam(value ="name")List<String> names){
         return userVoService.getUserByNicknames(names);
     }
-    @Override
+
+    /*@Override
     @GetMapping("/getUserByNickname")
     public UserVo getUserVoByNickname(@RequestParam(value = "nickname") String nickname){
         return userVoService.getUserByNickname(nickname);
-    }
+    }*/
     @Override
     @GetMapping("/getUserById/{user_id}")
     public UserVo findUserById(@PathVariable("user_id") String user_id){
        return userVoService.getUserByUserId(user_id);
+    }
+    @Override
+    @GetMapping("/getUserByTime")
+    public QueryResult findUserByTime(@RequestParam("beforeTime") Date beforeTime,
+                               @RequestParam("afterTime") Date afterTime){
+        List<UserVo> byTime = userVoService.findAllUserByTime(beforeTime, afterTime);
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(byTime);
+        queryResult.setTotal(byTime.size());
+        return queryResult;
     }
     @Override
     @GetMapping("/getUserExt")

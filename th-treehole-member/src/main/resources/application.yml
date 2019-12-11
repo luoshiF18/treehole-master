@@ -3,6 +3,16 @@ server:
 spring:
   application:
     name: th-treehole-member
+  redis:
+    host: 10.0.43.60
+    port: 6379
+    timeout: 5000
+    jedis:
+      pool:
+        maxActive: 3
+        maxIdle: 3
+        minIdle: 1
+        maxWait: -1
   datasource:
     druid:
       type: com.alibaba.druid.pool.DruidDataSource

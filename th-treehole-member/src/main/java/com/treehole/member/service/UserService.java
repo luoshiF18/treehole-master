@@ -17,9 +17,12 @@ import com.treehole.member.myUtil.MyMd5Utils;
 import com.treehole.member.myUtil.MyNumberUtils;
 
 import com.treehole.member.myUtil.MyPassword;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,6 +38,7 @@ import java.util.*;
  * @Date
  */
 @Service
+@Cacheable(value="MemberUser")
 public class UserService {
 
     @Autowired
@@ -47,6 +51,8 @@ public class UserService {
     private CheckinService checkinService;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private PointService pointService;
 
     /**
      * 根据user对象查询所有user记录
@@ -123,28 +129,24 @@ public class UserService {
      * @param user_id
      * @return
      */
+    @CacheEvict(value="MemberUser",allEntries=true)
     @Transactional
     public void deleteUserById(String user_id) {
         //id不为空
         if(StringUtils.isBlank(user_id)){
             ExceptionCast.cast(MemberCode.DATA_ERROR);
         }
-        //用户不为空
-        if(this.getUserById(user_id) != null){
-            User user = new User();
-            user.setUser_id(user_id);
-            //会员卡信息删除
-            cardsService.deleteCard(user_id);
-
+             //用户不为空
+             User user = this.getUserById(user_id);
+            //role:会员 ->会员卡  内含（积分/签到）信息删除
+            if((user.getRole_id()).equals("1") ) {
+                cardsService.deleteCard(user_id);
+            }
             //用户信息删除
             int del = userMapper.delete(user);
-            if( del != 1){
+            if( del != 1) {
                 ExceptionCast.cast(MemberCode.DELETE_FAIL);
             }
-
-        }else{
-            ExceptionCast.cast(MemberCode.DELETE_USER_NOT_EXIST);
-        }
 
     }
 
@@ -152,8 +154,9 @@ public class UserService {
      * 创建一条用户信息
      *
      * @param user
-     * @return int
+     * @return void
      */
+    @CacheEvict(value="MemberUser",allEntries=true)
     @Transactional
     public void insertUser(User user)  {
         if(user == null){
@@ -161,7 +164,7 @@ public class UserService {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
         user.setUser_id(MyNumberUtils.getUUID());
-        //将密码MD5加密！！！！
+        //将密码加密加盐 spring-security！！！！
         String pw=user.getPassword();
         try {
             user.setPassword(MyPassword.PasswrodEncoder(pw));
@@ -181,9 +184,7 @@ public class UserService {
         }else{
             ExceptionCast.cast(MemberCode.PHONE_IS_EXIST);
         }
-        user.setRole_id(user.getRole_id());
         user.setUser_createtime(new Date());
-        user.setUser_type(user.getUser_type());
         user.setUser_status(0);  //默认正常状态
         /*if(this.findUserByNickname(nickname1) != null){
            // ExceptionCast.cast(MemberCode.NICKNAME_EXIST);
@@ -194,36 +195,27 @@ public class UserService {
         if(this.findUserByNickname(nickname2) != null){
             ExceptionCast.cast(MemberCode.NICKNAME_EXIST);
         }*/
-        if(!user.getRole_id().equals("1")) {  //2管理员
-            user.setUser_image(user.getUser_image());
-            user.setGender(user.getGender());
-            user.setUser_birth(user.getUser_birth());
-            user.setUser_region(user.getUser_region());
-        }
+
         if(user.getRole_id().equals("1")) {  //1普通会员
             //会员卡表内新增数据
             cardsService.insertCard(user.getUser_id());
         }
         //用户注册，角色已经默认为1，普通用户 前端按钮携带传入role的值
-
         int ins = userMapper.insert(user);
-
         //
         if( ins != 1){
             ExceptionCast.cast(MemberCode.INSERT_FAIL);
         }
-        //往cards表中插入数据
-       //cardsService.insertCard(user);
+
     }
 
     /**
      * 更新用户基本信息  手机号、密码除外
-     *
-     *
      * @param uservo
      * @return int
      */
     @Transactional
+    @CacheEvict(value="MemberUser",allEntries=true)
     public void updateUser(UserVo uservo){
 
         User user = new User();
@@ -246,25 +238,6 @@ public class UserService {
         Example example =new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("user_id",user.getUser_id());
-        //手机号唯一
-       /* if (this.findUserByPhone(uservo.getUser_phone())!= null){  *//*手机号唯一*//*
-           ExceptionCast.cast(MemberCode.PHONE_IS_EXIST);
-        }else{*/
-            //user.setUser_phone(uservo.getUser_phone());
-        //}
-        //昵称唯一
-        /* String nickname = uservo.getUser_nickname();
-       if(this.findUserByNickname(nickname) != null){
-            ExceptionCast.cast(MemberCode.NICKNAME_EXIST);
-        }*/
-        //密码加密
-       /* String pw = user.getPassword();
-        try {
-            user.setPassword(MyMd5Utils.getMd5(pw));
-        } catch (Exception e) {
-            ExceptionCast.cast(MemberCode.INSERT_FAIL);
-        }*/
-        //
         int upd= userMapper.updateByExampleSelective(user,example);
         if(upd != 1){
             ExceptionCast.cast(MemberCode.UPDATE_FAIL);
@@ -272,13 +245,11 @@ public class UserService {
     }
     /*
     * 登录方法 isLoginUser()
-    * */
+    *
     public boolean isLoginUser(User user){
         //得到一个集合
         ArrayList<User> arrList = new ArrayList<User>();
-
         boolean flag = false;
-
         for(User user1 : arrList){
             if(user1 != null){
                 String pw = null;
@@ -294,9 +265,10 @@ public class UserService {
         }
         return flag;
     }
-
+ */
     /*更改密码 */
     @Transactional
+    @CacheEvict(value="MemberUser",allEntries=true)
     public void updatePass(String id,String OldPass,String NewPass){
         User user = this.getUserById(id);
         //判断旧密码
@@ -325,6 +297,7 @@ public class UserService {
 
     /*更改手机号 */
     @Transactional
+    @CacheEvict(value="MemberUser",allEntries=true)
     public void updatePhone(User user){
         if(this.findUserByPhone(user.getUser_phone()) == null){
             user.setUser_phone(user.getUser_phone());

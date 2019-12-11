@@ -3,8 +3,6 @@ package com.treehole.member.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.netflix.discovery.converters.Auto;
-import com.treehole.framework.domain.evaluation.response.EvaluationCode;
 import com.treehole.framework.domain.member.Checkin;
 import com.treehole.framework.domain.member.Points;
 import com.treehole.framework.domain.member.User;
@@ -18,11 +16,12 @@ import com.treehole.member.mapper.CheckinMapper;
 import com.treehole.member.myUtil.MyNumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+
 
 import java.util.*;
 
@@ -32,6 +31,7 @@ import java.util.*;
  * @Date
  */
 @Service
+@Cacheable(value="MemberCheck")
 public class CheckinService {
     @Autowired
     private CheckinMapper checkinMapper;
@@ -52,13 +52,14 @@ public class CheckinService {
         //分页
         Page pag =PageHelper.startPage(page,size);
         if(StringUtils.isNotEmpty(nickname)){
-            UserVo uservo = userVoService.getUserByNickname(nickname);
+            User user = userService.findUserByNickname(nickname);
             Checkin ch = new Checkin();
-            ch.setUser_id(uservo.getUser_id());
+            ch.setUser_id(user.getUser_id());
             checkins = checkinMapper.select(ch);
         }else{
             checkins = checkinMapper.selectAll();
         }
+
         if (CollectionUtils.isEmpty(checkins)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
@@ -66,8 +67,8 @@ public class CheckinService {
         List<CheckinVo> checkinVos = new ArrayList<CheckinVo>();
         for(Checkin check : checkins){
             CheckinVo cv = new CheckinVo();
-            UserVo uservo = userVoService.getUserByUserId(check.getUser_id());
-            cv.setNickname(uservo.getUser_nickname());
+            User user = userService.getUserById(check.getUser_id());
+            cv.setNickname(user.getUser_nickname());
             cv.setCheckin_id(check.getCheckin_id());
             cv.setCheckin_time(check.getCheckin_time());
             checkinVos.add(cv);
@@ -83,6 +84,8 @@ public class CheckinService {
     /*
     * 增
     * */
+    @Transactional
+    @CacheEvict(value="MemberCheck",allEntries=true)
     public void insertCheckin(Checkin checkin) {
         checkin.setCheckin_id(MyNumberUtils.getUUID());
         checkin.setCheckin_time(new Date());
@@ -100,32 +103,41 @@ public class CheckinService {
     * 根据user_id删除签到记录
     * */
     @Transactional
+    @CacheEvict(value="MemberCheck",allEntries=true)
     public void deleteCheckinByUserId(String user_id) {
+        //id不为空
+        if(org.apache.commons.lang3.StringUtils.isBlank(user_id)){
+            ExceptionCast.cast(MemberCode.DATA_ERROR);
+        }
         //1.先找
         Checkin checkin = new Checkin();
         checkin.setUser_id(user_id);
         List<Checkin> select = checkinMapper.select(checkin);
-        if(CollectionUtils.isEmpty(select)){
+        /*if(CollectionUtils.isEmpty(select)){
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
-        }
+        }*/
         //2.后删
         int i= 0;
         int sum = select.size();
-        for(Checkin ch : select){
-            int del = checkinMapper.delete(ch);
-            if(del == 1){
-                i++;
+        //if(sum !=0) {
+            for (Checkin ch : select) {
+                int del = checkinMapper.delete(ch);
+                if (del == 1) {
+                    i++;
+                }
             }
-        }
-        if(i != sum){
-            ExceptionCast.cast(MemberCode.DELETE_FAIL);
-        }
+            if(i != sum){
+                ExceptionCast.cast(MemberCode.DELETE_FAIL);
+            }
+        //}
+
     }
 
     /*
     *
     * */
     @Transactional
+    @CacheEvict(value="MemberCheck",allEntries=true)
     public void deleteByCheckId(String id){
         //1.先找
         Checkin checkin = new Checkin();

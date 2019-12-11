@@ -23,4 +23,6 @@ public class CardListRequest {
 
     //用户手机号
     String user_phone;
+
+    String user_nickname;
 }
