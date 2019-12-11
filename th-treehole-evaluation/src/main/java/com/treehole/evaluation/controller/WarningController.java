@@ -4,6 +4,7 @@ import com.treehole.api.evaluation.WarningControllerApi;
 import com.treehole.evaluation.service.WarningService;
 import com.treehole.framework.domain.evaluation.Warning;
 import com.treehole.framework.domain.evaluation.request.WarnRequest;
+import com.treehole.framework.domain.evaluation.vo.WarnHUserVo;
 import com.treehole.framework.domain.evaluation.vo.WarnReportVo;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
@@ -27,6 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/warning")
 public class WarningController implements WarningControllerApi
+
 {
     @Autowired
     private WarningService warningService;
@@ -105,4 +107,11 @@ public class WarningController implements WarningControllerApi
                                             @RequestParam("userNickName") String userNickName){
         return warningService.findHighRisk(page, size,userNickName);
     }
+
+    @Override
+    @GetMapping("/lookDetailHWarn")
+    public WarnHUserVo lookDetailHWarn(@RequestParam("warnHUserid") String warnHUserid) {
+        return warningService.lookDetailHWarn(warnHUserid);
+    }
+
 }

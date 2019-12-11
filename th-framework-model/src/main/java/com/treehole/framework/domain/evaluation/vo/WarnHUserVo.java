@@ -13,7 +13,10 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class WarnHUserVo extends WarningVo {
+    private String warnHUserid;
     private String reason;
     private String context;
     private String way;
+    private String effect;
+    private String recordTime;
 }

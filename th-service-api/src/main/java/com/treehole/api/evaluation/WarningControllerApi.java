@@ -2,6 +2,7 @@ package com.treehole.api.evaluation;
 
 import com.treehole.framework.domain.evaluation.Warning;
 import com.treehole.framework.domain.evaluation.request.WarnRequest;
+import com.treehole.framework.domain.evaluation.vo.WarnHUserVo;
 import com.treehole.framework.domain.evaluation.vo.WarnReportVo;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
@@ -40,4 +41,6 @@ public interface WarningControllerApi {
     public String getUserPieData(String userNickName );
     @ApiOperation("查询出高危人群" )
     public QueryResponseResult findHighRisk(int page,int size,String userNickName);
+    @ApiOperation("查看高危人群详情")
+    public WarnHUserVo lookDetailHWarn(String warnHUserid);
 }

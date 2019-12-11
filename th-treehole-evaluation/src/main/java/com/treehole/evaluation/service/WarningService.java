@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.treehole.evaluation.MyUtils.MyNumberUtils;
 import com.treehole.evaluation.client.UserClient;
 import com.treehole.evaluation.dao.ScaleMapper;
+import com.treehole.evaluation.dao.WarningInterveneMapper;
 import com.treehole.evaluation.dao.WarningMapper;
 import com.treehole.framework.domain.evaluation.Scale;
 import com.treehole.framework.domain.evaluation.Warning;
@@ -43,6 +44,7 @@ public class WarningService {
     private final WarningMapper warningMapper;
     private final ScaleMapper scaleMapper;
     private final UserClient userClient;
+    private final WarningInterveneMapper warningInterveneMapper;
 
 
 
@@ -391,5 +393,17 @@ public class WarningService {
         return queryResponseResult;
     }
 
-
+    //查看预警信息详情
+    public WarnHUserVo lookDetailHWarn(String warnHUserid){
+        if(warnHUserid==null||StringUtils.isBlank(warnHUserid)){
+            ExceptionCast.cast(CommonCode.FAIL);
+        }
+        try {
+            return warningMapper.warnHDetail( warnHUserid );
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

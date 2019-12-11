@@ -29,4 +29,6 @@ public interface WarningMapper extends Mapper<Warning> {
     List<PieData> getUserPieData(String uid);
     //查询高危人群
     List<WarnHUserVo> findHighRisk(@Param("userNickName") String userNickName);
+    //高危人群详情
+    WarnHUserVo warnHDetail(String warnHUserid);
 }
