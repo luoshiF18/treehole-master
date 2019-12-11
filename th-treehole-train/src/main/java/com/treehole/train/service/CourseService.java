@@ -61,7 +61,6 @@ public class CourseService {
         int num = courseType1.getCourseTypeCourseNumber() + 1;
         courseType1.setCourseTypeCourseNumber(num);
         courseTypeRepository.save(courseType1);
-
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
