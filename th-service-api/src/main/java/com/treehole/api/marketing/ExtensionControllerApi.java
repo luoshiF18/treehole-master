@@ -1,7 +1,6 @@
 package com.treehole.api.marketing;
 
 import com.treehole.framework.domain.marketing.Extension;
-import com.treehole.framework.domain.marketing.request.ExtensionRequest;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
@@ -13,8 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface ExtensionControllerApi {
 
 
-    @ApiOperation("发送推广邮件")
-    public ResponseResult addEmailExtension(@RequestBody ExtensionRequest extensionRequest);
+
 
     @ApiOperation("发送推广")
     public ResponseResult addExtension(@RequestBody Extension extension);

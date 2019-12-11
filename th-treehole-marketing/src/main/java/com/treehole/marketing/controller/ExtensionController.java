@@ -2,7 +2,6 @@ package com.treehole.marketing.controller;
 
 import com.treehole.api.marketing.ExtensionControllerApi;
 import com.treehole.framework.domain.marketing.Extension;
-import com.treehole.framework.domain.marketing.request.ExtensionRequest;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
@@ -15,19 +14,15 @@ import org.springframework.web.bind.annotation.*;
  * @author wanglu
  */
 @RestController
-@RequestMapping("/marketing/extension/")
+@RequestMapping("/marketing/extension")
 public class ExtensionController implements ExtensionControllerApi {
 
     @Autowired
     private ExtensionService extensionService;
 
-    @PostMapping
-    public ResponseResult addEmailExtension(@RequestBody ExtensionRequest extensionRequest) {
-        this.extensionService.addExtension(extensionRequest);
-        return new ResponseResult(CommonCode.SUCCESS);
-    }
 
-    @PostMapping("/e")
+
+    @PostMapping
     @Override
     public ResponseResult addExtension(@RequestBody Extension extension) {
         this.extensionService.addExtensionInfo(extension);

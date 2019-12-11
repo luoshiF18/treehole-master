@@ -5,6 +5,11 @@ spring:
     name: th-treehole-marketing
   redis:
     host: 192.168.25.130
+  rabbitmq:
+    host: 192.168.25.130
+    username: treehole
+    password: treehole
+    virtual-host: /treehole
   #  jackson:
   #    default-property-inclusion: non_null
   datasource:
