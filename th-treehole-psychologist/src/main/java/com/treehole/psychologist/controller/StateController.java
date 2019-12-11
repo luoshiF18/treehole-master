@@ -2,9 +2,7 @@ package com.treehole.psychologist.controller;
 
 import com.treehole.api.psychologist.StateControllerApi;
 import com.treehole.framework.domain.psychologist.State;
-import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
-import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.psychologist.service.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +34,7 @@ public class StateController implements StateControllerApi {
             @RequestParam(value = "free", required = false) String free
 
     ) {
-        QueryResult queryResult = this.stateService.findStateList(page, size, name, price, free);
-        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
+        return this.stateService.findStateList(page, size, name, price, free);
     }
 
     /**
@@ -53,32 +50,6 @@ public class StateController implements StateControllerApi {
     }
 
     /**
-     * 根据id删除心理咨询师状态信息
-     *
-     * @param id 心理咨询师id
-     * @return
-     */
-    @Override
-    @DeleteMapping("/del/{id}")
-    public ResponseResult delStateById(@PathVariable("id") String id) {
-        this.stateService.delStateById(id);
-        return new ResponseResult(CommonCode.SUCCESS);
-    }
-
-    /**
-     * 添加心理咨询师简介信息
-     *
-     * @param state 心理咨询师简介信息
-     * @return
-     */
-    @Override
-    @PostMapping("/add")
-    public ResponseResult addState(@RequestBody State state) {
-        this.stateService.addState(state);
-        return new ResponseResult(CommonCode.SUCCESS);
-    }
-
-    /**
      * 根据id更新心理咨询师简介信息
      *
      * @param state 心理咨询师简介信息
@@ -87,24 +58,7 @@ public class StateController implements StateControllerApi {
     @Override
     @PutMapping("/update")
     public ResponseResult updateState(@RequestBody State state) {
-        this.stateService.updateState(state);
-        return new ResponseResult(CommonCode.SUCCESS);
+        return this.stateService.updateState(state);
     }
 
-    /**
-     * 按照id自增查询所有简介信息
-     *
-     * @param page 当前页
-     * @param size 每页记录数
-     * @return
-     */
-    @Override
-    @GetMapping("get/all")
-    public QueryResponseResult getAllStates(
-            @RequestParam(value = "page", defaultValue = "1") Integer page,
-            @RequestParam(value = "size", defaultValue = "5") Integer size
-    ) {
-        QueryResult result = this.stateService.getAllStates(page, size);
-        return new QueryResponseResult(CommonCode.SUCCESS, result);
-    }
 }

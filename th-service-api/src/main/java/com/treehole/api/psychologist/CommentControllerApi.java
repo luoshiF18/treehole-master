@@ -1,6 +1,7 @@
 package com.treehole.api.psychologist;
 
 import com.treehole.framework.domain.psychologist.Comment;
+import com.treehole.framework.domain.psychologist.ext.CommentExt;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
@@ -19,13 +20,16 @@ public interface CommentControllerApi {
     @ApiOperation("根据咨询师id分页查询该咨询师的评价信息")
     QueryResponseResult getCommentsByPsyId(Integer page, Integer size, String psychologist_id);
 
-    @ApiOperation("根据用户id分页查询该咨询师的评价信息")
-    QueryResponseResult getCommentsByUserId(Integer page, Integer size, String user_id);
+    @ApiOperation("根据评价id查询评价信息")
+    CommentExt getAllCommentById(String comment_id);
 
     @ApiOperation("根据评价id删除评价信息")
     ResponseResult delCommentByCommentId(String comment_id);
 
     @ApiOperation("更新评价信息")
     ResponseResult updateComment(Comment comment);
+
+    @ApiOperation("添加评价信息")
+    ResponseResult addComment(Comment comment);
 
 }

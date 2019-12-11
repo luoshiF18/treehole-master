@@ -12,7 +12,8 @@ import java.util.List;
  */
 public interface DetailMapper extends Mapper<Detail> {
 
-    //按照id自增分页查询所有咨询师详情信息
-    @Select("select * from detail order by psychologist_id+0")
-    List<Detail> getAllDetails();
+    //查询所有咨询师获得的好评数
+    @Select("SELECT * FROM detail")
+    List<Detail> getPsychologists();
+
 }

@@ -9,6 +9,7 @@ import tk.mybatis.mapper.code.Style;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -20,7 +21,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Table(name = "comment")
 @NameStyle(Style.normal)
-public class Comment {
+public class Comment implements Serializable {
 
     //评价记录id
     @Id
