@@ -83,17 +83,17 @@ public class PersonArchivesService {
      * @param userId
      * @return
      */
-    private UserVo findUserById(String userId){
+  /*  private UserVo findUserById(String userId){
         UserVo userVoByUserId = userVoClient.getUserVoByUserId(userId);
         return userVoByUserId;  //上层接口已做了空值判定
     }
-
+*/
     /**
      * 根据用户id和量表名查询个人详细档案记录
      * @param archivesListRequest
      * @return
      */
-    public ArchivesExt findArchivesExt(ArchivesListRequest archivesListRequest) {
+  /*  public ArchivesExt findArchivesExt(ArchivesListRequest archivesListRequest) {
         ArchivesExt archivesExt = new ArchivesExt();
         //设置量表名称
         archivesExt.setScaleName(archivesListRequest.getScaleName());
@@ -106,7 +106,7 @@ public class PersonArchivesService {
         //设置答题次数
         archivesExt.setScaleCount(resultTinies.size());
         //根据id获取用户信息
-        UserVo userVo = findUserById(archivesListRequest.getUserId());
+      *//*  UserVo userVo = findUserById(archivesListRequest.getUserId());*//*
         if (userVo == null){
             ExceptionCast.cast(CommonCode.INVALID_PARAM);
         }
@@ -124,7 +124,7 @@ public class PersonArchivesService {
         archivesExt.setTopicBackground(scaleDetail.getTopicBackground());
         return archivesExt;
     }
-
+*/
     /**
      * 查询所有用户档案
      * @param page

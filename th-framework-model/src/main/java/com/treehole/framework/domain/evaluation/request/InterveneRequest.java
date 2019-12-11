@@ -5,17 +5,16 @@ import lombok.ToString;
 
 /**
  * @Author: Qbl
- * Created by 11:21 on 2019/10/30.
+ * Created by 9:14 on 2019/11/25.
  * Version: 1.0
  */
 @Data
 @ToString
-public class WarnRequest {
+public class InterveneRequest {
 
     private String startTime;
     private String endTime;
-    private String scaleName;
     private String userNickName;
-    private Integer warningLevel;
-    private String userId;
+    private String advisoryName;
+    private String organizationName;
 }

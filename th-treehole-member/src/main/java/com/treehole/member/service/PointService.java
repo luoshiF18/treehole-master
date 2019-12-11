@@ -6,7 +6,6 @@ import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.evaluation.Description;
 import com.treehole.framework.domain.evaluation.response.EvaluationCode;
 import com.treehole.framework.domain.member.*;
-import com.treehole.framework.domain.member.Vo.CheckinVo;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.resquest.CardListRequest;
 import com.treehole.framework.domain.member.resquest.PointListRequest;

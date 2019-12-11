@@ -109,7 +109,7 @@ public class UserVoService {
             uservo.setUser_image(user.getUser_image());
             uservo.setUser_name(user.getUser_name());
             uservo.setUser_nickname(user.getUser_nickname());
-            uservo.setGender(user.getGender() == 0 ? "男":"女");
+          //  uservo.setGender(user.getGender() == 0 ? "男":"女");
             if(user.getUser_birth() == null){
                 user.setUser_birth(null);
             }else{
@@ -161,7 +161,7 @@ public class UserVoService {
         uservo.setUser_image(user.getUser_image());
         uservo.setUser_name(user.getUser_name());
         uservo.setUser_nickname(user.getUser_nickname());
-        uservo.setGender(user.getGender() == 0 ? "男":"女");
+     //   uservo.setGender(user.getGender() == 0 ? "男":"女");
         if(user.getUser_birth() == null){
             user.setUser_birth(null);
         }else{
@@ -205,7 +205,7 @@ public class UserVoService {
         uservo.setUser_image(user.getUser_image());
         uservo.setUser_name(user.getUser_name());
         uservo.setUser_nickname(user.getUser_nickname());
-        uservo.setGender(user.getGender() == 0 ? "男":"女");
+     //   uservo.setGender(user.getGender() == 0 ? "男":"女");
         if(user.getUser_birth() == null){
             user.setUser_birth(null);
         }else{
@@ -247,7 +247,7 @@ public class UserVoService {
         uservo.setUser_image(user.getUser_image());
         uservo.setUser_name(user.getUser_name());
         uservo.setUser_nickname(user.getUser_nickname());
-        uservo.setGender(user.getGender() == 0 ? "男":"女");
+     //   uservo.setGender(user.getGender() == 0 ? "男":"女");
         if(user.getUser_birth() == null){
             user.setUser_birth(null);
         }else{
@@ -294,7 +294,7 @@ public class UserVoService {
     }
     //预警模块得到预警用户信息
     public List<UserVo> getAllUser(List listUserId) {
-        return userVoMapper.getAllUser( listUserId );
+        return userVoMapper.getAllUser(listUserId);
     }
 
 

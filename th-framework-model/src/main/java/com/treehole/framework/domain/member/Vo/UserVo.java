@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -25,7 +24,7 @@ public class UserVo implements Serializable {
     private String user_image;//会员头像
     private String user_nickname; //会员昵称
     private String user_name; //用户姓名
-    private String gender; //用户性别 0：男 1：女
+    private Integer gender; //用户性别 0：男 1：女
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date user_birth; //用户出生年月
     private int age;

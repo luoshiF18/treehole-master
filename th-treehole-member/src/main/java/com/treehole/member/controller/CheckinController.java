@@ -24,14 +24,14 @@ public class CheckinController implements CheckinControllerApi {
     @Autowired
     private CheckinService checkinService;
 
-    @Override
+   /* @Override
     @GetMapping("/getAllCheckin/{page}/{size}")
     public QueryResponseResult findAllCheckin(@PathVariable("page") Integer page,
                                               @PathVariable("size") Integer size,
                                              @RequestParam(value = "nickname") String nickname) {
         return checkinService.findAllCheckins(page,size,nickname);
 
-    }
+    }*/
 
   /*  @Override
     @GetMapping("/find/id/{page}/{size}/{user_id}")

@@ -14,7 +14,6 @@ import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.mapper.PaygradeMapper;
-import com.treehole.member.myUtil.AddDateUtil;
 import com.treehole.member.myUtil.MyNumberUtils;
 import io.swagger.models.auth.In;
 import org.apache.commons.lang.StringUtils;
@@ -162,7 +161,7 @@ public class PaygradeService {
     /*
     * 等级变化
     * */
-    public void gradeChange(String user_id,String  paygrade_id){
+/*    public void gradeChange(String user_id,String  paygrade_id){
         //通过paygrade_id得到等级对象
         PayGrade payGrade1 = this.getById(paygrade_id);
         Integer day =payGrade1.getCard_legality();
@@ -182,6 +181,6 @@ public class PaygradeService {
         //修改cards
         cardsService.updateCard(cards);
 
-    }
+    }*/
 
 }

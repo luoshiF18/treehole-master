@@ -8,7 +8,6 @@ import com.treehole.framework.domain.evaluation.response.EvaluationCode;
 import com.treehole.framework.domain.member.Checkin;
 import com.treehole.framework.domain.member.Points;
 import com.treehole.framework.domain.member.User;
-import com.treehole.framework.domain.member.Vo.CheckinVo;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.exception.ExceptionCast;
@@ -46,7 +45,7 @@ public class CheckinService {
     /*
     * 查询
     * */
-    public QueryResponseResult findAllCheckins(Integer page,
+   /* public QueryResponseResult findAllCheckins(Integer page,
                                        Integer size,
                                        String nickname) {
         List<Checkin> checkins = new ArrayList<Checkin>();
@@ -79,7 +78,7 @@ public class CheckinService {
         queryResult.setList(checkinVos);
         queryResult.setTotal(pageInfo.getTotal());
         return new QueryResponseResult(CommonCode.SUCCESS,queryResult);
-    }
+    }*/
 
     /*
     * 增
