@@ -3,23 +3,19 @@ package com.treehole.online.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.result.MemberCode;
-import com.treehole.framework.domain.onlinetalk.Agent;
 import com.treehole.framework.domain.onlinetalk.Category;
-import com.treehole.framework.domain.onlinetalk.Reply;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
-import com.treehole.online.mapper.AgentMapper;
 import com.treehole.online.mapper.CategoryMapper;
-import com.treehole.online.myUtil.MyMd5Utils;
 import com.treehole.online.myUtil.MyNumberUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +26,8 @@ import java.util.List;
  * @Date
  */
 @Service
+//为此类声明缓存名称
+@Cacheable(value = "CategoryService")
 public class CategoryService {
 
     @Autowired
@@ -38,23 +36,23 @@ public class CategoryService {
 
 
     /**
-     * 查询所有用户
+     * 查询所有快捷回复分类
      *
      * @param
      * @return List<User>
      */
 
-    public QueryResult findAllAgent(Integer page, Integer size,String categoryname) {
+    public QueryResult findAllCategory(Integer page, Integer size,String categoryname) {
         Page pag =PageHelper.startPage(page,size);
         List<Category> categories= new ArrayList<>();
-        if (!categoryname.equals("")){
+        if (!categoryname.equals("") && categoryname!=null){
             Category category = new Category();
             category.setCategory_name(categoryname);
-
+            //根据条件进行查询
             categories= categoryMapper.select(category);
-            System.out.println("11111");
             // replies = replyMapper.selectAll();
         }else {
+            //查询全部
             categories = categoryMapper.selectAll();
         }
 
@@ -86,8 +84,8 @@ public class CategoryService {
 
 
     /**
-     * 通过id查询用户
-     * @return List<User>
+     * 通过id查询分类
+     * @return category
      */
     public Category getCategoryById(String category_id){
        Category category = new Category();
@@ -95,7 +93,7 @@ public class CategoryService {
         category.setCategory_id(category_id);
         Category category1 = categoryMapper.selectOne(category);
         if(category1 == null){
-            ExceptionCast.cast(MemberCode.USER_NOT_EXIST);
+            ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
         return category1;
     }
@@ -105,6 +103,8 @@ public class CategoryService {
      * @param category_id
      * @return
      */
+    @CacheEvict(value="CategoryService",allEntries=true)
+
     public void deleteCategoryById(String category_id) {
 
         if(StringUtils.isBlank(category_id)){
@@ -124,11 +124,12 @@ public class CategoryService {
     }
 
     /**
-     * 创建一条用户信息
+     * 创建一条分类信息
      *
      * @param category
      * @return int
      */
+    @CacheEvict(value="CategoryService",allEntries=true)
     public void insertCategory(Category category)  {
         category.setCategory_id(MyNumberUtils.getUUID());
         category.setCategory_createtime(new Date());
@@ -137,34 +138,27 @@ public class CategoryService {
         if( ins != 1){
             ExceptionCast.cast(MemberCode.INSERT_FAIL);
         }
-        //往cards表中插入数据
-       //cardsService.insertCard(user);
+
     }
 
     /**
-     * 更新客服基本信息
+     * 更新分类基本信息
      *
      *
      * @param category
      * @return int
      */
+    @CacheEvict(value="CategoryService",allEntries=true)
     public void updateCategory(Category category){
 
         Example example =new Example(Category.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("category_id",category.getCategory_id());
-        //昵称
-        /*String nickname = user.getUser_nickname();
-        if(this.findUserByNickname(nickname) != null){
-            ExceptionCast.cast(MemberCode.NICKNAME_EXIST);
-        }*/
         int upd= categoryMapper.updateByExampleSelective(category,example);
         if(upd != 1){
             ExceptionCast.cast(MemberCode.UPDATE_FAIL);
         }
     }
 
-    /*更改密码 未实现*/
 
-    /*忘记密码 未实现*/
 }

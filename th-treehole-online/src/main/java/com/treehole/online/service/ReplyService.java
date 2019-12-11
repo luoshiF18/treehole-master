@@ -3,22 +3,18 @@ package com.treehole.online.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.sun.org.apache.regexp.internal.RE;
-import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.result.MemberCode;
-import com.treehole.framework.domain.onlinetalk.Agent;
 import com.treehole.framework.domain.onlinetalk.Category;
 import com.treehole.framework.domain.onlinetalk.Reply;
-import com.treehole.framework.domain.onlinetalk.Vo.AgentVo;
 import com.treehole.framework.domain.onlinetalk.Vo.ReplyVo;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
-import com.treehole.online.mapper.AgentMapper;
 import com.treehole.online.mapper.ReplyMapper;
-import com.treehole.online.myUtil.MyMd5Utils;
 import com.treehole.online.myUtil.MyNumberUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
@@ -28,11 +24,12 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @author shanhuijie
+ * @author hewenze
  * @Description:
  * @Date
  */
 @Service
+@Cacheable(value = "ReplyService")
 public class ReplyService {
 
     @Autowired
@@ -42,31 +39,28 @@ public class ReplyService {
 
 
     /**
-     * 查询所有用户
+     * 查询所有快捷回复
      *
      * @param
      * @return List<User>
      */
 
     public QueryResult findAllReply(int page, int size , String categoryname) {
-
+        //分页
         Page pag =PageHelper.startPage(page,size);
         List<Reply> replies = new ArrayList<>();
-        if (!categoryname.equals("")){
+        if (!categoryname.equals("")&&categoryname!=null){
             Reply reply2 = new Reply();
             Category category = new Category();
             category.setCategory_name(categoryname);
             Category category1 = categoryService.findCategory(category);
             reply2.setCategory_id(category1.getCategory_id());
            replies= replyMapper.select(reply2);
-            System.out.println("11111");
-           // replies = replyMapper.selectAll();
         }else {
             replies = replyMapper.selectAll();
         }
-        System.out.println("数量1为"+replies.size());
-//查询
 
+        //查询
         List<ReplyVo> replyVos = new ArrayList<>();
         for (Reply reply : replies){
 
@@ -79,10 +73,8 @@ public class ReplyService {
             replyVo.setReply_creater(reply.getReply_creater());
             replyVo.setReply_createtime(reply.getReply_createtime());
 
-
             replyVos.add(replyVo);
         }
-        System.out.println("数量2为"+replyVos.size());
 
        //查询
         if (CollectionUtils.isEmpty(replyVos)) {
@@ -96,7 +88,7 @@ public class ReplyService {
     }
 
     /**
-     * 根据user对象查询所有user记录
+     * 根据reply对象查询所有reply记录
      *
      * @param
      * @return List<UserVo>
@@ -109,51 +101,12 @@ public class ReplyService {
         return reply1;
     }
 
-    /**
-     * 根据user_nickname查询所有user记录
-     *
-     * @param
-     * @return User
-     */
-   /* public User findUserByNickname(String nickname){
-        if(StringUtils.isBlank(nickname)){
-            ExceptionCast.cast(MemberCode.DATA_ERROR);
-        }
-        User user = new User();
-        user.setUser_nickname(nickname);
-        User use = userMapper.selectOne(user);
-
-        return use;
-    }*/
-
-/*public UserExt getUserExt(String userNickName){
-        if (StringUtils.isBlank(userNickName)){
-            ExceptionCast.cast( MemberCode.DATA_ERROR);
-        }
-     User user = new User();
-     user.setUser_nickname(userNickName);
-    User use = userMapper.selectOne(user);
-    UserExt userExt = new UserExt();
-    BeanUtils.copyProperties(use,userExt);
-    return userExt;
-}*/
 
 
-   /* *//**
-     * 根据user_iphone查询所有user记录
-     *
-     * @param categoryId
-     * @return Reply
-     */
-    public Reply findUserByCategoryId(String categoryId)  {
-        Reply reply = new Reply();
-        reply.setCategory_id(categoryId);
-        return  replyMapper.selectOne(reply);
-    }
 
 
     /**
-     * 通过id查询用户
+     * 通过id查询快捷回复信息
      * @return List<User>
      */
     public ReplyVo getReplyById(String reply_id){
@@ -180,6 +133,7 @@ public class ReplyService {
      * @param reply_id
      * @return
      */
+    @CacheEvict(value="ReplyService",allEntries=true)
     public void deleteReplyById(String reply_id) {
 
         if(StringUtils.isBlank(reply_id)){
@@ -199,11 +153,12 @@ public class ReplyService {
     }
 
     /**
-     * 创建一条用户信息
+     * 创建一条快捷回复
      *
      * @param reply
      * @return int
      */
+    @CacheEvict(value="ReplyService",allEntries=true)
     public void insertReply(Reply reply)  {
         reply.setReply_id(MyNumberUtils.getUUID());
 
@@ -213,17 +168,17 @@ public class ReplyService {
         if( ins != 1){
             ExceptionCast.cast(MemberCode.INSERT_FAIL);
         }
-        //往cards表中插入数据
-       //cardsService.insertCard(user);
+
     }
 
     /**
-     * 更新客服基本信息
+     * 更新快捷回复信息
      *
      *
      * @param replyVo
      * @return int
      */
+    @CacheEvict(value="ReplyService",allEntries=true)
     public void updateReply(ReplyVo replyVo){
 
         Reply reply = new Reply();
@@ -232,9 +187,6 @@ public class ReplyService {
         reply.setReply_createtime(replyVo.getReply_createtime());
         reply.setReply_content(replyVo.getReply_content());
         reply.setReply_creater(replyVo.getReply_creater());
-
-
-
         Category category = new Category();
         category.setCategory_name(replyVo.getCategory());
         Category category1 = categoryService.findCategory(category);
@@ -250,7 +202,5 @@ public class ReplyService {
         }
     }
 
-    /*更改密码 未实现*/
 
-    /*忘记密码 未实现*/
 }

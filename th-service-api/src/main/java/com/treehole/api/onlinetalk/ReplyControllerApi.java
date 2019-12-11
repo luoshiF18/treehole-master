@@ -34,12 +34,6 @@ public interface ReplyControllerApi {
     @ApiOperation("更新回复基本信息")
     public ResponseResult updateReply(@RequestBody @Valid ReplyVo replyVo);
 
-    /*@ApiOperation("更新用户手机号")
-    public ResponseResult updateUserPhone(@RequestBody @Valid User user);
 
-    @ApiOperation("根据客服对象查询用户信息")
-    public User getUser(@RequestBody @Valid User user);
-    @ApiOperation( "根据客服昵称得到用户扩展对象" )
-    public UserExt getUserExt(@RequestParam("userNickName") String userNickName);*/
 
 }

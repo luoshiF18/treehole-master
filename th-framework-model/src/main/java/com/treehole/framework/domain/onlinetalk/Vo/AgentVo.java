@@ -14,7 +14,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author shanhuijie
+ * @author hewenze
  * @Description: 客服人员实体包装类
  * @Date
  */

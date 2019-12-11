@@ -6,16 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.format.annotation.DateTimeFormat;
-import tk.mybatis.mapper.annotation.NameStyle;
-import tk.mybatis.mapper.code.Style;
-
-import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author shanhuijie
- * @Description: 客服人员实体类
+ * @author hewenze
+ * @Description: 快捷回复封装类
  * @Date
  */
 @Data    //getter setter hashCode equals

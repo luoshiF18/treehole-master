@@ -1,5 +1,5 @@
 package com.treehole.online.mapper;
-import com.treehole.framework.domain.onlinetalk.Category;
+import com.treehole.framework.domain.onlinetalk.Serv;
 import tk.mybatis.mapper.common.Mapper;
 
 /**
@@ -7,5 +7,5 @@ import tk.mybatis.mapper.common.Mapper;
  * @Description:
  * @Date
  */
-public interface CategoryMapper extends Mapper<Category> {
+public interface ServMapper extends Mapper<Serv> {
 }

@@ -16,12 +16,21 @@
 
 
     <dependencies>
+        <dependency>
+            <groupId>com.treehole</groupId>
+            <artifactId>th-treehole-member</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
         <!-- 导入Eureka客户端的依赖 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
-
+       <!-- redis-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
@@ -37,7 +46,7 @@
         </dependency>
         <dependency>
             <groupId>com.treehole</groupId>
-            <artifactId>th-service-api</artifactId>
+            <artifactId>th-serv-api</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
