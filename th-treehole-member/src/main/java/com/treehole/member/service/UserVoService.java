@@ -3,6 +3,7 @@ package com.treehole.member.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.treehole.framework.domain.evaluation.Scale;
 import com.treehole.framework.domain.member.Role;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
@@ -15,11 +16,15 @@ import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.mapper.RoleMapper;
 import com.treehole.member.mapper.UserMapper;
 import com.treehole.member.mapper.UserVoMapper;
+import com.treehole.member.myUtil.GetAgeByBirthUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.PathVariable;
+import tk.mybatis.mapper.entity.Example;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,21 +44,41 @@ public class UserVoService {
 
     @Autowired
     private RoleMapper roleMapper;
-    //UserService userService = new UserService();
 
     /**
      * 查询所有用户Vo信息
-     *
-     * @param
-     * @return List<UserVo>
+     * 自定义条件查询id/昵称/手机号码
      */
-
-    /*public QueryResult findAllUserVos(Integer page, Integer size) {
-        //        分页
-        //PageHelper.startPage(page, size);
+    public QueryResponseResult findAllUserVos(Integer page,
+                                              Integer size,
+                                              UserListRequest userListRequest) {
+        //分页
         Page pag =PageHelper.startPage(page,size);
+        //判断请求条件的合法性
+        if (userListRequest == null){
+            userListRequest = new UserListRequest();
+        }
+        //        把字节码传给example，就可以通过反射获取数据库信息
+        Example example = new Example(User.class);
+        //User user1 = new User();
+        //判断不为空字符串
+        if(StringUtils.isNotEmpty(userListRequest.getUser_id())){
+           // user1.setUser_id(userListRequest.getUser_id());
+            //过滤条件
+            example.createCriteria().andLike("user_id", "%" + userListRequest.getUser_id() + "%");
+        }
+        if(StringUtils.isNotEmpty(userListRequest.getUser_nickname())){
+           // user1.setUser_nickname(userListRequest.getUser_nickname());
+            example.createCriteria().andLike("user_nickname", "%" + userListRequest.getUser_nickname() + "%");
+        }
+        if(StringUtils.isNotEmpty(userListRequest.getUser_phone())){
+           // user1.setUser_phone(userListRequest.getUser_phone());
+            example.createCriteria().andLike("user_phone", "%" + userListRequest.getUser_phone() + "%");
+        }
         //查询
-        List<User> users = userMapper.selectAll();
+        //List<User> users = userMapper.select(user1);
+        List<User> users = userMapper.selectByExample(example);
+
         if (CollectionUtils.isEmpty(users)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
@@ -69,7 +94,16 @@ public class UserVoService {
             uservo.setUser_image(user.getUser_image());
             uservo.setUser_name(user.getUser_name());
             uservo.setUser_nickname(user.getUser_nickname());
-            uservo.setGender(user.getGender());
+          //  uservo.setGender(user.getGender() == 0 ? "男":"女");
+            if(user.getUser_birth() == null){
+                user.setUser_birth(null);
+            }else{
+            try {
+                uservo.setAge(GetAgeByBirthUtils.getAgeByBirth(user.getUser_birth()));
+            } catch (ParseException e) {
+                ExceptionCast.cast(MemberCode.BIRTH_ERROR);
+            }
+            }
             uservo.setUser_birth(user.getUser_birth());
             uservo.setUser_email(user.getUser_email());
             uservo.setUser_phone(user.getUser_phone());
@@ -78,45 +112,22 @@ public class UserVoService {
             uservo.setUser_region(user.getUser_region());
             uservo.setUser_createtime(user.getUser_createtime());
             uservo.setCompany_id(user.getCompany_id());
+            //显示user类型
+            uservo.setUser_type(user.getUser_type() == 0 ? "个人":"企业");
+            //显示user状态
+            uservo.setUser_status(user.getUser_status() == 0 ? "正常":"禁止");
             userVos.add(uservo);
         }
         //解析分页结果
         PageInfo<UserVo> pageInfo = new PageInfo<>(pag.getResult());
-        return  new QueryResult(userVos, pageInfo.getTotal());
-    }*/
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(userVos);
+        queryResult.setTotal(pageInfo.getTotal());
+        return new QueryResponseResult(CommonCode.SUCCESS,queryResult);
 
-    /**
-     * 通过uniq_id查询用户拓展类
-     * @return List<UserVo>
-     */
-    /*public UserVo getUserByUniqId(String uniq_id) {
-        User user1 = new User();
-        user1.setUniq_id(uniq_id);
-        User user = userMapper.selectOne(user1);
-        if(user == null){
-            ExceptionCast.cast(MemberCode.USER_NOT_EXIST);
-        }
-        String roleId=user.getRole_id();
-        Role role = new Role();
-        role.setRole_id(roleId);
-        //System.out.println("++++++++++++++++++++++"+ roleId);
-        UserVo uservo = new UserVo();
-        uservo.setUniq_id(user.getUniq_id());
-        uservo.setRole_name(roleMapper.selectOne(role).getRole_name());
-        uservo.setUser_image(user.getUser_image());
-        uservo.setUser_name(user.getUser_name());
-        uservo.setUser_nickname(user.getUser_nickname());
-        uservo.setGender(user.getGender());
-        uservo.setUser_birth(user.getUser_birth());
-        uservo.setUser_email(user.getUser_email());
-        uservo.setUser_phone(user.getUser_phone());
-        uservo.setUser_qq(user.getUser_qq());
-        uservo.setUser_wechat(user.getUser_wechat());
-        uservo.setUser_region(user.getUser_region());
-        uservo.setUser_createtime(user.getUser_createtime());
-        uservo.setCompany_id(user.getCompany_id());
-        return uservo;
-    }*/
+    }
+
+
 
     /**
      * 通过user_id查询用户拓展类
@@ -125,9 +136,9 @@ public class UserVoService {
     public UserVo getUserByUserId(String user_id) {
 
         User user = userService.getUserById(user_id);
-        if(user == null){
+        /*if(user == null){
             ExceptionCast.cast(MemberCode.USER_NOT_EXIST);
-        }
+        }*/
         String roleId=user.getRole_id();
         Role role = new Role();
         role.setRole_id(roleId);
@@ -137,7 +148,16 @@ public class UserVoService {
         uservo.setUser_image(user.getUser_image());
         uservo.setUser_name(user.getUser_name());
         uservo.setUser_nickname(user.getUser_nickname());
-        uservo.setGender(user.getGender());
+     //   uservo.setGender(user.getGender() == 0 ? "男":"女");
+        if(user.getUser_birth() == null){
+            user.setUser_birth(null);
+        }else{
+            try {
+                uservo.setAge(GetAgeByBirthUtils.getAgeByBirth(user.getUser_birth()));
+            } catch (ParseException e) {
+                ExceptionCast.cast(MemberCode.BIRTH_ERROR);
+            }
+        }
         uservo.setUser_birth(user.getUser_birth());
         uservo.setUser_email(user.getUser_email());
         uservo.setUser_phone(user.getUser_phone());
@@ -146,6 +166,10 @@ public class UserVoService {
         uservo.setUser_region(user.getUser_region());
         uservo.setUser_createtime(user.getUser_createtime());
         uservo.setCompany_id(user.getCompany_id());
+        //显示user类型
+        uservo.setUser_type(user.getUser_type() == 0 ? "个人":"企业");
+        //显示user状态
+        uservo.setUser_status(user.getUser_status() == 0 ? "正常":"禁止");
         return uservo;
     }
 
@@ -168,7 +192,16 @@ public class UserVoService {
         uservo.setUser_image(user.getUser_image());
         uservo.setUser_name(user.getUser_name());
         uservo.setUser_nickname(user.getUser_nickname());
-        uservo.setGender(user.getGender());
+     //   uservo.setGender(user.getGender() == 0 ? "男":"女");
+        if(user.getUser_birth() == null){
+            user.setUser_birth(null);
+        }else{
+            try {
+                uservo.setAge(GetAgeByBirthUtils.getAgeByBirth(user.getUser_birth()));
+            } catch (ParseException e) {
+                ExceptionCast.cast(MemberCode.BIRTH_ERROR);
+            }
+        }
         uservo.setUser_birth(user.getUser_birth());
         uservo.setUser_email(user.getUser_email());
         uservo.setUser_phone(user.getUser_phone());
@@ -177,7 +210,10 @@ public class UserVoService {
         uservo.setUser_region(user.getUser_region());
         uservo.setUser_createtime(user.getUser_createtime());
         uservo.setCompany_id(user.getCompany_id());
-
+        //显示user类型
+        uservo.setUser_type(user.getUser_type() == 0 ? "个人":"企业");
+        //显示user状态
+        uservo.setUser_status(user.getUser_status() == 0 ? "正常":"禁止");
         return uservo;
     }
 
@@ -200,7 +236,16 @@ public class UserVoService {
         uservo.setUser_image(user.getUser_image());
         uservo.setUser_name(user.getUser_name());
         uservo.setUser_nickname(user.getUser_nickname());
-        uservo.setGender(user.getGender());
+     //   uservo.setGender(user.getGender() == 0 ? "男":"女");
+        if(user.getUser_birth() == null){
+            user.setUser_birth(null);
+        }else{
+            try {
+                uservo.setAge(GetAgeByBirthUtils.getAgeByBirth(user.getUser_birth()));
+            } catch (ParseException e) {
+                ExceptionCast.cast(MemberCode.BIRTH_ERROR);
+            }
+        }
         uservo.setUser_birth(user.getUser_birth());
         uservo.setUser_email(user.getUser_email());
         uservo.setUser_phone(user.getUser_phone());
@@ -209,75 +254,37 @@ public class UserVoService {
         uservo.setUser_region(user.getUser_region());
         uservo.setUser_createtime(user.getUser_createtime());
         uservo.setCompany_id(user.getCompany_id());
-
+        //显示user类型
+        uservo.setUser_type(user.getUser_type() == 0 ? "个人":"企业");
+        //显示user状态
+        uservo.setUser_status(user.getUser_status() == 0 ? "正常":"禁止");
         return uservo;
     }
 
-
-    public QueryResponseResult findAllUserVos(Integer page, Integer size, UserListRequest userListRequest) {
-        //        分页
-        Page pag =PageHelper.startPage(page,size);
+    /*
+    * 参数：nickname list集合
+    * 返回：对象的集合
+    * */
+    public List<UserVo> getUserByNicknames(List<String> nicknames){
         //判断请求条件的合法性
-        if (userListRequest == null){
-            userListRequest = new UserListRequest();
+        if (nicknames == null){
+            nicknames = new ArrayList<String>();
+        }
+        List<UserVo> res = new ArrayList<UserVo>();
+        for (String nickname : nicknames){
+            res.add(this.getUserByNickname(nickname));
         }
 
-        User user1 = new User();
-        //判断不为空字符串
-        if(StringUtils.isNotEmpty(userListRequest.getUser_id())){
-            user1.setUser_id(userListRequest.getUser_id());
-        }
-        if(StringUtils.isNotEmpty(userListRequest.getUser_nickname())){
-            user1.setUser_nickname(userListRequest.getUser_nickname());
-        }
-        if(StringUtils.isNotEmpty(userListRequest.getUser_phone())){
-            user1.setUser_phone(userListRequest.getUser_phone());
-        }
-
-
-        //查询
-        List<User> users = userMapper.select(user1);
-
-        if (CollectionUtils.isEmpty(users)) {
+        if (CollectionUtils.isEmpty(res)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
-        List<UserVo> userVos = new ArrayList<UserVo>();
-        for(User user:users){
-            UserVo uservo = new UserVo();
-            String roleId=user.getRole_id();
-            Role role = new Role();
-            role.setRole_id(roleId);
-            //uservo.setUniq_id(user.getUniq_id());
-            uservo.setUser_id(user.getUser_id());
-            uservo.setRole_name(roleMapper.selectOne(role).getRole_name());
-            uservo.setUser_image(user.getUser_image());
-            uservo.setUser_name(user.getUser_name());
-            uservo.setUser_nickname(user.getUser_nickname());
-            uservo.setGender(user.getGender());
-            uservo.setUser_birth(user.getUser_birth());
-            uservo.setUser_email(user.getUser_email());
-            uservo.setUser_phone(user.getUser_phone());
-            uservo.setUser_qq(user.getUser_qq());
-            uservo.setUser_wechat(user.getUser_wechat());
-            uservo.setUser_region(user.getUser_region());
-            uservo.setUser_createtime(user.getUser_createtime());
-            uservo.setCompany_id(user.getCompany_id());
-            userVos.add(uservo);
-        }
-        //解析分页结果
-        PageInfo<UserVo> pageInfo = new PageInfo<>(pag.getResult());
 
-        QueryResult queryResult = new QueryResult();
-        queryResult.setList(userVos);
-        queryResult.setTotal(pageInfo.getTotal());
-
-
-        return new QueryResponseResult(CommonCode.SUCCESS,queryResult);
-
+        return res;
     }
     //预警模块得到预警用户信息
     public List<UserVo> getAllUser(List listUserId) {
         return userVoMapper.getAllUser(listUserId);
     }
+
 
 }

@@ -32,13 +32,12 @@ public interface WarningControllerApi {
     public ResponseResult deleteMoreWarning(List<String> ids);
     @ApiOperation("后台管理，查看详细预警信息")
     public WarnReportVo lookWaring(String warningId);
-
     @ApiOperation("根据用户名得到该用户饼状图预警信息")
     public String getPieData(String userNickName);
-
     @ApiOperation("根据量表名得到该量表饼状图信息")
     public String getPieScaData(String scaleName);
-
     @ApiOperation("根据用户名得到统计后的预警信息")
     public String getUserPieData(String userNickName );
+    @ApiOperation("查询出高危人群" )
+    public QueryResponseResult findHighRisk(int page,int size,String userNickName);
 }

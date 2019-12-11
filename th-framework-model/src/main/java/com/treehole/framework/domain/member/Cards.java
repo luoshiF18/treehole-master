@@ -35,7 +35,6 @@ public class Cards implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date paygrade_end;  //付费会员到期日
     private Integer points_now;//现有积分
-
-
+    private Integer points_sum;  //累计积分
 
 }

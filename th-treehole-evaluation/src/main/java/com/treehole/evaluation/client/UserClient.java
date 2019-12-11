@@ -25,5 +25,7 @@ public interface UserClient {
     @GetMapping("/uservo/find/userId/{user_id}")
     public UserVo getUserVoByUserId(@PathVariable("user_id") String user_id);
 
+    @GetMapping("member/user/getUserByNicknames")
+    public List<UserVo> findUserByNicknames(@RequestParam(value ="names") List<String> names);
 
 }

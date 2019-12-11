@@ -2,7 +2,8 @@ package com.treehole.evaluation.dao;
 
 import com.treehole.framework.domain.evaluation.WarningIntervene;
 import com.treehole.framework.domain.evaluation.request.InterveneRequest;
-import org.springframework.data.repository.query.Param;
+import com.treehole.framework.domain.evaluation.vo.WarnInterveneVo;
+import org.apache.ibatis.annotations.Param;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
@@ -15,5 +16,8 @@ import java.util.List;
 public interface WarningInterveneMapper extends Mapper<WarningIntervene> {
 
     //按条件查询干预记录表
-    public List<WarningIntervene> findAllByInterveneRequest(@Param("interveneRequest")InterveneRequest interveneRequest);
-}
+    public List<WarnInterveneVo> getAllByInterveneRequest(@Param("interveneRequest") InterveneRequest interveneRequest);
+
+    //根据用户名查询
+    public List<WarningIntervene> findWarnInterveneByName(String userNickName);
+    }

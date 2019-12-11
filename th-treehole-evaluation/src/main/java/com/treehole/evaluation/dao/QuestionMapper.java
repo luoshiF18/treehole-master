@@ -25,7 +25,4 @@ public interface QuestionMapper extends Mapper<Question> {
     @Select("SELECT sort,question FROM test_question WHERE id = #{id}")
     public Question findQuestionName(String questionId);
 
-    @Select("SELECT id FROM test_question WHERE scaleId = #{scaleId} AND sort = #{sort}")
-    public String findQuestionIdBySortAndScaleId(String scaleId, String sort);
-
 }

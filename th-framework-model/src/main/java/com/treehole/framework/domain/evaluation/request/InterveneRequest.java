@@ -14,7 +14,7 @@ public class InterveneRequest {
 
     private String startTime;
     private String endTime;
-    private String userName;
+    private String userNickName;
     private String advisoryName;
     private String organizationName;
 }

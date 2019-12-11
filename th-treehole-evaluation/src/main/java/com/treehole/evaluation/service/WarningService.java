@@ -12,6 +12,7 @@ import com.treehole.framework.domain.evaluation.Warning;
 import com.treehole.framework.domain.evaluation.request.PieData;
 import com.treehole.framework.domain.evaluation.request.WarnRequest;
 import com.treehole.framework.domain.evaluation.response.EvaluationCode;
+import com.treehole.framework.domain.evaluation.vo.WarnHUserVo;
 import com.treehole.framework.domain.evaluation.vo.WarnReportVo;
 import com.treehole.framework.domain.evaluation.vo.WarningVo;
 import com.treehole.framework.domain.member.Vo.UserVo;
@@ -42,6 +43,7 @@ public class WarningService {
     private final WarningMapper warningMapper;
     private final ScaleMapper scaleMapper;
     private final UserClient userClient;
+
 
 
     //心理咨询师添加咨询用户的预警信息
@@ -118,7 +120,7 @@ public class WarningService {
                             warningVo.setUserBirth(null);
                         }
                         else {
-                            warningVo.setSex(userVo.getGender());
+                            /*warningVo.setSex(userVo.getGender());*/
                         }
                         warningVo.setUserName( userVo.getUser_name() );
                         warningVo.setUserNickName( userVo.getUser_nickname() );
@@ -351,5 +353,43 @@ public class WarningService {
 
             return data;
     }
+
+    //分页查询高危人群
+    public QueryResponseResult findHighRisk(int page,int size,String userNickName){
+
+        if(page==0){
+            ExceptionCast.cast( EvaluationCode.SELECT_NULL);
+        }
+        //根据请求条件得到高危人群的预警信息和干预记录
+        List<WarnHUserVo> highRisk = warningMapper.findHighRisk(userNickName);
+        System.out.println("测试数据"+highRisk);
+        //从结果中得到用户id，查询用户信息
+        List<String> users = new ArrayList<>();
+        for (WarnHUserVo user : highRisk) {
+            users.add(user.getUserId());
+        }
+        //远程调用用户接口得到用户信息
+        List<UserVo> allUser = userClient.getAllUser( users );
+        //循环拼接用户信息
+        for (WarnHUserVo user : highRisk) {
+           for (UserVo userVo : allUser){
+               if(user.getUserId().equals( userVo.getUser_id())){
+                   user.setUserName(userVo.getUser_name() );
+                   user.setUserNickName(userVo.getUser_nickname() );
+                   user.setSex(userVo.getGender() );
+                   user.setPhone( userVo.getUser_phone() );
+               }
+           }
+        }
+        //设置分页，展示数据
+        PageHelper.startPage(page,size);
+        PageInfo<WarnHUserVo> highRisks = new PageInfo<WarnHUserVo>(highRisk);
+        QueryResult<WarnHUserVo> queryResult = new QueryResult<>();
+        queryResult.setTotal(highRisks.getTotal());
+        queryResult.setList(highRisks.getList());
+        QueryResponseResult queryResponseResult = new QueryResponseResult( CommonCode.SUCCESS, queryResult );
+        return queryResponseResult;
+    }
+
 
 }

@@ -3,7 +3,6 @@ package com.treehole.member.controller;
 import com.treehole.api.member.CheckinControllerApi;
 import com.treehole.framework.domain.member.Checkin;
 import com.treehole.framework.domain.member.Role;
-import com.treehole.framework.domain.member.result.Result;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
@@ -20,26 +19,29 @@ import javax.validation.Valid;
  * @Date 2019.10.25 10:00
  */
 @RestController
-@RequestMapping("checkin")
+@RequestMapping("member/checkin")
 public class CheckinController implements CheckinControllerApi {
     @Autowired
     private CheckinService checkinService;
 
-    @Override
-    @GetMapping("/getAllCheckin")
-    public QueryResponseResult findAllCheckin(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                 @RequestParam(value = "size", defaultValue = "5") Integer size) {
-        QueryResult queryResult = checkinService.findAllCheckins(page,size);
-        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
-    }
+   /* @Override
+    @GetMapping("/getAllCheckin/{page}/{size}")
+    public QueryResponseResult findAllCheckin(@PathVariable("page") Integer page,
+                                              @PathVariable("size") Integer size,
+                                             @RequestParam(value = "nickname") String nickname) {
+        return checkinService.findAllCheckins(page,size,nickname);
 
-    @Override
-    @GetMapping("/find/id/{user_id}")
-    public QueryResponseResult findCheckinByUserId(@PathVariable("user_id") String user_id, @RequestParam(value = "page", defaultValue = "1") Integer page,
-                                              @RequestParam(value = "size", defaultValue = "5") Integer size) {
+    }*/
+
+  /*  @Override
+    @GetMapping("/find/id/{page}/{size}/{user_id}")
+    public QueryResponseResult findCheckinByUserId(@PathVariable("user_id") String user_id,
+                                                   @PathVariable("page") Integer page,
+                                                  @PathVariable("size") Integer size) {
         QueryResult checkinById= checkinService.getCheckinByUserId(user_id,page,size);
         return new QueryResponseResult(CommonCode.SUCCESS, checkinById);
-    }
+    }*/
+
 
     @Override
     @PostMapping("/insert")
@@ -50,9 +52,15 @@ public class CheckinController implements CheckinControllerApi {
     }
 
     @Override
-    @DeleteMapping(value = "delete/user/{user_id}")
+    @DeleteMapping(value = "/deleteByUserId/{user_id}")
     public ResponseResult deleteCheckinById(@PathVariable("user_id") String user_id) {
         checkinService.deleteCheckinByUserId(user_id);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+    @Override
+    @DeleteMapping(value = "/deleteByCheckId/{check_id}")
+    public ResponseResult deleteByCheckId(@PathVariable("check_id") String check_id){
+        checkinService.deleteByCheckId(check_id);
         return new ResponseResult(CommonCode.SUCCESS);
     }
 }

@@ -121,7 +121,27 @@
                     group by
                     resu.typeId
     </select>
-
+<select id="findHighRisk"  resultType="com.treehole.framework.domain.evaluation.vo.WarnHUserVo">
+                select
+                w.warning_level as warningLevel,
+                w.w_message as wMessage,
+                w.user_id as userId,
+                wi.way,
+                wi.reason,
+                wi.status
+                from
+                warning w
+                left join warning_intervene wi on w.id=wi.warning_id
+                where
+                w.warning_level &gt;= 4
+                AND 1=1
+                <if test="userNickName!=null and userNickName!=''">
+                AND
+                wi.user_name=#{userNickName}
+                </if>
+                group by
+                w.user_id
+</select>
 
 
 

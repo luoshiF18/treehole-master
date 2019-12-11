@@ -23,11 +23,4 @@ public interface ScaleInsertControllerApi {
     @ApiOperation("添加得分描述")
     public ResponseResult insertDescription(Description description);
 
-    @ApiOperation("添加分类")
-    public ResponseResult insertScaleType(String type);
-
-    @ApiOperation("处理跳题，把问题序号转为问题id")
-    public ResponseResult handleOptionSkip(String scaleId);
-
-
 }

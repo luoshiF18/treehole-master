@@ -1,9 +1,11 @@
 package com.treehole.framework.domain.evaluation.vo;
 
-import com.treehole.framework.domain.evaluation.WarningIntervene;
+import com.treehole.framework.domain.member.Vo.UserVo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import java.util.Date;
 
 /**
  * @Author: Qbl
@@ -13,9 +15,12 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @ToString
-public class WarnInterveneVo extends WarningIntervene {
+public class WarnInterveneVo extends UserVo {
 
-
-
+    private String id;
+    private String userName;
+    private String advisoryName;
+    private Date recordTime;
+    private Integer status;
 
 }

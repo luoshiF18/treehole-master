@@ -4,9 +4,7 @@ import com.treehole.api.member.UserVoControllerApi;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.resquest.UserListRequest;
-import com.treehole.framework.domain.member.result.Result;
-import com.treehole.framework.domain.member.result.ResultEnum;
-import com.treehole.framework.domain.member.result.ResultUtil;
+
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;

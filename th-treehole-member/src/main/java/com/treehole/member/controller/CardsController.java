@@ -2,14 +2,19 @@ package com.treehole.member.controller;
 
 import com.treehole.api.member.CardsControllerApi;
 import com.treehole.framework.domain.member.Cards;
-import com.treehole.framework.domain.member.User;
+import com.treehole.framework.domain.member.resquest.CardListRequest;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
-import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.member.service.CardsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -19,45 +24,36 @@ import javax.validation.Valid;
  * @Date 2019.10.25 18:18
  */
 @RestController
-@RequestMapping("card")
+@RequestMapping("member/card")
 public class CardsController implements CardsControllerApi {
     @Autowired
     private CardsService cardsService;
-    @Override
-    @GetMapping("/getAllCards")
-    public QueryResponseResult findAllCards(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                            @RequestParam(value = "size", defaultValue = "5") Integer size,
-                                            @RequestParam(value = "sortBy", required = false) String sortBy,//排序方式
-                                            @RequestParam(value = "desc", defaultValue = "false") Boolean desc) {
-        QueryResult queryResult = cardsService.findAllCards(page, size,sortBy,desc);
-        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
-    }
+
 
     @Override
-    @PostMapping("/insert")
-    public ResponseResult insertCard(@RequestBody @Valid User user) {
-        cardsService.insertCard(user);
-        return new ResponseResult(CommonCode.SUCCESS);
-    }
-
-    @Override
-    @DeleteMapping(value ="/delete/id/{card_id}")
-    public ResponseResult deleteCardById(@PathVariable("card_id") String card_id) {
-
+    public QueryResponseResult findAllCards(Integer page, Integer size, CardListRequest cardListRequest) {
         return null;
     }
 
     @Override
-    @PostMapping("/update")
+    @PostMapping("/insert/id/{id}")
+    public ResponseResult insertCard(@PathVariable("id") String id) {
+        cardsService.insertCard(id);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    @Override
+    @DeleteMapping(value ="/delete/userId/{user_id}")
+    public ResponseResult deleteCardById(@PathVariable("user_id") String user_id) {
+        cardsService.deleteCard(user_id);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    @Override
+    @PutMapping("/update")
     public ResponseResult update(@RequestBody @Valid Cards cards) {
         cardsService.updateCard(cards);
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
-    @Override
-    @GetMapping("/find/userId/{user_id}")
-    public Cards findCardsByUserId(@PathVariable("user_id") String user_id) {
-        return cardsService.findCardsByUserId(user_id);
-
-    }
 }

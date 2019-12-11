@@ -18,11 +18,11 @@ public class QuestionVO3 {
     private String scaleId;
     private Integer sort;
     private String question;
-/*    private String createTime;
+    private String createTime;
     private String createUserId;
     private String updateTime;
     private String updateUserId;
-    private String remark;*/
+    private String remark;
     //    选项全部信息
     List<Option> options;
 }

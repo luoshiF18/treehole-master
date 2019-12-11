@@ -98,4 +98,11 @@ public class WarningController implements WarningControllerApi
                                                     WarnRequest warnRequest) {
         return warningService.findWarningCondition(page, size, warnRequest );
     }
+    @Override
+    @GetMapping("/findHighRisk/{page}/{size}")
+    public QueryResponseResult findHighRisk(@PathVariable("page") int page,
+                                            @PathVariable("size") int size,
+                                            @RequestParam("userNickName") String userNickName){
+        return warningService.findHighRisk(page, size,userNickName);
+    }
 }
