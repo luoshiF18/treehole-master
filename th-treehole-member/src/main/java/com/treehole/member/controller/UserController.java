@@ -66,7 +66,7 @@ public class UserController implements UserControllerApi {
     @GetMapping("/getUserByTime")
     public QueryResult findUserByTime(@RequestParam("beforeTime") Date beforeTime,
                                @RequestParam("afterTime") Date afterTime){
-        List<User> byTime = userVoService.findAllUserByTime(beforeTime, afterTime);
+        List<UserVo> byTime = userVoService.findAllUserByTime(beforeTime, afterTime);
         QueryResult queryResult = new QueryResult();
         queryResult.setList(byTime);
         queryResult.setTotal(byTime.size());

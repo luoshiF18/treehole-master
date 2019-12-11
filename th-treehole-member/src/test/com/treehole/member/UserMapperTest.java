@@ -1,7 +1,11 @@
-package com.treehole.member.mapper;
+package com.treehole.member;
 
 import com.treehole.framework.domain.member.User;
+import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.model.response.QueryResponseResult;
+import com.treehole.member.mapper.UserMapper;
+
+import com.treehole.member.mapper.UserVoMapper;
 import com.treehole.member.service.UserVoService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,8 +29,7 @@ public class UserMapperTest {
 
     @Autowired
     private UserMapper mapper;
-    @Autowired
-    private UserSQL userSQL;
+
     @Autowired
     private UserVoService userVoService;
     @Autowired
@@ -47,8 +50,8 @@ public class UserMapperTest {
         System.out.println(")))))))))))))))"+ date1);
         System.out.println(")))))))))))))))"+ date2);
         //List<User> byTime = userVoMapper.getUserByTime(date1, date2, "1");
-        List<User> byTime = userVoService.findAllUserByTime(date1, date2);
-        for (User user : byTime){
+        List<UserVo> byTime = userVoService.findAllUserByTime(date1, date2);
+        for (UserVo user : byTime){
             System.out.println("++++" + user);
         }
         System.out.println("++++++++++++++" +byTime.size());

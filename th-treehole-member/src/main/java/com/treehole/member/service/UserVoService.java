@@ -88,7 +88,6 @@ public class UserVoService {
             example.setOrderByClause(orderByClause);
         }
         //查询
-        System.out.println("通过mysql查询");
         List<User> users = userMapper.selectByExample(example);
         if (CollectionUtils.isEmpty(users)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
@@ -107,8 +106,9 @@ public class UserVoService {
             uservo.setUser_name(user.getUser_name());
             uservo.setUser_nickname(user.getUser_nickname());
             uservo.setGender(user.getGender() == 0 ? "男":"女");
+            uservo.setUser_birth(user.getUser_birth());
             if(user.getUser_birth() == null){
-                user.setUser_birth(null);
+                uservo.setAge(null);
             }else{
             try {
                 uservo.setAge(GetAgeByBirthUtils.getAgeByBirth(user.getUser_birth()));
@@ -116,7 +116,7 @@ public class UserVoService {
                 ExceptionCast.cast(MemberCode.BIRTH_ERROR);
             }
             }
-            uservo.setUser_birth(user.getUser_birth());
+
             uservo.setUser_email(user.getUser_email());
             uservo.setUser_phone(user.getUser_phone());
             uservo.setUser_qq(user.getUser_qq());
@@ -135,12 +135,11 @@ public class UserVoService {
         QueryResult queryResult = new QueryResult();
         queryResult.setList(userVos);
         queryResult.setTotal(pageInfo.getTotal());
-        System.out.println("111111"+new Date().after(date));
         return new QueryResponseResult(CommonCode.SUCCESS,queryResult);
 
     }
 
-    public List<User> findAllUserByTime( Date beforeTime, Date afterTime)  {
+    public List<UserVo> findAllUserByTime( Date beforeTime, Date afterTime)  {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // 日期格式
        /* Date date1 = dateFormat.parse("2019-12-02 00:11:00"); // 指定日期
         Date date2 = dateFormat.parse("2019-12-10 00:11:00"); // 指定日期*/
@@ -154,9 +153,46 @@ public class UserVoService {
         if (afterTime == null ){
             afterTime = new Date(); // 指定日期
         }
-        List<User> userVos = userVoMapper.getUserByTime(beforeTime,afterTime);
-        if (CollectionUtils.isEmpty(userVos)) {
+        List<User> users = userVoMapper.getUserByTime(beforeTime,afterTime);
+        if (CollectionUtils.isEmpty(users)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
+        }
+        List<UserVo> userVos = new ArrayList<UserVo>();
+        for(User user:users) {
+            UserVo uservo = new UserVo();
+            String roleId = user.getRole_id();
+            Role role = new Role();
+            role.setRole_id(roleId);
+            //uservo.setUniq_id(user.getUniq_id());
+            uservo.setUser_id(user.getUser_id());
+            uservo.setRole_name(roleMapper.selectOne(role).getRole_name());
+            uservo.setUser_image(user.getUser_image());
+            uservo.setUser_name(user.getUser_name());
+            uservo.setUser_nickname(user.getUser_nickname());
+            uservo.setGender(user.getGender() == 0 ? "男" : "女");
+            uservo.setUser_birth(user.getUser_birth());
+            if (user.getUser_birth() == null) {
+                uservo.setAge(null);
+            } else {
+                try {
+                    uservo.setAge(GetAgeByBirthUtils.getAgeByBirth(user.getUser_birth()));
+                } catch (ParseException e) {
+                    ExceptionCast.cast(MemberCode.BIRTH_ERROR);
+                }
+            }
+            uservo.setUser_email(user.getUser_email());
+            uservo.setUser_phone(user.getUser_phone());
+            uservo.setUser_qq(user.getUser_qq());
+            uservo.setUser_wechat(user.getUser_wechat());
+            uservo.setUser_region(user.getUser_region());
+            uservo.setUser_createtime(user.getUser_createtime());
+            uservo.setCompany_id(user.getCompany_id());
+            //显示user类型
+            uservo.setUser_type(user.getUser_type() == 0 ? "个人" : "企业");
+            //显示user状态
+            uservo.setUser_status(user.getUser_status() == 0 ? "正常" : "异常");
+            userVos.add(uservo);
+
         }
         return userVos;
     }
@@ -181,7 +217,7 @@ public class UserVoService {
         uservo.setUser_nickname(user.getUser_nickname());
         uservo.setGender(user.getGender() == 0 ? "男":"女");
         if(user.getUser_birth() == null){
-            user.setUser_birth(null);
+            uservo.setAge(null);
         }else{
             try {
                 uservo.setAge(GetAgeByBirthUtils.getAgeByBirth(user.getUser_birth()));
@@ -267,7 +303,7 @@ public class UserVoService {
         uservo.setUser_nickname(user.getUser_nickname());
         uservo.setGender(user.getGender() == 0 ? "男":"女");
         if(user.getUser_birth() == null){
-            user.setUser_birth(null);
+            uservo.setAge(null);
         }else{
             try {
                 uservo.setAge(GetAgeByBirthUtils.getAgeByBirth(user.getUser_birth()));
