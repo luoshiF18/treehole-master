@@ -3,6 +3,8 @@ package com.treehole.appointment;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
@@ -17,8 +19,10 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = {"com.treehole.api"}) //扫描接口
 @ComponentScan(basePackages = {"com.treehole.framework"}) //扫描common
 @ComponentScan(basePackages = {"com.treehole.appointment"}) //扫描本项目下的所有类
-public class AppOrderApplication {
+@EnableDiscoveryClient
+@EnableFeignClients
+public class AppointmentApplication {
     public static void main(String[] args) {
-        SpringApplication.run(AppOrderApplication.class,args);
+        SpringApplication.run(AppointmentApplication.class,args);
     }
 }

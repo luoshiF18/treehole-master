@@ -12,13 +12,11 @@ import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.Optional;
 
 /**
@@ -52,6 +50,12 @@ public class AppOrderServiceImpl implements AppOrderService{
         if (StringUtils.isNoneEmpty(queryAppOrderRequest.getId())){
             appOrder.setId(queryAppOrderRequest.getId());
         }
+        if (StringUtils.isNoneEmpty(queryAppOrderRequest.getCltId())){
+            appOrder.setCltId(queryAppOrderRequest.getCltId());
+        }
+        if (StringUtils.isNoneEmpty(queryAppOrderRequest.getUserId())){
+            appOrder.setUserId(queryAppOrderRequest.getUserId());
+        }
 
         // 分页参数
         if (page <= 0){
@@ -60,10 +64,13 @@ public class AppOrderServiceImpl implements AppOrderService{
         page = page - 1;
 
         if (size <= 0){
-            page = 10;
+            size = 10;
         }
+        // 设置查询条件
         Example<AppOrder> example = Example.of(appOrder);
-        Pageable pageable = PageRequest.of(page,size);
+        // 设置分页参数
+        Pageable pageable = PageRequest.of(page,size, Sort.by("createTime"));
+        // 查询
         Page<AppOrder> all = appOrderRepository.findAll(example, pageable);
 
         QueryResult queryResult = new QueryResult();
@@ -119,10 +126,20 @@ public class AppOrderServiceImpl implements AppOrderService{
             //准备更新数据
             //设置要修改的数据
 
+            //更新预约日期
+            byId.setAppDate(appOrder.getAppDate());
+            //更新预约开始时间
+            byId.setAppStartTime(appOrder.getAppStartTime());
+            //更新预约结束时间
+            byId.setAppEndTime(appOrder.getAppEndTime());
+            //更新预约咨询方式
+            byId.setAppMode(appOrder.getAppMode());
+            //更新预约备注
+            byId.setAppNote(appOrder.getAppNote());
             //更新预约订单状态
             byId.setAppStatus(appOrder.getAppStatus());
-            //更新预约订单时间
-            byId.setAppTime(appOrder.getAppTime());
+            //更新订单修改时间
+            byId.setUpdateTime(new Date());
 
             //提交修改
             AppOrder save = appOrderRepository.save(byId);

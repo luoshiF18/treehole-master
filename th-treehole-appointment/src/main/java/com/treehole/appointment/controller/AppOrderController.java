@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  * @Version V1.0
  **/
 @RestController
-@RequestMapping("/appointment")
+@RequestMapping("/appointment/order")
 public class AppOrderController implements AppOrderControllerApi{
 
     @Autowired
