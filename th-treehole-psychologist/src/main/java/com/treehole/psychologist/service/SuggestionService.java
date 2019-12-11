@@ -38,11 +38,6 @@ public class SuggestionService {
         String psychologist_id = suggestion.getPsychologist_id();
         //通过id获取咨询师个人信息
         Profile profile = this.profileMapper.selectByPrimaryKey(psychologist_id);
-        if (profile == null) {
-            ExceptionCast.cast(PsychologistCode.PSYCHOLOGIST_NOT_EXIST);
-        }
-        //获取咨询师姓名
-        String name = profile.getName();
         //开始设置数据
         SuggestionExt suggestionExt = new SuggestionExt();
         //咨询师给出的建议id

@@ -29,6 +29,6 @@ public interface StateControllerApi {
     ResponseResult updateState(State state);
 
     @ApiOperation("按照id自增查询所有状态信息")
-    QueryResponseResult getAll(Integer page, Integer size);
+    QueryResponseResult getAllStates(Integer page, Integer size);
 
 }

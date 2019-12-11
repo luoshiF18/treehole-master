@@ -100,11 +100,11 @@ public class StateController implements StateControllerApi {
      */
     @Override
     @GetMapping("get/all")
-    public QueryResponseResult getAll(
+    public QueryResponseResult getAllStates(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "size", defaultValue = "5") Integer size
     ) {
-        QueryResult result = this.stateService.findAll(page, size);
+        QueryResult result = this.stateService.getAllStates(page, size);
         return new QueryResponseResult(CommonCode.SUCCESS, result);
     }
 }

@@ -14,7 +14,7 @@ import io.swagger.annotations.ApiOperation;
 public interface DetailControllerApi {
 
     @ApiOperation("按照id自增分页查询所有咨询师详情信息")
-    QueryResponseResult getAllByPage(Integer page, Integer size);
+    QueryResponseResult getAllDetails(Integer page, Integer size);
 
     @ApiOperation("根据咨询师id查询咨询师详情信息")
     Detail getDetailById(String psychologist_id);

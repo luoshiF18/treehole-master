@@ -7,7 +7,6 @@ import com.treehole.framework.domain.psychologist.result.PsychologistCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.psychologist.dao.DetailMapper;
-import com.treehole.psychologist.dao.DetailsMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,9 +24,6 @@ import java.util.List;
 public class DetailService {
 
     @Autowired
-    private DetailsMapper detailsMapper;
-
-    @Autowired
     private DetailMapper detailMapper;
 
     /**
@@ -37,10 +33,10 @@ public class DetailService {
      * @param size 每页记录数
      * @return
      */
-    public QueryResult<Detail> getAllByPage(Integer page, Integer size) {
+    public QueryResult getAllDetails(Integer page, Integer size) {
         //分页参数
         PageHelper.startPage(page, size);
-        List<Detail> all = this.detailsMapper.getAllByPage();
+        List<Detail> all = this.detailMapper.getAllDetails();
         if (CollectionUtils.isEmpty(all)) {
             ExceptionCast.cast(PsychologistCode.DATA_IS_NULL);
         }
