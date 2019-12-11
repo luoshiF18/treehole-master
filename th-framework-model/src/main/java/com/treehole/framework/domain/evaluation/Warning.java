@@ -23,7 +23,7 @@ public class Warning {
     private  Integer status;
     private  Integer warningLevel;
     private String wMessage;
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date createTime;
 
     }
