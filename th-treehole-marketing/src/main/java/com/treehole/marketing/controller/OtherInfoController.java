@@ -46,4 +46,6 @@ public class OtherInfoController implements OtherInfoControllerApi {
             @RequestParam(value = "isFree", defaultValue = "true") Boolean isFree) {
         return scaleSelectClient.findScaleByType(page, size, scaleTypeId, false);
     }
+
+
 }

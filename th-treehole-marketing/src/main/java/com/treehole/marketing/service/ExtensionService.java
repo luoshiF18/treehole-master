@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.marketing.Extension;
-import com.treehole.framework.domain.marketing.request.ExtensionRequest;
 import com.treehole.framework.domain.marketing.response.MarketingCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
@@ -13,12 +12,14 @@ import com.treehole.marketing.dao.ExtensionMapper;
 import com.treehole.marketing.utils.MyMailUtils;
 import com.treehole.marketing.utils.MyNumberUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,12 +35,14 @@ public class ExtensionService {
     @Autowired
     private ExtensionMapper extensionMapper;
     private static final ObjectMapper MAPPER = new ObjectMapper();
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     private static final String USER = "wangluforbusiness@foxmail.com"; // 发件人称号，同邮箱地址
     private static final String PASSWORD = "yjvgbfmtlggkigba";  // 如果是qq邮箱可以使户端授权码，或者登录密码
 
 
-    public void addExtension(ExtensionRequest extensionRequest) {
+    /*public void addExtension(ExtensionRequest extensionRequest) {
 
         if(extensionRequest == null){
             ExceptionCast.cast(MarketingCode.DATA_ERROR);
@@ -64,7 +67,7 @@ public class ExtensionService {
             }
             MyMailUtils.sendMail(USER, PASSWORD, email, content, title);
         }
-    }
+    }*/
 
     /**
      * 添加推广信息
@@ -86,6 +89,15 @@ public class ExtensionService {
             int succCount = sendEmails(extension);
             extension.setSuccCount(succCount);
             //extension.setCount(extension.getTo().size());
+        }else if(extension.getMode() == 1){
+            List<Map<String, String>> extensionValues = extension.getValues();
+            for (Map<String, String> extensionValue : extensionValues) {
+                Map<String, String> msg = new HashMap<>();
+                msg.put("phone", extensionValue.get("to"));
+                msg.put("code", extension.getUrl());
+                System.out.println(extensionValue.get("to"));
+                this.amqpTemplate.convertAndSend("TREEHOLE.SMS.EXCHANGE", "SMS.VERIFY.URL", msg);
+            }
         }
         extension.setId(MyNumberUtils.getUUID());
         try {
