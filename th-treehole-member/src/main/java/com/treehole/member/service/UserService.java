@@ -20,6 +20,9 @@ import com.treehole.member.myUtil.MyPassword;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,6 +38,7 @@ import java.util.*;
  * @Date
  */
 @Service
+@Cacheable(value="MemberUser")
 public class UserService {
 
     @Autowired
@@ -125,29 +129,24 @@ public class UserService {
      * @param user_id
      * @return
      */
+    @CacheEvict(value="MemberUser",allEntries=true)
     @Transactional
     public void deleteUserById(String user_id) {
         //id不为空
         if(StringUtils.isBlank(user_id)){
             ExceptionCast.cast(MemberCode.DATA_ERROR);
         }
-        //用户不为空
-        if(this.getUserById(user_id) != null){
-            User user = new User();
-            user.setUser_id(user_id);
+             //用户不为空
+             User user = this.getUserById(user_id);
             //role:会员 ->会员卡  内含（积分/签到）信息删除
             if((user.getRole_id()).equals("1") ) {
                 cardsService.deleteCard(user_id);
-
             }
             //用户信息删除
             int del = userMapper.delete(user);
-            if( del != 1){
+            if( del != 1) {
                 ExceptionCast.cast(MemberCode.DELETE_FAIL);
             }
-        }else{
-            ExceptionCast.cast(MemberCode.DELETE_USER_NOT_EXIST);
-        }
 
     }
 
@@ -157,6 +156,7 @@ public class UserService {
      * @param user
      * @return void
      */
+    @CacheEvict(value="MemberUser",allEntries=true)
     @Transactional
     public void insertUser(User user)  {
         if(user == null){
@@ -215,6 +215,7 @@ public class UserService {
      * @return int
      */
     @Transactional
+    @CacheEvict(value="MemberUser",allEntries=true)
     public void updateUser(UserVo uservo){
 
         User user = new User();
@@ -267,6 +268,7 @@ public class UserService {
  */
     /*更改密码 */
     @Transactional
+    @CacheEvict(value="MemberUser",allEntries=true)
     public void updatePass(String id,String OldPass,String NewPass){
         User user = this.getUserById(id);
         //判断旧密码
@@ -295,6 +297,7 @@ public class UserService {
 
     /*更改手机号 */
     @Transactional
+    @CacheEvict(value="MemberUser",allEntries=true)
     public void updatePhone(User user){
         if(this.findUserByPhone(user.getUser_phone()) == null){
             user.setUser_phone(user.getUser_phone());

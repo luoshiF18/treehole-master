@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.evaluation.Scale;
+import com.treehole.framework.domain.marketing.Activity;
 import com.treehole.framework.domain.member.Cards;
 import com.treehole.framework.domain.member.Role;
 import com.treehole.framework.domain.member.User;
@@ -20,16 +21,16 @@ import com.treehole.member.mapper.UserVoMapper;
 import com.treehole.member.myUtil.GetAgeByBirthUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import tk.mybatis.mapper.entity.Example;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @author shanhuijie
@@ -37,6 +38,7 @@ import java.util.List;
  * @Date 2019.10.21 19:36
  */
 @Service
+@Cacheable(value="MemberUser")
 public class UserVoService {
     @Autowired
     private UserMapper userMapper;
@@ -57,6 +59,7 @@ public class UserVoService {
                                               String sortBy,
                                               Boolean desc,
                                               UserListRequest userListRequest) {
+        Date date = new Date();
         //分页
         Page pag =PageHelper.startPage(page,size);
         //判断请求条件的合法性
@@ -85,6 +88,7 @@ public class UserVoService {
             example.setOrderByClause(orderByClause);
         }
         //查询
+        System.out.println("通过mysql查询");
         List<User> users = userMapper.selectByExample(example);
         if (CollectionUtils.isEmpty(users)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
@@ -131,8 +135,30 @@ public class UserVoService {
         QueryResult queryResult = new QueryResult();
         queryResult.setList(userVos);
         queryResult.setTotal(pageInfo.getTotal());
+        System.out.println("111111"+new Date().after(date));
         return new QueryResponseResult(CommonCode.SUCCESS,queryResult);
 
+    }
+
+    public List<User> findAllUserByTime( Date beforeTime, Date afterTime)  {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // 日期格式
+       /* Date date1 = dateFormat.parse("2019-12-02 00:11:00"); // 指定日期
+        Date date2 = dateFormat.parse("2019-12-10 00:11:00"); // 指定日期*/
+        if (beforeTime == null ){
+            try {
+                beforeTime = dateFormat.parse("1970-01-01 08:00:00"); // 指定日期
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        if (afterTime == null ){
+            afterTime = new Date(); // 指定日期
+        }
+        List<User> userVos = userVoMapper.getUserByTime(beforeTime,afterTime);
+        if (CollectionUtils.isEmpty(userVos)) {
+            ExceptionCast.cast(MemberCode.DATA_IS_NULL);
+        }
+        return userVos;
     }
 
     /**
@@ -140,7 +166,6 @@ public class UserVoService {
      * @return List<UserVo>
      */
     public UserVo getUserByUserId(String user_id) {
-
         User user = userService.getUserById(user_id);
         if(user == null){
             ExceptionCast.cast(MemberCode.USER_NOT_EXIST);

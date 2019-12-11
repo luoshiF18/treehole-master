@@ -3,6 +3,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
@@ -15,7 +16,7 @@ import tk.mybatis.spring.annotation.MapperScan;
  * @date 2019/10/16 15:10
  * @description: 会员管理
  */
-
+@EnableCaching
 @EnableFeignClients //feignClient
 @EnableDiscoveryClient
 @SpringBootApplication

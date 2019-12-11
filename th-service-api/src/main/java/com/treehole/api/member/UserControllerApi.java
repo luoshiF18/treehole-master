@@ -5,6 +5,7 @@ import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.ext.UserExt;
 import com.treehole.framework.domain.member.resquest.UserListRequest;
 import com.treehole.framework.model.response.QueryResponseResult;
+import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,6 +46,9 @@ public interface UserControllerApi {
     public UserExt getUserExt(@RequestParam("userNickName") String userNickName);
     @ApiOperation("根据user_id得到user对象")
     public UserVo findUserById(String user_id);
+    @ApiOperation("根据时间得到userlist对象")
+    public QueryResult findUserByTime(@RequestParam("beforeTime") Date beforeTime,
+                                      @RequestParam("afterTime") Date afterTime);
     /* @ApiOperation("根据用户user_ID查询用户Vo信息")
     public UserVo getUserVoByUserId(String user_id);*/
     /*@ApiOperation("查询所有用户")

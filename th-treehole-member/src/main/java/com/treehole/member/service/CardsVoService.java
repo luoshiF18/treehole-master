@@ -19,6 +19,7 @@ import com.treehole.member.mapper.PaygradeMapper;
 import com.treehole.member.myUtil.MyNumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
@@ -35,6 +36,7 @@ import java.util.List;
  * @Date
  */
 @Service
+@Cacheable(value="MemberCard")
 public class CardsVoService {
     @Autowired
     private CardsMapper cardsMapper;
@@ -51,7 +53,6 @@ public class CardsVoService {
      * 查询所有CardsVo信息
      * 自定义条件查询 user_id/card_id/手机号码
      */
-
     public QueryResponseResult findAllCardVos(Integer page,
                                               Integer size,
                                               CardListRequest cardListRequest) {
@@ -98,7 +99,7 @@ public class CardsVoService {
             cardsVo.setPoints_sum(cards1.getPoints_sum());
             //付费会员的等级变化在payGardeService中
             String paygradeId = cards1.getPaygrade_id();
-            if(StringUtils.isEmpty(paygradeId) || (cards1.getPaygrade_id()).equals("")){
+            if(StringUtils.isEmpty(paygradeId) || (cards1.getPaygrade_id()).equals("")||paygradeId == null){
                 cardsVo.setPaygrade("无");
                 cardsVo.setPaygrade_start(null);
                 cardsVo.setPaygrade_end(null);
@@ -149,6 +150,7 @@ public class CardsVoService {
         }
         return cardsVo;
     }
+
 
     /*根据id 获取cardsVo对象*/
     public CardsVo getCardByUserId(String id){

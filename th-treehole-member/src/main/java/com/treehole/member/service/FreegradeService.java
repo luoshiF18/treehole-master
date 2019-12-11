@@ -15,7 +15,10 @@ import com.treehole.member.mapper.FreegradeMapper;
 import com.treehole.member.myUtil.MyNumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
@@ -29,6 +32,7 @@ import java.util.List;
  */
 
 @Service
+@Cacheable(value="MemberFreeGrade")
 public class FreegradeService {
     @Autowired
     private FreegradeMapper freegradeMapper;
@@ -109,6 +113,9 @@ public class FreegradeService {
         return grade;
     }
 
+
+    @Transactional
+    @CacheEvict(value="MemberFreeGrade",allEntries=true)
     public void updateGrade(FreeGrade freeGrade) {
         //freeGrade.setFreegrade_id();
         Example example =new Example(FreeGrade.class);
@@ -123,6 +130,8 @@ public class FreegradeService {
     }
 
 /*根据Freegrade_id删除*/
+    @Transactional
+    @CacheEvict(value="MemberFreeGrade",allEntries=true)
     public void deleteGrade(String id) {
         //id不为空
         if(org.apache.commons.lang3.StringUtils.isBlank(id)){
@@ -141,6 +150,8 @@ public class FreegradeService {
         }
     }
 
+    @Transactional
+    @CacheEvict(value="MemberFreeGrade",allEntries=true)
     public void insert(FreeGrade freeGrade) {
         if(freeGrade == null){
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
@@ -170,6 +181,8 @@ public class FreegradeService {
     }
 
     //注册用户等级变化
+    @Transactional
+    @CacheEvict(value="MemberFreeGrade",allEntries=true)
     public void gradeChange(String user_id,String freegrade_id,Integer sum){
 
         FreeGrade freeGrade = new FreeGrade();

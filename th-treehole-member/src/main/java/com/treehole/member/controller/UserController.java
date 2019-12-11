@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.treehole.member.service.*;
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -50,6 +51,7 @@ public class UserController implements UserControllerApi {
     public List<UserVo> findUserByNicknames(@RequestParam(value ="name")List<String> names){
         return userVoService.getUserByNicknames(names);
     }
+
     /*@Override
     @GetMapping("/getUserByNickname")
     public UserVo getUserVoByNickname(@RequestParam(value = "nickname") String nickname){
@@ -59,6 +61,16 @@ public class UserController implements UserControllerApi {
     @GetMapping("/getUserById/{user_id}")
     public UserVo findUserById(@PathVariable("user_id") String user_id){
        return userVoService.getUserByUserId(user_id);
+    }
+    @Override
+    @GetMapping("/getUserByTime")
+    public QueryResult findUserByTime(@RequestParam("beforeTime") Date beforeTime,
+                               @RequestParam("afterTime") Date afterTime){
+        List<User> byTime = userVoService.findAllUserByTime(beforeTime, afterTime);
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(byTime);
+        queryResult.setTotal(byTime.size());
+        return queryResult;
     }
     @Override
     @GetMapping("/getUserExt")

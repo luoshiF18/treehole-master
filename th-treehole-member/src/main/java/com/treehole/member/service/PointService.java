@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.evaluation.Description;
 import com.treehole.framework.domain.evaluation.response.EvaluationCode;
+import com.treehole.framework.domain.marketing.request.ActivityRequest;
 import com.treehole.framework.domain.member.*;
 import com.treehole.framework.domain.member.Vo.CheckinVo;
 import com.treehole.framework.domain.member.Vo.UserVo;
@@ -15,11 +16,14 @@ import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
+import com.treehole.member.client.MemberClient;
 import com.treehole.member.mapper.PointsMapper;
 import com.treehole.member.mapper.UserMapper;
 import com.treehole.member.myUtil.MyNumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -33,6 +37,7 @@ import java.util.*;
  * @Date
  */
 @Service
+@Cacheable(value="MemberPoint")
 public class PointService {
     @Autowired
     private PointsMapper pointsMapper;
@@ -46,6 +51,8 @@ public class PointService {
     private CardsService cardsService;
     @Autowired
     private FreegradeService freegradeService;
+    @Autowired
+    MemberClient memberClient;
 
 
     /**
@@ -85,13 +92,13 @@ public class PointService {
         if (CollectionUtils.isEmpty(pointsList)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
-        /*时间倒序排  最近的时间的放在最前面*//*
+        //时间倒序排  最近的时间的放在最前面
         Collections.sort(pointsList, new Comparator<Points>() {
             @Override
             public int compare(Points p1, Points p2) {
                 return p2.getPoints_time().compareTo(p1.getPoints_time());  //大于返回1；小于返回-1；等于返回0
             }
-        });*/
+        });
         //解析分页结果
         PageInfo<Points> pageInfo = new PageInfo<Points>(pag.getResult());
         QueryResult queryResult = new QueryResult();
@@ -102,7 +109,7 @@ public class PointService {
 
 
     /**
-     * 插入一条积分信息  未完成！！
+     * 插入一条积分信息  已完成
      * 前端需要传入本次操作num值、user_id
      * 会员注册后立即调用(会员)
      * 积分插入的步骤：
@@ -116,41 +123,40 @@ public class PointService {
      * @return int
      */
     @Transactional
+    @CacheEvict(value="MemberPoint",allEntries=true)
     public void insertPoint(Points points)  {
         points.setPoints_id(MyNumberUtils.getUUID());
         points.setPoints_time(new Date());
+        //获取本次操作的值  根据活动id得到营销活动对象，获取该对象的积分值和名称
+        ActivityRequest activityRequest = memberClient.queryActivityAllById(points.getAct_id());
+        //System.out.println("++++++++++"+ activityRequest);
+        Integer market_point = activityRequest.getActivityRule().getPoint();
+        //获取积分值
+        points.setPoints_num(market_point);
+        //System.out.println("+++++++++++======" + market_point);
         //改变cards  目的：累计积分变化/等级变化
-        if(points.getPoints_num()>0){
+        if(market_point > 0){
             Cards cards = cardsService.findCardsByUserId(points.getUser_id());
-            Integer sum =cards.getPoints_sum()+ points.getPoints_num();
+            Integer sum =cards.getPoints_sum()+ market_point;
             //判断cars累计积分值是否大于现有等级的积分值,此功能在freegradeservice中，gradeChange()
             // 通过user_id 查找用户的freegrade_id
             String freegradeId = cardsService.findCardsByUserId(points.getUser_id()).getFreegrade_id();
             freegradeService.gradeChange(points.getUser_id(),freegradeId,sum);
-            //cardsService.updateCard(cards);
         }
-        //User user = userService.getUserById(points.getUser_id());
         Cards cards = cardsService.findCardsByUserId(points.getUser_id());
         //当前用户的积分值
         points.setPoints_before(cards.getPoints_now());
-        //System.out.println("++++++++++++++++before:" +user.getPoints_now());
-        //获取本次操作的值
-        points.setPoints_num(points.getPoints_num());  //手写代码，后期需完善
-        //points.setPoints_num("跨服务调用接口,从活动表里获取值");
-        //System.out.println("++++++++++++++++benci:" +points.getPoints_num());
-        points.setAct_id(points.getAct_id());
+        //获取描述 title
         //活动描述需要接口：根据活动id查询活动名称及活动积分值，从营销活动表内获取活动名称
-        points.setDescription("签到");
+        points.setDescription(activityRequest.getActivity().getTitle());
         //later的值
-        int later = points.getPoints_before() + points.getPoints_num();
+        int later = points.getPoints_before() + market_point;
         if(later < 0){  //积分值小于0 ，不可操作
             ExceptionCast.cast(MemberCode.POINT_NOT_FULL);
         }
         points.setPoints_later(later);
         //与cards表保持同步
         cards.setPoints_now(later);
-        //System.out.println("++++++++++++++++later:" + later);
-        //userService.updateUser(cards);
         cardsService.updateCard(cards);//更新积分变化
         int ins = pointsMapper.insert(points);
         if( ins != 1){
@@ -167,6 +173,7 @@ public class PointService {
      * @return int
      */
     @Transactional
+    @CacheEvict(value="MemberPoint",allEntries=true)
     public void deletePointById(String points_id) {
         //List<Points> points = this.getPointById(points_id);
         //id不为空
@@ -181,6 +188,7 @@ public class PointService {
         }
     }
     @Transactional
+    @CacheEvict(value="MemberPoint",allEntries=true)
     public void deletePointByUserId(String user_id){
         //id不为空
         if(org.apache.commons.lang3.StringUtils.isBlank(user_id)){

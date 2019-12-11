@@ -17,6 +17,8 @@ import com.treehole.member.mapper.CheckinMapper;
 import com.treehole.member.myUtil.MyNumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -30,6 +32,7 @@ import java.util.*;
  * @Date
  */
 @Service
+@Cacheable(value="MemberCheck")
 public class CheckinService {
     @Autowired
     private CheckinMapper checkinMapper;
@@ -57,6 +60,7 @@ public class CheckinService {
         }else{
             checkins = checkinMapper.selectAll();
         }
+
         if (CollectionUtils.isEmpty(checkins)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
@@ -81,6 +85,8 @@ public class CheckinService {
     /*
     * 增
     * */
+    @Transactional
+    @CacheEvict(value="MemberCheck",allEntries=true)
     public void insertCheckin(Checkin checkin) {
         checkin.setCheckin_id(MyNumberUtils.getUUID());
         checkin.setCheckin_time(new Date());
@@ -98,6 +104,7 @@ public class CheckinService {
     * 根据user_id删除签到记录
     * */
     @Transactional
+    @CacheEvict(value="MemberCheck",allEntries=true)
     public void deleteCheckinByUserId(String user_id) {
         //id不为空
         if(org.apache.commons.lang3.StringUtils.isBlank(user_id)){
@@ -131,6 +138,7 @@ public class CheckinService {
     *
     * */
     @Transactional
+    @CacheEvict(value="MemberCheck",allEntries=true)
     public void deleteByCheckId(String id){
         //1.先找
         Checkin checkin = new Checkin();
