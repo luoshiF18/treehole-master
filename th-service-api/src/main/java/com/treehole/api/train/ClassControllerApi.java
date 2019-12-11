@@ -24,8 +24,8 @@ public interface ClassControllerApi {
     @ApiOperation("班级学生统计")
     public QueryResponseResult<Student> findClassStudent(int page, int size, StudentExt studentExt);
     @ApiOperation("班级课程统计")
-    public QueryResponseResult<CourseTeacher> findClassCourse(int page, int size, CourseExt courseExt);
+    public QueryResponseResult<CourseTeacher> findClassCourse(int page, int size, StudentCourseParams studentCourseParams);
     @ApiOperation("班级老师统计")
-    public QueryResponseResult<Teacher> findClassTeacher(int page, int size, ClassTeacher classTeacher);
+    public QueryResponseResult<Teacher> findClassTeacher(int page, int size, TeacherExt teacherExt);
 
 }

@@ -22,5 +22,5 @@ spring:
 
 mybatis:
   config-location: classpath:mybatis/mybatis-config.xml
-  mapper-locations: classpath*:mybatis/mapper/StudentMapper.xml,classpath*:mybatis/mapper/ClassMapper.xml,classpath*:mybatis/mapper/TeacherMapper.xml,classpath*:mybatis/mapper/CostMapper.xml,classpath*:mybatis/mapper/LeaveMapper.xml,classpath*:mybatis/mapper/CourseMapper.xml,classpath*:mybatis/mapper/CourseTypeMapper.xml,classpath*:mybatis/mapper/ClassCourseMapper.xml,classpath*:mybatis/mapper/PhaseMapper.xml
+  mapper-locations: classpath*:mybatis/mapper/StudentMapper.xml,classpath*:mybatis/mapper/ClassMapper.xml,classpath*:mybatis/mapper/TeacherMapper.xml,classpath*:mybatis/mapper/CostMapper.xml,classpath*:mybatis/mapper/LeaveMapper.xml,classpath*:mybatis/mapper/CourseMapper.xml,classpath*:mybatis/mapper/CourseTypeMapper.xml,classpath*:mybatis/mapper/PhaseCourseMapper.xml,classpath*:mybatis/mapper/PhaseMapper.xml,classpath*:mybatis/mapper/TeacherCourseMapper.xml
   type-aliases-package: com.treehole.framework.domain.train

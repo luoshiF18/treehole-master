@@ -2,9 +2,9 @@ package com.treehole.train.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.treehole.framework.domain.train.ClassCourse;
 import com.treehole.framework.domain.train.Course;
 import com.treehole.framework.domain.train.CourseType;
+import com.treehole.framework.domain.train.PhaseCourse;
 import com.treehole.framework.domain.train.ext.CourseTeacher;
 import com.treehole.framework.domain.train.response.TrainCode;
 import com.treehole.framework.exception.ExceptionCast;
@@ -13,10 +13,10 @@ import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.train.config.RootPropeties;
-import com.treehole.train.dao.ClassCourseRepository;
 import com.treehole.train.dao.CourseMapper;
 import com.treehole.train.dao.CourseRepository;
 import com.treehole.train.dao.CourseTypeRepository;
+import com.treehole.train.dao.PhaseCourseRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,7 +41,7 @@ public class CourseService {
     GenerateNumberService generateNumberService;
 
     @Autowired
-    ClassCourseRepository classCourseRepository;
+    PhaseCourseRepository phaseCourseRepository;
     //添加课程信息
     @Transactional
     public ResponseResult addCourse(Course course){
@@ -49,7 +49,7 @@ public class CourseService {
         String cId = generateNumberService.GenerateNumber("4");
         course.setCourseId(cId);
         //添加课程
-         courseRepository.save(course);
+        courseRepository.save(course);
          //对应类型课程加1
         String courseId = course.getCourseId();
         String courseType = course.getCourseType();
@@ -68,7 +68,7 @@ public class CourseService {
     //删除课程信息
     public ResponseResult deleteCourse(String courseId){
         //先判断课程有没有被选中
-        List<ClassCourse> courses = classCourseRepository.findByCourseId(courseId);
+        List<PhaseCourse> courses = phaseCourseRepository.findByCourseId(courseId);
         if(courses.size() != 0){
             ExceptionCast.cast(TrainCode.COURSE_SELECTED);
         }

@@ -15,13 +15,15 @@ public interface ClassMapper {
     List<Class>  findAllClass();
     //模糊查询班级信息
     List<ClassHeadmaster> findClassByFuzzyQuery(Class class1);
+
     //查询班级学生
    List<Student> findClassStudent(StudentExt studentExt);
 
-   //查询班机课程
-   List<CourseTeacher> findClassCourse(CourseExt courseExt);
    //查新班级老师
-   List<Teacher> findClassTeacher(ClassTeacher classTeacher);
+   List<Teacher> findClassTeacher(TeacherExt teacherExt);
+
+    //查新班级课程
+    List<CourseTeacher>  findClassCourse(StudentCourseParams studentCourseParams);
 
 
 }

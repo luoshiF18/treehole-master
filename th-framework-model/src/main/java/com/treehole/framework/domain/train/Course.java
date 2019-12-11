@@ -22,14 +22,10 @@ public class Course implements Serializable {
     private String courseDescribe;
     @Column(name = "course_type")
     private String courseType;
-    @Column(name = "course_begin_time")
-    private Date courseBeginTime;
-    @Column(name = "course_end_time")
-    private Date courseEndTime;
     @Column(name = "course_time")
     private String courseTime;
-    @Column(name = "course_teacher")
-    private String courseTeacher;
+    @Column(name = "course_price")
+    private double coursePrice;
     @Column(name = "course_other")
     private String courseOther;
 

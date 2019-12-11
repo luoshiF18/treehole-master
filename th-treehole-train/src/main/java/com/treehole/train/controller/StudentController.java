@@ -2,9 +2,11 @@ package com.treehole.train.controller;
 import com.treehole.api.train.StudentControllerApi;
 import com.treehole.framework.domain.train.Cost;
 import com.treehole.framework.domain.train.Student;
+import com.treehole.framework.domain.train.Teacher;
 import com.treehole.framework.domain.train.ext.CourseTeacher;
 import com.treehole.framework.domain.train.ext.StudentCourseParams;
 import com.treehole.framework.domain.train.ext.StudentExt;
+import com.treehole.framework.domain.train.ext.TeacherExt;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.train.service.StudentService;
@@ -62,6 +64,14 @@ public class StudentController implements StudentControllerApi {
     public QueryResponseResult<CourseTeacher> findStudentCourse(@PathVariable("page") int page, @PathVariable("size") int size, @RequestBody StudentCourseParams studentCourseParams) {
         return studentService.findStudentCourse(page,size,studentCourseParams);
     }
+
+    //查看学生老师
+    @Override
+    @PostMapping("/findstudntteacher/{page}/{size}")
+    public QueryResponseResult<Teacher> findStudentTeacher(@PathVariable("page") int page,@PathVariable("size") int size,@RequestBody TeacherExt teacherExt) {
+        return studentService.findStudentTeacher(page,size,teacherExt);
+    }
+
     //查新学生交费记录(欠费记录)
     @Override
     @PostMapping("/findPay/{page}/{size}")

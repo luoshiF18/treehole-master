@@ -12,6 +12,7 @@
 
     <!--模糊学所有老师-->
     <select id="findTeacherByFuzzyQuery"
+            parameterType="com.treehole.framework.domain.train.Teacher"
             resultType="com.treehole.framework.domain.train.Teacher">
         SELECT *
         FROM teacher t

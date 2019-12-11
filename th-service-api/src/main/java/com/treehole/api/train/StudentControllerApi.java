@@ -1,9 +1,11 @@
 package com.treehole.api.train;
 import com.treehole.framework.domain.train.Cost;
 import com.treehole.framework.domain.train.Student;
+import com.treehole.framework.domain.train.Teacher;
 import com.treehole.framework.domain.train.ext.CourseTeacher;
 import com.treehole.framework.domain.train.ext.StudentCourseParams;
 import com.treehole.framework.domain.train.ext.StudentExt;
+import com.treehole.framework.domain.train.ext.TeacherExt;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
@@ -27,6 +29,8 @@ public interface StudentControllerApi {
 
     @ApiOperation("学生课程统计")
     public QueryResponseResult<CourseTeacher> findStudentCourse(int page, int size, StudentCourseParams studentCourseParams);
+    @ApiOperation("学生老师统计")
+    public QueryResponseResult<Teacher> findStudentTeacher(int page, int size, TeacherExt teacherExt);
     @ApiOperation("学生交费记录(欠费记录)")
     public QueryResponseResult<Cost> findPay(int page,int size,Cost cost);
 

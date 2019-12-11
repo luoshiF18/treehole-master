@@ -12,6 +12,7 @@
 
     <!--模糊查询班级信息-->
     <select id="findClassByFuzzyQuery"
+            parameterType="com.treehole.framework.domain.train.Class"
             resultType="com.treehole.framework.domain.train.ext.ClassHeadmaster">
             SELECT
             c.*,
@@ -27,8 +28,60 @@
                 <if test=" className !=null and className !='' ">
                     AND c.`class_name` LIKE '%${className}%'
                 </if>
+
+                <if test=" classGraduation !=null and classGraduation !='' ">
+                    AND c.`class_graduation` = #{classGraduation}
+                </if>
+
+                <if test=" classPhase !=null and classPhase !='' ">
+                    AND c.`class_phase` = #{classPhase}
+                </if>
             </where>
     </select>
+
+
+    <!--班级课程统计-->
+    <select id="findClassCourse"
+            resultType="com.treehole.framework.domain.train.ext.CourseTeacher"
+            parameterType="com.treehole.framework.domain.train.ext.StudentCourseParams">
+        SELECT *
+        FROM (
+            SELECT
+            co.*,
+            t.`teacher_Id`,
+            t.`teacher_name`,
+            ct.`course_type_name`
+            FROM `class_course` cc
+            LEFT JOIN teacher_course tc
+            ON cc.`class_course_id` = tc.`class_course_id`
+            LEFT JOIN teacher t
+            ON tc.`teacher_id` = t.`teacher_id`
+            LEFT JOIN course co
+            ON cc.`course_id` = co.`course_id`
+            LEFT JOIN course_type ct
+            ON co.`course_type` = ct.`course_type_id`
+            WHERE cc.`class_id`=#{classId}
+            AND tc.`state` = 1
+        ) c
+        <where>
+            <if test=" courseId !=null and courseId !='' ">
+                AND c.`course_id` = #{courseId}
+            </if>
+            <if test=" courseName !=null and courseName !='' ">
+                AND c.`course_name` LIKE '%${courseName}%'
+            </if>
+            <if test=" courseType !=null and courseType !='' ">
+                AND c.`course_type` = #{courseType}
+            </if>
+            <if test=" teacherId !=null and teacherId !='' ">
+                AND c.`teacher_id` = #{teacherId}
+            </if>
+        </where>
+    </select>
+
+
+
+
 
     <!--班级学生统计-->
     <select id="findClassStudent"
@@ -37,10 +90,10 @@
 
         SELECT *
         FROM (
-            SELECT *
-            FROM class c
-            LEFT JOIN student s
-            ON c.`class_id` = s.`student_class`
+            SELECT s.*
+            FROM student s
+            LEFT JOIN class c
+            ON s.`student_class` = c.`class_id`
             WHERE c.`class_id`=#{classId}
         ) s
         <where>
@@ -56,54 +109,20 @@
             <if test=" studentState !=null and studentState !='' ">
                 AND s.`student_state`=#{studentState}
             </if>
-            <if test=" studentClass !=null and studentClass !='' ">
-                AND s.`student_class`=#{studentClass}
+
+            <if test=" studentPhase !=null and studentPhase !='' ">
+                AND s.`student_phase`=#{studentPhase}
+            </if>
+            <if test=" studentGraduation !=null and studentGraduation !='' ">
+                AND s.`student_graduation`=#{studentGraduation}
             </if>
         </where>
     </select>
 
-    <!--班级课程统计-->
-    <select id="findClassCourse"
-            parameterType="com.treehole.framework.domain.train.ext.CourseExt"
-            resultType="com.treehole.framework.domain.train.ext.CourseTeacher">
-    SELECT *
-	FROM(
-	       SELECT
-           co.*,
-           t.`teacher_name`,
-           ct.`course_type_name`
-           FROM class_course cc
-           LEFT JOIN class c
-           ON c.`class_id` = cc.`class_id`
-           LEFT JOIN course co
-           ON cc.`course_id` = co.`course_id`
-           LEFT JOIN teacher t
-           ON co.course_teacher = t.teacher_id
-           LEFT JOIN `course_type` ct
-           ON co.`course_type` = ct.`course_type_id`
-           WHERE c.`class_id` = #{classId}
-	) n
-	<where>
-        <if test=" courseId != null and courseId != '' ">
-            AND n.course_id = #{courseId}
-        </if>
-	    <if test=" courseName != null and courseName != '' ">
-            AND n.course_name LIKE '%${courseName}%'
-	     </if>
-        <if test=" courseType != null and courseType != '' ">
-            AND n.course_type = #{courseType}
-        </if>
-        <if test=" courseTeacher != null and courseTeacher != '' ">
-            AND n.course_teacher = #{courseTeacher}
-        </if>
-    </where>
-
-
-    </select>
 
     <!--班级老师统计-->
     <select id="findClassTeacher"
-            parameterType="com.treehole.framework.domain.train.ext.CourseTeacher"
+            parameterType="com.treehole.framework.domain.train.ext.TeacherExt"
             resultType="com.treehole.framework.domain.train.Teacher">
 
         SELECT *
@@ -115,14 +134,13 @@
             WHERE c.`class_id`= #{classId}
             UNION
             SELECT t.*
-            FROM class c
-            LEFT JOIN class_course cc
-            ON c.`class_id` = cc.`class_id`
-            LEFT JOIN course co
-            ON cc.`course_id` = co.`course_id`
+            FROM `class_course` cc
+            LEFT JOIN teacher_course tc
+            ON cc.`class_course_id` = tc.`class_course_id`
             LEFT JOIN teacher t
-            ON co.course_teacher = t.teacher_id
-            WHERE c.`class_id` = #{classId}
+            ON tc.`teacher_id` = t.`teacher_id`
+            WHERE cc.`class_id`=#{classId}
+            AND tc.`state` = 1
         ) t
         <where>
             <if test="teacherId !=null and teacherId !='' ">

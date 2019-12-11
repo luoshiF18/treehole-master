@@ -33,7 +33,7 @@ public class Leave implements Serializable {
     @Column(name = "leave_remove_time")
     private Date leaveRemoveTime; //消假时间
     @Column(name = "leave_state")
-    private Integer leaveState;   // 1 已消假  2 请假中
+    private Integer leaveState;   // 1 已消假  2 请假中 3 审核中  4 审核失败
     @Column(name = "leave_operator_id")
     private String  leaveOperatorId;
     @Column(name = "leave_other")

@@ -15,20 +15,9 @@
             resultType="com.treehole.framework.domain.train.ext.CourseTeacher"
             parameterType="com.treehole.framework.domain.train.Course">
             SELECT
-            c.`course_id`,
-            c.`course_name`,
-            c.`course_type`,
-            c.`course_describe`,
-            c.`course_begin_time`,
-            c.`course_end_time`,
-            c.`course_time`,
-            c.`course_teacher`,
-            c.`course_other`,
-            t.`teacher_name`,
+            c.*,
             ct.`course_type_name`
             FROM course c
-            LEFT JOIN teacher t
-            ON c.`course_teacher` = t.`teacher_id`
             LEFT JOIN course_type ct
             ON c.`course_type` = ct.`course_type_id`
             <where>
@@ -40,9 +29,6 @@
              </if>
              <if test=" courseType !=null and courseType !='' ">
                 AND c.`course_type` = #{courseType}
-             </if>
-             <if test=" courseTeacher !=null and courseTeacher !='' ">
-                AND c.`course_teacher` = #{courseTeacher}
              </if>
             </where>
     </select>

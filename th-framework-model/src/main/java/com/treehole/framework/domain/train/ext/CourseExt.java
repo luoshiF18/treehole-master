@@ -11,6 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class CourseExt implements Serializable {
 
+    private String phaseId;
     private String classId;
     private String courseId;
     private String courseName;

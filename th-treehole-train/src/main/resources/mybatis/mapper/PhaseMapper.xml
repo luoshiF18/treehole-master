@@ -22,4 +22,34 @@
     </select>
 
 
+    <!--查询期数课程-->
+    <select id="findPhaseCourse"
+            parameterType="com.treehole.framework.domain.train.ext.CourseExt"
+            resultType="com.treehole.framework.domain.train.ext.CourseTeacher">
+            SELECT *
+            FROM(
+                    SELECT
+                    co.*,
+                    ct.`course_type_name`
+                    FROM phase_course pc
+                    LEFT JOIN phase p
+                    ON pc.`phase_id` = p.`phase_id`
+                    LEFT JOIN course co
+                    ON pc.`course_id` = co.`course_id`
+                    LEFT JOIN `course_type` ct
+                    ON co.`course_type` = ct.`course_type_id`
+                    WHERE p.`phase_id` = #{phaseId}
+            ) n
+            <where>
+                    <if test=" courseId != null and courseId != '' ">
+                        AND n.course_id = #{courseId}
+                    </if>
+                    <if test=" courseName != null and courseName != '' ">
+                        AND n.course_name LIKE '%${courseName}%'
+                    </if>
+                    <if test=" courseType != null and courseType != '' ">
+                        AND n.course_type = #{courseType}
+                    </if>
+            </where>
+    </select>
 </mapper>

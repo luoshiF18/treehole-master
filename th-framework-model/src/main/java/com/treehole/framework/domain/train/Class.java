@@ -20,6 +20,8 @@ public class Class implements Serializable {
     private String classId;
     @Column(name="class_name")
     private  String className;
+    @Column(name="class_phase")
+    private  String classPhase;
     @Column(name="class_plan")
     private  String classPlan;
     @Column(name="class_number")
@@ -28,6 +30,10 @@ public class Class implements Serializable {
     private  Integer classPlannedNumber;//计划人数
     @Column(name= "class_creat_time")
     private Date classCreatTime;
+    @Column(name= "class_end_time")
+    private Date classEndTime;
+    @Column(name= "class_graduation")
+    private Integer classGraduation;  //改版机是否毕业  1 未毕业  2 已毕业
     @Column(name="class_course_number")
     private Integer classCourseNumber;
     @Column(name="class_headmaster")

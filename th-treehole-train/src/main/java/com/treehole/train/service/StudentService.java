@@ -1,13 +1,12 @@
 package com.treehole.train.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.treehole.framework.domain.train.*;
 import com.treehole.framework.domain.train.Class;
-import com.treehole.framework.domain.train.Cost;
-import com.treehole.framework.domain.train.Phase;
-import com.treehole.framework.domain.train.Student;
 import com.treehole.framework.domain.train.ext.CourseTeacher;
 import com.treehole.framework.domain.train.ext.StudentCourseParams;
 import com.treehole.framework.domain.train.ext.StudentExt;
+import com.treehole.framework.domain.train.ext.TeacherExt;
 import com.treehole.framework.domain.train.response.TrainCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
@@ -61,6 +60,7 @@ public class StudentService {
         student.setStudentType(1);
         student.setStudentEnrollmentTime(date);
         student.setStudentGraduation(1);
+        student.setStudentArrears(1);
         //添加生成的Id
         String sId = generateNumberService.GenerateNumber("1");
         student.setStudentId(sId);
@@ -193,17 +193,6 @@ public class StudentService {
         student.setStudentGraduationTime(date);
         studentRepository.save(student);
 
-        //班级人数 -1
-        String studentClass = student.getStudentClass();
-        Optional<Class> optionalClass = classRepository.findById(studentClass);
-        Class newClass = null;
-        if(optionalClass.isPresent()){
-            newClass = optionalClass.get();
-        }
-        Integer classNumber = newClass.getClassNumber() - 1;
-        newClass.setClassNumber(classNumber);
-        classRepository.save(newClass);
-
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
@@ -211,7 +200,7 @@ public class StudentService {
     //学生毕业(全班）
     @Transactional
     public ResponseResult studentGraduationAllClass(String classId){
-        //查询改班目前的学生
+        //查询该班目前的学生
         List<Student> students = studentRepository.findByStudentClassAndStudentGraduation(classId, 1);
 
         for(int i=0;i<students.size();i++){
@@ -222,13 +211,15 @@ public class StudentService {
             studentRepository.save(student);
         }
 
-        //班级人数清0
+        //班级毕业
         Optional<Class> optionalClass = classRepository.findById(classId);
         Class newClass = null;
         if(optionalClass.isPresent()){
             newClass = optionalClass.get();
         }
-        newClass.setClassNumber(0);
+        newClass.setClassGraduation(2);
+        Date date = new Date();
+        newClass.setClassEndTime(date);
         classRepository.save(newClass);
 
         return new ResponseResult(CommonCode.SUCCESS);
@@ -251,6 +242,21 @@ public class StudentService {
         queryResult.setList(studentCourses);
         queryResult.setTotal(total);
         return new QueryResponseResult<CourseTeacher>(CommonCode.SUCCESS,queryResult);
+    }
+
+    //查询学生老师
+    public QueryResponseResult<Teacher> findStudentTeacher(int page, int size, TeacherExt teacherExt) {
+        if(page<=0){
+            page=1;
+        }
+        com.github.pagehelper.Page<Teacher> studentCoursePage = PageHelper.startPage(page, size);
+        List<Teacher> studentTeacher = studentMapper.findStudentTeacher(teacherExt);
+        PageInfo<Teacher> info = new PageInfo<>(studentCoursePage.getResult());
+        long total = info.getTotal();
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(studentTeacher);
+        queryResult.setTotal(total);
+        return new QueryResponseResult<Teacher>(CommonCode.SUCCESS,queryResult);
     }
 
 //=================================

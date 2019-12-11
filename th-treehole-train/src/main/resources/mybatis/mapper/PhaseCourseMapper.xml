@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.treehole.train.dao.ClassCourseMapper">
+<mapper namespace="com.treehole.train.dao.PhaseCourseMapper">
 
     <!--查询需要进行选择的课程-->
     <select id="findCourseToBeSelect"
@@ -12,8 +12,6 @@
         FROM(
             SELECT *
             FROM course c
-            LEFT JOIN teacher t
-            ON c.`course_teacher` = t.`teacher_id`
             LEFT JOIN course_type ct
             ON c.`course_type` = ct.`course_type_id`
             WHERE
@@ -32,9 +30,7 @@
             <if test=" courseType != null and courseType != '' ">
                 AND s.`course_type` = #{courseType}
             </if>
-            <if test=" courseTeacher != null and courseTeacher != '' ">
-                AND s.`course_teacher` = #{courseTeacher}
-            </if>
+
         </where>
     </select>
 

@@ -4,6 +4,8 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.train.Phase;
+import com.treehole.framework.domain.train.ext.CourseExt;
+import com.treehole.framework.domain.train.ext.CourseTeacher;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
@@ -94,8 +96,24 @@ public class PhaseService {
             }
         }
 
+    }
 
 
+    //期数课程
+    public QueryResponseResult<CourseTeacher> findPhaseCourse(int page, int size, CourseExt courseExt){
+        if(page<=0){
+            page=1;
+        }
+        Page<CourseTeacher> studentCoursePage = PageHelper.startPage(page, size);
+        List<CourseTeacher> list = phaseMapper.findPhaseCourse(courseExt);
+        PageInfo info = new PageInfo<>(studentCoursePage.getResult());
+        int pageNum = info.getPageNum();//总页数
+        long total = info.getTotal();//数据总个数
+        QueryResult queryResult = new QueryResult();
+        queryResult.setTotal(total);
+        queryResult.setList(list);
+        return new QueryResponseResult<CourseTeacher>(CommonCode.SUCCESS,queryResult);
 
     }
+
 }

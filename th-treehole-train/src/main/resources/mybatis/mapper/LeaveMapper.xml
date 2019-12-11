@@ -27,10 +27,19 @@
     <!--请假信息统计(所有人员信息统计)-->
     <select id="findLeaveAll"
             resultType="com.treehole.framework.domain.train.Leave"
-            parameterType="com.treehole.framework.domain.train.Leave">
+            parameterType="com.treehole.framework.domain.train.ext.StudentLeaveExamine">
         SELECT *
         FROM leaves l
         <where>
+            <if test=" classId != null and classId != '' ">
+                AND l.`leave_people_id` IN
+                (
+                    SELECT s.student_id
+                    FROM student s
+                    WHERE s.student_class = #{classId}
+                )
+            </if>
+
             <if test=" leavePeopleId != null and leavePeopleId != '' ">
                 AND  l.`leave_people_id` =#{leavePeopleId}
             </if>
@@ -43,4 +52,59 @@
         </where>
     </select>
 
+    <!--班级需要审核(学生)请假信息统计-->
+    <select id="findLeaveStudentExamine"
+            resultType="com.treehole.framework.domain.train.Leave"
+            parameterType="com.treehole.framework.domain.train.ext.StudentLeaveExamine">
+        SELECT *
+        FROM leaves l
+        <where>
+            AND l.`leave_state` = #{leaveState}
+            AND l.`leave_people_id` IN
+            (
+            SELECT s.student_id
+            FROM student s
+            WHERE s.student_class = #{classId}
+            )
+            <if test=" leavePeopleId != null and leavePeopleId != '' ">
+                AND  l.`leave_people_id` =#{leavePeopleId}
+            </if>
+            <if test=" leavePeopleName != null and leavePeopleName != '' ">
+                AND l.`leave_people_name` LIKE '%${leavePeopleName}%'
+            </if>
+        </where>
+    </select>
+
+    <!--管理员需要审核(老师)请假信息统计-->
+    <select id="findLeaveTeacherExamine"
+            resultType="com.treehole.framework.domain.train.Leave"
+            parameterType="com.treehole.framework.domain.train.Leave"
+    >
+        SELECT *
+        FROM leaves l
+        <where>
+            AND l.`leave_state` = '3'
+            AND l.`leave_people_type` = '2'
+            <if test=" leavePeopleId != null and leavePeopleId != '' ">
+                AND  l.`leave_people_id` =#{leavePeopleId}
+            </if>
+            <if test=" leavePeopleName != null and leavePeopleName != '' ">
+                AND l.`leave_people_name` LIKE '%${leavePeopleName}%'
+            </if>
+        </where>
+    </select>
+
+
+    <!--统计个人最后一次请假的记录-->
+    <select id="findLastLeaveExamine"
+            resultType="com.treehole.framework.domain.train.Leave"
+            parameterType="java.lang.String">
+        SELECT *
+        FROM leaves l
+        <where>
+            and l.`leave_people_id` = #{id}
+            and l.leave_state in(3,4)
+            and l.`leave_time` = (SELECT MAX(leave_time) FROM  leaves )
+        </where>
+    </select>
 </mapper>

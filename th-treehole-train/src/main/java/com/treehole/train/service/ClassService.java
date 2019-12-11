@@ -3,16 +3,17 @@ package com.treehole.train.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.treehole.framework.domain.train.*;
 import com.treehole.framework.domain.train.Class;
-import com.treehole.framework.domain.train.Student;
-import com.treehole.framework.domain.train.Teacher;
 import com.treehole.framework.domain.train.ext.*;
 import com.treehole.framework.domain.train.response.TrainCode;
+import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.*;
 import com.treehole.train.config.RootPropeties;
+import com.treehole.train.dao.ClassCourseRepository;
 import com.treehole.train.dao.ClassMapper;
 import com.treehole.train.dao.ClassRepository;
-import org.springframework.beans.BeanUtils;
+import com.treehole.train.dao.PhaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +35,20 @@ public class ClassService {
 
     @Autowired
     GenerateNumberService generateNumberService;
+
+    @Autowired
+    StudentService studentService;
+
+    @Autowired
+    PhaseService phaseService;
+
+    @Autowired
+    PhaseRepository phaseRepository;
+
+    @Autowired
+    ClassCourseRepository classCourseRepository;
     //添加班级信息
+    @Transactional
     public ResponseResult addClass(Class class1) {
         Date date = new Date();
         class1.setClassCreatTime(date);
@@ -43,7 +57,32 @@ public class ClassService {
         //添加生成的Id
         String cId = generateNumberService.GenerateNumber("5");
         class1.setClassId(cId);
+        String classPhase = class1.getClassPhase();
+        Optional<Phase> optional = phaseRepository.findById(classPhase);
+        Phase phase = null;
+        if(optional.isPresent()){
+            phase = optional.get();
+        }
+        class1.setClassCourseNumber(phase.getPhaseCourseNumber());
         Class save = classRepository.save(class1);
+
+        //把班级的课程加入class_course表
+           //得到期数课程
+        CourseExt courseExt = new CourseExt();
+        courseExt.setPhaseId(classPhase);
+        QueryResponseResult<CourseTeacher> phaseCourse = phaseService.findPhaseCourse(1, 0, courseExt);
+        List<CourseTeacher> list = phaseCourse.getQueryResult().getList();
+            //添加
+        String classId = save.getClassId();
+        for(CourseTeacher course:list){
+            String courseId = course.getCourseId();
+            ClassCourse classCourse = new ClassCourse();
+            classCourse.setClassId(classId);
+            classCourse.setCourseId(courseId);
+            classCourseRepository.save(classCourse);
+        }
+
+
         if (save != null) {
             return new ResponseResult(CommonCode.SUCCESS);
         }
@@ -75,6 +114,27 @@ public class ClassService {
         classRepository.save(class1);
         return new ResponseResult(CommonCode.SUCCESS);
     }
+
+    //更新课程数目
+    public ResponseResult updateCourseNumber(String phaseId){
+        Optional<Phase> optional = phaseRepository.findById(phaseId);
+        Phase phase = null;
+        if(optional.isPresent()){
+            phase = optional.get();
+        }
+
+        //得到这一期的班级
+        List<Class> classList = classRepository.findByClassPhase(phaseId);
+        for(Class class1:classList){
+            class1.setClassCourseNumber(phase.getPhaseCourseNumber());
+            classRepository.save(class1);
+        }
+
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+
+
 
     //通过id查询班级信息
     public QueryResponseResult<ClassHeadmaster> findClassByFuzzyQuery(int page,int size, Class class1) {
@@ -112,28 +172,27 @@ public class ClassService {
     }
 
     //查询班级课程
-    public QueryResponseResult<CourseTeacher> findClassCourse(int page, int size, CourseExt courseExt) {
+    public QueryResponseResult<CourseTeacher> findClassCourse(int page, int size, StudentCourseParams studentCourseParams) {
         if(page<=0){
             page=1;
         }
-        Page<CourseTeacher> studentCoursePage = PageHelper.startPage(page, size);
-        List<CourseTeacher> list = classMapper.findClassCourse(courseExt);
-        PageInfo info = new PageInfo<>(studentCoursePage.getResult());
-        int pageNum = info.getPageNum();//总页数
-        long total = info.getTotal();//数据总个数
+        com.github.pagehelper.Page<CourseTeacher> studentCoursePage = PageHelper.startPage(page, size);
+        List<CourseTeacher>  list = classMapper.findClassCourse(studentCourseParams);
+        PageInfo<CourseTeacher> info = new PageInfo<>(studentCoursePage.getResult());
+        long total = info.getTotal();
         QueryResult queryResult = new QueryResult();
-        queryResult.setTotal(total);
         queryResult.setList(list);
+        queryResult.setTotal(total);
         return new QueryResponseResult<CourseTeacher>(CommonCode.SUCCESS,queryResult);
     }
 
     //查询班级老师
-    public QueryResponseResult<Teacher> findClassTeacher(int page,int size,ClassTeacher classTeacher) {
+    public QueryResponseResult<Teacher> findClassTeacher(int page,int size,TeacherExt teacherExt) {
         if(page<=0){
             page=1;
         }
         Page<Teacher> teacherPage = PageHelper.startPage(page,size);
-        List<Teacher> list = classMapper.findClassTeacher(classTeacher);
+        List<Teacher> list = classMapper.findClassTeacher(teacherExt);
         PageInfo info = new PageInfo<>(teacherPage.getResult());
         long total = info.getTotal();//数据总个数
         QueryResult queryResult = new QueryResult();

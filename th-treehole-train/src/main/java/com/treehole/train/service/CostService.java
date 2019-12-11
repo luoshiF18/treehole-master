@@ -6,6 +6,7 @@ import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.train.dao.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,10 @@ public class CostService {
 
     @Autowired
     PhaseRepository phaseRepository;
+
+    @Autowired
+    StudentService studentService;
+
     //交费
     @Transactional
     public ResponseResult pay(Cost cost) {
@@ -70,8 +75,10 @@ public class CostService {
                     String costOther = cost.getCostOther();
                     if(costOther == null || costOther == "" ){
                         cost.setCostOther("学费已经交完");
+                        this.updatestudentArrears(studentId);
                     }else {
                         cost.setCostOther(costOther+"（学费已经交完）");
+                        this.updatestudentArrears(studentId);
                     }
                 }
                 Cost save = costRepository.save(cost);
@@ -95,8 +102,10 @@ public class CostService {
                 String costOther = cost.getCostOther();
                 if(costOther == null || costOther == "" ){
                     cost.setCostOther("学费已经交完");
+                    this.updatestudentArrears(studentId);
                 }else {
                     cost.setCostOther(costOther+"（学费已经交完）");
+                    this.updatestudentArrears(studentId);
                 }
             }
             Cost save = costRepository.save(cost);
@@ -123,5 +132,16 @@ public class CostService {
             return cost;
         }
 
+    }
+
+    //修改学生欠费状态
+    private void updatestudentArrears(String studentId){
+        Optional<Student> optionalStudent = studentRepository.findById(studentId);
+        Student student = null;
+        if(optionalStudent.isPresent()){
+            student = optionalStudent.get();
+        }
+        student.setStudentArrears(2);
+        studentRepository.save(student);
     }
 }

@@ -17,6 +17,7 @@ public class Phase {
     @Id
     private  String phaseId;
     private  String phaseName; //期数名称
+    private  int phaseCourseNumber;//课程数
     private  double phaseTuition;//学费
     private  double  phasePreferentialAmount; //优惠金额
 

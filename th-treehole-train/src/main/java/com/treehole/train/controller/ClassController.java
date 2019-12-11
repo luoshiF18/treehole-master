@@ -40,6 +40,8 @@ public class ClassController implements ClassControllerApi {
         return classService.findClassByFuzzyQuery(page,size,class1);
     }
 
+
+
     //查询班级学生
     @Override
     @PostMapping("/findclassstudent/{page}/{size}")
@@ -49,15 +51,15 @@ public class ClassController implements ClassControllerApi {
     //查询班级课程
     @Override
     @PostMapping("/findclasscourse/{page}/{size}")
-    public QueryResponseResult<CourseTeacher> findClassCourse(@PathVariable("page") int page, @PathVariable("size") int size,@RequestBody CourseExt courseExt) {
-        return classService.findClassCourse(page,size,courseExt);
+    public QueryResponseResult<CourseTeacher> findClassCourse(@PathVariable("page") int page, @PathVariable("size") int size,@RequestBody StudentCourseParams studentCourseParams) {
+        return classService.findClassCourse(page,size,studentCourseParams);
     }
 
     //查询班级老师
     @Override
     @PostMapping("/findclassteacher/{page}/{size}")
-    public QueryResponseResult<Teacher> findClassTeacher(@PathVariable("page") int page,@PathVariable("size") int size,@RequestBody  ClassTeacher classTeacher) {
-        return classService.findClassTeacher(page,size,classTeacher);
+    public QueryResponseResult<Teacher> findClassTeacher(@PathVariable("page") int page,@PathVariable("size") int size,@RequestBody  TeacherExt teacherExt) {
+        return classService.findClassTeacher(page,size,teacherExt);
     }
 
 }

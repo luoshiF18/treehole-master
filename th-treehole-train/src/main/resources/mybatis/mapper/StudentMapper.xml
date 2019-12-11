@@ -43,6 +43,9 @@
             <if test=" studentGraduation !=null and studentGraduation !='' ">
                 AND s.`student_graduation`=#{studentGraduation}
             </if>
+            <if test=" studentArrears !=null and studentArrears !='' ">
+                AND s.`student_arrears`=#{studentArrears}
+            </if>
         </where>
     </select>
 
@@ -53,22 +56,23 @@
 
         SELECT *
         FROM (
-                SELECT
-                co.*,
-                t.teacher_name,
-                ct.`course_type_name`
-                FROM student s
-                LEFT JOIN class c
-                ON s.`student_class` = c.`class_id`
-                LEFT JOIN class_course cc
-                ON c.`class_id` = cc.`class_id`
-                LEFT JOIN course co
-                ON cc.`course_id` = co.`course_id`
-                LEFT JOIN teacher t
-                ON co.course_teacher = t.teacher_id
-                LEFT JOIN course_type ct
-                 ON co.`course_type` = ct.`course_type_id`
-                WHERE s.`student_id` = #{studentId}
+            SELECT
+            co.*,
+            t.`teacher_name`,
+            ct.`course_type_name`
+            FROM student s
+            LEFT JOIN class_course cc
+            ON  cc.`class_id` = s.student_class
+            LEFT JOIN teacher_course tc
+            ON cc.`class_course_id` = tc.`class_course_id`
+            LEFT JOIN teacher t
+            ON tc.`teacher_id` = t.`teacher_id`
+            LEFT JOIN course co
+            ON cc.`course_id` = co.`course_id`
+            LEFT JOIN course_type ct
+            ON co.`course_type` = ct.`course_type_id`
+            where s.student_id = #{studentId}
+            AND tc.`state` = 1
         ) c
         <where>
             <if test=" courseId !=null and courseId !='' ">
@@ -87,6 +91,51 @@
 
     </select>
 
+
+    <!--查询学生老师-->
+    <select id="findStudentTeacher"
+            resultType="com.treehole.framework.domain.train.Teacher"
+            parameterType="com.treehole.framework.domain.train.ext.TeacherExt">
+
+        SELECT *
+        FROM (
+            SELECT t.*
+            FROM student s
+            LEFT JOIN class c
+            on s.student_class = c.class_id
+            LEFT JOIN teacher t
+            ON c.`class_headmaster` = t.`teacher_id`
+            WHERE s.`student_id`= #{studentId}
+            UNION
+            SELECT t.*
+            FROM student s
+            LEFT JOIN class_course cc
+            ON  cc.`class_id` = s.student_class
+            LEFT JOIN teacher_course tc
+            ON cc.`class_course_id` = tc.`class_course_id`
+            LEFT JOIN teacher t
+            ON tc.`teacher_id` = t.`teacher_id`
+            WHERE s.student_id = #{studentId}
+            AND tc.`state` = 1
+        ) te
+        <where>
+                <if test="teacherId !=null and teacherId !='' ">
+                    AND te.`teacher_id` = #{teacherId}
+                </if>
+                <if test="teacherName !=null and teacherName !='' ">
+                    AND te.`teacher_name` LIKE '%${teacherName}%'
+                </if>
+                <if test=" teacherGender !=null and teacherGender !='' ">
+                    AND te.`teacher_gender` = #{teacherGender}
+                </if>
+                <if test=" teacherState !=null and teacherState !='' ">
+                    AND te.`teacher_state` = #{teacherState}
+                </if>
+                <if test=" teacherType !=null and teacherType !='' ">
+                    AND te.`teacher_type` = #{teacherType}
+                </if>
+        </where>
+    </select>
 
     <!--学生交费记录(欠费记录)-->
     <select id="findPay"

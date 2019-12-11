@@ -38,6 +38,8 @@ public class Student implements Serializable {
    private  Integer  studentGraduation;//1:未毕业 2:已毕业
    @Column(name = "student_address")
    private  String studentAddress;
+   @Column(name = "student_arrears")
+   private  Integer studentArrears;//是否欠费 1 欠费  2 不欠费
    @Column(name = "student_enrollment_time")
    private  Date studentEnrollmentTime;//入学时间
    @Column(name = "student_graduation_time")
