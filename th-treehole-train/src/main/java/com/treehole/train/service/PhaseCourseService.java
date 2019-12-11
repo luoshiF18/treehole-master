@@ -3,10 +3,8 @@ package com.treehole.train.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.treehole.framework.domain.train.*;
 import com.treehole.framework.domain.train.Class;
-import com.treehole.framework.domain.train.Phase;
-import com.treehole.framework.domain.train.PhaseCourse;
-import com.treehole.framework.domain.train.Course;
 import com.treehole.framework.domain.train.ext.CourseExt;
 import com.treehole.framework.domain.train.ext.CourseList;
 import com.treehole.framework.domain.train.ext.CourseTeacher;
@@ -40,6 +38,12 @@ public class PhaseCourseService {
     CourseRepository courseRepository;
     @Autowired
     ClassService classService;
+    @Autowired
+    StudentRepository studentRepository;
+    @Autowired
+    CostMapper costMapper;
+    @Autowired
+    CostRepository costRepository;
     //选课
     @Transactional
     public ResponseResult addClassCourse(String phaseId , CourseList courseList) {
@@ -69,10 +73,11 @@ public class PhaseCourseService {
             double phaseTuition = phase.getPhaseTuition();
             phase.setPhaseTuition(phaseTuition + coursePrice);
             phaseRepository.save(phase);
-            //更新班级课程
-            classService.updateCourseNumber(phaseId);
         }
-
+        //更新班级课程
+        classService.updateCourseNumberSelect(phaseId,courseList);
+        //更新学生的欠费情况
+        this.updateArrearsSituationOfCourseSelection(phaseId,courseList);
         return new ResponseResult(CommonCode.SUCCESS);
 
     }
@@ -104,7 +109,9 @@ public class PhaseCourseService {
         phase.setPhaseTuition(phaseTuition - coursePrice);
         phaseRepository.save(phase);
         //更新班级课程
-        classService.updateCourseNumber(phaseId);
+        classService.updateCourseNumberRetire(phaseId,courseId);
+        //更新学生欠费情况
+        this.updateArrearsSituationOfCourseRetire(phaseId,courseId);
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
@@ -135,6 +142,56 @@ public class PhaseCourseService {
         }
     }
 
+    //（选课时）更新学生的欠费情况
+    public void updateArrearsSituationOfCourseSelection(String phaseId , CourseList courseList){
+        //查询这一期的学生
+        List<Student> studentList = studentRepository.findByStudentPhase(phaseId);
+        for(Student student:studentList){
+            String studentId = student.getStudentId();
+            //从中拿到最新的交费情况
+            List<Cost> costList = costMapper.findCostByStudentId(studentId);
+            Cost cost = costList.get(0);
+            //老的欠费金额
+            double costArrears = cost.getCostArrears();
+            //计算新添加课程的总价格
+            List<Course> courseList1 = courseList.getCourseList();
+            double price = 0;
+            for(Course course:courseList1){
+                double coursePrice = course.getCoursePrice();
+                price+=coursePrice;
+            }
+            //新的欠费金额
+            cost.setCostArrears(costArrears+price);
+            cost.setCostOther("按要求又添加课程，学费进行增加");
+            costRepository.save(cost);
+        }
+    }
 
+    //（退课时）更新学生的欠费情况
+    public void updateArrearsSituationOfCourseRetire(String phaseId , String courseId){
+        //查询这一期的学生
+        List<Student> studentList = studentRepository.findByStudentPhase(phaseId);
+        for(Student student:studentList){
+            String studentId = student.getStudentId();
+            //从中拿到最新的交费情况
+            List<Cost> costList = costMapper.findCostByStudentId(studentId);
+            Cost cost = costList.get(0);
+            //老的欠费金额
+            double costArrears = cost.getCostArrears();
+
+            //计算新添加课程的总价格
+            Optional<Course> optional = courseRepository.findById(courseId);
+            Course course = null;
+            if(optional.isPresent()){
+                course = optional.get();
+                double price = course.getCoursePrice();
+                //新的欠费金额
+                cost.setCostArrears(costArrears - price);
+                cost.setCostOther("按要求又减少课程，学费进行减少");
+                costRepository.save(cost);
+            }
+
+        }
+    }
 
 }

@@ -14,5 +14,6 @@ public class ClassHeadmaster extends Class {
 
 
     private String teacherName;
+    private String phaseName;
 
 }

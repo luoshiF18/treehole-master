@@ -16,10 +16,13 @@
             resultType="com.treehole.framework.domain.train.ext.ClassHeadmaster">
             SELECT
             c.*,
-            t.`teacher_name`
+            t.`teacher_name`,
+            p.phase_name
             FROM class c
             LEFT JOIN teacher t
             ON c.`class_headmaster` = t.`teacher_id`
+            LEFT JOIN phase p
+            ON c.class_phase = p.phase_id
             <where>
                 <if test="classId !=null and classId !='' ">
                    and c.`class_id` = #{classId}
@@ -62,6 +65,23 @@
             ON co.`course_type` = ct.`course_type_id`
             WHERE cc.`class_id`=#{classId}
             AND tc.`state` = 1
+            union
+            SELECT
+            co.*,
+            t.`teacher_Id`,
+            t.`teacher_name`,
+            ct.`course_type_name`
+            FROM `class_course` cc
+            LEFT JOIN teacher_course tc
+            ON cc.`class_course_id` = tc.`class_course_id`
+            LEFT JOIN teacher t
+            ON tc.`teacher_id` = t.`teacher_id`
+            LEFT JOIN course co
+            ON cc.`course_id` = co.`course_id`
+            LEFT JOIN course_type ct
+            ON co.`course_type` = ct.`course_type_id`
+            WHERE cc.`class_id`=#{classId}
+            AND tc.state is null
         ) c
         <where>
             <if test=" courseId !=null and courseId !='' ">
@@ -90,7 +110,8 @@
 
         SELECT *
         FROM (
-            SELECT s.*
+            SELECT
+            s.*
             FROM student s
             LEFT JOIN class c
             ON s.`student_class` = c.`class_id`
@@ -115,6 +136,9 @@
             </if>
             <if test=" studentGraduation !=null and studentGraduation !='' ">
                 AND s.`student_graduation`=#{studentGraduation}
+            </if>
+            <if test=" studentArrears !=null and studentArrears !='' ">
+                AND s.`student_arrears`=#{studentArrears}
             </if>
         </where>
     </select>

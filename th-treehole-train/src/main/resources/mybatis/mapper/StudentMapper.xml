@@ -71,8 +71,26 @@
             ON cc.`course_id` = co.`course_id`
             LEFT JOIN course_type ct
             ON co.`course_type` = ct.`course_type_id`
-            where s.student_id = #{studentId}
+            where s.`student_id` = #{studentId}
             AND tc.`state` = 1
+            union
+            SELECT
+            co.*,
+            t.`teacher_name`,
+            ct.`course_type_name`
+            FROM student s
+            LEFT JOIN class_course cc
+            ON  cc.`class_id` = s.student_class
+            LEFT JOIN teacher_course tc
+            ON cc.`class_course_id` = tc.`class_course_id`
+            LEFT JOIN teacher t
+            ON tc.`teacher_id` = t.`teacher_id`
+            LEFT JOIN course co
+            ON cc.`course_id` = co.`course_id`
+            LEFT JOIN course_type ct
+            ON co.`course_type` = ct.`course_type_id`
+            where s.`student_id` = #{studentId}
+            AND tc.`state` is null
         ) c
         <where>
             <if test=" courseId !=null and courseId !='' ">

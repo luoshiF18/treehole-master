@@ -7,7 +7,6 @@ import com.treehole.framework.domain.train.*;
 import com.treehole.framework.domain.train.Class;
 import com.treehole.framework.domain.train.ext.*;
 import com.treehole.framework.domain.train.response.TrainCode;
-import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.*;
 import com.treehole.train.config.RootPropeties;
 import com.treehole.train.dao.ClassCourseRepository;
@@ -47,12 +46,14 @@ public class ClassService {
 
     @Autowired
     ClassCourseRepository classCourseRepository;
+
     //添加班级信息
     @Transactional
     public ResponseResult addClass(Class class1) {
         Date date = new Date();
         class1.setClassCreatTime(date);
         class1.setClassNumber(0);
+        class1.setClassGraduation(1);
         class1.setClassCourseNumber(0);
         //添加生成的Id
         String cId = generateNumberService.GenerateNumber("5");
@@ -115,8 +116,8 @@ public class ClassService {
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
-    //更新课程数目
-    public ResponseResult updateCourseNumber(String phaseId){
+    //选课更新课程数目
+    public ResponseResult updateCourseNumberSelect(String phaseId,CourseList courseList){
         Optional<Phase> optional = phaseRepository.findById(phaseId);
         Phase phase = null;
         if(optional.isPresent()){
@@ -126,14 +127,41 @@ public class ClassService {
         //得到这一期的班级
         List<Class> classList = classRepository.findByClassPhase(phaseId);
         for(Class class1:classList){
+            String classId = class1.getClassId();
             class1.setClassCourseNumber(phase.getPhaseCourseNumber());
             classRepository.save(class1);
+            //得到课程Id
+            List<Course> list = courseList.getCourseList();
+            for(Course course : list){
+                String courseId = course.getCourseId();
+                ClassCourse classCourse = new ClassCourse();
+                classCourse.setCourseId(courseId);
+                classCourse.setClassId(classId);
+                classCourseRepository.save(classCourse);
+            }
         }
-
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
+    //退课更新课程数目
+    public ResponseResult updateCourseNumberRetire (String phaseId,String courseId){
+        Optional<Phase> optional = phaseRepository.findById(phaseId);
+        Phase phase = null;
+        if(optional.isPresent()){
+            phase = optional.get();
+        }
 
+        //得到这一期的班级
+        List<Class> classList = classRepository.findByClassPhase(phaseId);
+        for(Class class1:classList){
+            String classId = class1.getClassId();
+            class1.setClassCourseNumber(phase.getPhaseCourseNumber());
+            classRepository.save(class1);
+            //删除对应班级的课程
+            classCourseRepository.deleteByClassIdAndCourseId(classId,courseId);
+        }
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
 
 
     //通过id查询班级信息

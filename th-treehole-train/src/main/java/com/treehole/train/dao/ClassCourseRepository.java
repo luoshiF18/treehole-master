@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ClassCourseRepository extends JpaRepository<ClassCourse,String> {
 
-
+        //删除对应班级的课程
+        void deleteByClassIdAndCourseId(String classId,String courseId);
 
 }

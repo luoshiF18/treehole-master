@@ -11,4 +11,6 @@ public interface StudentRepository extends JpaRepository<Student,String> {
     //查询目前班级未毕业的学生
     List<Student> findByStudentClassAndStudentGraduation(String classId , int studentGraduation);
 
+    //根据期数查询学生
+    List<Student> findByStudentPhase(String phaseId);
 }

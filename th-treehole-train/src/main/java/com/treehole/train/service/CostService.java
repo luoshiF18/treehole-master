@@ -65,6 +65,12 @@ public class CostService {
                 //欠费金额=应收金额-优惠金额-实收金额
                 Double arrears = cost.getCostAmountPayable() - cost.getCostPreferentialAmount() - cost.getCostAmountReceived();
                 cost.setCostArrears(arrears);
+                //计算优惠金额还剩多少
+                double preferentialAmount = cost.getCostPreferentialAmount() - cost.getCostAmountPayable();
+                if(preferentialAmount <= 0){
+                    preferentialAmount = 0;
+                }
+                cost.setCostPreferentialAmount(preferentialAmount);
                 //生成时间
                 Date date = new Date();
                 cost.setCostTime(date);
@@ -91,30 +97,46 @@ public class CostService {
         } else {
        //第一次交费的情况
            //欠费计算
-            Double arrears = cost.getCostAmountPayable() - cost.getCostPreferentialAmount() - cost.getCostAmountReceived();
-            cost.setCostArrears(arrears);
-            Date date = new Date();
-            cost.setCostTime(date);
-            if(arrears < 0){
-                ExceptionCast.cast(CostCode.MOREMONEY);
-            }
-            if(arrears == 0  || arrears == 0.0 || arrears == 0.00){
-                String costOther = cost.getCostOther();
-                if(costOther == null || costOther == "" ){
-                    cost.setCostOther("学费已经交完");
-                    this.updatestudentArrears(studentId);
-                }else {
-                    cost.setCostOther(costOther+"（学费已经交完）");
-                    this.updatestudentArrears(studentId);
+            if(cost.getCostAmountPayable() == 0){
+                Date date = new Date();
+                cost.setCostTime(date);
+                Cost save = costRepository.save(cost);
+                if (save != null) {
+                    return new ResponseResult(CommonCode.SUCCESS);
                 }
+            }else {
+                Double arrears = cost.getCostAmountPayable() - cost.getCostPreferentialAmount() - cost.getCostAmountReceived();
+                cost.setCostArrears(arrears);
+                //计算优惠金额还剩多少
+                double preferentialAmount = cost.getCostAmountPayable() - cost.getCostPreferentialAmount();
+                if(preferentialAmount <= 0){
+                    preferentialAmount = 0;
+                }
+                cost.setCostPreferentialAmount(preferentialAmount);
+                //生成时间
+                Date date = new Date();
+                cost.setCostTime(date);
+                if(arrears < 0){
+                    ExceptionCast.cast(CostCode.MOREMONEY);
+                }
+                if(arrears == 0  || arrears == 0.0 || arrears == 0.00){
+                    String costOther = cost.getCostOther();
+                    if(costOther == null || costOther == "" ){
+                        cost.setCostOther("学费已经交完");
+                        this.updatestudentArrears(studentId);
+                    }else {
+                        cost.setCostOther(costOther+"（学费已经交完）");
+                        this.updatestudentArrears(studentId);
+                    }
+                }
+                Cost save = costRepository.save(cost);
+                if (save != null) {
+                    return new ResponseResult(CommonCode.SUCCESS);
+                }
+                return new ResponseResult(CommonCode.FAIL);
             }
-            Cost save = costRepository.save(cost);
-            if (save != null) {
-                return new ResponseResult(CommonCode.SUCCESS);
             }
-            return new ResponseResult(CommonCode.FAIL);
-        }
-
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 
     //查询应收金额和优惠金额
@@ -128,7 +150,6 @@ public class CostService {
         }else {
         //从记录中拿
             Cost cost = costList.get(0);
-            cost.setCostPreferentialAmount(0);
             return cost;
         }
 
