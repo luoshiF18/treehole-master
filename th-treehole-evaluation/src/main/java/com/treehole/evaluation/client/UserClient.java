@@ -16,13 +16,13 @@ import java.util.List;
 @FeignClient(value = "th-treehole-member")
 public interface UserClient {
 
-    @GetMapping("/uservo/find/nickname")
-    public UserVo getUserVoByNickname(@RequestParam("nickname") String nickname);
+    @GetMapping("member/user/getUserByNickname")
+    public UserVo getUserVoByNickname(@RequestParam(value ="nickname") String nickname);
 
-    @GetMapping("/uservo/get/warningUser")
+    @GetMapping("member/user/get/warningUser")
     public List<UserVo> getAllUser(@RequestParam("listUserId") List listUserId);
 
-    @GetMapping("/uservo/find/userId/{user_id}")
+    @GetMapping("member/user/find/userId/{user_id}")
     public UserVo getUserVoByUserId(@PathVariable("user_id") String user_id);
 
     @GetMapping("member/user/getUserByNicknames")

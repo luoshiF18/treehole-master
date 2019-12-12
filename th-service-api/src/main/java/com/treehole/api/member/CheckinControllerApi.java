@@ -1,6 +1,7 @@
 package com.treehole.api.member;
 
 import com.treehole.framework.domain.member.Checkin;
+import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,10 +14,10 @@ import io.swagger.annotations.ApiOperation;
 
 @Api(value = "签到信息管理", description = "对签到信息进行增、删、查")
 public interface CheckinControllerApi {
-/*    @ApiOperation("查询所有签到信息")
+    @ApiOperation("查询所有签到信息")
     public QueryResponseResult findAllCheckin(Integer page,
                                               Integer size,
-                                              String user_id);*/
+                                              String user_id);
 /*
     @ApiOperation("根据user_id查询签到信息")
     public ResponseResult findCheckinByUserId(String user_id,Integer page, Integer size) ;*/

@@ -4,17 +4,17 @@ spring:
   application:
     name: th-treehole-marketing
   redis:
-    host: 192.168.25.130
+    host: 10.0.43.60
   rabbitmq:
-    host: 192.168.25.130
-    username: treehole
-    password: treehole
-    virtual-host: /treehole
+    host: 10.0.43.60
+    username: root
+    password: root
+    #virtual-host: /treehole
   #  jackson:
   #    default-property-inclusion: non_null
   datasource:
     druid:
-      url: ${MYSQL_URL:jdbc:mysql://127.0.0.1:3306/th_marketing?characterEncoding=utf-8}
+      url: ${MYSQL_URL:jdbc:mysql://10.0.43.60:3306/th_marketing?characterEncoding=utf-8}
       username: root
       password: root
       driverClassName: com.mysql.jdbc.Driver
@@ -42,3 +42,7 @@ ribbon:
   OkToRetryOnAllOperations: false  #对所有操作请求都进行重试，如果是get则可以，如果是post，put等操作没有实现幂等的情况下是很危险的,所以设置为false
   ConnectTimeout: 5000  #请求连接的超时时间
   ReadTimeout: 6000 #请求处理的超时时间
+treehole:
+  email:
+    USER: wangluforbusiness@foxmail.com
+    PASSWORD: yjvgbfmtlggkigba

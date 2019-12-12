@@ -48,24 +48,20 @@ public class UserController implements UserControllerApi {
     @Override
     @GetMapping("/getUserByNicknames")
     //@ApiImplicitParam(name = "name", value = "name集合",  allowMultiple = true, dataType = "String", paramType = "query")
-    public List<UserVo> findUserByNicknames(@RequestParam(value ="name")List<String> names){
+    public List<UserVo> findUserByNicknames(@RequestParam(value ="names")List<String> names){
         return userVoService.getUserByNicknames(names);
     }
 
-    /*@Override
+    @Override
     @GetMapping("/getUserByNickname")
     public UserVo getUserVoByNickname(@RequestParam(value = "nickname") String nickname){
         return userVoService.getUserByNickname(nickname);
-    }*/
-    @Override
-    @GetMapping("/getUserById/{user_id}")
-    public UserVo findUserById(@PathVariable("user_id") String user_id){
-       return userVoService.getUserByUserId(user_id);
     }
+
     @Override
     @GetMapping("/getUserByTime")
     public QueryResult findUserByTime(@RequestParam("beforeTime") Date beforeTime,
-                               @RequestParam("afterTime") Date afterTime){
+                                      @RequestParam("afterTime") Date afterTime){
         List<UserVo> byTime = userVoService.findAllUserByTime(beforeTime, afterTime);
         QueryResult queryResult = new QueryResult();
         queryResult.setList(byTime);
@@ -81,8 +77,8 @@ public class UserController implements UserControllerApi {
     @Override
     @DeleteMapping(value ="/delete/{user_id}")
     public ResponseResult deleteUserById(@PathVariable("user_id") String user_id) {
-         userService.deleteUserById(user_id);
-         //再判断用户是否存在
+        userService.deleteUserById(user_id);
+        //再判断用户是否存在
          /*if(this.getUserById(user_id) != null){
              ExceptionCast.cast(MemberCode.DELETE_USER_NOT_EXIST);
          }*/
@@ -117,7 +113,7 @@ public class UserController implements UserControllerApi {
     @Override
     @PutMapping("/update/phone")
     public ResponseResult updateUserPhone(@RequestBody @Valid User user){
-         userService.updatePhone(user);
+        userService.updatePhone(user);
         return new ResponseResult(CommonCode.SUCCESS);
 
     }
@@ -131,8 +127,17 @@ public class UserController implements UserControllerApi {
         return new ResponseResult(CommonCode.SUCCESS);
 
     }
+    @Override
+    @GetMapping("/get/warningUser")
+    public List<UserVo> getAllUser(@RequestParam("listUserId") List listUserId){
+        return userVoService.getAllUser(listUserId);
+    }
 
-
+    @Override
+    @GetMapping("/find/userId/{user_id}")
+    public UserVo getUserVoByUserId(@PathVariable("user_id") String user_id){
+        return userVoService.getUserByUserId(user_id);
+    }
 
 
 }

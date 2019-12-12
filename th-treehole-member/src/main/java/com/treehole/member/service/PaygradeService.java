@@ -14,11 +14,15 @@ import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.mapper.PaygradeMapper;
+import com.treehole.member.myUtil.AddDateUtil;
 import com.treehole.member.myUtil.MyNumberUtils;
 import io.swagger.models.auth.In;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
@@ -35,6 +39,7 @@ import java.util.List;
  */
 
 @Service
+@Cacheable(value="MemberPayGrade")
 public class PaygradeService {
 
     @Autowired
@@ -42,6 +47,7 @@ public class PaygradeService {
 
     @Autowired
     private CardsService cardsService;
+
     //根据id查询等级
     public PayGrade getById(String id){
         PayGrade payGrade = new PayGrade();
@@ -64,6 +70,8 @@ public class PaygradeService {
         return grade;
     }
     //修改等级信息
+    @Transactional
+    @CacheEvict(value="MemberPayGrade",allEntries=true)
     public void updateGrade(PayGrade payGrade){
         Example example =new Example(PayGrade.class);
         Example.Criteria criteria = example.createCriteria();
@@ -79,7 +87,7 @@ public class PaygradeService {
     /*
      * 根据rank,id,name查询所有付费会员等级信息
      * */
-    public QueryResponseResult findAll(Integer page,
+    public QueryResponseResult findAll1(Integer page,
                                        Integer size,
                                        GradeListRequest gradeListRequest) {
         //        分页
@@ -113,7 +121,24 @@ public class PaygradeService {
         queryResult.setTotal(pageInfo.getTotal());
         return new QueryResponseResult(CommonCode.SUCCESS,queryResult);
     }
+
+    /*
+    * 查询所有VIP等级信息
+    * */
+    public QueryResult findAll2(){
+
+        List<PayGrade> grades = paygradeMapper.selectAll();
+        if (CollectionUtils.isEmpty(grades)) {
+            ExceptionCast.cast(MemberCode.DATA_IS_NULL);
+        }
+        //        解析分页结果
+        PageInfo<PayGrade> pageInfo = new PageInfo<>(grades);
+        return new QueryResult(grades,pageInfo.getTotal());
+    }
+
         /*删除*/
+    @Transactional
+    @CacheEvict(value="MemberPayGrade",allEntries=true)
     public void deleteGrade(String id) {
         //id不为空
         if(org.apache.commons.lang3.StringUtils.isBlank(id)){
@@ -134,6 +159,8 @@ public class PaygradeService {
 
     }
 
+    @Transactional
+    @CacheEvict(value="MemberPayGrade",allEntries=true)
     public void insert(PayGrade payGrade) {
         if(payGrade == null){
             //抛出异常，非法参数异常。指定异常信息的内容
@@ -161,26 +188,34 @@ public class PaygradeService {
     /*
     * 等级变化
     * */
-/*    public void gradeChange(String user_id,String  paygrade_id){
+    @Transactional
+    @CacheEvict(value="MemberPayGrade",allEntries=true)
+    public void gradeChange(String user_id,String  paygrade_id){
         //通过paygrade_id得到等级对象
         PayGrade payGrade1 = this.getById(paygrade_id);
-        Integer day =payGrade1.getCard_legality();
+        Integer day =payGrade1.getCard_legality(); //天数
         long day1 = day.longValue();
-        Date dateStart = new Date();
+        Cards cards = cardsService.findCardsByUserId(user_id);
+        Date dateStart;
         Date end = new Date();
+        if(cards.getPaygrade_start() == null){
+            dateStart = new Date();
+            cards.setPaygrade_start(dateStart);
+        }else{
+            dateStart = cards.getPaygrade_end();  //续费情况
+        }
         try {
             Date dateEnd = AddDateUtil.addDate(dateStart,day1);
             end = dateEnd;
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        Cards cards = cardsService.findCardsByUserId(user_id);
-        cards.setPaygrade_start(dateStart);
+
         cards.setPaygrade_end(end);
 
         //修改cards
         cardsService.updateCard(cards);
 
-    }*/
+    }
 
 }

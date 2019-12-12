@@ -118,12 +118,10 @@ public class WarningService {
                 for (WarningVo warningVo : scaleWarning) {
                     if (userVo.getUser_id().equals(warningVo.getUserId())) {
                         if(userVo.getGender()==null||userVo.getUser_birth()==null){
-                            warningVo.setSex(2);
+                            warningVo.setSex(userVo.getGender());
                             warningVo.setUserBirth(null);
                         }
-                        else {
-                            /*warningVo.setSex(userVo.getGender());*/
-                        }
+
                         warningVo.setUserName( userVo.getUser_name() );
                         warningVo.setUserNickName( userVo.getUser_nickname() );
                     }
@@ -279,7 +277,8 @@ public class WarningService {
             List<UserVo> allUser = userClient.getAllUser( listUserId );
             return allUser;
         }
-        else return null;
+        else {
+            return null;}
     }
     //拼接饼状图数据返回给前台
     public String getPieData(String userNickName) {

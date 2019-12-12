@@ -6,6 +6,7 @@ import tk.mybatis.mapper.annotation.KeySql;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -13,7 +14,7 @@ import java.math.BigDecimal;
  */
 @Data
 @Table(name = "tb_activity_rule")
-public class ActivityRule {
+public class ActivityRule implements Serializable {
     @Id
     @KeySql(useGeneratedKeys = true)
     private String id;

@@ -38,7 +38,6 @@ import java.util.*;
  * @Date
  */
 @Service
-@Cacheable(value="MemberUser")
 public class UserService {
 
     @Autowired
