@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:8007}
+  port: ${PORT:40800}
 spring:
   application:
     name: th-treehole-marketing
