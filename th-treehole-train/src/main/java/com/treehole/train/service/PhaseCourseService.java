@@ -4,8 +4,6 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.train.*;
-import com.treehole.framework.domain.train.Class;
-import com.treehole.framework.domain.train.ext.CourseExt;
 import com.treehole.framework.domain.train.ext.CourseList;
 import com.treehole.framework.domain.train.ext.CourseTeacher;
 import com.treehole.framework.domain.train.ext.SelectCourses;
