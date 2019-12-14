@@ -35,4 +35,126 @@
         </where>
     </select>
 
+    <!--查询老师所教的班级-->
+    <select id="findTeacherClass"
+            parameterType="com.treehole.framework.domain.train.ext.ClassHeadmaster"
+            resultType="com.treehole.framework.domain.train.ext.ClassHeadmaster">
+        SELECT
+        DISTINCT c.`class_id`,
+        c.`class_name`,
+        c.`class_phase`,
+        c.`class_plan`,
+        c.`class_headmaster`,
+        c.`class_course_number`,
+        c.`class_creat_time`,
+        c.`class_end_time`,
+        c.`class_graduation`,
+        c.`class_number`,
+        c.`class_other`,
+        c.`class_planned_number`,
+        p.`phase_name`,
+        t2.`teacher_name`
+        FROM teacher t
+        LEFT JOIN teacher_course tc
+        ON t.`teacher_id` = tc.`teacher_id`
+        LEFT JOIN class_course cc
+        ON tc.`class_course_id` = cc.`class_course_id`
+        LEFT JOIN class c
+        ON c.`class_id` = cc.`class_id`
+        LEFT JOIN teacher t2
+        ON c.`class_headmaster` = t2.`teacher_id`
+        LEFT JOIN phase p
+        ON p.`phase_id` = c.`class_phase`
+        <where>
+            and  t.`teacher_id` = #{teacherId}
+            AND tc.`state` = 1
+            <if test="classId !=null and classId !='' ">
+                and c.`class_id` = #{classId}
+            </if>
+
+            <if test=" className !=null and className !='' ">
+                AND c.`class_name` LIKE '%${className}%'
+            </if>
+
+            <if test=" classGraduation !=null and classGraduation !='' ">
+                AND c.`class_graduation` = #{classGraduation}
+            </if>
+
+            <if test=" classPhase !=null and classPhase !='' ">
+                AND c.`class_phase` = #{classPhase}
+            </if>
+        </where>
+    </select>
+
+    <!--查询班主任所带的班级-->
+    <select id="findClassOfHeadTeacher"
+            parameterType="com.treehole.framework.domain.train.ext.ClassHeadmaster"
+            resultType="com.treehole.framework.domain.train.ext.ClassHeadmaster">
+
+        SELECT
+        c.*,
+        p.phase_name,
+        t.teacher_name
+        FROM class c
+        LEFT JOIN teacher t
+        ON c.`class_headmaster` = t.`teacher_id`
+        LEFT JOIN phase p
+        on p.phase_id = c.class_phase
+        <where>
+            and t.`teacher_id` = #{teacherId}
+            <if test="classId !=null and classId !='' ">
+                and c.`class_id` = #{classId}
+            </if>
+
+            <if test=" className !=null and className !='' ">
+                AND c.`class_name` LIKE '%${className}%'
+            </if>
+
+            <if test=" classGraduation !=null and classGraduation !='' ">
+                AND c.`class_graduation` = #{classGraduation}
+            </if>
+
+            <if test=" classPhase !=null and classPhase !='' ">
+                AND c.`class_phase` = #{classPhase}
+            </if>
+        </where>
+    </select>
+
+    <!--查询老师所教的课程-->
+    <select id="findTeacherCourseOfTeaching"
+            parameterType="com.treehole.framework.domain.train.ext.TeacherCourseOfTeach"
+            resultType="com.treehole.framework.domain.train.ext.TeacherCourseOfTeach">
+        SELECT
+        c.`class_id`,
+        p.`phase_name`,
+        c.`class_name`,
+        ct.`course_type_name`,
+        co.*
+        FROM teacher t
+        LEFT JOIN teacher_course tc
+        ON t.`teacher_id` = tc.`teacher_id`
+        LEFT JOIN class_course cc
+        ON tc.`class_course_id` = cc.`class_course_id`
+        LEFT JOIN class c
+        ON c.`class_id` = cc.`class_id`
+        LEFT JOIN phase p
+        ON p.`phase_id` = c.`class_phase`
+        LEFT JOIN course co
+        ON cc.`course_id` = co.`course_id`
+        LEFT JOIN course_type ct
+        ON ct.`course_type_id` = co.`course_type`
+        <where>
+            AND t.`teacher_id` = #{teacherId}
+            AND tc.`state` = 1
+            <if test=" courseId !=null and courseId !='' ">
+                AND co.`course_id` = #{courseId}
+            </if>
+            <if test=" courseName !=null and courseName !='' ">
+                AND co.`course_name` LIKE '%${courseName}%'
+            </if>
+            <if test=" courseType !=null and courseType !='' ">
+                AND co.`course_type` = #{courseType}
+            </if>
+        </where>
+    </select>
 </mapper>

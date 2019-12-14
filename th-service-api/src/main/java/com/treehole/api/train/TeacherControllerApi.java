@@ -1,6 +1,9 @@
 package com.treehole.api.train;
 
+import com.treehole.framework.domain.train.Class;
 import com.treehole.framework.domain.train.Teacher;
+import com.treehole.framework.domain.train.ext.ClassHeadmaster;
+import com.treehole.framework.domain.train.ext.TeacherCourseOfTeach;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
@@ -18,5 +21,15 @@ public interface TeacherControllerApi {
     public ResponseResult updateTeacher(String teacherId,Teacher teacher);
     @ApiOperation("通过id和模糊查询查询老师信息")
     public QueryResponseResult<Teacher> findTeacherByFuzzyQuery(int page,int size, Teacher teacher);
+    @ApiOperation("查询老师所教的班级")
+    public QueryResponseResult<ClassHeadmaster> findTeacherClass(int page,int size, ClassHeadmaster classHeadmaster);
+    @ApiOperation("查询老师所教的课程")
+    public QueryResponseResult<TeacherCourseOfTeach> findTeacherCourseOfTeaching(int page,int size, TeacherCourseOfTeach teacherCourseOfTeach);
+    @ApiOperation("查询班主任所带的班级")
+    public QueryResponseResult<Class>findClassOfHeadTeacher(int page, int size, ClassHeadmaster classHeadmaster);
+
+
+
+
 
 }

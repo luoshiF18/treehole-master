@@ -4,6 +4,8 @@ import com.treehole.framework.domain.train.Class;
 import com.treehole.framework.domain.train.Course;
 import com.treehole.framework.domain.train.Teacher;
 
+import com.treehole.framework.domain.train.ext.ClassHeadmaster;
+import com.treehole.framework.domain.train.ext.TeacherCourseOfTeach;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
@@ -35,4 +37,14 @@ public interface TeacherMapper {
             "ON t.`teacher_id` = cl.`class_headmaster`\n" +
             "WHERE t.`teacher_id` = #{teacherId}")
     int findClassByTeacherId(String teacherId);
+
+    //查询老师所教的班级
+    List<ClassHeadmaster> findTeacherClass(ClassHeadmaster classHeadmaster);
+
+    //查询老师所教的课程
+    List<TeacherCourseOfTeach>  findTeacherCourseOfTeaching(TeacherCourseOfTeach teacherCourseOfTeach);
+
+    //查询班主任所带的班级
+    List<Class>findClassOfHeadTeacher(ClassHeadmaster classHeadmaster);
+
 }

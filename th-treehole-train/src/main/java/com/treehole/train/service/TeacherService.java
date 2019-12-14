@@ -2,7 +2,10 @@ package com.treehole.train.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.treehole.framework.domain.train.Class;
 import com.treehole.framework.domain.train.Teacher;
+import com.treehole.framework.domain.train.ext.ClassHeadmaster;
+import com.treehole.framework.domain.train.ext.TeacherCourseOfTeach;
 import com.treehole.framework.domain.train.response.TrainCode;
 import com.treehole.framework.model.response.*;
 import com.treehole.train.config.RootPropeties;
@@ -89,4 +92,72 @@ public class TeacherService {
         }
     }
 
+    //查询老师所教的班级
+    public QueryResponseResult<ClassHeadmaster> findTeacherClass(int page, int size, ClassHeadmaster classHeadmaster) {
+
+        if(page<=0){
+            page = 1;
+        }
+
+        com.github.pagehelper.Page<ClassHeadmaster> teacherPage = PageHelper.startPage(page, size);
+        List<ClassHeadmaster> list = teacherMapper.findTeacherClass(classHeadmaster);
+        PageInfo<ClassHeadmaster> info = new PageInfo<>(teacherPage.getResult());
+        long total = info.getTotal();
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(list);
+        queryResult.setTotal(total);
+
+        if(list!=null){
+            return new QueryResponseResult<ClassHeadmaster>(CommonCode.SUCCESS,queryResult);
+        }else {
+            return new QueryResponseResult<ClassHeadmaster>(CommonCode.FAIL,null);
+        }
+
+    }
+
+    //查询老师所教的课程
+    public QueryResponseResult<TeacherCourseOfTeach> findTeacherCourseOfTeaching(int page, int size, TeacherCourseOfTeach teacherCourseOfTeach) {
+
+        if(page<=0){
+            page = 1;
+        }
+
+        com.github.pagehelper.Page<TeacherCourseOfTeach> teacherPage = PageHelper.startPage(page, size);
+        List<TeacherCourseOfTeach> list = teacherMapper.findTeacherCourseOfTeaching(teacherCourseOfTeach);
+        PageInfo<TeacherCourseOfTeach> info = new PageInfo<>(teacherPage.getResult());
+        long total = info.getTotal();
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(list);
+        queryResult.setTotal(total);
+
+        if(list!=null){
+            return new QueryResponseResult<TeacherCourseOfTeach>(CommonCode.SUCCESS,queryResult);
+        }else {
+            return new QueryResponseResult<TeacherCourseOfTeach>(CommonCode.FAIL,null);
+        }
+
+    }
+
+    //查询班主任所带的班级
+    public QueryResponseResult<Class>findClassOfHeadTeacher(int page, int size, ClassHeadmaster classHeadmaster) {
+
+        if(page<=0){
+            page = 1;
+        }
+
+        com.github.pagehelper.Page<Class> teacherPage = PageHelper.startPage(page, size);
+        List<Class> list = teacherMapper.findClassOfHeadTeacher(classHeadmaster);
+        PageInfo<Class> info = new PageInfo<>(teacherPage.getResult());
+        long total = info.getTotal();
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(list);
+        queryResult.setTotal(total);
+
+        if(list!=null){
+            return new QueryResponseResult<Class>(CommonCode.SUCCESS,queryResult);
+        }else {
+            return new QueryResponseResult<Class>(CommonCode.FAIL,null);
+        }
+
+    }
 }

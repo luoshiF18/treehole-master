@@ -158,19 +158,51 @@
     <!--学生交费记录(欠费记录)-->
     <select id="findPay"
             resultType="com.treehole.framework.domain.train.Cost"
-            parameterType="com.treehole.framework.domain.train.Cost">
-        SELECT *
+            parameterType="com.treehole.framework.domain.train.Student">
+        SELECT c.*
         FROM cost c
+        LEFT JOIN student s
+        ON c.`cost_student_id` = s.`student_id`
+        LEFT JOIN class cl
+        ON s.`student_class`= cl.`class_id`
+        LEFT JOIN phase p
+        ON cl.`class_phase` = p.phase_id
         <where>
-            <if test=" costStudentId !=null and costStudentId !='' ">
-                AND c.`cost_student_id`= #{costStudentId}
+<!--            <if test=" costStudentId !=null and costStudentId !='' ">-->
+<!--                AND c.`cost_student_id`= #{costStudentId}-->
+<!--            </if>-->
+<!--            <if test=" costStudentName !=null and costStudentName !=''  ">-->
+<!--                AND c.`cost_student_name` LIKE '%${costStudentName}%'-->
+<!--            </if>-->
+
+            <if test=" studentId !=null and studentId !='' "  >
+                AND s.`student_id`=#{studentId}
             </if>
-            <if test=" costStudentName !=null and costStudentName !=''  ">
-                AND c.`cost_student_name` LIKE '%${costStudentName}%'
+            <if test=" studentName !=null and studentName !='' ">
+                AND s.`student_name` like '%${studentName}%'
+            </if>
+
+            <if test=" studentGender !=null and studentGender !='' ">
+                AND s.`student_gender`=#{studentGender}
+            </if>
+            <if test=" studentState !=null and studentState !='' ">
+                AND s.`student_state`=#{studentState}
+            </if>
+            <if test=" studentClass !=null and studentClass !='' ">
+                AND s.`student_class`=#{studentClass}
+            </if>
+            <if test=" studentPhase !=null and studentPhase !='' ">
+                AND s.`student_phase`=#{studentPhase}
+            </if>
+            <if test=" studentGraduation !=null and studentGraduation !='' ">
+                AND s.`student_graduation`=#{studentGraduation}
+            </if>
+            <if test=" studentArrears !=null and studentArrears !='' ">
+                AND s.`student_arrears`=#{studentArrears}
             </if>
         </where>
         ORDER BY
-        c.`cost_student_id` ASC,
+        s.`student_id` ASC,
 	    c.`cost_time` ASC
 
     </select>

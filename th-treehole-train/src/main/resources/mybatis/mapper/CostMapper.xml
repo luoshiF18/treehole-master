@@ -20,6 +20,7 @@
             resultMap="findInfo"
             parameterType="java.lang.String">
         SELECT
+        s.student_id,
         s.`student_name`,
         p.`phase_tuition`,
         p.`phase_preferential_amount`

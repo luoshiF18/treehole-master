@@ -75,8 +75,8 @@ public class StudentController implements StudentControllerApi {
     //查新学生交费记录(欠费记录)
     @Override
     @PostMapping("/findPay/{page}/{size}")
-    public QueryResponseResult<Cost> findPay(@PathVariable("page") int page,@PathVariable("size") int size,@RequestBody Cost cost) {
-        return studentService.findPay(page,size,cost);
+    public QueryResponseResult<Cost> findPay(@PathVariable("page") int page,@PathVariable("size") int size,@RequestBody Student student) {
+        return studentService.findPay(page,size,student);
     }
 
 

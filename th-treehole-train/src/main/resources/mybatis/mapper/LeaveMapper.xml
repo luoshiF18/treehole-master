@@ -26,10 +26,19 @@
 
     <!--请假信息统计(所有人员信息统计)-->
     <select id="findLeaveAll"
-            resultType="com.treehole.framework.domain.train.Leave"
+            resultType="com.treehole.framework.domain.train.ext.StudentLeaveExamine"
             parameterType="com.treehole.framework.domain.train.ext.StudentLeaveExamine">
-        SELECT *
+        SELECT
+        l.*,
+        p.phase_id,
+        c.class_name
         FROM leaves l
+        LEFT JOIN student s
+        ON l.`leave_people_id` = s.student_id
+        LEFT JOIN class c
+        ON s.`student_class` = c.`class_id`
+        LEFT JOIN phase p
+        ON p.`phase_id` = c.`class_phase`
         <where>
             <if test=" classId != null and classId != '' ">
                 AND l.`leave_people_id` IN
@@ -40,6 +49,17 @@
                 )
             </if>
 
+            <if test=" className != null and className != '' ">
+                AND  c.`class_name` LIKE '%${className}%'
+            </if>
+
+            <if test=" phaseId != null and phaseId != '' ">
+                AND  p.`phase_id` = #{phaseId}
+            </if>
+
+            <if test=" leaveState != null and leaveState != '' ">
+                AND  l.`leave_state` =#{leaveState}
+            </if>
             <if test=" leavePeopleId != null and leavePeopleId != '' ">
                 AND  l.`leave_people_id` =#{leavePeopleId}
             </if>

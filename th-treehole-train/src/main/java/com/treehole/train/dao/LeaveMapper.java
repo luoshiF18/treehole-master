@@ -13,8 +13,8 @@ public interface LeaveMapper {
    //请假信息统计(请假中的人员信息统计)
    List<Leave> findLeaveByFuzzyQuery(Leave leave);
 
-   //请假信息统计(请假中的人员信息统计)
-   List<Leave> findLeaveAll(StudentLeaveExamine StudentLeaveExamine);
+   //请假信息统计(所有人员信息统计)
+   List<StudentLeaveExamine> findLeaveAll(StudentLeaveExamine StudentLeaveExamine);
 
    //学生审核 信息统计
    List<Leave> findLeaveStudentExamine(StudentLeaveExamine studentLeaveExamine);

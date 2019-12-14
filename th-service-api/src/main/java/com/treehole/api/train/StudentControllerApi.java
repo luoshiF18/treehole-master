@@ -32,7 +32,7 @@ public interface StudentControllerApi {
     @ApiOperation("学生老师统计")
     public QueryResponseResult<Teacher> findStudentTeacher(int page, int size, TeacherExt teacherExt);
     @ApiOperation("学生交费记录(欠费记录)")
-    public QueryResponseResult<Cost> findPay(int page,int size,Cost cost);
+    public QueryResponseResult<Cost> findPay(int page,int size,Student student);
 
 
 

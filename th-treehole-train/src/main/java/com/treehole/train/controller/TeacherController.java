@@ -1,7 +1,10 @@
 package com.treehole.train.controller;
 
 import com.treehole.api.train.TeacherControllerApi;
+import com.treehole.framework.domain.train.Class;
 import com.treehole.framework.domain.train.Teacher;
+import com.treehole.framework.domain.train.ext.ClassHeadmaster;
+import com.treehole.framework.domain.train.ext.TeacherCourseOfTeach;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.train.service.TeacherService;
@@ -37,6 +40,24 @@ public class TeacherController implements TeacherControllerApi {
     @PostMapping("/find/{page}/{size}")
     public QueryResponseResult<Teacher> findTeacherByFuzzyQuery(@PathVariable("page") int page,@PathVariable("size") int size,@RequestBody Teacher teacher) {
         return teacherService.findTeacherByFuzzyQuery(page,size,teacher);
+    }
+
+    @Override
+    @PostMapping("/findTeacherClass/{page}/{size}")
+    public QueryResponseResult<ClassHeadmaster> findTeacherClass(@PathVariable("page") int page,@PathVariable("size") int size,@RequestBody ClassHeadmaster classHeadmaster) {
+        return teacherService.findTeacherClass(page, size, classHeadmaster);
+    }
+
+    @Override
+    @PostMapping("/findTeacherCourseOfTeaching/{page}/{size}")
+    public QueryResponseResult<TeacherCourseOfTeach> findTeacherCourseOfTeaching(@PathVariable("page") int page,@PathVariable("size") int size,@RequestBody TeacherCourseOfTeach teacherCourseOfTeach) {
+        return teacherService.findTeacherCourseOfTeaching(page, size, teacherCourseOfTeach);
+    }
+
+    @Override
+    @PostMapping("/findClassOfHeadTeacher/{page}/{size}")
+    public QueryResponseResult<Class> findClassOfHeadTeacher(@PathVariable("page") int page,@PathVariable("size") int size,@RequestBody ClassHeadmaster classHeadmaster) {
+        return teacherService.findClassOfHeadTeacher(page, size, classHeadmaster);
     }
 
 }

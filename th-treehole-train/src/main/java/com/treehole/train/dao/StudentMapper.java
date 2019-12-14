@@ -32,6 +32,6 @@ public interface StudentMapper {
      List<Teacher> findStudentTeacher(TeacherExt teacherExt);
 
      //学生交费记录(欠费记录)
-     List<Cost> findPay(Cost cost);
+     List<Cost> findPay(Student student);
 
 }

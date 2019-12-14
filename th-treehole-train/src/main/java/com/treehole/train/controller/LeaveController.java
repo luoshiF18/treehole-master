@@ -67,7 +67,7 @@ public class LeaveController implements LeaveControllerApi {
 
     @Override
     @PostMapping("/findAll/{page}/{size}")
-    public QueryResponseResult<Leave> LeaveAllStatistics(@PathVariable("page") int page,@PathVariable("size") int size,@RequestBody StudentLeaveExamine studentLeaveExamine) {
+    public QueryResponseResult<StudentLeaveExamine> LeaveAllStatistics(@PathVariable("page") int page,@PathVariable("size") int size,@RequestBody StudentLeaveExamine studentLeaveExamine) {
         return leaveService.LeaveAllStatistics(page,size,studentLeaveExamine);
     }
 

@@ -207,21 +207,21 @@ public class LeaveService {
     }
 
     //请假信息统计(所有人员信息统计)
-    public QueryResponseResult<Leave> LeaveAllStatistics(int page,int size ,StudentLeaveExamine studentLeaveExamine){
+    public QueryResponseResult<StudentLeaveExamine> LeaveAllStatistics(int page,int size ,StudentLeaveExamine studentLeaveExamine){
         if(page<=0){
             page=1;
         }
-        Page<Leave> leavePage = PageHelper.startPage(page, size);
-        List<Leave> list = leaveMapper.findLeaveAll(studentLeaveExamine);
-        PageInfo<Leave> info = new PageInfo<>(leavePage.getResult());
+        Page<StudentLeaveExamine> leavePage = PageHelper.startPage(page, size);
+        List<StudentLeaveExamine> list = leaveMapper.findLeaveAll(studentLeaveExamine);
+        PageInfo<StudentLeaveExamine> info = new PageInfo<>(leavePage.getResult());
         long total = info.getTotal();
         QueryResult queryResult = new QueryResult();
         queryResult.setList(list);
         queryResult.setTotal(total);
         if(list!=null){
-            return new QueryResponseResult<Leave>(CommonCode.SUCCESS,queryResult);
+            return new QueryResponseResult<StudentLeaveExamine>(CommonCode.SUCCESS,queryResult);
         }else {
-            return new QueryResponseResult<Leave>(CommonCode.FAIL,null);
+            return new QueryResponseResult<StudentLeaveExamine>(CommonCode.FAIL,null);
         }
 
     }

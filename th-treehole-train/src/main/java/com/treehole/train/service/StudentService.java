@@ -118,9 +118,9 @@ public class StudentService {
     @Transactional
     public ResponseResult deleteStudent(String studentId){
         //如果学生有欠费 不能删除
-        Cost cost1 = new Cost();
-        cost1.setCostStudentId(studentId);
-        QueryResponseResult<Cost> pay = this.findPay(1, 0,cost1);
+        Student student1 = new Student();
+        student1.setStudentId(studentId);
+        QueryResponseResult<Cost> pay = this.findPay(1, 0, student1);
         QueryResult<Cost> queryResult = pay.getQueryResult();
         List<Cost> list = queryResult.getList();
         if(list.size() == 0){
@@ -265,12 +265,12 @@ public class StudentService {
         //交费统计(欠费记录)
 
     //学生交费记录(欠费记录)
-    public QueryResponseResult<Cost> findPay(int page,int size,Cost cost){
+    public QueryResponseResult<Cost> findPay(int page,int size,Student student){
         if(page<=0){
             page=1;
         }
         com.github.pagehelper.Page<Cost> hashMapPage = PageHelper.startPage(page, size);
-        List<Cost> costs = studentMapper.findPay(cost);
+        List<Cost> costs = studentMapper.findPay(student);
         PageInfo<Cost> info = new PageInfo<>(hashMapPage.getResult());
         long total = info.getTotal();
         QueryResult queryResult = new QueryResult();

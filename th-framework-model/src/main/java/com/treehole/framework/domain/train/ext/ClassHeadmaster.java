@@ -15,5 +15,8 @@ public class ClassHeadmaster extends Class {
 
     private String teacherName;
     private String phaseName;
+    //老师查询所教班级 老师的Id
+    private String teacherId;
+
 
 }

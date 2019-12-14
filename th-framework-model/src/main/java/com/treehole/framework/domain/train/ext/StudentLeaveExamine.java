@@ -10,4 +10,6 @@ import lombok.ToString;
 @NoArgsConstructor
 public class StudentLeaveExamine extends Leave {
     private String classId;
+    private String className;
+    private String phaseId;
 }
