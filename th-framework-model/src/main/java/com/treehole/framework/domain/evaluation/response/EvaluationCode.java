@@ -26,6 +26,7 @@ public enum EvaluationCode implements ResultCode {
     SCALE_FIND_ERROR(false, 401, "没有找到该量表！"),
     TEST_ERROR(false, 401, "抱歉，测评出现问题！"),
     GET_QUESTION_ERROR(false, 401, "抱歉，获取题目失败！"),
+    HAVE_DONE(false, 401, "抱歉，您已经做过该题！"),
     UPDATE_ERROR(false, 404, "抱歉，更新失败！"),
     DELETE_ERROR(false, 404, "抱歉，删除失败！"),
     SCALE_NAME_SAME(false, 404, "量表名称已存在，请更换！"),

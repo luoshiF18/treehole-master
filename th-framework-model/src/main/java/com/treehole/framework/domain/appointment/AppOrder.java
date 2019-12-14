@@ -2,6 +2,7 @@ package com.treehole.framework.domain.appointment;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;

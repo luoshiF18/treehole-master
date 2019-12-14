@@ -1,7 +1,6 @@
 package com.treehole.api.onlinetalk;
 
 import com.treehole.framework.domain.onlinetalk.Serv;
-import com.treehole.framework.domain.onlinetalk.Vo.ReplyVo;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
