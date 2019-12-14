@@ -82,7 +82,7 @@ public class CouponController implements CouponControllerApi {
      * 修改优惠券状态为结束
      * @return
      */
-    @PutMapping("{id}")
+    @PutMapping("/status/{id}")
     public ResponseResult updateStatusToFinished(@PathVariable("id") String id) {
         this.couponService.updateStatusToFinished(id);
         return new ResponseResult(CommonCode.SUCCESS);

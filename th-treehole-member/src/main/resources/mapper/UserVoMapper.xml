@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.treehole.member.mapper.UserVoMapper">
-    <!--<select id="getAllUser" resultType="com.treehole.framework.domain.member.Vo.UserVo">
-      SELECT
-      user_id,
-      user_name,
-      user_nickname,
-      gender,
-      user_birth,
-      user_phone
-      FROM member_user
-      WHERE user_id IN
-      <foreach collection="list" item="listUserId" index="index" open="(" close=")" separator=",">
-          #{listUserId}
-      </foreach>
-    </select>-->
+    <select id="getAllUser" resultType="com.treehole.framework.domain.member.Vo.UserVo">
+        SELECT
+        user_id,
+        user_name,
+        user_nickname,
+        gender,
+        user_birth,
+        user_phone
+        FROM member_user
+        WHERE user_id IN
+        <foreach collection="list" item="listUserId" index="index" open="(" close=")" separator=",">
+            #{listUserId}
+        </foreach>
+    </select>
 
-<select id="getUserByTime" resultType="com.treehole.framework.domain.member.User">
+    <select id="getUserByTime" resultType="com.treehole.framework.domain.member.User">
       SELECT
       *
       FROM member_user u

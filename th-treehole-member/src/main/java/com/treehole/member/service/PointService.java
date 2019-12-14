@@ -3,13 +3,10 @@ package com.treehole.member.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.treehole.framework.domain.evaluation.Description;
-import com.treehole.framework.domain.evaluation.response.EvaluationCode;
 import com.treehole.framework.domain.marketing.request.ActivityRequest;
-import com.treehole.framework.domain.member.*;
-import com.treehole.framework.domain.member.Vo.CheckinVo;
-import com.treehole.framework.domain.member.Vo.UserVo;
-import com.treehole.framework.domain.member.resquest.CardListRequest;
+import com.treehole.framework.domain.member.Cards;
+import com.treehole.framework.domain.member.Points;
+import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.resquest.PointListRequest;
 import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.exception.ExceptionCast;
@@ -18,7 +15,6 @@ import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.client.MemberClient;
 import com.treehole.member.mapper.PointsMapper;
-import com.treehole.member.mapper.UserMapper;
 import com.treehole.member.myUtil.MyNumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +23,11 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import tk.mybatis.mapper.entity.Example;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author shanhuijie

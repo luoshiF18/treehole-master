@@ -2,9 +2,7 @@ package com.treehole.member;
 
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
-import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.member.mapper.UserMapper;
-
 import com.treehole.member.mapper.UserVoMapper;
 import com.treehole.member.service.UserVoService;
 import org.junit.Test;

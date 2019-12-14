@@ -2,8 +2,6 @@ package com.treehole.framework.domain.evaluation.dto;
 
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * 测试的选项
  *
@@ -15,5 +13,5 @@ public class OptionsDTO {
     //    量表id
     private String scaleId;
     //    选项id
-    private List<String> optionIds;
+    private String optionIds;
 }

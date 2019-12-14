@@ -235,8 +235,8 @@ public class CouponService {
                 coupon.getUsedAmount() == null ||
                 coupon.getUsedAmount() == new BigDecimal(0)||
                 coupon.getQuota() < c.getQuota()||
-                coupon.getStartTime() != c.getStartTime()||
-                coupon.getEndTime() != c.getEndTime()){
+                coupon.getStartTime().compareTo(c.getStartTime()) != 0||
+                coupon.getEndTime().compareTo(c.getEndTime()) != 0){
             ExceptionCast.cast(MarketingCode.DATA_ERROR);
         }
         String upperCase = MyChineseCharUtil.getUpperCase(coupon.getTitle(), false);
@@ -244,10 +244,10 @@ public class CouponService {
         coupon.setLetter(upperCase);
         coupon.setUpdated(new Date());
         //发行量只增不减，库存为发行量-领取量，发行金额进行修改
-        Coupon oldCoupon = this.couponMapper.selectByPrimaryKey(coupon.getId());
-        if(oldCoupon.getQuota() > coupon.getQuota()){
-            ExceptionCast.cast(MarketingCode.UPDATE_DATA_ERROR);
-        }
+       // Coupon oldCoupon = this.couponMapper.selectByPrimaryKey(coupon.getId());
+       // if(oldCoupon.getQuota() > coupon.getQuota()){
+       //     ExceptionCast.cast(MarketingCode.UPDATE_DATA_ERROR);
+       // }
 
         if(this.couponMapper.updateByPrimaryKeySelective(coupon) != 1){
             ExceptionCast.cast(MarketingCode.UPDATE_ERROR);
@@ -268,12 +268,17 @@ public class CouponService {
         //正在进行中的状态修改为结束，其他状态返回禁止修改操作的消息
         if(MyStatusCode.STATUS_ONGOING.equals(coupon.getStatus())){
             coupon.setStatus(MyStatusCode.STATUS_FINISHED);
-            if(this.couponMapper.updateByPrimaryKeySelective(coupon) != 1) {
+            if(this.couponMapper.updateByPrimaryKeySelective(coupon) == 1) {
+                redisTemplate.delete(id+"_coupon_ONGOING");
+
+            } else {
                 ExceptionCast.cast(MarketingCode.UPDATE_ERROR);
             }
-            redisTemplate.delete(id+"_coupon_ONGOING");
+
+        } else {
+            ExceptionCast.cast(MarketingCode.UPDATE_FORBIDDEN);
         }
-        ExceptionCast.cast(MarketingCode.UPDATE_FORBIDDEN);
+
 
     }
 

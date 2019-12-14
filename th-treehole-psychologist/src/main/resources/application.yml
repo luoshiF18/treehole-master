@@ -1,0 +1,37 @@
+server:
+  port: ${PORT:40500}
+spring:
+  application:
+    name: th-treehole-psychologist
+  redis:
+    host: 10.0.43.60
+  datasource:
+    druid:
+      url: ${MYSQL_URL:jdbc:mysql://10.0.43.60:3306/th_psychologist?useSSL=false&characterEncoding=utf-8}
+      username: root
+      password: root
+      driverClassName: com.mysql.jdbc.Driver
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      maxWait: 10000
+      testOnBorrow: true
+      testOnReturn: false
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:50101/eureka/
+  instance:
+    prefer-ip-address:  true
+    ip-address: ${IP_ADDRESS:127.0.0.1}
+    instance-id: ${spring.application.name}:${server.port}
+ribbon:
+  MaxAutoRetries: 2
+  MaxAutoRetriesNextServer: 3
+  OkToRetryOnAllOperations: false
+  ConnectTimeout: 5000
+  ReadTimeout: 6000

@@ -9,11 +9,7 @@ import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
@@ -43,18 +39,20 @@ public interface UserControllerApi {
     @ApiOperation("更新用户密码")
     public ResponseResult updateUserPass(String id,String OldPass,String NewPass);
     @ApiOperation("用户验证根据昵称查询userExt")
-    public UserExt getUserExt(@RequestParam("userNickName") String userNickName);
+    public UserExt getUserExt( String userNickName);
     @ApiOperation("根据user_id得到user对象")
-    public UserVo findUserById(String user_id);
+    public UserVo getUserVoByUserId(String user_id);
     @ApiOperation("根据时间得到userlist对象")
-    public QueryResult findUserByTime(@RequestParam("beforeTime") Date beforeTime,
-                                      @RequestParam("afterTime") Date afterTime);
+    public QueryResult findUserByTime(Date beforeTime,
+                                      Date afterTime);
+    @ApiOperation("根据List Id得到所有user对象")
+    public List<UserVo> getAllUser(List listUserId);
     /* @ApiOperation("根据用户user_ID查询用户Vo信息")
     public UserVo getUserVoByUserId(String user_id);*/
     /*@ApiOperation("查询所有用户")
     public QueryResponseResult getAllUser(Integer page, Integer size);
     */
-    /*@ApiOperation("根据nickname得到对象")
-    public UserVo getUserVoByNickname(String nickname);*/
+    @ApiOperation("根据nickname得到对象")
+    public UserVo getUserVoByNickname( String nickname);
 
 }

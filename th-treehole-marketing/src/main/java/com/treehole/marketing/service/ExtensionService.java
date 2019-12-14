@@ -9,7 +9,6 @@ import com.treehole.framework.domain.marketing.response.MarketingCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.marketing.dao.ExtensionMapper;
-import com.treehole.marketing.utils.MyMailUtils;
 import com.treehole.marketing.utils.MyNumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -22,9 +21,6 @@ import tk.mybatis.mapper.entity.Example;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author wanglu
@@ -76,7 +72,7 @@ public class ExtensionService {
     @Transactional
     public void addExtensionInfo(Extension extension) {
         if(extension.getMode() == null ||
-             StringUtils.isBlank(extension.getContent())){
+                (extension.getMode() == 0 && StringUtils.isBlank(extension.getContent()))  ){
             ExceptionCast.cast(MarketingCode.DATA_ERROR);
         }
         for (Map<String, String> value : extension.getValues()) {
@@ -86,9 +82,10 @@ public class ExtensionService {
         }
         //发送邮件的推广
         if(extension.getMode() == 0){
-            int succCount = sendEmails(extension);
-            extension.setSuccCount(succCount);
-            //extension.setCount(extension.getTo().size());
+            this.amqpTemplate.convertAndSend("TREEHOLE.EMAIL.EXCHANGE", "EMAIL.VERIFY.EXTENSION", extension);
+            //sendEmails(extension);
+            //int succCount = sendEmails(extension);
+            //extension.setSuccCount(succCount);
         }else if(extension.getMode() == 1){
             List<Map<String, String>> extensionValues = extension.getValues();
             for (Map<String, String> extensionValue : extensionValues) {
@@ -99,6 +96,7 @@ public class ExtensionService {
                 this.amqpTemplate.convertAndSend("TREEHOLE.SMS.EXCHANGE", "SMS.VERIFY.URL", msg);
             }
         }
+        extension.setCount(extension.getValues().size());
         extension.setId(MyNumberUtils.getUUID());
         try {
             extension.setInfo(MAPPER.writeValueAsString(extension.getValues()));
@@ -108,6 +106,8 @@ public class ExtensionService {
         this.extensionMapper.insertSelective(extension);
 
     }
+
+/*
 
     private int sendEmails(Extension extension){
 
@@ -123,10 +123,10 @@ public class ExtensionService {
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
-            /*传入的参数为extension.getContent()的原因是，
+            *//*传入的参数为extension.getContent()的原因是，
             传入content104行的content，content第一个${key}已经被修改过了，
             不再有${key},那么发送给用户的所有邮件内容是一样的
-             */
+             *//*
             String content = renderString(extension.getContent(), value);
 
             try {
@@ -151,7 +151,7 @@ public class ExtensionService {
             content = matcher.replaceAll(entry.getValue());
         }
         return content;
-    }
+    }*/
 
     /**
      * 根据条件分页查询推广信息

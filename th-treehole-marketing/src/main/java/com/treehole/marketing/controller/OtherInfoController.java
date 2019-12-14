@@ -27,7 +27,7 @@ public class OtherInfoController implements OtherInfoControllerApi {
      */
     @GetMapping("scale/type/all")
     public QueryResponseResult findScaleType() {
-        return scaleSelectClient.findScaleType();
+        return this.scaleSelectClient.findScaleType();
     }
 
     /**
@@ -44,7 +44,8 @@ public class OtherInfoController implements OtherInfoControllerApi {
             @RequestParam(value = "size", defaultValue = "5") Integer size,
             @RequestParam(value = "scaleTypeId") String scaleTypeId,
             @RequestParam(value = "isFree", defaultValue = "true") Boolean isFree) {
-        return scaleSelectClient.findScaleByType(page, size, scaleTypeId, false);
+        return this.scaleSelectClient.findScaleByType(page, size, scaleTypeId, false);
+       // return null;
     }
 
 

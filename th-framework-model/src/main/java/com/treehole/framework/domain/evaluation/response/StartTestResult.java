@@ -1,6 +1,6 @@
 package com.treehole.framework.domain.evaluation.response;
 
-import com.treehole.framework.domain.evaluation.vo.TestDetailVO;
+import com.treehole.framework.domain.evaluation.vo.QuestionVO;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.framework.model.response.ResultCode;
 import lombok.Data;
@@ -14,10 +14,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StartTestResult extends ResponseResult {
 
-    TestDetailVO testDetailVO;
+    QuestionVO questionVO;
 
-    public StartTestResult(ResultCode resultCode, TestDetailVO testDetailVO) {
+    public StartTestResult(ResultCode resultCode, QuestionVO questionVO) {
         super(resultCode);
-        this.testDetailVO = testDetailVO;
+        this.questionVO = questionVO;
     }
 }

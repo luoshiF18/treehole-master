@@ -1,6 +1,5 @@
 package com.treehole.member.api;
 
-import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.resquest.UserListRequest;
 import com.treehole.framework.model.response.QueryResponseResult;
@@ -26,12 +25,12 @@ public interface UserVoApi {
 
     @GetMapping("member/user/getUserByNicknames")
     public QueryResponseResult findUserByNicknames(List<String> names);
-    /*
-    根据id查找用户*//*
-    @GetMapping("/uservo/find/userId/{user_id}")
+
+    //根据id查找用户
+    @GetMapping("member/user/find/userId/{user_id}")
     public UserVo getUserVoByUserId(@PathVariable("user_id") String user_id);
 
-    *//*根据user_phone查找用户*//*
+    /**//*根据user_phone查找用户*//*
     @GetMapping("/uservo/find/userPhone/{user_phone}")
     public UserVo getUserVoByUserPhone(@PathVariable("user_phone") String user_phone);*/
 
@@ -41,4 +40,5 @@ public interface UserVoApi {
     @GetMapping("member/user/getUserByTime")
     public QueryResult findUserByTime(@RequestParam("beforeTime") Date beforeTime,
                                       @RequestParam("afterTime") Date afterTime);
+
 }
