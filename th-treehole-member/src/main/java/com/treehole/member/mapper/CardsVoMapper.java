@@ -1,6 +1,5 @@
 package com.treehole.member.mapper;
 
-import com.treehole.framework.domain.member.Cards;
 import com.treehole.framework.domain.member.Vo.CardsVo;
 import tk.mybatis.mapper.common.Mapper;
 

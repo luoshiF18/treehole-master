@@ -5,22 +5,28 @@ import com.github.pagehelper.PageInfo;
 import com.treehole.evaluation.MyUtils.MyDateUtils;
 import com.treehole.evaluation.MyUtils.MyMapUtils;
 import com.treehole.evaluation.MyUtils.MyNumberUtils;
+import com.treehole.evaluation.client.UserClient;
 import com.treehole.evaluation.dao.*;
 import com.treehole.evaluation.domath.MyFactory;
 import com.treehole.framework.domain.evaluation.*;
 import com.treehole.framework.domain.evaluation.dto.OptionsDTO;
 import com.treehole.framework.domain.evaluation.response.EvaluationCode;
 import com.treehole.framework.domain.evaluation.vo.*;
+import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
+import com.treehole.framework.utils.Oauth2Util;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import tk.mybatis.mapper.entity.Example;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -48,6 +54,9 @@ public class ScaleSelectService {
     private ScaleTypeMapper scaleTypeMapper;
     @Autowired
     private ScoreMethodMapper scoreMethodMapper;
+    @Autowired
+    private UserClient userClient;
+
 
 //    private static final String USER_OPTIONS = "user:options";
 
@@ -138,6 +147,7 @@ public class ScaleSelectService {
             scaleDetailVO.setCreateTime(MyDateUtils.dateToString1(scale.getCreateTime()));
             if (scale.getUpdateTime() != null && scale.getUpdateUserId() != null) {
                 scaleDetailVO.setUpdateTime(MyDateUtils.dateToString1(scale.getUpdateTime()));
+                scaleDetailVO.setUpdateUserName(userClient.getUserVoByUserId(scale.getUpdateUserId()).getUser_name());
             }
 //            获取问题总数
             Question question = new Question();
@@ -146,6 +156,8 @@ public class ScaleSelectService {
             scaleDetailVO.setQuestionTotal(sum);
 //            获取分类
             scaleDetailVO.setType(scaleTypeMapper.selectByPrimaryKey(scale.getTypeId()).getScaleType());
+//            设置创建人姓名
+            scaleDetailVO.setCreateUserName(userClient.getUserVoByUserId(scale.getCreateUserId()).getUser_name());
 //            设置类型
             scaleDetailVO.setScaleTypeName(scale.getScaleType() == 2 ? "普通" : "多选");
             scaleDetailVO.setStatusName(scale.getStatus() == 0 ? "未启用" : "已启用");
@@ -388,7 +400,7 @@ public class ScaleSelectService {
             UserOptionVO userOptionVO = new UserOptionVO();
             userOptionVO.setId(selectOne.getId());
             userOptionVO.setScaleName(selectOne.getScaleName());
-            userOptionVO.setUserName("暂时没有"); //TODO 获取用户名称
+            userOptionVO.setUserName(getUserId());
             userOptionVO.setResult(combine);
             userOptionVO.setTime(MyDateUtils.dateToString1(selectOne.getTime()));
 //        返回
@@ -428,13 +440,16 @@ public class ScaleSelectService {
                 ResultVO resultVO = new ResultVO();
 //                拷贝
                 BeanUtils.copyProperties(result1, resultVO);
-                resultVO.setUserName("暂时没有"); //TODO 获取用户名字
+//                获取用户姓名
+                UserVo userVo = userClient.getUserVoByUserId(userId);
+                resultVO.setUserName(userVo.getUser_name());
 //                设置描述信息
                 resultVO.setDescriptionInfo(result1.getDescription());
                 resultVO.setResultTime(MyDateUtils.dateToString1(result1.getCreateTime()));
                 if (result1.getUpdateTime() != null && result1.getUpdateUserId() != null) {
                     String updateUserId = result1.getUpdateUserId();
-                    resultVO.setUpdateUserName(updateUserId); //TODO 暂时用更改人id代替
+                    UserVo upDateUser = userClient.getUserVoByUserId(updateUserId);
+                    resultVO.setUpdateUserName(upDateUser.getUser_name());
                     resultVO.setUpdateTime(MyDateUtils.dateToString1(result1.getUpdateTime()));
                 }
                 resultVOS.add(resultVO);
@@ -739,6 +754,17 @@ public class ScaleSelectService {
         warning.setWMessage(w_message);
         warning.setCreateTime(new Date());
         warningFindInfo.insert(warning);
+    }
+
+    /**
+     * 获取用户Id
+     */
+    private String getUserId() {
+        //        获取用户id
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        //      获取信息
+        Map<String, String> userInfo = Oauth2Util.getJwtClaimsFromHeader(request);
+        return userInfo.get("id");
     }
 
 

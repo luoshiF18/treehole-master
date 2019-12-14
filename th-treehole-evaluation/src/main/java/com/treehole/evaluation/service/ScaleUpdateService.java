@@ -7,14 +7,19 @@ import com.treehole.framework.domain.evaluation.*;
 import com.treehole.framework.domain.evaluation.dto.QuestionDTO;
 import com.treehole.framework.domain.evaluation.response.EvaluationCode;
 import com.treehole.framework.exception.ExceptionCast;
+import com.treehole.framework.utils.Oauth2Util;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @auther: Yan Hao
@@ -53,7 +58,7 @@ public class ScaleUpdateService {
         }
 //        设置更新时间
         scale.setUpdateTime(new Date());
-        scale.setUpdateUserId(null); //TODO 获取用户id
+        scale.setUpdateUserId(getUserId());
         if (scaleMapper.updateByPrimaryKeySelective(scale) != 1) {
             ExceptionCast.cast(EvaluationCode.UPDATE_ERROR);
         }
@@ -128,11 +133,22 @@ public class ScaleUpdateService {
     public void updateResult(Result result) {
 //        如果更改过咨询师预警信息或者备注，添加更改人的信息
         if (StringUtils.isNotBlank(result.getUserWarningInfo()) || StringUtils.isNotBlank(result.getRemark())) {
-            result.setUpdateUserId("暂时没有"); //TODO 获取更改人的用户id
+            result.setUpdateUserId(getUserId());
             result.setUpdateTime(new Date());
         }
         if (resultMapper.updateByPrimaryKeySelective(result) != 1) {
             ExceptionCast.cast(EvaluationCode.UPDATE_ERROR);
         }
+    }
+
+    /**
+     * 获取用户Id
+     */
+    private String getUserId() {
+        //        获取用户id
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        //      获取信息
+        Map<String, String> userInfo = Oauth2Util.getJwtClaimsFromHeader(request);
+        return userInfo.get("id");
     }
 }

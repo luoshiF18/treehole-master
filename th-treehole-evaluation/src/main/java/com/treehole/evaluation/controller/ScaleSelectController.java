@@ -1,8 +1,13 @@
 package com.treehole.evaluation.controller;
 
 import com.treehole.api.evaluation.ScaleSelectControllerApi;
+import com.treehole.evaluation.client.UserClient;
+import com.treehole.evaluation.dao.ResultMapper;
+import com.treehole.evaluation.dao.ScaleMapper;
 import com.treehole.evaluation.service.ScaleSelectService;
 import com.treehole.framework.domain.evaluation.Description;
+import com.treehole.framework.domain.evaluation.Result;
+import com.treehole.framework.domain.evaluation.Scale;
 import com.treehole.framework.domain.evaluation.dto.OptionsDTO;
 import com.treehole.framework.domain.evaluation.response.*;
 import com.treehole.framework.domain.evaluation.vo.*;
@@ -10,6 +15,8 @@ import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
+import com.treehole.framework.utils.Oauth2Util;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -17,6 +24,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @auther: Yan Hao
@@ -28,6 +36,12 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
 
     @Autowired
     private ScaleSelectService scaleSelectService;
+    @Autowired
+    private UserClient userClient;
+    @Autowired
+    private ScaleMapper scaleMapper;
+    @Autowired
+    private ResultMapper resultMapper;
 
     /**
      * 搜索量表
@@ -92,7 +106,13 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
     @GetMapping("test/type1")
     public StartTestResult startTestType1(@RequestParam(value = "scaleId") String scaleId,
                                           @RequestParam(value = "nextQuestionSort", required = false) Integer nextQuestionSort) {
-//     TODO   只允许测试一次
+//        只允许测试一次
+        //      只允许测试一次
+        if (nextQuestionSort == null) {
+            if (!checkResult(scaleId)) {
+                ExceptionCast.cast(EvaluationCode.HAVE_DONE);
+            }
+        }
         QuestionVO questionVO = scaleSelectService.startTestType1(scaleId, nextQuestionSort);
         if (questionVO == null) {
             ExceptionCast.cast(EvaluationCode.SELECT_NULL);
@@ -112,7 +132,12 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
                                            @RequestParam(value = "nextQuestionId", required = false) String nextQuestionId,
                                            @RequestParam(value = "questionSort", required = false) Integer questionSort,
                                            @RequestParam(value = "optionId", required = false) String optionId) {
-//     TODO   只允许测试一次
+//      只允许测试一次
+        if (StringUtils.isEmpty(nextQuestionId)) {
+            if (!checkResult(scaleId)) {
+                ExceptionCast.cast(EvaluationCode.HAVE_DONE);
+            }
+        }
         QuestionVO2 questionVO2 = scaleSelectService.startTestType2(scaleId, nextQuestionId, questionSort, optionId);
         if (questionVO2 == null) {
             ExceptionCast.cast(EvaluationCode.GET_QUESTION_ERROR);
@@ -131,7 +156,12 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
     @PostMapping("result")
     public ResultRequest testResult(@RequestBody OptionsDTO optionsDTO) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        String userId = null; //TODO 需要获取用户id
+//      获取信息
+        Map<String, String> userInfo = Oauth2Util.getJwtClaimsFromHeader(request);
+        String userId = null;
+        if (userInfo != null) {
+            userId = userInfo.get("id");
+        }
         ResultVO testResult = scaleSelectService.getTestResult(optionsDTO, userId);
         if (testResult == null) {
             ExceptionCast.cast(EvaluationCode.TEST_ERROR);
@@ -269,6 +299,32 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
     @GetMapping("/find/one/desc")
     public Description findOneDescription(@RequestParam("descId") String descId) {
         return scaleSelectService.findOneDescription(descId);
+    }
+
+    /**
+     * 校验是否做过该题
+     *
+     * @return
+     */
+    private boolean checkResult(String scaleId) {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+//      获取信息
+        Map<String, String> userInfo = Oauth2Util.getJwtClaimsFromHeader(request);
+        if (userInfo == null) {
+            return true;
+        }
+        Scale scale = scaleMapper.selectByPrimaryKey(scaleId);
+//        如果用户登录了就校验
+        Result result = new Result();
+        result.setScaleName(scale.getScaleName());
+        result.setUserId(userInfo.get("id"));
+        Result selectOne = resultMapper.selectOne(result);
+        if (selectOne == null) {
+            return true;
+        } else {
+//            如果做过就不让继续做了
+            return false;
+        }
     }
 
 }
