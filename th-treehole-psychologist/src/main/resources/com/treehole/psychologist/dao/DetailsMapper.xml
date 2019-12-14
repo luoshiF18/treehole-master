@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.treehole.psychologist.dao.DetailsMapper">
-    <!--分页查询所有咨询师详情信息,id+0表示按照id自增排序-->
-    <select id="getAllByPage" resultType="com.treehole.framework.domain.psychologist.Detail">
-        select * from detail order by psychologist_id+0
-    </select>
-</mapper>
