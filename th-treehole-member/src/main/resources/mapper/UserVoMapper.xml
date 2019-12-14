@@ -15,4 +15,14 @@
           #{listUserId}
       </foreach>
     </select>
+
+<select id="getUserByTime" resultType="com.treehole.framework.domain.member.User">
+      SELECT
+      *
+      FROM member_user u
+      WHERE u.user_createtime > #{before} and u.user_createtime &lt; #{after}
+      AND u.role_id = "1"
+
+    </select>
 </mapper>
+

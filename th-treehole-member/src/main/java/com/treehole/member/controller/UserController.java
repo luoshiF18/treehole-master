@@ -1,26 +1,24 @@
 package com.treehole.member.controller;
 
 import com.treehole.api.member.UserControllerApi;
+import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.ext.UserExt;
+import com.treehole.framework.domain.member.resquest.UserListRequest;
 import com.treehole.framework.domain.member.result.MemberCode;
+
+import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
-import com.treehole.member.service.UserService;
-import com.treehole.member.service.UserVoService;
+import io.swagger.annotations.ApiImplicitParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
+import com.treehole.member.service.*;
 import javax.validation.Valid;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author shanhuijie
@@ -28,37 +26,56 @@ import javax.validation.Valid;
  * @Date
  */
 @RestController
-@RequestMapping("user")
+@RequestMapping("member/user")
 public class UserController implements UserControllerApi {
     @Autowired
     private UserService userService;
 
     @Autowired UserVoService userVoService;
 
-    //http://localhost:40300/user/getAllUsers?page=3
-    @GetMapping ("/getAllUsers")
-    public QueryResponseResult getAllUser(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                             @RequestParam(value = "size", defaultValue = "5") Integer size)  {
-        QueryResult queryResult = userService.findAllUsers(page, size);
-        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
 
+    @Override
+    @GetMapping("/getAllUserVos/{page}/{size}")
+    public QueryResponseResult findAllUserVo(@PathVariable("page") Integer page,
+                                             @PathVariable("size") Integer size,
+                                             String sortBy,
+                                             Boolean desc,
+                                             UserListRequest userListRequest){
+
+        return userVoService.findAllUserVos(page,size,sortBy,desc,userListRequest);
     }
 
-    @GetMapping("/find/id/{id}")
-    public User getUserById(@PathVariable("id") String id) {
-
-         return userService.getUserById(id);
-    }
-    @GetMapping("/find")
-    public User getUser(@RequestBody @Valid User user){
-        return  userService.findUser(user);
-
+    @Override
+    @GetMapping("/getUserByNicknames")
+    //@ApiImplicitParam(name = "name", value = "name集合",  allowMultiple = true, dataType = "String", paramType = "query")
+    public List<UserVo> findUserByNicknames(@RequestParam(value ="name")List<String> names){
+        return userVoService.getUserByNicknames(names);
     }
 
-    /*@GetMapping("/find/")
-    public User getUser*/
+    @Override
+    @GetMapping("/getUserByNickname")
+    public UserVo getUserVoByNickname(@RequestParam(value = "nickname") String nickname){
+        return userVoService.getUserByNickname(nickname);
+    }
 
-    @DeleteMapping(value ="/delete/id/{user_id}")
+    @Override
+    @GetMapping("/getUserByTime")
+    public QueryResult findUserByTime(@RequestParam("beforeTime") Date beforeTime,
+                               @RequestParam("afterTime") Date afterTime){
+        List<UserVo> byTime = userVoService.findAllUserByTime(beforeTime, afterTime);
+        QueryResult queryResult = new QueryResult();
+        queryResult.setList(byTime);
+        queryResult.setTotal(byTime.size());
+        return queryResult;
+    }
+    @Override
+    @GetMapping("/getUserExt")
+    public UserExt getUserExt( @RequestParam("userNickName") String userNickName){
+        return userService.getUserExt(userNickName);
+    }
+
+    @Override
+    @DeleteMapping(value ="/delete/{user_id}")
     public ResponseResult deleteUserById(@PathVariable("user_id") String user_id) {
          userService.deleteUserById(user_id);
          //再判断用户是否存在
@@ -69,6 +86,7 @@ public class UserController implements UserControllerApi {
 
     }
 
+    @Override
     @PostMapping ("/insert")
     public ResponseResult insertUser(@RequestBody @Valid User user) {
 
@@ -76,40 +94,50 @@ public class UserController implements UserControllerApi {
             return new ResponseResult(MemberCode.PHONE_IS_EXIST);
         }
         userService.insertUser(user);
+
         return new ResponseResult(CommonCode.SUCCESS);
 
 
     }
+
     /*接收到的数据为前端update后的*/
-    @PostMapping("/update")
-    public ResponseResult update(@RequestBody @Valid User user){
+    @Override
+    @PutMapping("/update")
+    public ResponseResult update(@RequestBody @Valid UserVo uservo){
         //System.out.println("前端传来的+++++++++++++"+user);
-        userService.updateUser(user);
+        userService.updateUser(uservo);
 
         return new ResponseResult(CommonCode.SUCCESS);
     }
     /*更新手机号绑定*/
-
-    @PostMapping("/update/phone")
+    @Override
+    @PutMapping("/update/phone")
     public ResponseResult updateUserPhone(@RequestBody @Valid User user){
-        if (userService.findUserByPhone(user.getUser_phone())!= null){  /*手机号唯一*/
-            return new ResponseResult(MemberCode.PHONE_IS_EXIST);
-        }
-         userService.updateUser(user);
+         userService.updatePhone(user);
         return new ResponseResult(CommonCode.SUCCESS);
 
+    }
+    /*更新密码*/
+    @Override
+    @PutMapping("/update/password")
+    public ResponseResult updateUserPass(@RequestParam("id") String id,
+                                         @RequestParam("OldPass") String OldPass,
+                                         @RequestParam("NewPass") String NewPass){
+        userService.updatePass(id,OldPass,NewPass);
+        return new ResponseResult(CommonCode.SUCCESS);
 
     }
-    @GetMapping("/findUser/nickname")
-    public User findUserByNickname(@RequestParam("nickname") String nickname){
-
-        return  userService.findUserByNickname( nickname );
-    }
-    @GetMapping("/getUserExt")
-    public UserExt getUserExt( @RequestParam("userNickName") String userNickName){
-        return userService.getUserExt(userNickName);
+    @Override
+    @GetMapping("/get/warningUser")
+    public List<UserVo> getAllUser(@RequestParam("listUserId") List listUserId){
+        return userVoService.getAllUser(listUserId);
     }
 
+    @Override
+    @GetMapping("/find/userId/{user_id}")
+    public UserVo getUserVoByUserId(@PathVariable("user_id") String user_id){
+        return userVoService.getUserByUserId(user_id);
+    }
 
 
 }

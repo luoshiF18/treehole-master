@@ -60,7 +60,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         List<ThMenu> perimissions = userExt.getPerimissions();
         if(perimissions==null){
 
-            perimissions =new ArrayList<>( );
+            perimissions =new ArrayList<>();
         }
         List<String> user_permission = new ArrayList<>();
         perimissions.forEach(item-> user_permission.add(item.getCode()));

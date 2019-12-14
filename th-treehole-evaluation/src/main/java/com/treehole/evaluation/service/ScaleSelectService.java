@@ -6,6 +6,7 @@ import com.treehole.evaluation.MyUtils.MyDateUtils;
 import com.treehole.evaluation.MyUtils.MyMapUtils;
 import com.treehole.evaluation.MyUtils.MyNumberUtils;
 import com.treehole.evaluation.dao.*;
+import com.treehole.evaluation.domath.MyFactory;
 import com.treehole.framework.domain.evaluation.*;
 import com.treehole.framework.domain.evaluation.dto.OptionsDTO;
 import com.treehole.framework.domain.evaluation.response.EvaluationCode;
@@ -45,6 +46,8 @@ public class ScaleSelectService {
     private WarningFindInfo warningFindInfo;
     @Autowired
     private ScaleTypeMapper scaleTypeMapper;
+    @Autowired
+    private ScoreMethodMapper scoreMethodMapper;
 
 //    private static final String USER_OPTIONS = "user:options";
 
@@ -102,6 +105,8 @@ public class ScaleSelectService {
             scale.setScaleTypeName(scale.getScaleType() == 2 ? "普通" : "多选");
 //            获取状态并判断
             scale.setStatusName(scale.getStatus() == 0 ? "未启用" : "已启用");
+//            设置量表计算方法
+            scale.setScoreMethodName(scoreMethodMapper.selectByPrimaryKey(scale.getScoreMethodId()).getChinese());
         }
 //        解析分页结果
         PageInfo<Scale> pageInfo = new PageInfo<>(scales);
@@ -134,11 +139,18 @@ public class ScaleSelectService {
             if (scale.getUpdateTime() != null && scale.getUpdateUserId() != null) {
                 scaleDetailVO.setUpdateTime(MyDateUtils.dateToString1(scale.getUpdateTime()));
             }
+//            获取问题总数
+            Question question = new Question();
+            question.setScaleId(scaleId);
+            Integer sum = questionMapper.sum(scaleId);
+            scaleDetailVO.setQuestionTotal(sum);
 //            获取分类
             scaleDetailVO.setType(scaleTypeMapper.selectByPrimaryKey(scale.getTypeId()).getScaleType());
 //            设置类型
             scaleDetailVO.setScaleTypeName(scale.getScaleType() == 2 ? "普通" : "多选");
             scaleDetailVO.setStatusName(scale.getStatus() == 0 ? "未启用" : "已启用");
+//            设置量表计算方法
+            scaleDetailVO.setScoreMethodName(scoreMethodMapper.selectByPrimaryKey(scale.getScoreMethodId()).getChinese());
 //            返回
             return scaleDetailVO;
         } catch (Exception e) {
@@ -270,17 +282,24 @@ public class ScaleSelectService {
 //        获取量表对象
             Scale scale = scaleMapper.selectByPrimaryKey(scaleId);
 //        得出总分数
-            List<String> optionIds = optionsDTO.getOptionIds();
+            String ids = optionsDTO.getOptionIds();
+//            分隔选项
+            String[] optionIds = StringUtils.split(ids, "|");
+            ArrayList<Double> scores = new ArrayList<>();
+//            获取分数
+            Arrays.stream(optionIds).forEach(s -> scores.add(Double.valueOf(optionMapper.getScore(s))));
+//            获取测试类型
+            ScoreMethod scoreMethod = scoreMethodMapper.selectByPrimaryKey(scale.getScoreMethodId());
+            Float lastScore = MyFactory.getScore(scores, scoreMethod.getEnglish());
+//            System.out.println(lastScore);
 //        选项信息
             StringBuilder questionAndOption = new StringBuilder();
-            System.out.println(questionAndOption);
-            Float sum = Float.valueOf(0);
             if (StringUtils.isNotBlank(userId)) {
-//            得出分数并存储选项
+//            存储选项
                 for (String optionId : optionIds) {
                     Option UserOption = optionMapper.getOptionList1(optionId);
-                    Float aFloat = UserOption.getScore();
-                    sum += aFloat;
+/*                    Float aFloat = UserOption.getScore();
+                    sum += aFloat;*/
 //                拼接字符串
                     Question questionName = questionMapper.findQuestionName(UserOption.getQuestionId());
                     questionAndOption.append(
@@ -289,21 +308,22 @@ public class ScaleSelectService {
                 }
 /*//            存入到选项表
                 insertUserOption(userId, scale.getScaleName(), questionAndOption.toString());*/
-            } else {
+            }
+            /* else {
 //            如果没有登录就不记录，直接返回分数
                 for (String optionId : optionIds) {
                     Float integer = optionMapper.getScore(optionId);
                     sum += integer;
                 }
-            }
+            }*/
 //        获取量表描述
-            Description description = getDescription(scaleId, sum);
+            Description description = getDescription(scaleId, lastScore);
 //        准备展示数据
             ResultVO resultVO = new ResultVO();
             resultVO.setWarningInfo(description.getWarningMessage());
             resultVO.setScaleName(scale.getScaleName());
             resultVO.setDescriptionInfo(description.getDescription());
-            resultVO.setScore(sum);
+            resultVO.setScore(lastScore);
 //            如果用户不为空
             if (StringUtils.isNotBlank(userId)) {
 //            预警等级
@@ -311,7 +331,7 @@ public class ScaleSelectService {
 //            存入用户名称
                 resultVO.setUserName(userId);
 //            存入用户结果表
-                insertResult(userId, scale.getScaleName(), description.getDescription(), sum, warningLevel, description.getWarningMessage());
+                insertResult(userId, scale.getScaleName(), description.getDescription(), lastScore, warningLevel, description.getWarningMessage());
 //            存入到选项表
                 insertUserOption(userId, scale.getScaleName(), questionAndOption.toString());
 //            如果预警等级超过2级存入预警信息表
@@ -595,6 +615,18 @@ public class ScaleSelectService {
         return new QueryResult(scaleTypes, scaleTypes.size());
     }
 
+    /**
+     * 获取所有分数计算方法
+     *
+     * @return
+     */
+    public QueryResult findAllScoreMethod() {
+        List<ScoreMethod> scoreMethods = scoreMethodMapper.selectAll();
+        if (CollectionUtils.isEmpty(scoreMethods)) {
+            ExceptionCast.cast(EvaluationCode.SELECT_NULL);
+        }
+        return new QueryResult(scoreMethods, scoreMethods.size());
+    }
 
     /**
      * 获取一个问题的信息

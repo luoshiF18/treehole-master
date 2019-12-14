@@ -40,3 +40,13 @@ ribbon:
 mybatis:
   typeAliasesPackage: com.treehole.framework.domain.evaluation
   mapper-locations: classpath:mapper/*Mapper.xml
+#ev:
+#  method:
+#    - 和|sum
+#    - 平均数|mean
+#    - 方差|variance
+#    - 几何平均数|geometricMean
+#    - 总体方差|populationVariance
+#    - 乘积|product
+#    - 对数求和|sumLog
+#    - 平方和|sumSq

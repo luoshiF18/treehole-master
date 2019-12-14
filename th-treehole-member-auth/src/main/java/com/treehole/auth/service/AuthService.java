@@ -159,7 +159,4 @@ public class AuthService {
         stringRedisTemplate.delete(name);
         return true;
     }
-
-
-
 }
