@@ -3,9 +3,7 @@ package com.treehole.member.controller;
 import com.treehole.api.member.PointControllerApi;
 import com.treehole.framework.domain.member.Points;
 import com.treehole.framework.domain.member.User;
-import com.treehole.framework.domain.member.result.Result;
-import com.treehole.framework.domain.member.result.ResultEnum;
-import com.treehole.framework.domain.member.result.ResultUtil;
+import com.treehole.framework.domain.member.resquest.PointListRequest;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
@@ -24,32 +22,22 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("point")
+@RequestMapping("member/point")
 public class PointController implements PointControllerApi {
 
     @Autowired
     private PointService pointService;
 
-    @Override
-    @GetMapping("/getAllPoints")
-    public QueryResponseResult findAllPoint(@RequestParam(value = "page", defaultValue = "1") Integer page,
-                                            @RequestParam(value = "size", defaultValue = "5") Integer size)
-    {
-        QueryResult queryResult = pointService.findAllPoints(page,size);
-        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
-    }
-
 
     //http://localhost:40300/point/find/id/2?page=2
     @Override
-    @GetMapping("/find/id/{user_id}")
-    public QueryResponseResult getPointById(@PathVariable("user_id") String user_id,
-                                            @RequestParam(value = "page", defaultValue = "1") Integer page,
-                                            @RequestParam(value = "size", defaultValue = "5") Integer size)  {
-        QueryResult pointById= pointService.getPointById(user_id,page,size);
-        return new QueryResponseResult(CommonCode.SUCCESS, pointById);
-    }
+    @GetMapping("/getAllPoints/{page}/{size}")
+    public QueryResponseResult findAllPoint(@PathVariable("page") Integer page,
+                                            @PathVariable("size") Integer size,
+                                            PointListRequest pointListRequest)  {
+         return pointService.findAllPoints(page,size,pointListRequest);
 
+    }
 
     @Override
     @PostMapping("/insert")
@@ -60,11 +48,23 @@ public class PointController implements PointControllerApi {
     /*该删除方法保留，暂时不用！！*/
     //@Override
     //@DeleteMapping(value = "/delete/id/{points_id}")
-    public ResponseResult deletePointById(@PathVariable("points_id") String points_id) {
+    /*public ResponseResult deletePointById(@PathVariable("points_id") String points_id) {
         pointService.deletePointById(points_id);
         return new ResponseResult(CommonCode.SUCCESS);
-
+    }*/
+    @DeleteMapping("/delete/userid/{user_id}")
+    public ResponseResult deletePointByUserId(@PathVariable("user_id") String user_id){
+        pointService.deletePointByUserId(user_id);
+        return  new ResponseResult(CommonCode.SUCCESS);
     }
+
+    @DeleteMapping("/deleteByPointId/{point_id}")
+    public ResponseResult deletePointByPointId(@PathVariable("point_id") String point_id){
+        pointService.deletePointById(point_id);
+        return   new ResponseResult(CommonCode.SUCCESS);
+    }
+
+
 
 
 }

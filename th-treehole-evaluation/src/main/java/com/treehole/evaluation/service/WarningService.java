@@ -6,12 +6,14 @@ import com.github.pagehelper.PageInfo;
 import com.treehole.evaluation.MyUtils.MyNumberUtils;
 import com.treehole.evaluation.client.UserClient;
 import com.treehole.evaluation.dao.ScaleMapper;
+import com.treehole.evaluation.dao.WarningInterveneMapper;
 import com.treehole.evaluation.dao.WarningMapper;
 import com.treehole.framework.domain.evaluation.Scale;
 import com.treehole.framework.domain.evaluation.Warning;
 import com.treehole.framework.domain.evaluation.request.PieData;
 import com.treehole.framework.domain.evaluation.request.WarnRequest;
 import com.treehole.framework.domain.evaluation.response.EvaluationCode;
+import com.treehole.framework.domain.evaluation.vo.WarnHUserVo;
 import com.treehole.framework.domain.evaluation.vo.WarnReportVo;
 import com.treehole.framework.domain.evaluation.vo.WarningVo;
 import com.treehole.framework.domain.member.Vo.UserVo;
@@ -42,6 +44,8 @@ public class WarningService {
     private final WarningMapper warningMapper;
     private final ScaleMapper scaleMapper;
     private final UserClient userClient;
+    private final WarningInterveneMapper warningInterveneMapper;
+
 
 
     //心理咨询师添加咨询用户的预警信息
@@ -113,13 +117,9 @@ public class WarningService {
             for (UserVo userVo : allUser) {
                 for (WarningVo warningVo : scaleWarning) {
                     if (userVo.getUser_id().equals(warningVo.getUserId())) {
-                        if(userVo.getGender()==null||userVo.getUser_birth()==null){
-                            warningVo.setSex(2);
-                            warningVo.setUserBirth(null);
-                        }
-                        else {
-                            warningVo.setSex(userVo.getGender());
-                        }
+
+                        warningVo.setSex(userVo.getGender());
+                        warningVo.setUserBirth(userVo.getUser_birth());
                         warningVo.setUserName( userVo.getUser_name() );
                         warningVo.setUserNickName( userVo.getUser_nickname() );
                     }
@@ -164,9 +164,7 @@ public class WarningService {
                 if(warningVo.getUserId().equals(userVo.getUser_id())){
                     warningVo.setUserName(userVo.getUser_name() );
                     warningVo.setUserNickName(userVo.getUser_nickname());
-                    if(userVo.getGender()!=null){
-                        warningVo.setSex(userVo.getGender());
-                    }
+                    warningVo.setSex(userVo.getGender());
                 }
             }
         }
@@ -199,9 +197,7 @@ public class WarningService {
             else {
                 warnReportVo.setUserBirth(null);
             }
-            if(userVo.getGender()!=null){
-                warnReportVo.setSex(userVo.getGender());
-            }
+            warnReportVo.setSex(userVo.getGender());
             warnReportVo.setPhone(userVo.getUser_phone());
             warnReportVo.setUserEmail( userVo.getUser_email() );
             warnReportVo.setUserRegion(userVo.getUser_region() );
@@ -275,7 +271,8 @@ public class WarningService {
             List<UserVo> allUser = userClient.getAllUser( listUserId );
             return allUser;
         }
-        else return null;
+        else {
+            return null;}
     }
     //拼接饼状图数据返回给前台
     public String getPieData(String userNickName) {
@@ -324,10 +321,8 @@ public class WarningService {
                     default:break;
             }
         }
-        System.out.println(pieScaData);
         //将集合转化为JSON格式 返回给前端
         String data=JSON.toJSONString(pieScaData);
-        System.out.println(data);
         return  data;
     }
     //得到用户最常做量表类型的数据
@@ -340,16 +335,59 @@ public class WarningService {
         if(userPieData==null){
             return null;
         }
-        //得到最多的类型
-       /* Optional<PieData> userPie=userPieData.stream().filter( Objects::nonNull).max( Comparator.comparingInt(PieData ::getValue));
-            PieData maxPie=userPie.get();
-        System.out.println(maxPie);*/
-
         //转换为json格式便于前台接收
         String data=JSON.toJSONString(userPieData);
-
-
-            return data;
+        return data;
     }
 
+    //分页查询高危人群
+    public QueryResponseResult findHighRisk(int page,int size,String userNickName){
+
+        if(page==0){
+            ExceptionCast.cast( EvaluationCode.SELECT_NULL);
+        }
+        //根据请求条件得到高危人群的预警信息和干预记录
+        List<WarnHUserVo> highRisk = warningMapper.findHighRisk(userNickName);
+        System.out.println("测试数据"+highRisk);
+        //从结果中得到用户id，查询用户信息
+        List<String> listUserId = new ArrayList<>();
+        for (WarnHUserVo user : highRisk) {
+            listUserId.add(user.getUserId());
+        }
+        //远程调用用户接口得到用户信息
+        List<UserVo> allUser = userClient.getAllUser( listUserId );
+        //循环拼接用户信息
+        for (WarnHUserVo user : highRisk) {
+           for (UserVo userVo : allUser){
+               if(user.getUserId().equals( userVo.getUser_id())){
+                   user.setUserName(userVo.getUser_name() );
+                   user.setUserNickName(userVo.getUser_nickname() );
+                   user.setSex(userVo.getGender() );
+                   user.setPhone( userVo.getUser_phone() );
+               }
+           }
+        }
+        //设置分页，展示数据
+        PageHelper.startPage(page,size);
+        PageInfo<WarnHUserVo> highRisks = new PageInfo<WarnHUserVo>(highRisk);
+        QueryResult<WarnHUserVo> queryResult = new QueryResult<>();
+        queryResult.setTotal(highRisks.getTotal());
+        queryResult.setList(highRisks.getList());
+        QueryResponseResult queryResponseResult = new QueryResponseResult( CommonCode.SUCCESS, queryResult );
+        return queryResponseResult;
+    }
+
+    //查看预警信息详情
+    public WarnHUserVo lookDetailHWarn(String warnHUserid){
+        if(warnHUserid==null||StringUtils.isBlank(warnHUserid)){
+            ExceptionCast.cast(CommonCode.FAIL);
+        }
+        try {
+            return warningMapper.warnHDetail( warnHUserid );
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

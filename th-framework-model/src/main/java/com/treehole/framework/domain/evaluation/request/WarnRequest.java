@@ -11,9 +11,10 @@ import lombok.ToString;
 @Data
 @ToString
 public class WarnRequest {
-
-    private String startTime;
-    private String endTime;
+ /*   @DateTimeFormat(pattern="yyyy-MM-dd")
+    private Date startTime;
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    private Date endTime;*/
     private String scaleName;
     private String userNickName;
     private Integer warningLevel;

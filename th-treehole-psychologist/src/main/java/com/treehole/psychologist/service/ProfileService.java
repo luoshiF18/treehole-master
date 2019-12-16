@@ -5,9 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.psychologist.Detail;
 import com.treehole.framework.domain.psychologist.Profile;
 import com.treehole.framework.domain.psychologist.State;
-import com.treehole.framework.domain.psychologist.ext.DetailExt;
 import com.treehole.framework.domain.psychologist.ext.ProfileExt;
-import com.treehole.framework.domain.psychologist.ext.PsychologistExt;
 import com.treehole.framework.domain.psychologist.result.PsychologistCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
@@ -27,7 +25,6 @@ import tk.mybatis.mapper.entity.Example;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Helay
@@ -222,105 +219,4 @@ public class ProfileService {
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
-    /**
-     * 根据地区和性别查询心理咨询师信息，门户展示使用
-     *
-     * @param page   当前页
-     * @param size   每页记录数
-     * @param region 咨询师所在地区
-     * @param sex    咨询师性别
-     * @return
-     */
-    public QueryResponseResult findPsychologist(Integer page, Integer size, String region, String sex) {
-        //通用mapper中的example用于条件查询，criteria用于添加条件
-        Example example = new Example(Profile.class);
-        Example.Criteria criteria = example.createCriteria();
-        //添加地区查询条件，实现模糊查询
-        if (region != null) {
-            criteria.andLike("region", "%" + region + "%");
-        }
-        //添加性别查询条件，实现精准查询
-        if (StringUtils.isNotBlank(sex)) {
-            criteria.andEqualTo("sex", sex);
-        }
-        //分页参数
-        PageHelper.startPage(page, size);
-        //进行查询
-        List<Profile> profiles = this.profileMapper.selectByExample(example);
-        //判断profiles集合是否为空
-        if (CollectionUtils.isEmpty(profiles)) {
-            ExceptionCast.cast(PsychologistCode.DATA_IS_NULL);
-        }
-        PageInfo<Profile> pageInfo = new PageInfo<>(profiles);
-        //遍历profiles，将profiles集合转换为PsychologistExt集合
-        List<PsychologistExt> psychologistExts = profiles.stream().map(profile -> {
-            //创建PsychologistExt扩展类实例对象
-            PsychologistExt psychologistExt = new PsychologistExt();
-            //查询简介信息
-            Profile psy = this.profileMapper.selectByPrimaryKey(profile.getId());
-            if (psy == null) {
-                ExceptionCast.cast(PsychologistCode.DATA_IS_NULL);
-            }
-            //查询状态信息
-            State state = this.stateMapper.selectByPrimaryKey(profile.getId());
-            if (state == null) {
-                ExceptionCast.cast(PsychologistCode.DATA_IS_NULL);
-            }
-            //查询详情信息
-            Detail detail = this.detailMapper.selectByPrimaryKey(profile.getId());
-            if (detail == null) {
-                ExceptionCast.cast(PsychologistCode.DATA_IS_NULL);
-            }
-            //开始设置数据
-            psychologistExt.setId(psy.getId());
-            psychologistExt.setName(psy.getName());
-            psychologistExt.setSex(psy.getSex());
-            psychologistExt.setAge(psy.getAge());
-            psychologistExt.setRegion(psy.getRegion());
-            psychologistExt.setStudio(psy.getStudio());
-            psychologistExt.setPraise_number(detail.getPraise_number());
-            psychologistExt.setPlatform_year(detail.getPlatform_year());
-            psychologistExt.setPrice(state.getPrice());
-            //返回需要的类型
-            return psychologistExt;
-        }).collect(Collectors.toList());
-        QueryResult queryResult = new QueryResult();
-        queryResult.setList(psychologistExts);
-        queryResult.setTotal(pageInfo.getTotal());
-        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
-    }
-
-    /**
-     * 根据咨询师id查询更多信息，门户展示使用
-     *
-     * @param id 咨询师id
-     * @return
-     */
-    public DetailExt getPsychologistDetail(String id) {
-        if (StringUtils.isBlank(id)) {
-            ExceptionCast.cast(PsychologistCode.DATA_ERROR);
-        }
-        //查询信息
-        Profile profile = this.profileMapper.selectByPrimaryKey(id);
-        if (profile == null) {
-            ExceptionCast.cast(PsychologistCode.DATA_IS_NULL);
-        }
-        State state = this.stateMapper.selectByPrimaryKey(id);
-        if (state == null) {
-            ExceptionCast.cast(PsychologistCode.DATA_IS_NULL);
-        }
-        //设置数据
-        DetailExt detailExt = new DetailExt();
-        detailExt.setId(profile.getId());
-        detailExt.setName(profile.getName());
-        detailExt.setSex(profile.getSex());
-        detailExt.setImage(profile.getImage());
-        detailExt.setPhone(profile.getPhone());
-        detailExt.setIntroduction(profile.getIntroduction());
-        detailExt.setQualification(profile.getQualification());
-        detailExt.setProficiency(profile.getProficiency());
-        detailExt.setAddress(state.getAddress());
-        detailExt.setPrice(state.getPrice());
-        return detailExt;
-    }
 }

@@ -38,9 +38,6 @@ public class Profile implements Serializable {
     //心理咨询师年龄
     private String age;
 
-    //心理咨询师头像
-    private String image;
-
     //心理咨询师所在地区
     private String region;
 

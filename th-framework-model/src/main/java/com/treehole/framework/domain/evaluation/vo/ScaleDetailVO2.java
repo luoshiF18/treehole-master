@@ -34,6 +34,9 @@ public class ScaleDetailVO2 {
     private Integer scaleType;
     private String scaleTypeName;
     private BigDecimal price;
+    private Integer questionTotal;
+    private String scoreMethodId;
+    private String scoreMethodName;
     private String remark;
 
 }

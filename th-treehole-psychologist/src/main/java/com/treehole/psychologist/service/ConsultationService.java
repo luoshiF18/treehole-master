@@ -2,7 +2,7 @@ package com.treehole.psychologist.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.treehole.framework.domain.member.User;
+import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.psychologist.Consultation;
 import com.treehole.framework.domain.psychologist.Profile;
 import com.treehole.framework.domain.psychologist.ext.ConsultationExt;
@@ -112,7 +112,7 @@ public class ConsultationService {
                 ExceptionCast.cast(PsychologistCode.PSYCHOLOGIST_NOT_EXIST);
             }
             //通过用户id查询用户信息
-            User user = this.userClient.getUserById(consultation.getUser_id());
+            UserVo user = this.userClient.getUserVoByUserId( consultation.getUser_id() );
             if (user == null) {
                 ExceptionCast.cast(PsychologistCode.USER_NOT_EXIST);
             }
@@ -150,7 +150,7 @@ public class ConsultationService {
             if (psy == null) {
                 ExceptionCast.cast(PsychologistCode.PSYCHOLOGIST_NOT_EXIST);
             }
-            User user = this.userClient.getUserById(consultation.getUser_id());
+            UserVo user = this.userClient.getUserVoByUserId( consultation.getUser_id() );
             if (user == null) {
                 ExceptionCast.cast(PsychologistCode.USER_NOT_EXIST);
             }

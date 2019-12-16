@@ -14,20 +14,24 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 /**
- * @author shanhuijie
+ * @author hewenze
  * @Description:
  * @Date
  */
 @RestController
-@RequestMapping("reply")
+@RequestMapping("online/reply")
 public class ReplyController implements ReplyControllerApi {
     @Autowired
     private ReplyService replyService;
 
 
-
-
-
+    /**
+     *查找所有快捷回复
+     * @param page
+     * @param size
+     * @param category
+     * @return
+     */
     @Override
     @GetMapping ("/getAllReply")
     public QueryResponseResult getAllReply(@RequestParam(value = "page", defaultValue = "1") int page,
@@ -40,36 +44,50 @@ public class ReplyController implements ReplyControllerApi {
     }
 
 
-
-
+    /**
+     * 根据id查找快捷回复
+     * @param id
+     * @return
+     */
     @Override
     @GetMapping("/find/id/{id}")
     public ReplyVo getReplyById(@PathVariable("id") String id) {
          return replyService.getReplyById(id);
     }
+
+    /**
+     * 根据快捷回复对象查找快捷回复
+     * @param reply
+     * @return
+     */
     @GetMapping("/find")
     public Reply getAgent(@RequestBody @Valid Reply reply){
         return  replyService.findReply(reply);
 
     }
 
-    /*@GetMapping("/find/")
-    public User getUser*/
 
+    /**
+     * 根据id删除快捷回复
+     * @param reply_id
+     * @return
+     */
     @Override
     @DeleteMapping(value ="/delete/id/{reply_id}")
     public ResponseResult deleteReplyById(@PathVariable("reply_id") String reply_id) {
         replyService.deleteReplyById(reply_id);
          //再判断用户是否存在
-         /*if(this.getUserById(user_id) != null){
-             ExceptionCast.cast(MemberCode.DELETE_USER_NOT_EXIST);
-         }*/
+
         return new ResponseResult(CommonCode.SUCCESS);
 
     }
 
 
-
+    /**
+     * 新增快捷回复
+     * @param reply
+     * @return
+     */
     @Override
     @PostMapping ("/insert")
     public ResponseResult insertReply(@RequestBody @Valid Reply reply) {
@@ -82,12 +100,14 @@ public class ReplyController implements ReplyControllerApi {
     }
 
 
-
-    /*接收到的数据为前端update后的*/
+    /**
+     * 修改快捷回复
+     * @param replyVo
+     * @return
+     */
     @Override
     @PutMapping("/update")
     public ResponseResult updateReply(@RequestBody @Valid ReplyVo replyVo){
-        //System.out.println("前端传来的+++++++++++++"+user);
         replyService.updateReply(replyVo);
 
         return new ResponseResult(CommonCode.SUCCESS);

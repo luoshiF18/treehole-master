@@ -23,4 +23,6 @@ public class UserListRequest {
 
     //用户手机号
     String user_phone;
+    //角色
+    String role_id;
 }

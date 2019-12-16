@@ -3,6 +3,8 @@ package com.treehole.psychologist.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.member.User;
+
+import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.psychologist.Comment;
 import com.treehole.framework.domain.psychologist.Profile;
 import com.treehole.framework.domain.psychologist.ext.CommentExt;
@@ -73,7 +75,9 @@ public class CommentService {
             //设置咨询师姓名
             commentExt.setPsychologist_name(profile.getName());
             //查询用户信息
-            User user = this.userClient.getUserById(comment.getUser_id());
+
+            UserVo user = this.userClient.getUserVoByUserId(  comment.getUser_id());
+
             if (user == null) {
                 ExceptionCast.cast(PsychologistCode.USER_NOT_EXIST);
             }
@@ -122,7 +126,9 @@ public class CommentService {
             //设置咨询师姓名
             commentExt.setPsychologist_name(psy.getName());
             //查询用户信息
-            User user = this.userClient.getUserById(comment.getUser_id());
+
+            UserVo user = this.userClient.getUserVoByUserId(  comment.getUser_id());
+
             if (user == null) {
                 ExceptionCast.cast(PsychologistCode.USER_NOT_EXIST);
             }
@@ -224,7 +230,9 @@ public class CommentService {
         if (profile == null) {
             ExceptionCast.cast(PsychologistCode.PSYCHOLOGIST_NOT_EXIST);
         }
-        User user = this.userClient.getUserById(comment.getUser_id());
+
+        UserVo user = this.userClient.getUserVoByUserId(  comment.getUser_id());
+
         if (user == null) {
             ExceptionCast.cast(PsychologistCode.USER_NOT_EXIST);
         }

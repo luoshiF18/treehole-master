@@ -35,8 +35,6 @@ public class ScaleInsertService {
     @Autowired
     private DescriptionMapper descriptionMapper;
     @Autowired
-    private ResultMapper resultMapper;
-    @Autowired
     private ScaleTypeMapper scaleTypeMapper;
 
     /**
@@ -56,6 +54,7 @@ public class ScaleInsertService {
                 || StringUtils.isBlank(scale.getTopicBackground())
                 || StringUtils.isBlank(scale.getTopicSuggest())
                 || StringUtils.isBlank(scale.getScaleFunction())
+                || StringUtils.isBlank(scale.getScoreMethodId())
                 || StringUtils.isBlank(scale.getGuide())
         ) {
             ExceptionCast.cast(EvaluationCode.SCALE_DATA_NULL);

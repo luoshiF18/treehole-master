@@ -110,8 +110,8 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
     @GetMapping("test/type2")
     public StartTestResult2 startTestType2(@RequestParam("scaleId") String scaleId,
                                            @RequestParam(value = "nextQuestionId", required = false) String nextQuestionId,
-                                           @RequestParam(value = " questionSort", required = false) Integer questionSort,
-                                           @RequestParam(value = " optionId", required = false) String optionId) {
+                                           @RequestParam(value = "questionSort", required = false) Integer questionSort,
+                                           @RequestParam(value = "optionId", required = false) String optionId) {
 //     TODO   只允许测试一次
         QuestionVO2 questionVO2 = scaleSelectService.startTestType2(scaleId, nextQuestionId, questionSort, optionId);
         if (questionVO2 == null) {
@@ -131,7 +131,7 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
     @PostMapping("result")
     public ResultRequest testResult(@RequestBody OptionsDTO optionsDTO) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        String userId = "null"; //TODO 需要获取用户id
+        String userId = null; //TODO 需要获取用户id
         ResultVO testResult = scaleSelectService.getTestResult(optionsDTO, userId);
         if (testResult == null) {
             ExceptionCast.cast(EvaluationCode.TEST_ERROR);
@@ -200,6 +200,19 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
     public QueryResponseResult findScaleType() {
         QueryResult scaleType = scaleSelectService.findScaleType();
         return new QueryResponseResult(CommonCode.SUCCESS, scaleType);
+    }
+
+
+    /**
+     * 获取所有分数计算方法
+     *
+     * @return
+     */
+    @Override
+    @GetMapping("score/method")
+    public QueryResponseResult findScoreMethod() {
+        QueryResult allScoreMethod = scaleSelectService.findAllScoreMethod();
+        return new QueryResponseResult(CommonCode.SUCCESS, allScoreMethod);
     }
 
     /**
