@@ -117,11 +117,9 @@ public class WarningService {
             for (UserVo userVo : allUser) {
                 for (WarningVo warningVo : scaleWarning) {
                     if (userVo.getUser_id().equals(warningVo.getUserId())) {
-                        if(userVo.getGender()==null||userVo.getUser_birth()==null){
-                            warningVo.setSex(userVo.getGender());
-                            warningVo.setUserBirth(null);
-                        }
 
+                        warningVo.setSex(userVo.getGender());
+                        warningVo.setUserBirth(userVo.getUser_birth());
                         warningVo.setUserName( userVo.getUser_name() );
                         warningVo.setUserNickName( userVo.getUser_nickname() );
                     }
@@ -164,11 +162,10 @@ public class WarningService {
         for (WarningVo warningVo : warning) {
             for (UserVo userVo : allUser){
                 if(warningVo.getUserId().equals(userVo.getUser_id())){
+                    warningVo.setUserId(userVo.getUser_id());
                     warningVo.setUserName(userVo.getUser_name() );
                     warningVo.setUserNickName(userVo.getUser_nickname());
-                    if(userVo.getGender()!=null){
-                        warningVo.setSex(userVo.getGender());
-                    }
+                    warningVo.setSex(userVo.getGender());
                 }
             }
         }
@@ -201,9 +198,7 @@ public class WarningService {
             else {
                 warnReportVo.setUserBirth(null);
             }
-            if(userVo.getGender()!=null){
-                warnReportVo.setSex(userVo.getGender());
-            }
+            warnReportVo.setSex(userVo.getGender());
             warnReportVo.setPhone(userVo.getUser_phone());
             warnReportVo.setUserEmail( userVo.getUser_email() );
             warnReportVo.setUserRegion(userVo.getUser_region() );
@@ -327,10 +322,8 @@ public class WarningService {
                     default:break;
             }
         }
-        System.out.println(pieScaData);
         //将集合转化为JSON格式 返回给前端
         String data=JSON.toJSONString(pieScaData);
-        System.out.println(data);
         return  data;
     }
     //得到用户最常做量表类型的数据
@@ -343,16 +336,9 @@ public class WarningService {
         if(userPieData==null){
             return null;
         }
-        //得到最多的类型
-       /* Optional<PieData> userPie=userPieData.stream().filter( Objects::nonNull).max( Comparator.comparingInt(PieData ::getValue));
-            PieData maxPie=userPie.get();
-        System.out.println(maxPie);*/
-
         //转换为json格式便于前台接收
         String data=JSON.toJSONString(userPieData);
-
-
-            return data;
+        return data;
     }
 
     //分页查询高危人群
@@ -365,12 +351,12 @@ public class WarningService {
         List<WarnHUserVo> highRisk = warningMapper.findHighRisk(userNickName);
         System.out.println("测试数据"+highRisk);
         //从结果中得到用户id，查询用户信息
-        List<String> users = new ArrayList<>();
+        List<String> listUserId = new ArrayList<>();
         for (WarnHUserVo user : highRisk) {
-            users.add(user.getUserId());
+            listUserId.add(user.getUserId());
         }
         //远程调用用户接口得到用户信息
-        List<UserVo> allUser = userClient.getAllUser( users );
+        List<UserVo> allUser = userClient.getAllUser( listUserId );
         //循环拼接用户信息
         for (WarnHUserVo user : highRisk) {
            for (UserVo userVo : allUser){

@@ -6,6 +6,7 @@ import com.treehole.framework.domain.evaluation.request.WarnRequest;
 import com.treehole.framework.domain.evaluation.vo.WarnHUserVo;
 import com.treehole.framework.domain.evaluation.vo.WarningVo;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
  * Created by 14:24 on 2019/10/14.
  * Version: 1.0
  */
+@Repository
 public interface WarningMapper extends Mapper<Warning> {
 
     void deleteMoreWarning(List<String> ids);
@@ -31,4 +33,6 @@ public interface WarningMapper extends Mapper<Warning> {
     List<WarnHUserVo> findHighRisk(@Param("userNickName") String userNickName);
     //高危人群详情
     WarnHUserVo warnHDetail(String warnHUserid);
+    //根据listUserID查询用户的预警信息
+    public List<Warning> findWarnByUserId(List<String> userId);
 }

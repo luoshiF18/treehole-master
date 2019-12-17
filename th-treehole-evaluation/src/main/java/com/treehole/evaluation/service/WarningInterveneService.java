@@ -79,7 +79,6 @@ public class WarningInterveneService {
         if(InterveneId==null|| StringUtils.isBlank(InterveneId)){
             return new ResponseResult(CommonCode.FAIL);
         }
-
         try {
             warningInterveneMapper.deleteByPrimaryKey(InterveneId);
             return ResponseResult.SUCCESS();
@@ -89,19 +88,13 @@ public class WarningInterveneService {
             return null;
         }
     }
-    //批量删除
-
     //修改
 
 
 
     //条件查询，根据用户名、咨询人员名(有可能是心理咨询师也有可能是团体负责人，
-    // 在前端设置一个单选框来区分)、日期区间、团体名称
+    //
     public QueryResponseResult getInterveneCondition(int page,int size,InterveneRequest interveneRequest){
-
-       /* if(interveneRequest==null){
-            ExceptionCast.cast( EvaluationCode.DATA_ERROR);
-        }*/
 
         //根据请求条件得到干预表信息
         List<WarnInterveneVo> warnInterveneVos = warningInterveneMapper.getAllByInterveneRequest( interveneRequest );

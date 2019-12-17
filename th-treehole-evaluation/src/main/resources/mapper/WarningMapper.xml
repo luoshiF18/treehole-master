@@ -28,7 +28,7 @@
         warning.id,
         test_scale.scaleName,
         warning.status,
-        user_id as userId,
+        warning.user_id as userId,
         warning_level as warningLevel,
         w_message as wMessage,
         create_time as createTime
@@ -163,6 +163,24 @@
                 wi.id=#{warnHUserid}
 </select>
 
+    <select id="findWarnByUserId" parameterType="java.lang.String" resultType="com.treehole.framework.domain.evaluation.vo.WarningVo">
+                select
+                s.scaleName,
+                w.id,
+                w.warning_level as warningLevel,
+                w.w_message as wMessage,
+                w.create_time as createTime,
+                w.user_id as userId
+                from
+                warning w
+                left join test_scale s on w.scale_id=s.id
+                WHERE
+                w.id IN
+               <foreach collection="list" item="warningId" index="index" open="(" separator="," close=")">
+                   #{warningId}
+             </foreach>
+
+    </select>
 </mapper>
 
 

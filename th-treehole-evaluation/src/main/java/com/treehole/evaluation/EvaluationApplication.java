@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableAsync;
 import tk.mybatis.spring.annotation.MapperScan;
 
 /**
@@ -22,6 +23,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @ComponentScan(basePackages = {"com.treehole.framework"})//扫描common
 @ComponentScan(basePackages = {"com.treehole.evaluation"})//扫描本项目下的所有类,也可以不写
 @MapperScan("com.treehole.evaluation.dao")
+@EnableAsync
 public class EvaluationApplication {
     public static void main(String[] args) {
         SpringApplication.run(EvaluationApplication.class, args);
