@@ -2,6 +2,7 @@ package com.treehole.psychologist.controller;
 
 import com.treehole.api.psychologist.ProfileControllerApi;
 import com.treehole.framework.domain.psychologist.Profile;
+import com.treehole.framework.domain.psychologist.ext.DetailExt;
 import com.treehole.framework.domain.psychologist.ext.ProfileExt;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
@@ -90,4 +91,35 @@ public class ProfileController implements ProfileControllerApi {
         return this.profileService.updateProfile(profile);
     }
 
+    /**
+     * 根据地区和性别查询心理咨询师信息，门户展示使用
+     *
+     * @param page   当前页
+     * @param size   每页记录数
+     * @param region 咨询师所在地区
+     * @param sex    咨询师性别
+     * @return
+     */
+    @Override
+    @GetMapping("/get")
+    public QueryResponseResult findPsychologist(
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "size", defaultValue = "5") Integer size,
+            @RequestParam(value = "region", required = false) String region,
+            @RequestParam(value = "sex", required = false) String sex
+    ) {
+        return this.profileService.findPsychologist(page, size, region, sex);
+    }
+
+    /**
+     * 根据咨询师id查询更多信息，门户展示使用
+     *
+     * @param id 咨询师id
+     * @return
+     */
+    @Override
+    @GetMapping("/get/detail/{id}")
+    public DetailExt getPsychologistDetail(@PathVariable("id") String id) {
+        return this.profileService.getPsychologistDetail(id);
+    }
 }

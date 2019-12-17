@@ -23,17 +23,17 @@ public class ScaleDeleteService {
     private QuestionMapper questionMapper;
     @Autowired
     private OptionMapper optionMapper;
-     @Autowired
-     private DescriptionMapper descriptionMapper;
-     @Autowired
-     private ResultMapper resultMapper;
-     @Autowired
-     private UserOptionMapper userOptionMapper;
+    @Autowired
+    private DescriptionMapper descriptionMapper;
+    @Autowired
+    private ResultMapper resultMapper;
+    @Autowired
+    private UserOptionMapper userOptionMapper;
 
-     /**
-      * 删除量表
-      *
-      * @param scaleId
+    /**
+     * 删除量表
+     *
+     * @param scaleId
      * @return
      */
     @Transactional
