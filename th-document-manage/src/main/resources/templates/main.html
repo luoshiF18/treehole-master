@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <style>
+
+        label{
+            display:block;
+            float:left;
+            width:80px;
+            padding-top: 5px;
+        }
+        .main-view-button-group{
+            width: 200px;
+            margin-left:auto;
+            margin-top: 20px;
+        }
+        .trs{
+            margin-top: 5px;
+        }
+        .easyui-textbox{
+            width: 120px;;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="js/easyui/themes/icon.css">
+    <script type="text/javascript" src="js/jquery-1.7.2.js"></script>
+    <script type="text/javascript" src="js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            $("#documentManage").click(function(){
+                if(!$("#main_tabs").tabs("getTab",$("#documentManage").text())){
+                    $('#main_tabs').tabs('add',{
+                        title:$("#documentManage").text(),
+                        selected:true,
+                        closable:true,
+                        href:"/folder/open.html"
+                    });
+                }else{
+                    $("#main_tabs").tabs("select",$("#documentManage").text());
+                }
+            })
+            $("#recycledManage").click(function(){
+                if(!$("#main_tabs").tabs("getTab",$("#recycledManage").text())){
+                    $('#main_tabs').tabs('add',{
+                        title:$("#recycledManage").text(),
+                        selected:true,
+                        closable:true,
+                        href:'/document/recycled.html'
+                    });
+                }else{
+                    $("#main_tabs").tabs("select",$("#recycledManage").text());
+                }
+            })
+            $("#searchDocument").click(function(){
+                if(!$("#main_tabs").tabs("getTab",$("#searchDocument").text())){
+                    $('#main_tabs').tabs('add',{
+                        title:$("#searchDocument").text(),
+                        selected:true,
+                        closable:true,
+                        href:'/document/search.html'
+                    });
+                }else{
+                    $("#main_tabs").tabs("select",$("#searchDocument").text());
+                }
+            })
+            $("#logsShow").click(function(){
+                if(loginUserIsAdmin == 1){
+                    if(!$("#main_tabs").tabs("getTab",$("#logsShow").text())){
+                        $('#main_tabs').tabs('add',{
+                            title:$("#logsShow").text(),
+                            selected:true,
+                            closable:true,
+                            href:'/logs/show.html'
+                        });
+                    }else{
+                        $("#main_tabs").tabs("select",$("#logsShow").text());
+                    }
+                }
+            })
+            $('#updatePwd').bind('click', function(){
+                $('#dlg').dialog({
+                    title: '修改密码',
+                    iconCls: "icon-edit",
+                    collapsible: true,
+                    //minimizable: true,
+                    maximizable: true,
+                    resizable: true,
+                    width: 300,
+                    height: 200,
+                    cache: false,
+                    modal: true
+                });
+            });
+        })
+        function do_submit(){
+            var oldPwd = document.getElementById("oldPwd").value;
+            var newPwd = document.getElementById("newPwd").value;
+            var checkPwd = document.getElementById("checkPwd").value;
+            if(oldPwd.length == 0 || oldPwd == null || newPwd.length == 0|| newPwd == null|| checkPwd.length == 0|| checkPwd == null){
+                return false;
+            }
+            if(newPwd != checkPwd){
+                return false;
+            }
+        }
+
+
+
+        //打开某个文件夹
+        function openFolder(id,name) {
+
+            if(!$("#main_tabs").tabs("getTab",$("#documentManage").text())){
+                $('#main_tabs').tabs('add',{
+                    title:$("#documentManage").text(),
+                    selected:true,
+                    closable:true,
+                    href:"/folder/open.html?id="+id
+                });
+            }else{
+
+                // 更新选择的面板的新标题和内容
+                var tab = $("#main_tabs").tabs("getTab",$("#documentManage").text());  // 获取文档管理的面板
+                $('#main_tabs').tabs('update', {
+                    tab: tab,
+                    options: {
+                        href: '/folder/open.html?id='+id  // 新内容的URL
+                    }
+                });
+                $("#main_tabs").tabs("select",$("#documentManage").text());
+
+            }
+
+        }
+
+        //页面中的修改名字函数
+        function updatedName(id,oldname,flag) {
+            $.messager.prompt('提示信息', '请输入新的名称：', function(r){
+                if(r){
+                    if (r == oldname){
+                        $.messager.alert('警告','请不要输入原来名字相同的名字:' + r);
+                    }else {
+                        if(flag == 0){
+                            $.ajax({
+                                url:'/folder/update',
+                                type:"POST",
+                                data:{"id":id,"name":r,"userId":loginUserId},
+                                success:function(data){
+                                    //data为后台返回值
+                                    $.messager.alert('修改结果',data);
+                                    $('#search').datagrid('reload');
+                                    $('#document').datagrid('reload');
+                                }
+                            })
+                        }else if (flag == 1) {
+                            $.ajax({
+                                url:'/document/update',
+                                type:"POST",
+                                data:{"id":id,"name":r,"userId":loginUserId},
+                                success:function(data){
+                                    //data为后台返回值
+                                    $.messager.alert('修改结果',data);
+                                    $('#search').datagrid('reload');
+                                    $('#document').datagrid('reload');
+                                }
+                            })
+                        }
+                    }
+                }
+            });
+        }
+        //页面中的删除函数
+        function physicallyDeleted(id,flag) {
+            $.messager.confirm('确认','您确认想要删除吗？',function(r){
+                if (r){
+                    if(flag == 0){
+                        $.ajax({
+                            url:'/folder/delete',
+                            type:"POST",
+                            data:{"id":id,"userId":loginUserId},
+                            success:function(data){
+                                //data为后台返回值
+                                $.messager.alert('删除结果',data);
+                                $('#search').datagrid('reload');
+                                $('#document').datagrid('reload');
+                                $('#recycled').datagrid('reload');
+                            }
+                        })
+                    }else if (flag == 1) {
+                        $.ajax({
+                            url:'/document/delete',
+                            type:"POST",
+                            data:{"docId":id,"userId":loginUserId},
+                            success:function(data){
+                                //data为后台返回值
+                                $.messager.alert('删除结果',data);
+                                $('#search').datagrid('reload');
+                                $('#document').datagrid('reload');
+                                $('#recycled').datagrid('reload');
+                            }
+                        })
+                    }
+                }
+            });
+        }
+
+
+    </script>
+    <title></title>
+</head>
+<body class="easyui-layout">
+<div data-options="region:'north',title:'欢迎进入',split:true" style="height:100px;">
+    <p align="center" style="font-weight:bold;font-size: 12px;">文档管理系统</p>
+    你好:<span th:text="${loginUser.userName}"></span>用户！
+    <a id="updatePwd" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit'">修改密码</a>
+</div>
+<div data-options="region:'south',title:'底部声明',split:true" style="height:100px;">
+    <h3 align="right">Lee &nbsp;&nbsp;&nbsp;&nbsp;www.769800356@qq.com </h3>
+</div>
+<div data-options="region:'west',title:'菜单',split:true" style="width:200px;">
+    <button id="documentManage" class="easyui-linkbutton" data-options="iconCls:'icon-sum'" style="width: 190px;height: 50px;">文档管理</button><br />
+    <button id="recycledManage" class="easyui-linkbutton" data-options="iconCls:'icon-remove'" style="width: 190px;height: 50px;">回收站管理</button><br />
+    <button id="searchDocument" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width: 190px;height: 50px;">搜索文档</button><br />
+    <button id="logsShow" class="easyui-linkbutton" data-options="iconCls:'icon-tip'" style="width: 190px;height: 50px;">展示记录</button><br />
+    <button id="addUser" class="easyui-linkbutton" data-options="iconCls:'icon-tip'" style="width: 190px;height: 50px;">添加用户</button><br />
+</div>
+<div data-options="region:'center',title:'内容'" style="padding:5px;background:#eee;">
+    <div id="main_tabs" class="easyui-tabs" style="width:500px;height:250px;" data-options="fit:true">
+
+    </div>
+</div>
+<script th:inline="javascript">
+    var loginUserId = [[${loginUser.id}]];
+    var loginUserIsAdmin = [[${loginUser.isAdmin}]];
+    //alert(loginUserId+","+loginUserIsAdmin);
+    if(loginUserIsAdmin != 1){
+        $('#addUser').hide();
+        $('#logsShow').hide();
+    }
+</script>
+
+
+
+<div id="dlg">
+    <form id="updatedPwdForm" action="/updatedPwd" method="post" onsubmit="return do_submit()">
+        <div style="margin-top: 20px; margin-left: 25px;">
+            <input type="hidden" name="userId" th:value="${loginUser.id}">
+            <div class="trs">
+                <label>原密码：</label>
+                <input class="easyui-textbox" type="password" id="oldPwd" name="oldPwd"/><br />
+            </div>
+            <div class="trs">
+                <label>新密码：</label>
+                <input class="easyui-textbox" type="password" id="newPwd" name="newPwd"/><br />
+            </div>
+            <div class="trs">
+                <label>确认密码：</label>
+                <input class="easyui-textbox" type="password" id="checkPwd"/><br />
+            </div>
+        </div>
+        <div class="main-view-button-group">
+            <input type="submit" th:value="提交">
+        </div>
+
+    </form>
+
+
+</div>
+
+
+
+</body>
+</html>

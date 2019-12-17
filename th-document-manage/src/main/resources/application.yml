@@ -1,0 +1,28 @@
+vsftpd:
+  host: 192.168.91.131
+  port: 21
+  username: ftpuser
+  password: ftpuser
+  basePath: /home/ftpuser
+  filepath: /
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 200MB
+      max-request-size: 500MB
+  resources:
+    static-locations: classpath:/
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://10.0.43.60:3306/th_document?characterEncoding=UTF-8
+    username: root
+    password: root
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  data:
+    solr:
+      host: http://192.168.91.133:8080/solr

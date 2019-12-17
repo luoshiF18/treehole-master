@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css">
+    <script type="text/javascript" src="/js/jquery-1.7.2.js"></script>
+    <script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
+    <title></title>
+    <script type="text/javascript">
+        function login() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            if(username.length == 0 || username == null){
+                alert("用户名不能为空");
+                return false;
+            }
+            if(password.length == 0 || password == null){
+                alert("密码不能为空");
+                return false;
+            }
+        }
+    </script>
+</head>
+<body style="background: #75c7e5;">
+<div style="text-align: center;margin-top: 300px;">
+    <h3 th:text="${errorMsg}" style="color: red;"></h3>
+    欢迎登录
+    <form id="userLogin" action="/login" method="post" onsubmit="return login()">
+        用户名：<input id="username" type="text" name="username"><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;密码：<input id="password" type="password" name="password"><br />
+        <input type="submit" value="登录"/>
+    </form>
+</div>
+
+</body>
+</html>
