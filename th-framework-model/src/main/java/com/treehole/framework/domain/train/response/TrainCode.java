@@ -15,7 +15,8 @@ public enum TrainCode implements ResultCode {
     NO_TUITION_FEES(false,11007,"该学生还没有进行交费，不能删除！"),
     CLASS_IS_FULL(false,11008,"该班级人数已经满！"),
     COURSE_SELECTED(false,11009,"该课程已被选中不能删除！"),
-    CLASS_IS_NULL(false,11010,"该班级人数为空，目前没有安排课程！"),;
+    CLASS_IS_NULL(false,11010,"该班级人数为空，目前没有安排课程！"),
+    THE_ORIGINAL_PASSWORD_IS_WRONG(false,11011,"原密码错误！");
 
     //操作是否成功
     boolean success;
