@@ -185,6 +185,7 @@ public class ProfileService {
         Detail detail = profileExt.getDetail();
         detail.setPsychologist_id(profileExt.getId());
         detail.setPsychologist_name(profileExt.getName());
+        detail.setPraise_number(0);//好评量默认为0
         detail.setCreate_time(profileExt.getCreate_time());
         detail.setUpdate_time(profileExt.getCreate_time());
         int i3 = this.detailMapper.insert(detail);

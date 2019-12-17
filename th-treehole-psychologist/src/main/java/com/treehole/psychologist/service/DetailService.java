@@ -130,7 +130,7 @@ public class DetailService {
             ExceptionCast.cast(PsychologistCode.DATA_IS_NULL);
         }
         //遍历list中对象的某一字段添加到另一个list
-        List<String> praiseList = psychologists.stream().map(Detail::getPraise_number).collect(Collectors.toList());
+        List<Integer> praiseList = psychologists.stream().map(Detail::getPraise_number).collect(Collectors.toList());
         QueryResult queryResult = new QueryResult();
         queryResult.setList(praiseList);
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);

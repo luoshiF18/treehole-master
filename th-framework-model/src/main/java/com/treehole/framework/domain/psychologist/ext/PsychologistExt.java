@@ -28,7 +28,7 @@ public class PsychologistExt {
     private String studio;
 
     //心理咨询师好评数
-    private String praise_number;
+    private Integer praise_number;
 
     //心理咨询师入住平台时长
     private String platform_year;
