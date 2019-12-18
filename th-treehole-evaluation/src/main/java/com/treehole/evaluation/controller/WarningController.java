@@ -4,6 +4,7 @@ import com.treehole.api.evaluation.WarningControllerApi;
 import com.treehole.evaluation.service.WarningService;
 import com.treehole.framework.domain.evaluation.Warning;
 import com.treehole.framework.domain.evaluation.request.WarnRequest;
+import com.treehole.framework.domain.evaluation.vo.WarnHUserVo;
 import com.treehole.framework.domain.evaluation.vo.WarnReportVo;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
@@ -27,6 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/warning")
 public class WarningController implements WarningControllerApi
+
 {
     @Autowired
     private WarningService warningService;
@@ -67,6 +69,25 @@ public class WarningController implements WarningControllerApi
     public WarnReportVo lookWaring(@PathVariable("warningId") String warningId) {
         return warningService.lookWaring( warningId );
     }
+
+    @Override
+    @GetMapping("/getPieDate")
+    public String getPieData(@RequestParam("userNickName") String userNickName) {
+        return warningService.getPieData(userNickName);
+    }
+
+    @Override
+    @GetMapping("/getPieScaData")
+    public String getPieScaData(@RequestParam("scaleName") String scaleName) {
+        return warningService.getPieScaData(scaleName);
+    }
+
+    @Override
+    @GetMapping("/getUserPieData")
+    public String getUserPieData(@RequestParam("userNickName") String userNickName) {
+        return warningService.getUserPieData( userNickName );
+    }
+
     @Override
     @PostMapping("addWarningByPsy")
     public ResponseResult addWarningByPsy(@RequestBody Warning warning) {
@@ -79,4 +100,18 @@ public class WarningController implements WarningControllerApi
                                                     WarnRequest warnRequest) {
         return warningService.findWarningCondition(page, size, warnRequest );
     }
+    @Override
+    @GetMapping("/findHighRisk/{page}/{size}")
+    public QueryResponseResult findHighRisk(@PathVariable("page") int page,
+                                            @PathVariable("size") int size,
+                                            @RequestParam("userNickName") String userNickName){
+        return warningService.findHighRisk(page, size,userNickName);
+    }
+
+    @Override
+    @GetMapping("/lookDetailHWarn")
+    public WarnHUserVo lookDetailHWarn(@RequestParam("warnHUserid") String warnHUserid) {
+        return warningService.lookDetailHWarn(warnHUserid);
+    }
+
 }

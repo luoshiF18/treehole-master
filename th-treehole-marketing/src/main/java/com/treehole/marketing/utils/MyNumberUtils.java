@@ -1,4 +1,4 @@
-package com.treehole.evaluation.MyUtils;
+package com.treehole.marketing.utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -10,11 +10,7 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * 数字的工具类，添加了UUID
- *
- * @auther: Yan Hao
- */
+
 public final class MyNumberUtils {
 
     /**
@@ -71,24 +67,5 @@ public final class MyNumberUtils {
         }
         return doubles.toArray(new Double[doubles.size()]);
     }
-
-    /**
-     * list转为Double
-     *
-     * @param list
-     * @return
-     */
-    public static double[] ListTodouble(List<Double> list) {
-        Double[] doubles = new Double[list.size()];
-        list.toArray(doubles);
-        if (doubles == null) {
-            return null;
-        }
-        double[] result = new double[doubles.length];
-        for (int i = 0; i < doubles.length; i++) {
-            result[i] = doubles[i].doubleValue();
-        }
-        return result;
-    }
-
 }
+

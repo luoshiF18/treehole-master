@@ -10,7 +10,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>th-appointment-order</artifactId>
+    <name>appointment【心理咨询师预约】</name>
+    <description>心理咨询师预约</description>
+    <artifactId>th-treehole-appointment</artifactId>
 
     <dependencies>
         <dependency>

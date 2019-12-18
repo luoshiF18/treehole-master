@@ -1,16 +1,19 @@
 package com.treehole.evaluation.service;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.evaluation.MyUtils.MyNumberUtils;
 import com.treehole.evaluation.client.UserClient;
-import com.treehole.evaluation.dao.DescriptionMapper;
 import com.treehole.evaluation.dao.ScaleMapper;
+import com.treehole.evaluation.dao.WarningInterveneMapper;
 import com.treehole.evaluation.dao.WarningMapper;
 import com.treehole.framework.domain.evaluation.Scale;
 import com.treehole.framework.domain.evaluation.Warning;
+import com.treehole.framework.domain.evaluation.request.PieData;
 import com.treehole.framework.domain.evaluation.request.WarnRequest;
 import com.treehole.framework.domain.evaluation.response.EvaluationCode;
+import com.treehole.framework.domain.evaluation.vo.WarnHUserVo;
 import com.treehole.framework.domain.evaluation.vo.WarnReportVo;
 import com.treehole.framework.domain.evaluation.vo.WarningVo;
 import com.treehole.framework.domain.member.Vo.UserVo;
@@ -37,10 +40,12 @@ import java.util.List;
 @AllArgsConstructor
 public class WarningService {
 
-    private final DescriptionMapper descriptionMapper;
+
     private final WarningMapper warningMapper;
     private final ScaleMapper scaleMapper;
     private final UserClient userClient;
+    private final WarningInterveneMapper warningInterveneMapper;
+
 
 
     //心理咨询师添加咨询用户的预警信息
@@ -112,13 +117,9 @@ public class WarningService {
             for (UserVo userVo : allUser) {
                 for (WarningVo warningVo : scaleWarning) {
                     if (userVo.getUser_id().equals(warningVo.getUserId())) {
-                        if(userVo.getGender()==null||userVo.getUser_birth()==null){
-                            warningVo.setSex(2);
-                            warningVo.setUserBirth(null);
-                        }
-                        else {
-                            warningVo.setSex(userVo.getGender());
-                        }
+
+                        warningVo.setSex(userVo.getGender());
+                        warningVo.setUserBirth(userVo.getUser_birth());
                         warningVo.setUserName( userVo.getUser_name() );
                         warningVo.setUserNickName( userVo.getUser_nickname() );
                     }
@@ -147,22 +148,23 @@ public class WarningService {
             UserVo userVoByNickname = userClient.getUserVoByNickname( warnRequest.getUserNickName());
             warnRequest.setUserId(userVoByNickname.getUser_id());
         }
-        System.out.println(warnRequest);
         PageHelper.startPage(page,size);
+        System.out.println(warnRequest);
         List<WarningVo> warning = warningMapper.getWaning(warnRequest);
+        if(warning.size()==0){
+            return null;
+        }
         List listUserId = new ArrayList();
         for (WarningVo vo : warning) {
             listUserId.add(vo.getUserId());
         }
-        List<UserVo> allUser = userClient.getAllUser( listUserId );
+        List<UserVo> allUser = userClient.getAllUser(listUserId);
         for (WarningVo warningVo : warning) {
             for (UserVo userVo : allUser){
                 if(warningVo.getUserId().equals(userVo.getUser_id())){
                     warningVo.setUserName(userVo.getUser_name() );
                     warningVo.setUserNickName(userVo.getUser_nickname());
-                    if(userVo.getGender()!=null){
-                        warningVo.setSex(userVo.getGender());
-                    }
+                    warningVo.setSex(userVo.getGender());
                 }
             }
         }
@@ -195,9 +197,7 @@ public class WarningService {
             else {
                 warnReportVo.setUserBirth(null);
             }
-            if(userVo.getGender()!=null){
-                warnReportVo.setSex(userVo.getGender());
-            }
+            warnReportVo.setSex(userVo.getGender());
             warnReportVo.setPhone(userVo.getUser_phone());
             warnReportVo.setUserEmail( userVo.getUser_email() );
             warnReportVo.setUserRegion(userVo.getUser_region() );
@@ -271,6 +271,123 @@ public class WarningService {
             List<UserVo> allUser = userClient.getAllUser( listUserId );
             return allUser;
         }
-        else return null;
+        else {
+            return null;}
+    }
+    //拼接饼状图数据返回给前台
+    public String getPieData(String userNickName) {
+        //根据用户名得到该用户id
+        UserVo userVoByNickname = userClient.getUserVoByNickname( userNickName );
+        if(userVoByNickname==null){
+            //用户不存在，先返回Null
+            return  null;
+        }
+        //得到用户id，去查询该用户在预警表产生的所有预警信息，关联查询量表得到量表信息
+        String uid=userVoByNickname.getUser_id();
+        List<PieData> pieData = warningMapper.getPieData(uid);
+        //还可以拼接咨询师给他服务的次数，拿到咨询师服务的简要内容
+        //将list<PieData> 转换为json格式 返给前端
+        String data = JSON.toJSONString(pieData);
+        System.out.println(data);
+        return data;
+    }
+
+    //得到量表饼状图数据
+    public String getPieScaData(String scaleName){
+        //根据输出的量表名称得到数据
+        List<PieData> pieScaData = warningMapper.getPieScaData( scaleName );
+        if(pieScaData==null||pieScaData.size()<0){
+            return null;
+        }
+        System.out.println(pieScaData);
+        //遍历list，取出预警等级并且为其赋值,先硬编码
+        for (PieData pieScaDatum : pieScaData) {
+            switch (pieScaDatum.getName()){
+                case "1":
+                    pieScaDatum.setName("正常");
+                    break;
+                case "2":
+                    pieScaDatum.setName("关注");
+                    break;
+                case "3":
+                    pieScaDatum.setName("追踪");
+                    break;
+                case "4":
+                    pieScaDatum.setName("严重");
+                    break;
+                case "5":
+                    pieScaDatum.setName("警戒");
+                    break;
+                    default:break;
+            }
+        }
+        //将集合转化为JSON格式 返回给前端
+        String data=JSON.toJSONString(pieScaData);
+        return  data;
+    }
+    //得到用户最常做量表类型的数据
+    public String getUserPieData(String userNickName){
+        //远程调用用户服务根据用户登录名得到用户id
+        UserVo usersByName = this.getUsersByName( userNickName );
+        String uid=usersByName.getUser_id();
+        //从数据库得到数据
+        List<PieData> userPieData = warningMapper.getUserPieData( uid );
+        if(userPieData==null){
+            return null;
+        }
+        //转换为json格式便于前台接收
+        String data=JSON.toJSONString(userPieData);
+        return data;
+    }
+
+    //分页查询高危人群
+    public QueryResponseResult findHighRisk(int page,int size,String userNickName){
+
+        if(page==0){
+            ExceptionCast.cast( EvaluationCode.SELECT_NULL);
+        }
+        //根据请求条件得到高危人群的预警信息和干预记录
+        List<WarnHUserVo> highRisk = warningMapper.findHighRisk(userNickName);
+        System.out.println("测试数据"+highRisk);
+        //从结果中得到用户id，查询用户信息
+        List<String> listUserId = new ArrayList<>();
+        for (WarnHUserVo user : highRisk) {
+            listUserId.add(user.getUserId());
+        }
+        //远程调用用户接口得到用户信息
+        List<UserVo> allUser = userClient.getAllUser( listUserId );
+        //循环拼接用户信息
+        for (WarnHUserVo user : highRisk) {
+           for (UserVo userVo : allUser){
+               if(user.getUserId().equals( userVo.getUser_id())){
+                   user.setUserName(userVo.getUser_name() );
+                   user.setUserNickName(userVo.getUser_nickname() );
+                   user.setSex(userVo.getGender() );
+                   user.setPhone( userVo.getUser_phone() );
+               }
+           }
+        }
+        //设置分页，展示数据
+        PageHelper.startPage(page,size);
+        PageInfo<WarnHUserVo> highRisks = new PageInfo<WarnHUserVo>(highRisk);
+        QueryResult<WarnHUserVo> queryResult = new QueryResult<>();
+        queryResult.setTotal(highRisks.getTotal());
+        queryResult.setList(highRisks.getList());
+        QueryResponseResult queryResponseResult = new QueryResponseResult( CommonCode.SUCCESS, queryResult );
+        return queryResponseResult;
+    }
+
+    //查看预警信息详情
+    public WarnHUserVo lookDetailHWarn(String warnHUserid){
+        if(warnHUserid==null||StringUtils.isBlank(warnHUserid)){
+            ExceptionCast.cast(CommonCode.FAIL);
+        }
+        try {
+            return warningMapper.warnHDetail( warnHUserid );
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 }

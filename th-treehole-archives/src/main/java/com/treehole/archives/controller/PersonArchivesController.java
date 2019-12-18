@@ -39,17 +39,17 @@ public class PersonArchivesController implements PersonArchivesApi {
         return personArchivesService.findArchivesList(page,size,archivesListRequest);
     }
 
-    /**
+/*    *//**
      * 根据用户id和量表名查询个人详细档案记录
      * @param archivesListRequest
      * @return
-     */
+     *//*
     @Override
     @GetMapping("/person/detail")
     public ArchivesExt findArchivesExt(
             ArchivesListRequest archivesListRequest) {
         return personArchivesService.findArchivesExt(archivesListRequest);
-    }
+    }*/
 
     /**
      * 查询所有用户的档案接口
