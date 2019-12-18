@@ -29,9 +29,9 @@ public class Points implements Serializable {
     private Integer points_before;//积分计算之前数量
     private Integer points_num;  //记录本次积分数
     private Integer points_later;  //积分计算之后数量
-    private String desc; //本次积分描述
+    private String description; //本次积分描述
     private String act_id; //活动id
-    //private Integer points_cumulate;  //累计积分
+    //private Integer points_sum;  //累计积分
     //private Integer points_clear;  //消去积分
 
 

@@ -44,6 +44,9 @@ public interface ScaleSelectControllerApi {
     @ApiOperation("获取所有分类")
     public QueryResponseResult findScaleType();
 
+    @ApiOperation("获取所有分数计算方法")
+    public QueryResponseResult findScoreMethod();
+
     @ApiOperation("根据分类id查询量表")
     public QueryResponseResult findScaleByType(Integer page, Integer size, String scaleTypeId, Boolean isFree);
 

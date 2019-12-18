@@ -10,6 +10,7 @@ import tk.mybatis.mapper.code.Style;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 建议信息实体类
@@ -24,12 +25,9 @@ import java.io.Serializable;
 @NameStyle(Style.normal)
 public class Suggestion implements Serializable {
 
-    //咨询师建议id
+    //咨询师给出的建议id
     @Id
     private String suggestion_id;
-
-    //咨询师id
-    private String psychologist_id;
 
     //用户病情描述信息
     private String description;
@@ -46,7 +44,11 @@ public class Suggestion implements Serializable {
     //咨询师给出的预警信息
     private String warning;
 
-    //意见记录生成时间
+    //意见信息生成时间
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private String create_time;
+    private Date create_time;
+
+    //意见信息更新时间
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    private Date update_time;
 }

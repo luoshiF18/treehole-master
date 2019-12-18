@@ -49,8 +49,4 @@ public class User implements Serializable {
     private Integer user_status; //用户状态 0：正常 1：被禁
     private String company_id;//企业用户所在公司
 
-
-
-
-
 }

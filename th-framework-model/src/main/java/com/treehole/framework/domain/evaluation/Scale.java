@@ -46,6 +46,7 @@ public class Scale implements Serializable {
     private String typeId;
     private Integer scaleType;
     private BigDecimal price;
+    private String scoreMethodId;
     private String remark;
 
     @Transient
@@ -53,5 +54,7 @@ public class Scale implements Serializable {
     @Transient
     private String scaleTypeName;
     @Transient
-    private String  statusName;
+    private String statusName;
+    @Transient
+    private String scoreMethodName;
 }

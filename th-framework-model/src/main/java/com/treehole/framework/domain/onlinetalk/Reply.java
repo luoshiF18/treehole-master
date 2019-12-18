@@ -14,8 +14,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author shanhuijie
- * @Description: 客服人员实体类
+ * @author hewenze
+ * @Description: 快捷回复
  * @Date
  */
 @Data    //getter setter hashCode equals

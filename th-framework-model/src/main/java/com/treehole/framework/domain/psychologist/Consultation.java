@@ -10,6 +10,7 @@ import tk.mybatis.mapper.code.Style;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 用户咨询记录实体类
@@ -20,7 +21,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "detail")
+@Table(name = "consultation")
 @NameStyle(Style.normal)
 public class Consultation implements Serializable {
 
@@ -37,7 +38,10 @@ public class Consultation implements Serializable {
     //咨询师给出的意见id
     private String suggestion_id;
 
+    //咨询类型
+    private String type;
+
     //用户咨询时间
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private String consultation_time;
+    private Date consultation_time;
 }

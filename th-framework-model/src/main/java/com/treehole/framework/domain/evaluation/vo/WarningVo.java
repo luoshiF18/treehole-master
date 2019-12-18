@@ -23,7 +23,7 @@ public class WarningVo extends Warning implements Serializable{
     private String scaleName;
     private String userName; //实际姓名，user表中的
     private String userNickName; //昵称，user表中的
-    private int sex;
+    private String sex;
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date userBirth;
     @Null

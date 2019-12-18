@@ -14,8 +14,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author shanhuijie
- * @Description: 客服人员实体类
+ * @author hewenze
+ * @Description: 聊天记录
  * @Date
  */
 @Data    //getter setter hashCode equals
@@ -32,9 +32,11 @@ public class Message implements Serializable {
     private String agent_id; //客服id
     private String touser_id; //用户id
     private String convers_id; //会话id
+    private String touser_name; //用户姓名
+    private String agent_name; //客服姓名
     private String message_content; //会话内容
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
-    private Date message_createtime; //创建时间
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date   message_createtime; //创建时间
 
 
 }
