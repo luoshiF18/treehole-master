@@ -2,7 +2,7 @@ package com.treehole.psychologist.controller;
 
 import com.treehole.api.psychologist.CommentControllerApi;
 import com.treehole.framework.domain.psychologist.Comment;
-import com.treehole.framework.model.response.CommonCode;
+import com.treehole.framework.domain.psychologist.ext.CommentExt;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.psychologist.service.CommentService;
@@ -28,7 +28,7 @@ public class CommentController implements CommentControllerApi {
      * @return
      */
     @Override
-    @GetMapping("/get/list")
+    @GetMapping("/get/list/")
     public QueryResponseResult getAllCommentsByPage(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "size", defaultValue = "5") Integer size
@@ -45,7 +45,7 @@ public class CommentController implements CommentControllerApi {
      * @return
      */
     @Override
-    @GetMapping("/get/{psychologist_id}")
+    @GetMapping("/get/psy/{psychologist_id}")
     public QueryResponseResult getCommentsByPsyId(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "size", defaultValue = "5") Integer size,
@@ -55,21 +55,15 @@ public class CommentController implements CommentControllerApi {
     }
 
     /**
-     * 根据用户id分页查询该咨询师的评价信息
+     * 根据评价id查询评价信息
      *
-     * @param page    当前页
-     * @param size    每页记录数
-     * @param user_id 用户id
+     * @param comment_id 评价id
      * @return
      */
     @Override
-    @GetMapping("/find/{user_id}")
-    public QueryResponseResult getCommentsByUserId(
-            @RequestParam(value = "page", defaultValue = "1") Integer page,
-            @RequestParam(value = "size", defaultValue = "5") Integer size,
-            @PathVariable("user_id") String user_id
-    ) {
-        return this.commentService.getCommentsByUserId(page, size, user_id);
+    @GetMapping("/get/comment/{comment_id}")
+    public CommentExt getAllCommentById(@PathVariable("comment_id") String comment_id) {
+        return this.commentService.getAllCommentById(comment_id);
     }
 
     /**
@@ -81,20 +75,30 @@ public class CommentController implements CommentControllerApi {
     @Override
     @DeleteMapping("/del/{comment_id}")
     public ResponseResult delCommentByCommentId(@PathVariable("comment_id") String comment_id) {
-        this.commentService.delCommentByCommentId(comment_id);
-        return new ResponseResult(CommonCode.SUCCESS);
+        return this.commentService.delCommentByCommentId(comment_id);
     }
 
     /**
      * 更新评价信息
      *
-     * @param comment
+     * @param comment 评价信息
      * @return
      */
     @Override
     @PutMapping("/update")
     public ResponseResult updateComment(@RequestBody Comment comment) {
-        this.commentService.updateComment(comment);
-        return new ResponseResult(CommonCode.SUCCESS);
+        return this.commentService.updateComment(comment);
+    }
+
+    /**
+     * 添加评价信息
+     *
+     * @param comment 评价信息
+     * @return
+     */
+    @Override
+    @PostMapping("/add")
+    public ResponseResult addComment(@RequestBody Comment comment) {
+        return this.commentService.addComment(comment);
     }
 }

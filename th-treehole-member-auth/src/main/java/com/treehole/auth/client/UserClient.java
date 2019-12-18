@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @FeignClient(value = "th-treehole-member")
 public interface UserClient {
-    @GetMapping("/user/getUserExt")
+    @GetMapping("member/user/getUserExt")
     public UserExt getUserExt(@RequestParam("userNickName") String userNickName);
 
 }

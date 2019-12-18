@@ -13,60 +13,77 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 /**
- * @author shanhuijie
+ * @author hewenze
  * @Description:
  * @Date
  */
 @RestController
-@RequestMapping("category")
+@RequestMapping("online/category")
 public class CategoryController implements CategoryControllerApi {
     @Autowired
     private CategoryService categoryService;
 
-
-
-    //http://localhost:40300/user/getAllUsers?page=3
-
+    /**
+     * 获取所有分类信息
+     * @param page
+     * @param size
+     * @param category
+     * @return
+     */
     @Override
     @GetMapping ("/getAllCategory")
     public QueryResponseResult getAllCategory(@RequestParam(value = "page", defaultValue = "1") int page,
                                               @RequestParam(value = "size", defaultValue = "5") int size,
                                               @RequestParam(value = "category", defaultValue = "")String category)  {
-        QueryResult queryResult = categoryService.findAllAgent(page, size,category);
+        QueryResult queryResult = categoryService.findAllCategory(page, size,category);
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
 
     }
 
 
-
+    /**
+     * 根据id查询分类信息
+     * @param id
+     * @return
+     */
     @Override
     @GetMapping("/find/id/{id}")
     public Category getCategoryById(@PathVariable("id") String id) {
          return categoryService.getCategoryById(id);
     }
+
+
+    /**
+     * 根据分类对象获取分类对象
+     * @param category
+     * @return
+     */
     @GetMapping("/find")
     public Category getCategory(@RequestBody @Valid Category category){
         return  categoryService.findCategory(category);
 
     }
 
-    /*@GetMapping("/find/")
-    public User getUser*/
 
+    /**
+     * 根据分类id删除分类
+     * @param category_id
+     * @return
+     */
     @Override
     @DeleteMapping(value ="/delete/id/{category_id}")
     public ResponseResult deleteCategoryById(@PathVariable("category_id") String category_id) {
          categoryService.deleteCategoryById(category_id);
-         //再判断用户是否存在
-         /*if(this.getUserById(user_id) != null){
-             ExceptionCast.cast(MemberCode.DELETE_USER_NOT_EXIST);
-         }*/
         return new ResponseResult(CommonCode.SUCCESS);
 
     }
 
 
-
+    /**
+     * 新增分类
+     * @param category
+     * @return
+     */
     @Override
     @PostMapping ("/insert")
     public ResponseResult insertCategory(@RequestBody @Valid Category category) {
@@ -77,11 +94,15 @@ public class CategoryController implements CategoryControllerApi {
 
 
     }
-    /*接收到的数据为前端update后的*/
+
+    /**
+     * 修改分类
+     * @param category
+     * @return
+     */
     @Override
     @PutMapping("/update")
     public ResponseResult updateCategory(@RequestBody @Valid Category category){
-        //System.out.println("前端传来的+++++++++++++"+user);
         categoryService.updateCategory(category);
 
         return new ResponseResult(CommonCode.SUCCESS);
