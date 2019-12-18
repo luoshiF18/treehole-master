@@ -31,7 +31,6 @@ import java.util.List;
  * @Date
  */
 @Service
-@Cacheable(value="MemberCheck")
 public class CheckinService {
     @Autowired
     private CheckinMapper checkinMapper;
@@ -45,6 +44,7 @@ public class CheckinService {
     /*
     * 查询
     * */
+    @Cacheable(value="MemberCheck")
     public QueryResponseResult findAllCheckins(Integer page,
                                        Integer size,
                                        String nickname) {
@@ -155,7 +155,7 @@ public class CheckinService {
     /*
     *根据user-id 查询签到记录
     */
-    public QueryResult getCheckinByUserId(String user_id, Integer page, Integer size) {
+    /*public QueryResult getCheckinByUserId(String user_id, Integer page, Integer size) {
         if (StringUtils.isBlank(user_id)) {
             ExceptionCast.cast(MemberCode.SELECT_NULL);
             return null;
@@ -172,10 +172,9 @@ public class CheckinService {
             PageInfo<Checkin> pageInfo = new PageInfo<>(pag.getResult());
             //获取总条数
             //Long sizer = Long.valueOf(points.size());
-            // System.out.println("+++++++++++++++++size:" +size);
             return new QueryResult(checkins, pageInfo.getTotal());
 
-    }
+    }*/
     /*不报错版根据userid查签到对象*/
     public QueryResult getCheckinByUserId1(String user_id, Integer page, Integer size) {
         Page pag =PageHelper.startPage(page,size);

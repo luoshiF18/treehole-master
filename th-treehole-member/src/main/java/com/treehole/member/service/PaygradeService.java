@@ -33,7 +33,6 @@ import java.util.List;
  */
 
 @Service
-@Cacheable(value="MemberPayGrade")
 public class PaygradeService {
 
     @Autowired
@@ -81,6 +80,7 @@ public class PaygradeService {
     /*
      * 根据rank,id,name查询所有付费会员等级信息
      * */
+    @Cacheable(value="MemberPayGrade")
     public QueryResponseResult findAll1(Integer page,
                                        Integer size,
                                        GradeListRequest gradeListRequest) {
@@ -192,9 +192,9 @@ public class PaygradeService {
         Cards cards = cardsService.findCardsByUserId(user_id);
         Date dateStart;
         Date end = new Date();
-        if(cards.getPaygrade_start() == null){
+        if(cards.getPaygrade_start() == null){  //当前不是VIP
             dateStart = new Date();
-            cards.setPaygrade_start(dateStart);
+            cards.setPaygrade_start(dateStart);  //修改start
         }else{
             dateStart = cards.getPaygrade_end();  //续费情况
         }
@@ -205,7 +205,7 @@ public class PaygradeService {
             e.printStackTrace();
         }
 
-        cards.setPaygrade_end(end);
+        cards.setPaygrade_end(end);  //修改end
 
         //修改cards
         cardsService.updateCard(cards);

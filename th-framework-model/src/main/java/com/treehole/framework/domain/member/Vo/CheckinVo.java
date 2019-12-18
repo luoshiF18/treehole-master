@@ -20,7 +20,7 @@ import java.util.Date;
 @Table(name = "member_checkin")
 @NoArgsConstructor
 @AllArgsConstructor
-@NameStyle(Style.normal)
+
 public class CheckinVo implements Serializable {
     private String checkin_id; //签到id
     private String nickname; //用户id

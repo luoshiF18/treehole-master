@@ -25,7 +25,6 @@ import java.math.BigDecimal;
  * @Date
  */
 @Service
-@Cacheable(value="MemberCard")
 public class CardsService {
     @Autowired
     private CardsMapper cardsMapper;
@@ -144,6 +143,7 @@ public class CardsService {
     }
     /*根据userid删除*/
     @Transactional
+    @CacheEvict(value="MemberCard",allEntries=true)
     public void deleteCard(String id) {
         //id不为空
         if(org.apache.commons.lang3.StringUtils.isBlank(id)){

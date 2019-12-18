@@ -35,7 +35,7 @@ import java.util.List;
  * @Date
  */
 @Service
-@Cacheable(value="MemberPoint")
+
 public class PointService {
     @Autowired
     private PointsMapper pointsMapper;
@@ -66,7 +66,7 @@ public class PointService {
      * @param pointListRequest
      * @return List<Points>
      */
-
+    @Cacheable(value="MemberPoint")
     public QueryResponseResult findAllPoints(Integer page,
                                              Integer size,
                                              PointListRequest pointListRequest){

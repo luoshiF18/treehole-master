@@ -87,14 +87,8 @@ public class UserController implements UserControllerApi {
     @Override
     @PostMapping ("/insert")
     public ResponseResult insertUser(@RequestBody @Valid User user) {
-
-        if (userService.findUserByPhone(user.getUser_phone())!= null){  /*手机号唯一*/
-            return new ResponseResult(MemberCode.PHONE_IS_EXIST);
-        }
         userService.insertUser(user);
-
         return new ResponseResult(CommonCode.SUCCESS);
-
 
     }
 

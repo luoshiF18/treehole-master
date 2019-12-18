@@ -89,7 +89,6 @@ public class UserVoService {
         if (CollectionUtils.isEmpty(users)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
-
         List<UserVo> userVos = new ArrayList<UserVo>();
         for(User user:users){
             UserVo uservo = new UserVo();

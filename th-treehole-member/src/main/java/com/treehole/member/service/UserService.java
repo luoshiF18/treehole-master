@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author shanhuijie
@@ -98,6 +99,17 @@ public class UserService {
         return  userMapper.selectOne(user);
     }
 
+    public User findUserByRolePhone(String phonenumber,String roleid)  {
+
+        /*Example example = new Example(User.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("user_phone",phonenumber);*/
+        User user = new User();
+        user.setUser_phone(phonenumber);
+        user.setRole_id(roleid);
+        return userMapper.selectOne(user);
+
+    }
 
     /**
      * 通过id查询用户
@@ -167,9 +179,17 @@ public class UserService {
             user.setUser_nickname(nickname1);
         }
         //手机号唯一性
-        if(this.findUserByPhone(user.getUser_phone()) == null){
+        if(this.findUserByRolePhone(user.getUser_phone(),user.getRole_id()) == null){
             user.setUser_phone(user.getUser_phone());
         }else{
+            /*//根据手机号寻找对象 eg:管理员
+            User userByPhone = this.findUserByPhone(user.getUser_phone());
+            //判断对象角色与传来的角色值是否一致  若否
+            if (!userByPhone.getRole_id().equals(user.getRole_id())) {
+                user.setUser_phone(user.getUser_phone());
+            }else {
+                //
+            }*/
             ExceptionCast.cast(MemberCode.PHONE_IS_EXIST);
         }
         user.setUser_createtime(new Date());
@@ -283,11 +303,13 @@ public class UserService {
 
     }
 
-    /*更改手机号 */
+    /*更改手机号
+    * 手机号 角色id
+    * */
     @Transactional
     @CacheEvict(value="MemberUser",allEntries=true)
     public void updatePhone(User user){
-        if(this.findUserByPhone(user.getUser_phone()) == null){
+        if(this.findUserByRolePhone(user.getUser_phone(),user.getRole_id()) == null){
             user.setUser_phone(user.getUser_phone());
         }else{
             ExceptionCast.cast(MemberCode.PHONE_IS_EXIST);

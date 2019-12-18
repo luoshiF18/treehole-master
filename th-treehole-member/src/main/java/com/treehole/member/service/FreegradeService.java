@@ -31,7 +31,7 @@ import java.util.List;
  */
 
 @Service
-@Cacheable(value="MemberFreeGrade")
+
 public class FreegradeService {
     @Autowired
     private FreegradeMapper freegradeMapper;
@@ -43,6 +43,7 @@ public class FreegradeService {
 /*
 * 根据rank,id,name查询所有用户等级信息
 * */
+    @Cacheable(value="MemberFreeGrade")
     public QueryResponseResult findAll1(Integer page,
                                Integer size,
                                GradeListRequest gradeListRequest) {
@@ -80,6 +81,7 @@ public class FreegradeService {
     /*
      * 查询所有用户等级信息
      * */
+
     public QueryResult findAll2(){
 
         List<FreeGrade> grades = freegradeMapper.selectAll();
@@ -187,14 +189,10 @@ public class FreegradeService {
         FreeGrade freeGrade = new FreeGrade();
         freeGrade.setFreegrade_id(freegrade_id);
         FreeGrade fg = freegradeMapper.selectOne(freeGrade);
-
         FreeGrade fg2 = new FreeGrade();
         fg2.setRank(fg.getRank()+1);
-
         FreeGrade fg1 = freegradeMapper.selectOne(fg2);
-
         Cards card1= cardsService.findCardsByUserId(user_id);
-
         card1.setPoints_sum(sum);
         //card1.setPoints_sum(sum);
         //bigdimical比较大小 1大于 0等于 -1小于

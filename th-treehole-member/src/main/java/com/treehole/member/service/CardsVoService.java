@@ -29,7 +29,6 @@ import java.util.List;
  * @Date
  */
 @Service
-@Cacheable(value="MemberCard")
 public class CardsVoService {
     @Autowired
     private CardsMapper cardsMapper;
@@ -46,6 +45,7 @@ public class CardsVoService {
      * 查询所有CardsVo信息
      * 自定义条件查询 user_id/card_id/手机号码
      */
+    @Cacheable(value="MemberCard")
     public QueryResponseResult findAllCardVos(Integer page,
                                               Integer size,
                                               CardListRequest cardListRequest) {
@@ -63,7 +63,7 @@ public class CardsVoService {
             cards.setUser_id(cardListRequest.getUser_id());
         }
         if (StringUtils.isNotEmpty(cardListRequest.getUser_phone())) {
-            User user = userService.findUserByPhone(cardListRequest.getUser_phone());
+            User user = userService.findUserByRolePhone(cardListRequest.getUser_phone(),"1");
             cards.setUser_id(user.getUser_id());
         }
         if (StringUtils.isNotEmpty(cardListRequest.getUser_nickname())) {

@@ -17,6 +17,7 @@ import java.util.Date;
 @Data    //getter setter hashCode equals
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class UserVo implements Serializable {
     private String user_id;
     //private String uniq_id; //会员唯一id
