@@ -61,8 +61,8 @@ public class TestJwt {
     @Test
     public void testVerify(){
         //公钥
-        String publickey = "";
-        String jwtString = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoicWJsIn0.O3G_mGCbh5nh9rgEAREfPGYDKspBslrQYnpjyALGTtD9i0_Bi3-6xn8Aj-uMCON7afJF8D7y4wEFC3LkgMUPXLaqZlzsI12lpR-H2OXEDI64VRSML2UyBaEtYJT4S4aUd2zXPXhAQUQAsRzRuTrVPztnFeVi1k5WB8bToMBW1-iHBhH3vP8L-7d40HiPxYvCC4LGZGnHXp_4_DkWLLHcO5HjVXPAh-ImuKCsQ5PAX4jvZtvIlK0AxircuEiBbm-JXQKcrAvYAt0x1N1AqzXot7mbNHwRsJMfJAlIT70LnG1Vw28IZvVeWJD9pQxUXGhsuWd9oUp5WQh6GdIg9gZ_3A";
+        String publickey = "-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAh/hjv9+POhQnf8CkWoX1OGDSPGRPs1JXjXXebVbMf+mKQa0wKeakqUkwdztYF/cMZjHGAbQACdG3qlu5Ic4PoHdwhY8rVFi1a61Qnr4jV0ij2dPaqeOJ5iJ3zcvw3ONyCi32U/K/MuwIvyexdEUhxYTmNg3EmP1Xc/gqToNXQAEVPR5eSlxijKKGnWJ7T6+aSubNkEOeyNLk/BccHAlkDZh3DKLivrfOdiZnhwHYuZgzeVqg/5S+ez5rgFJQ6YTeku/C+JtZZOh723fQytaDFiwf9DDzO8Tj55XmLuKNDpNOQ+miYv1ro08QJKyg5KIh0Ntbb2ZOwv7byduPqpVEvwIDAQAB-----END PUBLIC KEY-----";
+        String jwtString = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoicWJsIn0.b9gFFOIbG3O-88zLGYPD47nKQkh9EikcEJ_BTgOEK37NVtrS8vRIPWuy6l3aqWAY0816_0guHsOkmD2AK1WtZbZM3k0YBUXCrsB5Vor-Bl7w0VapC6pioIAqYulKlxoI2wdqyxQbD2zzidf0Xa_yNjOjEEzNYEqx2JjIBiVRMDih6RtN2r7LRUZbFl4E-kzuB_6sGny0nDGzYaDqDThZsX52WHdyTh2gl1LwHte3b02khITTQTxO4gRX2ZfdxTDhHyV1D8vg_neDye3k3phZtM2WiYXI6O50ipjcwNH8x95-AQgUXKYnGiMrCuz_OVImvNCgr5v1f87huBTrsZAyJA";
         //校验jwt令牌
         Jwt jwt = JwtHelper.decodeAndVerify(jwtString, new RsaVerifier(publickey));
         //拿到jwt令牌中自定义的内容

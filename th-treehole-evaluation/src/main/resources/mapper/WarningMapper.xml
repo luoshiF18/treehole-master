@@ -28,7 +28,7 @@
         warning.id,
         test_scale.scaleName,
         warning.status,
-        user_id as userId,
+        warning.user_id as userId,
         warning_level as warningLevel,
         w_message as wMessage,
         create_time as createTime
@@ -36,20 +36,151 @@
         left join test_scale   on warning.scale_id=test_scale.id
         where
         1=1
-        <if test="request.userId!=null">
-            AND warning.user_id=#{request.userId}
+        <if test="request.startTime!= null and request.endTime != null and
+          request.startTime!='' and  request.endTime !=''">
+            and
+            create_time BETWEEN #{request.startTime} and #{request.endTime}
+
         </if>
         <if test="request.scaleName != null and request.scaleName !=''">
-            and test_scale.scaleName =#{request.scaleName}
+            AND
+            test_scale.scaleName =#{request.scaleName}
         </if>
-        <if test="request.warningLevel != 0">
-            and warning.warning_level=#{request.warningLevel}
+        <if test="request.userId!=null and request.userId!=''">
+            AND
+            warning.user_id=#{request.userId}
         </if>
+        <if test="request.warningLevel!=null or request.warningLevel==0">
+            AND
+            warning.warning_level=#{request.warningLevel}
+        </if>
+
     </select>
 
+<select id="getPieData" parameterType="java.lang.String" resultType="com.treehole.framework.domain.evaluation.request.PieData">
+                    select
+                    COUNT(*)
+                    as value,
+                    t.scaleType as name
+                    from (
+                        select
+                        test_scale.scaleName,
+                        test_scale.typeId,
+                        scale_type.scaleType
+                        from warning
+                        left join test_scale  on warning.scale_id=test_scale.id
+                        left join scale_type on test_scale.typeId=scale_type.id
+                        where
+                        warning.user_id=#{uid}
+                    ) t
+                    group by
+                    t.scaleType
+</select>
 
+    <select id="getPieScaData" parameterType="java.lang.String" resultType="com.treehole.framework.domain.evaluation.request.PieData">
+                                   select
+								        a.value,
+										SUBSTRING(a.name,6,1) as name
+										from(
+										select
+                                        count(*)
+                                        as value,
+                                        t.warningInfo as name
+                                        from
+                                        (
+                                        select
+                                        r.warningInfo,
+                                        r.createTime,
+                                        r.scaleName
+                                        from
+                                        result r
+                                        where
+                                        r.scaleName = #{scaleName}
+                                        ) t
+                                        group by
+                                        t.warningInfo
+					                    )  a
+    </select>
 
+    <select id="getUserPieData" parameterType="java.lang.String" resultType="com.treehole.framework.domain.evaluation.request.PieData">
+                    select
+                    count(*) as value,
+                    resu.typeName as name
+                    from(
+                    select
+                    r.scaleName,
+                    r.warningInfo,
+                    t.id as typeId,
+                    t.scaleType as typeName
+                    from result r
+                    left join  test_scale s on r.scaleName=s.scaleName
+                    left join  scale_type t on s.typeId=t.id
+                    where
+                    r.userId =#{uid}
+                    ) resu
+                    group by
+                    resu.typeId
+    </select>
+<select id="findHighRisk"  resultType="com.treehole.framework.domain.evaluation.vo.WarnHUserVo">
+                select
+                w.warning_level as warningLevel,
+                w.w_message as wMessage,
+                w.user_id as userId,
+                wi.id as warnHUserid,
+                wi.way,
+                wi.reason,
+                wi.status
+                from
+                warning w
+                left join warning_intervene wi on w.id=wi.warning_id
+                where
+                w.warning_level &gt;= 4
+                AND 1=1
+                <if test="userNickName!=null and userNickName!=''">
+                AND
+                wi.user_name=#{userNickName}
+                </if>
+                group by
+                w.user_id
+</select>
+<select id="warnHDetail" parameterType="java.lang.String" resultType="com.treehole.framework.domain.evaluation.vo.WarnHUserVo"
+>
+                select
+                w.warning_level as warningLevel,
+                w.w_message as wMessage,
+                w.create_time as createTime,
+                wi.way,
+                wi.context,
+                wi.reason,
+                wi.effect,
+                wi.record_time as  recordTime,
+                s.scaleName
+                from
+                warning w
+                left join warning_intervene wi on w.id=wi.warning_id
+                left join test_scale s on w.scale_id=s.id
+                where
+                wi.id=#{warnHUserid}
+</select>
 
+    <select id="findWarnByUserId" parameterType="java.lang.String" resultType="com.treehole.framework.domain.evaluation.vo.WarningVo">
+                select
+                s.scaleName,
+                w.id,
+                w.warning_level as warningLevel,
+                w.w_message as wMessage,
+                w.create_time as createTime,
+                w.user_id as userId
+                from
+                warning w
+                left join test_scale s on w.scale_id=s.id
+                WHERE
+                w.id IN
+               <foreach collection="list" item="warningId" index="index" open="(" separator="," close=")">
+                   #{warningId}
+             </foreach>
+
+    </select>
 </mapper>
 
 

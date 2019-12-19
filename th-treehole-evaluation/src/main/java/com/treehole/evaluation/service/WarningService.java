@@ -162,6 +162,7 @@ public class WarningService {
         for (WarningVo warningVo : warning) {
             for (UserVo userVo : allUser){
                 if(warningVo.getUserId().equals(userVo.getUser_id())){
+                    warningVo.setUserId(userVo.getUser_id());
                     warningVo.setUserName(userVo.getUser_name() );
                     warningVo.setUserNickName(userVo.getUser_nickname());
                     warningVo.setSex(userVo.getGender());

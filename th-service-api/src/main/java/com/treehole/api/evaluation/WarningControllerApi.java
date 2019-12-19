@@ -22,11 +22,11 @@ public interface WarningControllerApi {
     @ApiOperation("心理咨询师添加预警信息")
     public ResponseResult addWarningByPsy(Warning warning);
     @ApiOperation("心理咨询师查看用户预警信息")
-    public QueryResponseResult findWarningByUserId(String userId, int page, int size);
+    public QueryResponseResult findWarningByUserId(String userId,int page,int size);
     @ApiOperation("后台管理，根据条件查询用户预警信息")
-    public QueryResponseResult findWarningCondition(int page, int size, WarnRequest warnRequest);
+    public QueryResponseResult findWarningCondition(int page,int size,WarnRequest warnRequest);
     @ApiOperation( "后台管理，查询所有预警信息")
-    public QueryResponseResult findAll(int page, int size);
+    public QueryResponseResult findAll(int page,int size);
     @ApiOperation("后台管理，删除预警信息")
     public ResponseResult deleteWarning(String warningId);
     @ApiOperation("后台管理，批量删除预警信息")
@@ -38,9 +38,9 @@ public interface WarningControllerApi {
     @ApiOperation("根据量表名得到该量表饼状图信息")
     public String getPieScaData(String scaleName);
     @ApiOperation("根据用户名得到统计后的预警信息")
-    public String getUserPieData(String userNickName);
+    public String getUserPieData(String userNickName );
     @ApiOperation("查询出高危人群" )
-    public QueryResponseResult findHighRisk(int page, int size, String userNickName);
+    public QueryResponseResult findHighRisk(int page,int size,String userNickName);
     @ApiOperation("查看高危人群详情")
     public WarnHUserVo lookDetailHWarn(String warnHUserid);
 }

@@ -6,6 +6,7 @@ import com.treehole.framework.domain.evaluation.request.WarnRequest;
 import com.treehole.framework.domain.evaluation.vo.WarnHUserVo;
 import com.treehole.framework.domain.evaluation.vo.WarningVo;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
  * Created by 14:24 on 2019/10/14.
  * Version: 1.0
  */
+@Repository
 public interface WarningMapper extends Mapper<Warning> {
 
     void deleteMoreWarning(List<String> ids);

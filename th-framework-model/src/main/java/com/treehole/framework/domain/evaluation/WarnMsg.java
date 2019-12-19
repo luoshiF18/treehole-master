@@ -14,6 +14,8 @@ import java.util.List;
 @ToString
 public class WarnMsg {
 
-    private List<String> userId;
+    private String to;  //收件人的地址
+    private List<String> warningId; //预警消息id
+    private String userId;  //用户id
     private String message;
 }
