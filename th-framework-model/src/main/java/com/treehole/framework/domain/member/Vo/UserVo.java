@@ -35,6 +35,7 @@ public class UserVo implements Serializable {
     private String user_wechat; //用户微信
     private String user_region; //用户所在地区
     //private Integer points_now;  //现有积分
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date user_createtime; //用户创建账户时间
     private String company_id;//企业用户所在公司
     private String user_status; //用户状态 0：正常 1：被禁

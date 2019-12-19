@@ -35,7 +35,8 @@ public interface UserControllerApi {
     @ApiOperation("更新用户基本信息")
     public ResponseResult update(UserVo userVo);
     @ApiOperation("更新用户手机号")
-    public ResponseResult updateUserPhone(User user);
+    public ResponseResult updateUserPhone(String user_id,
+                                          String role_id, String user_phone);
     @ApiOperation("更新用户密码")
     public ResponseResult updateUserPass(String id,String OldPass,String NewPass);
     @ApiOperation("用户验证根据昵称查询userExt")

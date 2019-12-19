@@ -20,6 +20,8 @@ public interface CardsControllerApi {
                                             CardListRequest cardListRequest) ;
     @ApiOperation("根据cardId查询cardVo对象")
     public CardsVo findCardById(String card_id);
+    @ApiOperation("根据userId查询cardVo对象")
+    public CardsVo findCardByUserId(String user_id);
     @ApiOperation("插入一条会员卡信息")
     public ResponseResult insertCard(String id);
 

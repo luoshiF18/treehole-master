@@ -104,7 +104,20 @@ public class UserController implements UserControllerApi {
     /*更新手机号绑定*/
     @Override
     @PutMapping("/update/phone")
-    public ResponseResult updateUserPhone(@RequestBody @Valid User user){
+    /*public ResponseResult updateUserPhone(@RequestBody User user){
+        System.out.println("_____________" + user);
+        userService.updatePhone(user);
+        return new ResponseResult(CommonCode.SUCCESS);
+
+    }*/
+    public ResponseResult updateUserPhone(@RequestParam(required=true,value = "user_id") String user_id,
+                                          @RequestParam(required=true,value ="role_id") String role_id,
+                                          @RequestParam(required=true,value ="user_phone") String user_phone){
+        User user = new User();
+        user.setUser_id(user_id);
+        user.setRole_id(role_id);
+        user.setUser_phone(user_phone);
+        System.out.println("_____________" + user);
         userService.updatePhone(user);
         return new ResponseResult(CommonCode.SUCCESS);
 
@@ -112,9 +125,9 @@ public class UserController implements UserControllerApi {
     /*更新密码*/
     @Override
     @PutMapping("/update/password")
-    public ResponseResult updateUserPass(@RequestParam("id") String id,
-                                         @RequestParam("OldPass") String OldPass,
-                                         @RequestParam("NewPass") String NewPass){
+    public ResponseResult updateUserPass(@RequestParam(value = "user_id") String id,
+                                         @RequestParam(value ="OldPass") String OldPass,
+                                         @RequestParam(value ="NewPass") String NewPass){
         userService.updatePass(id,OldPass,NewPass);
         return new ResponseResult(CommonCode.SUCCESS);
 

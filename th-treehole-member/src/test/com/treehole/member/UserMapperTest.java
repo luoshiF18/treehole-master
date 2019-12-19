@@ -47,7 +47,6 @@ public class UserMapperTest {
         Date date2 = dateFormat.parse("2019-12-10 00:11:00"); // 指定日期
         System.out.println(")))))))))))))))"+ date1);
         System.out.println(")))))))))))))))"+ date2);
-        //List<User> byTime = userVoMapper.getUserByTime(date1, date2, "1");
         List<UserVo> byTime = userVoService.findAllUserByTime(date1, date2);
         for (UserVo user : byTime){
             System.out.println("++++" + user);

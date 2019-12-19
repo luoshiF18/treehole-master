@@ -107,7 +107,9 @@ public class UserService {
         User user = new User();
         user.setUser_phone(phonenumber);
         user.setRole_id(roleid);
-        return userMapper.selectOne(user);
+        User user1 = userMapper.selectOne(user);
+        //System.out.println("++++++++" + user1);
+        return user1;
 
     }
 
@@ -231,7 +233,7 @@ public class UserService {
         //user.setUser_nickname(uservo.getUser_nickname());
         Role role = new Role();
         role.setRole_name(uservo.getRole_name());
-        user.setRole_id(roleService.findRoleByRole(role).getRole_id());
+        String roleId = roleService.findRoleByRole(role).getRole_id();
         user.setUser_name(uservo.getUser_name());
         user.setGender(uservo.getGender().equals("男") ? 0:1);
         user.setUser_birth(uservo.getUser_birth());
