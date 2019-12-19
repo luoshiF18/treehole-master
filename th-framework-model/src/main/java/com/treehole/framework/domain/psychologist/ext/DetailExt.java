@@ -39,4 +39,7 @@ public class DetailExt {
     //咨询师服务价格 state表
     private String price;
 
+    //咨询师获得好评数 detail表
+    private Integer praise_number;
+
 }

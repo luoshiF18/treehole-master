@@ -310,6 +310,7 @@ public class ProfileService {
         if (state == null) {
             ExceptionCast.cast(PsychologistCode.DATA_IS_NULL);
         }
+        Detail detail = this.detailMapper.selectByPrimaryKey(id);
         //设置数据
         DetailExt detailExt = new DetailExt();
         detailExt.setId(profile.getId());
@@ -322,6 +323,7 @@ public class ProfileService {
         detailExt.setProficiency(profile.getProficiency());
         detailExt.setAddress(state.getAddress());
         detailExt.setPrice(state.getPrice());
+        detailExt.setPraise_number(detail.getPraise_number());
         return detailExt;
     }
 }
