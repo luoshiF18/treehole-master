@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.marketing.request.ActivityRequest;
 import com.treehole.framework.domain.member.Cards;
+import com.treehole.framework.domain.member.Checkin;
 import com.treehole.framework.domain.member.Points;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.resquest.PointListRequest;
@@ -23,6 +24,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -66,7 +68,7 @@ public class PointService {
      * @param pointListRequest
      * @return List<Points>
      */
-    @Cacheable(value="MemberPoint")
+    //@Cacheable(value="MemberPoint")
     public QueryResponseResult findAllPoints(Integer page,
                                              Integer size,
                                              PointListRequest pointListRequest){
@@ -76,17 +78,22 @@ public class PointService {
             pointListRequest =new PointListRequest();
         }
         Points points1 = new Points();
+
+        Example example = new Example(Points.class);
+        Example.Criteria criteria = example.createCriteria();
+
         if(StringUtils.isNotEmpty(pointListRequest.getUser_nickname())){
             User user = userService.findUserByNickname(pointListRequest.getUser_nickname());
-            points1.setUser_id(user.getUser_id());
+            criteria.andEqualTo("user_id",user.getUser_id()); //参数为 属性名+值
         }
         //pagehelper需要放在离查询最近的地方，中间不能隔着查询去查询，数据会一直为1
         Page pag =PageHelper.startPage(page,size);
         if(StringUtils.isNotEmpty(pointListRequest.getUser_id())){
-            points1.setUser_id(pointListRequest.getUser_id());
+            criteria.andEqualTo("user_id",pointListRequest.getUser_id()); //参数为 属性名+值
         }
         //查询
-        List<Points> pointsList = pointsMapper.select(points1);
+        example.orderBy("points_time").desc();//排序
+        List<Points> pointsList = pointsMapper.selectByExample(example);
         if (CollectionUtils.isEmpty(pointsList)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
@@ -224,6 +231,7 @@ public class PointService {
         PageInfo<Points> pageInfo = new PageInfo<Points>(pag.getResult());
         return new QueryResult(points, pageInfo.getTotal());
     }
+
 
 
 }

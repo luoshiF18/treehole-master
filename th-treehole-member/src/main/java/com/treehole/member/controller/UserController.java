@@ -76,10 +76,6 @@ public class UserController implements UserControllerApi {
     @DeleteMapping(value ="/delete/{user_id}")
     public ResponseResult deleteUserById(@PathVariable("user_id") String user_id) {
         userService.deleteUserById(user_id);
-        //再判断用户是否存在
-         /*if(this.getUserById(user_id) != null){
-             ExceptionCast.cast(MemberCode.DELETE_USER_NOT_EXIST);
-         }*/
         return new ResponseResult(CommonCode.SUCCESS);
 
     }
@@ -104,12 +100,6 @@ public class UserController implements UserControllerApi {
     /*更新手机号绑定*/
     @Override
     @PutMapping("/update/phone")
-    /*public ResponseResult updateUserPhone(@RequestBody User user){
-        System.out.println("_____________" + user);
-        userService.updatePhone(user);
-        return new ResponseResult(CommonCode.SUCCESS);
-
-    }*/
     public ResponseResult updateUserPhone(@RequestParam(required=true,value = "user_id") String user_id,
                                           @RequestParam(required=true,value ="role_id") String role_id,
                                           @RequestParam(required=true,value ="user_phone") String user_phone){

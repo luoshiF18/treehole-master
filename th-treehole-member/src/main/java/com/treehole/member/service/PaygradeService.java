@@ -62,6 +62,16 @@ public class PaygradeService {
         }
         return grade;
     }
+    /*通过等级名称查询等级对象*/
+    public PayGrade getByRank(Integer rank) {
+        PayGrade payGrade = new PayGrade();
+        payGrade.setRank(rank);
+        PayGrade grade = paygradeMapper.selectOne(payGrade);
+        if(grade == null){
+            ExceptionCast.cast(MemberCode.GRADE_NAME_NOT_EXIST);
+        }
+        return grade;
+    }
     //修改等级信息
     @Transactional
     @CacheEvict(value="MemberPayGrade",allEntries=true)

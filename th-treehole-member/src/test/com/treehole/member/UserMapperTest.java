@@ -1,5 +1,6 @@
 package com.treehole.member;
 
+import cn.hutool.core.date.DateUtil;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.member.mapper.UserMapper;
@@ -52,5 +53,22 @@ public class UserMapperTest {
             System.out.println("++++" + user);
         }
         System.out.println("++++++++++++++" +byTime.size());
+    }
+
+
+    @Test
+    public void testTime(){
+        Date now = new Date();
+        for (int i = 5; i>=0; i--) {
+            try {
+                Thread.sleep(1000);  //1000毫秒就是1秒
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(i);
+        }
+        Date checkTime = new Date();
+        boolean day = DateUtil.isSameDay(now,checkTime);
+        System.out.println("++++" + day);
     }
 }

@@ -36,6 +36,7 @@ public enum MemberCode implements ResultCode {
     GRADE_NAME_NOT_EXIST(false,317,"等级名称填入错误，等级不存在"),
     PASSWORD_ERROR(false,318,"密码错误"),
     PASSWORD_OLD_ERROR(false,319,"原密码输入错误"),
+    CHECKIN_REPEAT(false,320,"重复签到"),
     TEST1(false,0000,"测试报错1"),
     TEST2(false,6690,"测试报错2"),
     TEST3(false,0002,"测试报错3")

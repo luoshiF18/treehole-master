@@ -6,6 +6,7 @@ import com.treehole.framework.domain.member.Vo.CardsVo;
 import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
+import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.member.mapper.CardsMapper;
 import com.treehole.member.mapper.FreegradeMapper;
 import com.treehole.member.mapper.PaygradeMapper;
@@ -18,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author shanhuijie
@@ -169,4 +173,62 @@ public class CardsService {
             ExceptionCast.cast(MemberCode.DELETE_FAIL);
         }
     }
+
+    @Transactional
+    //@CacheEvict(value="MemberCard",allEntries=true)
+    public void updateByPayEndTime(){
+
+        List<Cards> cardList = cardsMapper.selectAll();
+        int pp =0;
+        for(Cards card : cardList){
+            pp++;
+            System.out.println(pp);
+            if(! card.getPaygrade_id().equals("p000")){
+                Date date = new Date(); //现在的时间
+                Date date1 = card.getPaygrade_end();  //结束时间
+                //当前时间大于结束时间  过期 date > date1
+                if(date.compareTo(date1) == 1){
+                    Example example = new Example(Cards.class);
+                    Example.Criteria criteria = example.createCriteria();
+                    criteria.andEqualTo("card_id",card.getCard_id());
+                    card.setPaygrade_id("p000");
+                    card.setPaygrade_start(null);
+                    card.setPaygrade_end(null);
+                    int upd = cardsMapper.updateByExample(card,example);
+                    //System.out.println("+++++++++++++++++"+ upd);
+                    if(upd != 1){
+                        ExceptionCast.cast(MemberCode.UPDATE_FAIL);
+                    }
+                }
+            }
+
+        }
+        //判断当前日期是否大于vipend时间
+        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        Date date = new Date(); //现在的时间
+//        Date date1 = cards1.getPaygrade_end();  //结束时间
+        //当时时间小于结束时间或等于结束时间
+        //if(date.compareTo(date1) == -1 ||date.compareTo(date1) == 0){
+        //当前时间大于结束时间  过期 date > date1
+        //根据end时间判断是否是vip
+        /*List<Cards> selectAll = cardsMapper.selectAll();
+        for(Cards cards2 : selectAll){
+            Date date = new Date(); //现在的时间
+            Date date1 = cards2.getPaygrade_end();  //结束时间
+            if(date.compareTo(date1) == 1){
+                cards.setPaygrade_id(byRank.getPaygrade_id());
+                cards.setPaygrade_start(null);
+                cards.setPaygrade_end(null);
+            }
+            Example example =new Example(Cards.class);
+            Example.Criteria criteria = example.createCriteria();
+            criteria.andEqualTo("card_id",card_id);
+            int upd= cardsMapper.updateByExampleSelective(cards,example);
+            if(upd != 1){
+                ExceptionCast.cast(MemberCode.UPDATE_FAIL);
+            }
+        }*/
+
+    }
+
 }

@@ -136,9 +136,8 @@ public class UserVoService {
     }
 
     public List<UserVo> findAllUserByTime( Date beforeTime, Date afterTime)  {
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // 日期格式
-       /* Date date1 = dateFormat.parse("2019-12-02 00:11:00"); // 指定日期
-        Date date2 = dateFormat.parse("2019-12-10 00:11:00"); // 指定日期*/
         if (beforeTime == null ){
             try {
                 beforeTime = dateFormat.parse("1970-01-01 08:00:00"); // 指定日期

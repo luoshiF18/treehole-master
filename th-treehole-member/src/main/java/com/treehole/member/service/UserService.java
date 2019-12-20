@@ -194,6 +194,9 @@ public class UserService {
             }*/
             ExceptionCast.cast(MemberCode.PHONE_IS_EXIST);
         }
+        if(user.getUser_birth() == null){
+            user.setUser_birth(new Date());
+        }
         user.setUser_createtime(new Date());
         user.setUser_status(0);  //默认正常状态
         /*if(this.findUserByNickname(nickname1) != null){

@@ -1,9 +1,13 @@
 package com.treehole.member.service;
 
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.member.Checkin;
+import com.treehole.framework.domain.member.Points;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.CheckinVo;
 import com.treehole.framework.domain.member.result.MemberCode;
@@ -11,6 +15,7 @@ import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
+import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.member.mapper.CheckinMapper;
 import com.treehole.member.myUtil.MyNumberUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,7 +25,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import tk.mybatis.mapper.entity.Example;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,20 +51,37 @@ public class CheckinService {
     /*
     * 查询
     * */
-    @Cacheable(value="MemberCheck")
+   // @Cacheable(value="MemberCheck")
     public QueryResponseResult findAllCheckins(Integer page,
                                        Integer size,
                                        String nickname) {
         List<Checkin> checkins = new ArrayList<Checkin>();
-        //分页
-        Page pag =PageHelper.startPage(page,size);
+            Page pag = new Page();
         if(StringUtils.isNotEmpty(nickname)){
             User user = userService.findUserByNickname(nickname);
+            pag =PageHelper.startPage(page,size);
             Checkin ch = new Checkin();
             ch.setUser_id(user.getUser_id());
-            checkins = checkinMapper.select(ch);
+
+            Example example = new Example(Checkin.class);
+            Example.Criteria criteria = example.createCriteria();
+            criteria.andEqualTo("user_id",user.getUser_id()); //参数为 属性名+值
+            example.orderBy("checkin_time").desc();//排序
+            checkins = checkinMapper.selectByExample(example);
+            //checkins = checkinMapper.select(ch);
+
         }else{
-            checkins = checkinMapper.selectAll();
+             pag =PageHelper.startPage(page,size);
+
+            Example example = new Example(Checkin.class);
+            Example.Criteria criteria = example.createCriteria();
+            example.orderBy("checkin_time").desc();//排序
+
+            //return userMapper.selectByExample(example);
+
+            checkins = checkinMapper.selectByExample(example);
+
+            //checkins = checkinMapper.selectAll();
         }
 
         if (CollectionUtils.isEmpty(checkins)) {
@@ -87,16 +111,44 @@ public class CheckinService {
     @Transactional
     @CacheEvict(value="MemberCheck",allEntries=true)
     public void insertCheckin(Checkin checkin) {
+        //false 不在同一天
+    if(!this.OneDayCheckin(checkin.getUser_id())){
+
         checkin.setCheckin_id(MyNumberUtils.getUUID());
         checkin.setCheckin_time(new Date());
         int ins= checkinMapper.insert(checkin);
         if(ins != 1){
             ExceptionCast.cast(MemberCode.INSERT_FAIL);
         }
-        /*//调用insert积分功能
-        Points points = new Points();
-        points.setPoints_num();//从active表中获取签到值
-        pointService.insertPoint(points);*/
+        }else{
+            ExceptionCast.cast(MemberCode.CHECKIN_REPEAT);
+        }
+
+    }
+    //判断一天只能签一次到
+    public boolean OneDayCheckin(String user_id){
+        Checkin check = new Checkin();
+        check.setUser_id(user_id);
+        List<Checkin> select = checkinMapper.select(check);
+        Boolean inOneday = false;  //不在一天
+        for(Checkin ch : select){
+            //现在的时间
+//            Date now = new Date();
+//            Timestamp  timenow  = new Timestamp(now.getTime());
+            //get到的签到时间
+//            Date checkTime = ch.getCheckin_time();
+//            Timestamp timecheck =new Timestamp(checkTime.getTime());
+//            boolean day = DateUtil.isSameDay(timenow,timecheck);
+            Date now = new Date();
+            Date checkTime = ch.getCheckin_time();
+            boolean day = DateUtil.isSameDay(now,checkTime);
+            if(day){
+                inOneday = true;
+            }
+
+        }
+        return inOneday;
+
     }
 
     /*
@@ -155,7 +207,7 @@ public class CheckinService {
     /*
     *根据user-id 查询签到记录
     */
-    /*public QueryResult getCheckinByUserId(String user_id, Integer page, Integer size) {
+    public QueryResult getCheckinByUserId(String user_id, Integer page, Integer size) {
         if (StringUtils.isBlank(user_id)) {
             ExceptionCast.cast(MemberCode.SELECT_NULL);
             return null;
@@ -174,7 +226,7 @@ public class CheckinService {
             //Long sizer = Long.valueOf(points.size());
             return new QueryResult(checkins, pageInfo.getTotal());
 
-    }*/
+    }
     /*不报错版根据userid查签到对象*/
     public QueryResult getCheckinByUserId1(String user_id, Integer page, Integer size) {
         Page pag =PageHelper.startPage(page,size);
@@ -185,6 +237,8 @@ public class CheckinService {
         PageInfo<Checkin> pageInfo = new PageInfo<>(pag.getResult());
         return new QueryResult(checkins, pageInfo.getTotal());
     }
+
+
 
     /*按时间删除  未实现*/
 }
