@@ -177,9 +177,12 @@
                 AND ct.`course_type_id` = #{courseTypeId}
             </if>
 
-            <if test=" selectCourseTime !=null and selectCourseTime !='' ">
-                AND tc.select_course_time =  DATE_FORMAT(#{selectCourseTime},'%m-%d-%Y')
+            <if test=" selectCourseTime !=null ">
+                <![CDATA[
+                   and tc.select_course_time = #{selectCourseTime}
+                ]]>
             </if>
+
         </where>
     </select>
 

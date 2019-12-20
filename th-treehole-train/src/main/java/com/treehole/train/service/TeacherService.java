@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.train.Class;
 import com.treehole.framework.domain.train.Teacher;
+import com.treehole.framework.domain.train.User;
 import com.treehole.framework.domain.train.ext.ClassHeadmaster;
 import com.treehole.framework.domain.train.ext.TeacherCourseOfTeach;
 import com.treehole.framework.domain.train.response.TrainCode;
@@ -11,6 +12,7 @@ import com.treehole.framework.model.response.*;
 import com.treehole.train.config.RootPropeties;
 import com.treehole.train.dao.TeacherMapper;
 import com.treehole.train.dao.TeacherRepository;
+import com.treehole.train.dao.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,13 +34,24 @@ public class TeacherService {
 
     @Autowired
     GenerateNumberService generateNumberService;
+
+    @Autowired
+    UserRepository userRepository;
     //添加老师信息
+    @Transactional
     public ResponseResult addTeacher(Teacher teacher){
         teacher.setTeacherState(1);
         //添加老师自动生成的Id
         String tId = generateNumberService.GenerateNumber("2");
         teacher.setTeacherId(tId);
         Teacher save = teacherRepository.save(teacher);
+        //添加老师user
+        User user = new User();
+        user.setUserName(tId);
+        user.setUserPassword(tId);
+        user.setUserType(2);
+        userRepository.save(user);
+
         if(save!=null){
             return new ResponseResult(CommonCode.SUCCESS);
         }

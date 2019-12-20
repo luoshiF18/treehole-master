@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.treehole.train.dao.DocumentMapper">
+
+
+
+    <!--老师查询学生的作业-->
+    <select id="findStudentTask"
+            parameterType="com.treehole.framework.domain.train.ext.DocumentExt"
+            resultType="com.treehole.framework.domain.train.ext.DocumentExt">
+            SELECT
+            d.*,
+            s.`student_name`
+            FROM document d
+            LEFT JOIN student s
+            ON d.`student_id` = s.`student_id`
+            <where>
+                AND d.`student_id` != 0
+                <if test="classCourseId !=null and classCourseId !='' ">
+                   and d.`class_course_id`= #{classCourseId}
+                </if>
+
+                <if test=" studentName !=null and studentName !='' ">
+                    AND s.`student_name` LIKE '%${studentName}%'
+                </if>
+
+                <if test=" documentName !=null and documentName !='' ">
+                    AND d.`document_name` LIKE '%${documentName}%'
+                </if>
+
+                <if test=" uploadTime !=null  ">
+                    <![CDATA[
+                        and d.upload_time = #{uploadTime}
+                    ]]>
+                </if>
+            </where>
+            ORDER BY d.`upload_time` DESC
+    </select>
+
+
+    <!--学生查询老师的资料-->
+    <select id="findTeacherData"
+            parameterType="com.treehole.framework.domain.train.ext.DocumentExt"
+            resultType="com.treehole.framework.domain.train.ext.DocumentExt">
+            SELECT d.*,t.`teacher_name`
+            FROM document d
+            LEFT JOIN `class_course` cc
+            ON d.`class_course_id` = cc.class_course_id
+            LEFT JOIN teacher_course tc
+            ON cc.`class_course_id` = tc.`class_course_id`
+            LEFT JOIN teacher t
+            ON tc.`teacher_id` = t.`teacher_id`
+            <where>
+                AND d.`student_id` = 0
+                <if test="classCourseId !=null and classCourseId !='' ">
+                    and d.`class_course_id`= #{classCourseId}
+                </if>
+
+                <if test=" documentName !=null and documentName !='' ">
+                    AND d.`document_name` LIKE '%${documentName}%'
+                </if>
+
+                <if test=" uploadTime !=null ">
+                    <![CDATA[
+                        and  d.`upload_time` = #{uploadTime}
+                    ]]>
+                </if>
+
+            </where>
+        </select>
+</mapper>

@@ -129,6 +129,7 @@
         p.`phase_name`,
         c.`class_name`,
         ct.`course_type_name`,
+        cc.`class_course_id`,
         co.*
         FROM teacher t
         LEFT JOIN teacher_course tc

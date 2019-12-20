@@ -59,7 +59,8 @@
             SELECT
             co.*,
             t.`teacher_name`,
-            ct.`course_type_name`
+            ct.`course_type_name`,
+            cc.class_course_id
             FROM student s
             LEFT JOIN class_course cc
             ON  cc.`class_id` = s.student_class
@@ -77,7 +78,8 @@
             SELECT
             co.*,
             t.`teacher_name`,
-            ct.`course_type_name`
+            ct.`course_type_name`,
+            cc.class_course_id
             FROM student s
             LEFT JOIN class_course cc
             ON  cc.`class_id` = s.student_class

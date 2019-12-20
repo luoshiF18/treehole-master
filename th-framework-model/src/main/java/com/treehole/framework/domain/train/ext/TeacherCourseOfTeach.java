@@ -17,6 +17,8 @@ public class TeacherCourseOfTeach extends Course {
         private String phaseName;
         private String courseTypeName;
         private String teacherId;
+        private String classCourseId;
+
 
 
 }

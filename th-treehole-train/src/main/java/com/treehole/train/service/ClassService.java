@@ -9,10 +9,7 @@ import com.treehole.framework.domain.train.ext.*;
 import com.treehole.framework.domain.train.response.TrainCode;
 import com.treehole.framework.model.response.*;
 import com.treehole.train.config.RootPropeties;
-import com.treehole.train.dao.ClassCourseRepository;
-import com.treehole.train.dao.ClassMapper;
-import com.treehole.train.dao.ClassRepository;
-import com.treehole.train.dao.PhaseRepository;
+import com.treehole.train.dao.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +44,8 @@ public class ClassService {
     @Autowired
     ClassCourseRepository classCourseRepository;
 
+    @Autowired
+    UserRepository userRepository;
     //添加班级信息
     @Transactional
     public ResponseResult addClass(Class class1) {
@@ -82,7 +81,12 @@ public class ClassService {
             classCourse.setCourseId(courseId);
             classCourseRepository.save(classCourse);
         }
-
+        //添加班级user
+        User user = new User();
+        user.setUserName(cId);
+        user.setUserPassword(cId);
+        user.setUserType(5);
+        userRepository.save(user);
 
         if (save != null) {
             return new ResponseResult(CommonCode.SUCCESS);

@@ -65,12 +65,7 @@ public class CostService {
                 //欠费金额=应收金额-优惠金额-实收金额
                 Double arrears = cost.getCostAmountPayable() - cost.getCostPreferentialAmount() - cost.getCostAmountReceived();
                 cost.setCostArrears(arrears);
-                //计算优惠金额还剩多少
-                double preferentialAmount = cost.getCostPreferentialAmount() - cost.getCostAmountPayable();
-                if(preferentialAmount <= 0){
-                    preferentialAmount = 0;
-                }
-                cost.setCostPreferentialAmount(preferentialAmount);
+
                 //生成时间
                 Date date = new Date();
                 cost.setCostTime(date);
@@ -96,46 +91,58 @@ public class CostService {
 
         } else {
        //第一次交费的情况
-           //欠费计算
-            if(cost.getCostAmountPayable() == 0){
+            if(cost.getCostPreferentialAmount() > cost.getCostAmountPayable()){
+                //优惠金额>学费的时候（这种情况极少出现,一般发生在新生录入信息自动交费）
                 Date date = new Date();
                 cost.setCostTime(date);
+                cost.setCostArrears(0);
+                cost.setCostOther("新生自动交费");
+                this.updatestudentArrears(studentId);
                 Cost save = costRepository.save(cost);
                 if (save != null) {
                     return new ResponseResult(CommonCode.SUCCESS);
                 }
             }else {
-                Double arrears = cost.getCostAmountPayable() - cost.getCostPreferentialAmount() - cost.getCostAmountReceived();
-                cost.setCostArrears(arrears);
-                //计算优惠金额还剩多少
-                double preferentialAmount = cost.getCostAmountPayable() - cost.getCostPreferentialAmount();
-                if(preferentialAmount <= 0){
-                    preferentialAmount = 0;
-                }
-                cost.setCostPreferentialAmount(preferentialAmount);
-                //生成时间
-                Date date = new Date();
-                cost.setCostTime(date);
-                if(arrears < 0){
-                    ExceptionCast.cast(CostCode.MOREMONEY);
-                }
-                if(arrears == 0  || arrears == 0.0 || arrears == 0.00){
-                    String costOther = cost.getCostOther();
-                    if(costOther == null || costOther == "" ){
-                        cost.setCostOther("学费已经交完");
-                        this.updatestudentArrears(studentId);
-                    }else {
-                        cost.setCostOther(costOther+"（学费已经交完）");
-                        this.updatestudentArrears(studentId);
+                //学费还没定的时候
+                if(cost.getCostAmountPayable() == 0){
+                    Date date = new Date();
+                    cost.setCostTime(date);
+                    cost.setCostArrears(cost.getCostAmountPayable());
+                    this.updatestudentArrears(studentId);
+                    Cost save = costRepository.save(cost);
+                    if (save != null) {
+                        return new ResponseResult(CommonCode.SUCCESS);
                     }
+                }else {
+                    //正常情况
+                    //欠费计算
+                    Double arrears = cost.getCostAmountPayable() - cost.getCostPreferentialAmount() - cost.getCostAmountReceived();
+                    cost.setCostArrears(arrears);
+
+                    //生成时间
+                    Date date = new Date();
+                    cost.setCostTime(date);
+                    if(arrears < 0){
+                        ExceptionCast.cast(CostCode.MOREMONEY);
+                    }
+                    if(arrears == 0  || arrears == 0.0 || arrears == 0.00){
+                        String costOther = cost.getCostOther();
+                        if(costOther == null || costOther == "" ){
+                            cost.setCostOther("学费已经交完");
+                            this.updatestudentArrears(studentId);
+                        }else {
+                            cost.setCostOther(costOther+"（学费已经交完）");
+                            this.updatestudentArrears(studentId);
+                        }
+                    }
+                    Cost save = costRepository.save(cost);
+                    if (save != null) {
+                        return new ResponseResult(CommonCode.SUCCESS);
+                    }
+                    return new ResponseResult(CommonCode.FAIL);
                 }
-                Cost save = costRepository.save(cost);
-                if (save != null) {
-                    return new ResponseResult(CommonCode.SUCCESS);
-                }
-                return new ResponseResult(CommonCode.FAIL);
             }
-            }
+        }
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
@@ -150,6 +157,12 @@ public class CostService {
         }else {
         //从记录中拿
             Cost cost = costList.get(0);
+            if(cost.getCostAmountPayable() >=(cost.getCostPreferentialAmount()+cost.getCostAmountReceived())){
+                //如果 应付金额 >=(优惠金额 + 实收金额)
+                cost.setCostPreferentialAmount(0);
+            }else if(cost.getCostAmountPayable()<cost.getCostPreferentialAmount()){
+                cost.setCostPreferentialAmount(cost.getCostPreferentialAmount() - cost.getCostAmountPayable());
+            }
             return cost;
         }
 

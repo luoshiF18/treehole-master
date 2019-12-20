@@ -17,30 +17,36 @@ public class UserService {
     UserRepository userRepository;
 
     //登录
-    public ResponseResult login(String userName, String userPassword, HttpServletRequest request){
+    public ResponseResult login(String userName, String userPassword, int userType , HttpServletRequest request){
 
         User user = userRepository.findByUserName(userName);
-        if(user.getUserPassword().equals(userPassword)){
-            //登录成功
-            request.getSession().setAttribute("login",userName);
-            return new ResponseResult(CommonCode.SUCCESS);
-
+        System.out.println(user);
+        if(user != null){
+            System.out.println(user);
+            if(user.getUserPassword().equals(userPassword)){
+                if(user.getUserType() == userType ){
+                    //登录成功
+                    request.getSession().setAttribute("login",userName);
+                    return new ResponseResult(CommonCode.SUCCESS);
+                }else {
+                    //登录失败
+                    return new ResponseResult(CommonCode.FAIL);
+                }
+            }else {
+                //登录失败
+                return new ResponseResult(CommonCode.FAIL);
+            }
         }else {
             //登录失败
             return new ResponseResult(CommonCode.FAIL);
         }
+
     }
 
-
-    //退出
-    public ResponseResult SignOut(HttpServletRequest request){
-            request.getSession().invalidate();
-            return new ResponseResult(CommonCode.SUCCESS);
-    }
 
     //修改密码
     public ResponseResult updatePassword(String userName,String oldPwd,String newPwd){
-
+        System.out.println(userName);
         User user = userRepository.findByUserName(userName);
         if(user.getUserPassword() .equals(oldPwd) ){
             //修改密码

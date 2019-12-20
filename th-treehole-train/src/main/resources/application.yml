@@ -1,5 +1,7 @@
 server:
   port: ${port:40401}
+  tomcat:
+    max-http-header-size: 8192
 spring:
   application:
     name: th-treehole-train
@@ -38,5 +40,5 @@ ribbon:
   ReadTimeout: 6000 #请求处理的超时时间
 mybatis:
   config-location: classpath:mybatis/mybatis-config.xml
-  mapper-locations: classpath*:mybatis/mapper/StudentMapper.xml,classpath*:mybatis/mapper/ClassMapper.xml,classpath*:mybatis/mapper/TeacherMapper.xml,classpath*:mybatis/mapper/CostMapper.xml,classpath*:mybatis/mapper/LeaveMapper.xml,classpath*:mybatis/mapper/CourseMapper.xml,classpath*:mybatis/mapper/CourseTypeMapper.xml,classpath*:mybatis/mapper/PhaseCourseMapper.xml,classpath*:mybatis/mapper/PhaseMapper.xml,classpath*:mybatis/mapper/TeacherCourseMapper.xml
+  mapper-locations: classpath*:mybatis/mapper/StudentMapper.xml,classpath*:mybatis/mapper/ClassMapper.xml,classpath*:mybatis/mapper/TeacherMapper.xml,classpath*:mybatis/mapper/CostMapper.xml,classpath*:mybatis/mapper/LeaveMapper.xml,classpath*:mybatis/mapper/CourseMapper.xml,classpath*:mybatis/mapper/CourseTypeMapper.xml,classpath*:mybatis/mapper/PhaseCourseMapper.xml,classpath*:mybatis/mapper/PhaseMapper.xml,classpath*:mybatis/mapper/TeacherCourseMapper.xml,classpath*:mybatis/mapper/DocumentMapper.xml
   type-aliases-package: com.treehole.framework.domain.train

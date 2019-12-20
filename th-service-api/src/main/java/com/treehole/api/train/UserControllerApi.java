@@ -15,9 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 public interface UserControllerApi {
 
     @ApiOperation("登录")
-    public ResponseResult login(String userName,String userPassword, HttpServletRequest request);
-    @ApiOperation("退出")
-    public ResponseResult signOut(HttpServletRequest request);
+    public ResponseResult login(String userName,String userPassword,int userType , HttpServletRequest request);
+
     @ApiOperation("修改密码")
     public ResponseResult updatePassword(String userName,String oldPwd,String newPwd);
 }

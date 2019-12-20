@@ -42,7 +42,8 @@ public class StudentService {
     PhaseRepository phaseRepository;
     @Autowired
     GenerateNumberService generateNumberService;
-
+    @Autowired
+    UserRepository userRepository;
 //信息管理
    //学员管理
        //基本信息管理
@@ -86,6 +87,13 @@ public class StudentService {
         classNumber++;
         newClass.setClassNumber(classNumber);
         classRepository.save(newClass);
+
+        //添加学生user
+        User user = new User();
+        user.setUserName(sId);
+        user.setUserPassword(sId);
+        user.setUserType(1);
+        userRepository.save(user);
 
         if(save != null){
             return new ResponseResult(CommonCode.SUCCESS);

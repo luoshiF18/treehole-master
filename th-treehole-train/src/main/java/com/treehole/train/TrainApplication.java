@@ -7,7 +7,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 
-@EnableFeignClients  //进行远程调用
+@EnableFeignClients
 @EnableDiscoveryClient //表示它是一个Eureka的客户端
 @SpringBootApplication
 @EntityScan("com.treehole.framework.domain.train")//扫描实体类

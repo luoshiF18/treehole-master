@@ -13,5 +13,7 @@ public class CourseTeacher extends Course {
     private String teacherName;
 
     private String courseTypeName;
+    private String classCourseId;
+
 
 }

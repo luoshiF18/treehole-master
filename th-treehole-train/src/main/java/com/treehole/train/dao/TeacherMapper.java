@@ -1,7 +1,6 @@
 package com.treehole.train.dao;
 
 import com.treehole.framework.domain.train.Class;
-import com.treehole.framework.domain.train.Course;
 import com.treehole.framework.domain.train.Teacher;
 
 import com.treehole.framework.domain.train.ext.ClassHeadmaster;

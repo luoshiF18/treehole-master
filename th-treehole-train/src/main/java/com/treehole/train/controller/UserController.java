@@ -17,16 +17,11 @@ public class UserController implements UserControllerApi {
     UserService userService;
 
     @Override
-    @GetMapping("/login/{userName}/{userPassword}")
-    public ResponseResult login(@PathVariable("userName") String userName,@PathVariable("userPassword") String userPassword, HttpServletRequest request) {
-        return userService.login(userName,userPassword,request);
+    @GetMapping("/login/{userName}/{userPassword}/{userType}")
+    public ResponseResult login(@PathVariable("userName") String userName,@PathVariable("userPassword") String userPassword,@PathVariable("userType") int userType , HttpServletRequest request) {
+        return userService.login(userName,userPassword,userType,request);
     }
 
-    @Override
-    @GetMapping("/signOut")
-    public ResponseResult signOut(HttpServletRequest request) {
-        return userService.SignOut(request);
-    }
 
     @Override
     @GetMapping("/updatePassword/{userName}/{oldPwd}/{newPwd}")

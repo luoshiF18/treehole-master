@@ -148,20 +148,25 @@ public class PhaseCourseService {
             String studentId = student.getStudentId();
             //从中拿到最新的交费情况
             List<Cost> costList = costMapper.findCostByStudentId(studentId);
-            Cost cost = costList.get(0);
-            //老的欠费金额
-            double costArrears = cost.getCostArrears();
-            //计算新添加课程的总价格
-            List<Course> courseList1 = courseList.getCourseList();
-            double price = 0;
-            for(Course course:courseList1){
-                double coursePrice = course.getCoursePrice();
-                price+=coursePrice;
+            if(costList.size() != 0){
+                Cost cost = costList.get(0);
+                //老的欠费金额
+                double costArrears = cost.getCostArrears();
+                //计算新添加课程的总价格
+                List<Course> courseList1 = courseList.getCourseList();
+                double price = 0;
+                for(Course course:courseList1){
+                    double coursePrice = course.getCoursePrice();
+                    price+=coursePrice;
+                }
+                //新的欠费金额
+                cost.setCostArrears(costArrears+price);
+                cost.setCostOther("按要求又添加课程，学费进行增加");
+                costRepository.save(cost);
+                //修改学生的欠费状态
+                student.setStudentArrears(1);
+                studentRepository.save(student);
             }
-            //新的欠费金额
-            cost.setCostArrears(costArrears+price);
-            cost.setCostOther("按要求又添加课程，学费进行增加");
-            costRepository.save(cost);
         }
     }
 
@@ -173,21 +178,33 @@ public class PhaseCourseService {
             String studentId = student.getStudentId();
             //从中拿到最新的交费情况
             List<Cost> costList = costMapper.findCostByStudentId(studentId);
-            Cost cost = costList.get(0);
-            //老的欠费金额
-            double costArrears = cost.getCostArrears();
+            if(costList.size() != 0){
+                Cost cost = costList.get(0);
+                //老的欠费金额
+                double costArrears = cost.getCostArrears();
 
-            //计算新添加课程的总价格
-            Optional<Course> optional = courseRepository.findById(courseId);
-            Course course = null;
-            if(optional.isPresent()){
-                course = optional.get();
-                double price = course.getCoursePrice();
-                //新的欠费金额
-                cost.setCostArrears(costArrears - price);
-                cost.setCostOther("按要求又减少课程，学费进行减少");
-                costRepository.save(cost);
+                //计算新添加课程的总价格
+                Optional<Course> optional = courseRepository.findById(courseId);
+                Course course = null;
+                if(optional.isPresent()){
+                    course = optional.get();
+                    double price = course.getCoursePrice();
+                    //新的欠费金额
+                    cost.setCostArrears(costArrears - price);
+                    cost.setCostOther("按要求又减少课程，学费进行减少");
+                    costRepository.save(cost);
+
+                    //修改学生的欠费状态
+                    if(costArrears - price>0){
+                        student.setStudentArrears(1);
+                        studentRepository.save(student);
+                    }else {
+                        student.setStudentArrears(2);
+                        studentRepository.save(student);
+                    }
+                }
             }
+
 
         }
     }

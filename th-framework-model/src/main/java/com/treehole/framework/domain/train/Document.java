@@ -9,20 +9,23 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @ToString
 @Entity
 @NoArgsConstructor
-@Table(name="user")
+@Table(name="document")
 @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
-public class User implements Serializable {
+public class Document {
     private static final long serialVersionUID = -916357110051689587L;
     @Id
     @GeneratedValue(generator = "jpa-uuid")
-    private String   userId;
-    private String   userName;
-    private String   userPassword;
-    private Integer  userType;
+    private String id;
+    private String documentId;
+    private String documentName;
+    private Date uploadTime;
+    private String classCourseId;
+    private String studentId;
+
 }
