@@ -25,5 +25,6 @@ public class UserCouponBo{
     private Boolean status;//用户优惠券状态
     private Boolean unUsedStatus;
     private Boolean usedStatus;
+    private String usedTypeName;
 
 }

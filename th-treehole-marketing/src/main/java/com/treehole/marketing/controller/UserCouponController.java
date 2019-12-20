@@ -2,6 +2,7 @@ package com.treehole.marketing.controller;
 
 import com.treehole.api.marketing.UserCouponControllerApi;
 import com.treehole.framework.domain.marketing.bo.CouponBo;
+import com.treehole.framework.domain.marketing.request.UserCouponRequest;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
  * @author wanglu
  */
 @RestController
-@RequestMapping("/marketing/coupon")
+@RequestMapping("/coupon")
 public class UserCouponController implements UserCouponControllerApi {
 
     @Autowired
@@ -47,14 +48,13 @@ public class UserCouponController implements UserCouponControllerApi {
     }
 
     /**
-     * 用户添加优惠券
-     * @param couponBo
-     * @param userId
+     * 用户领取优惠券
+     * @param userCouponRequest
      * @return
      */
-    @PostMapping("my_coupon")
-    public ResponseResult saveUserCoupon(@RequestBody CouponBo couponBo, String userId) {
-        this.userCouponService.saveUserCoupon(couponBo, userId);
+    @PostMapping("/my_coupon")
+    public ResponseResult saveUserCoupon(@RequestBody UserCouponRequest userCouponRequest) {
+        this.userCouponService.saveUserCoupon(userCouponRequest);
         return new ResponseResult(CommonCode.SUCCESS);
     }
 }

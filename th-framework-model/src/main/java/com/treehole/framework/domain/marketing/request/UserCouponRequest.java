@@ -1,4 +1,4 @@
-package com.treehole.framework.domain.marketing.bo;
+package com.treehole.framework.domain.marketing.request;
 
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -10,13 +10,12 @@ import java.util.Date;
  * @author wanglu
  */
 @Data
-public class CouponBo {
+public class UserCouponRequest {
     private String id;
     private String title;
     private String icon;
-    private String typeName;//优惠券类型
-    private String usedType;
-
+    private Integer usedType;//优惠券类型
+    private String usedTypeName;
     private BigDecimal withAmount;//门槛
     private BigDecimal usedAmount;//面额
     private Boolean withSpecial;
@@ -29,5 +28,5 @@ public class CouponBo {
     private Integer limitNum; // 限领
     private Integer usedBy;   // 受惠人群/适用人群 null:所有会员，1:付费会员，2:普通会员
     private Integer status;   //优惠券状态 0:已结束，1：生效，2：已结束
-
+    private String userId;
 }

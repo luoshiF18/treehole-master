@@ -23,10 +23,12 @@ public class Coupon implements Serializable {
     private String title;
     private String letter;
     private String icon;
-    //private String typeId;
     private Integer type;
     @Transient
     private String typeName;
+    private Integer usedType;//1测评 2咨询 3课程 0所有
+    @Transient
+    private String usedTypeName;
     private Boolean withSpecial;
     private BigDecimal withAmount;
     private BigDecimal usedAmount;

@@ -3,12 +3,14 @@ package com.treehole.marketing.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.marketing.Coupon;
+import com.treehole.framework.domain.marketing.CouponType;
 import com.treehole.framework.domain.marketing.bo.CouponBo;
 import com.treehole.framework.domain.marketing.response.MarketingCode;
 import com.treehole.framework.domain.marketing.utils.MyStatusCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.marketing.dao.CouponMapper;
+import com.treehole.marketing.dao.CouponTypeMapper;
 import com.treehole.marketing.utils.MyChineseCharUtil;
 import com.treehole.marketing.utils.MyNumberUtils;
 import org.apache.commons.lang.StringUtils;
@@ -33,8 +35,8 @@ public class CouponService {
     @Autowired
     private CouponMapper couponMapper;
 
-  //  @Autowired
-   // private RedisTemplate redisTemplate;
+    @Autowired
+    private CouponTypeMapper couponTypeMapper;
 
     @Autowired
     private StringRedisTemplate redisTemplate;
@@ -91,8 +93,8 @@ public class CouponService {
     private void transfer(Coupon coupon){
         coupon.setLetter(StringUtils.substring(coupon.getLetter(), 0, 1));
         coupon.setValidTypeName(coupon.getValidType() ? "绝对时效":"相对时效");
-        /*Type type = this.typeMapper.selectByPrimaryKey(coupon.getTypeId());
-        coupon.setTypeName(type.getName());*/
+        CouponType type = this.couponTypeMapper.selectByPrimaryKey(coupon.getUsedType());
+        coupon.setUsedTypeName(type.getUsedType());
         if(coupon.getType() == 1){
             coupon.setTypeName("注册赠券");
         } else if(coupon.getType() == 2){
@@ -145,6 +147,9 @@ public class CouponService {
         couponBo.setTitle(coupon.getTitle());
         couponBo.setIcon(coupon.getIcon());
         couponBo.setTypeName(coupon.getTypeName());
+        //
+        CouponType type = this.couponTypeMapper.selectByPrimaryKey(coupon.getUsedType());
+        couponBo.setUsedType(type.getUsedType());
         couponBo.setWithSpecial(coupon.getWithSpecial());
         couponBo.setWithAmount(coupon.getWithAmount());
         couponBo.setUsedAmount(coupon.getUsedAmount());
@@ -154,6 +159,7 @@ public class CouponService {
         couponBo.setValidDays(coupon.getValidDays());
         couponBo.setUsedBy(couponBo.getUsedBy());
         couponBo.setStatus(coupon.getStatus());
+        couponBo.setLimitNum(coupon.getLimitNum());
         return couponBo;
     }
     /**
@@ -181,6 +187,9 @@ public class CouponService {
                 coupon.getUsedAmount() == null ||
                 coupon.getUsedAmount() == new BigDecimal(0)){
             ExceptionCast.cast(MarketingCode.DATA_ERROR);
+        }
+        if((coupon.getValidType() == false && coupon.getValidDays() == null)||(coupon.getValidType()==true && (coupon.getValidStartTime() == null || coupon.getValidEndTime() == null))){
+            ExceptionCast.cast(MarketingCode.COUPON_VALID_DATE_ERROR);
         }
         coupon.setId(MyNumberUtils.getUUID());
         String upperCase = MyChineseCharUtil.getUpperCase(coupon.getTitle(), false);

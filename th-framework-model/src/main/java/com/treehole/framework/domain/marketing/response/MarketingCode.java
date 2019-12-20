@@ -14,7 +14,11 @@ public enum MarketingCode implements ResultCode {
     DELETE_ERROR(false, 404, "抱歉，删除失败！"),
     DELETE_FORBIDDEN(false, 403, "抱歉，正在进行中不可删除，请结束或者修改！"),
     INSERT_DATA_ERROR(false, 401, "数据错误，添加失败"),
-    DATA_NULL(false, 401, "优惠券数据不存在")
+    DATA_NULL(false, 401, "优惠券数据不存在"),
+    STOCK_NULL(false, 401, "优惠券已领完"),
+    COUPON_VALID_DATE_ERROR(false, 401,"优惠券的使用时间不存在，请重新填写" ),
+    RECEIVE_ERROR(false, 401, "您已领够该优惠券");
+
 
 
 

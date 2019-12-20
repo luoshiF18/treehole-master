@@ -21,7 +21,6 @@ import java.util.regex.Pattern;
  * @author wanglu
  */
 @Component
-
 public class EmailListener {
 
     @Autowired
