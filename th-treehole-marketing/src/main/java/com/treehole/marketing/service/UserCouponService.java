@@ -5,6 +5,7 @@ import com.treehole.framework.domain.marketing.Coupon;
 import com.treehole.framework.domain.marketing.UserCoupon;
 import com.treehole.framework.domain.marketing.bo.CouponBo;
 import com.treehole.framework.domain.marketing.bo.UserCouponBo;
+import com.treehole.framework.domain.marketing.request.UserCouponRequest;
 import com.treehole.framework.domain.marketing.response.MarketingCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
@@ -52,24 +53,25 @@ public class UserCouponService {
             ExceptionCast.cast(MarketingCode.SELECT_NULL);
         }
         //根据优惠券id查询出优惠券
-        List<String> couponIds= userCoupons.stream().map(uCoupon -> uCoupon.getCouponId()).collect(Collectors.toList());
-        List<Coupon> coupons = this.couponService.queryCouponByIds(couponIds);
-        System.out.println("---------"+coupons.size());
+      //  List<String> couponIds= userCoupons.stream().map(uCoupon -> uCoupon.getCouponId()).collect(Collectors.toList());
+    //    List<Coupon> coupons = this.couponService.queryCouponByIds(couponIds);
+      //  System.out.println("---------"+coupons.size());
         List<UserCouponBo> userCouponBos = new ArrayList<>();
         for (int i = 0; i < userCoupons.size(); i++) {
             UserCouponBo userCouponBo = new UserCouponBo();
-            Coupon coupon = coupons.get(i);
+         //   Coupon coupon = coupons.get(i);
             UserCoupon uCoupon = userCoupons.get(i);
-            userCouponBo.setTitle(coupon.getTitle());
-            userCouponBo.setIcon(coupon.getIcon());
-            userCouponBo.setWithAmount(coupon.getWithAmount());
-            userCouponBo.setUsedAmount(coupon.getUsedAmount());
+            userCouponBo.setTitle(uCoupon.getCouponTitle());
+            userCouponBo.setIcon(uCoupon.getIcon());
+            userCouponBo.setWithAmount(uCoupon.getWithAmount());
+            userCouponBo.setUsedAmount(uCoupon.getUsedAmount());
           //  userCouponBo.setTypeName(this.typeMapper.selectByPrimaryKey(coupon.getTypeId()).getName());
             userCouponBo.setValidStartTime(uCoupon.getValidStartTime());
             userCouponBo.setValidEndTime(uCoupon.getValidEndTime());
             userCouponBo.setStatus(uCoupon.getStatus());
             userCouponBo.setUnUsedStatus(uCoupon.getUnUsedStatus());
             userCouponBo.setUsedStatus(uCoupon.getUsedStatus());
+            userCouponBo.setUsedTypeName(uCoupon.getUsedType());
             userCouponBos.add(userCouponBo);
         }
         PageInfo<UserCouponBo> pageInfo = new PageInfo<>(userCouponBos);
@@ -93,35 +95,53 @@ public class UserCouponService {
     }
 
     @Transactional
-    public void saveUserCoupon(CouponBo couponBo, String userId) {
-
-        UserCoupon userCoupon = new UserCoupon();
-        if(couponBo == null || StringUtils.isBlank(userId)){
+    public void saveUserCoupon(UserCouponRequest userCouponRequest) {
+        if(StringUtils.isBlank(userCouponRequest.getId()) || StringUtils.isBlank(userCouponRequest.getUserId())){
+            System.out.println(userCouponRequest.getId()+ "///" + userCouponRequest.getUserId());
             ExceptionCast.cast(MarketingCode.DATA_ERROR);
         }
-        //没有库存
-        Coupon coupon = this.couponMapper.selectByPrimaryKey(couponBo.getId());
-        Integer stock = coupon.getStock();
-        if(stock < 1){
-            ExceptionCast.cast(MarketingCode.DATA_NULL);
+        //限领
+        //数据库中读
+        UserCoupon uc = new UserCoupon();
+        uc.setCouponId(userCouponRequest.getId());
+        uc.setUserId(userCouponRequest.getUserId());
+        uc.setStatus(true);
+        List<UserCoupon> select = this.userCouponMapper.select(uc);
+        if(select.size() >= userCouponRequest.getLimitNum()){
+            ExceptionCast.cast(MarketingCode.RECEIVE_ERROR);
         }
-        userCoupon.setUserId(userId);
-        userCoupon.setCouponId(couponBo.getId());
+
+        //没有库存
+        Coupon coupon = this.couponMapper.selectByPrimaryKey(userCouponRequest.getId());
+        int stock = coupon.getStock();
+        if(stock < 1){
+            ExceptionCast.cast(MarketingCode.STOCK_NULL);
+        }
+
+        UserCoupon userCoupon = new UserCoupon();
+        userCoupon.setUserId(userCouponRequest.getUserId());
+        userCoupon.setCouponId(userCouponRequest.getId());
         userCoupon.setId(MyNumberUtils.getUUID());
         userCoupon.setCreated(new Date());
-        Boolean validTime = couponBo.getValidType();
+        userCoupon.setCouponTitle(userCouponRequest.getTitle());
+        userCoupon.setIcon(userCouponRequest.getIcon());
+        userCoupon.setWithSpecial(userCouponRequest.getWithSpecial());
+        userCoupon.setWithAmount(userCouponRequest.getWithAmount());
+        userCoupon.setUsedAmount(userCouponRequest.getUsedAmount());
+        userCoupon.setUsedType(userCouponRequest.getUsedTypeName());///////
+        Boolean validTime = userCouponRequest.getValidType();
         if(!validTime){
             Date startTime = new Date();
             userCoupon.setValidStartTime(startTime);
             Calendar cal = Calendar.getInstance();
             cal.setTime(startTime);//设置起时间
-            cal.add(Calendar.DATE, couponBo.getValidDays());
+            cal.add(Calendar.DATE, userCouponRequest.getValidDays());
             userCoupon.setValidEndTime(cal.getTime());
             userCoupon.setStatus(true);
             userCoupon.setUnUsedStatus(true);
         } else{
-            userCoupon.setValidStartTime(couponBo.getValidStartTime());
-            userCoupon.setValidEndTime(couponBo.getValidEndTime());
+            userCoupon.setValidStartTime(userCouponRequest.getValidStartTime());
+            userCoupon.setValidEndTime(userCouponRequest.getValidEndTime());
             userCoupon.setStatus(true);
             if(new Date().getTime()<userCoupon.getValidStartTime().getTime()){
                 userCoupon.setUnUsedStatus(false);

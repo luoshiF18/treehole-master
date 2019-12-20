@@ -34,10 +34,6 @@ public class ExtensionService {
     @Autowired
     private AmqpTemplate amqpTemplate;
 
-    private static final String USER = "wangluforbusiness@foxmail.com"; // 发件人称号，同邮箱地址
-    private static final String PASSWORD = "yjvgbfmtlggkigba";  // 如果是qq邮箱可以使户端授权码，或者登录密码
-
-
     /*public void addExtension(ExtensionRequest extensionRequest) {
 
         if(extensionRequest == null){
