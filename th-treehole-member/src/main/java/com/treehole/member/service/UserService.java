@@ -1,36 +1,25 @@
 package com.treehole.member.service;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.treehole.framework.domain.evaluation.Scale;
-import com.treehole.framework.domain.evaluation.response.EvaluationCode;
 import com.treehole.framework.domain.member.Role;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.ext.UserExt;
 import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.exception.ExceptionCast;
-import com.treehole.framework.model.response.QueryResult;
-import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.member.mapper.UserMapper;
-import com.treehole.member.myUtil.MyMd5Utils;
 import com.treehole.member.myUtil.MyNumberUtils;
-
 import com.treehole.member.myUtil.MyPassword;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.*;
+import java.util.Date;
 
 /**
  * @author shanhuijie

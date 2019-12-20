@@ -2,8 +2,6 @@ package com.treehole.psychologist.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.treehole.framework.domain.member.User;
-
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.psychologist.Comment;
 import com.treehole.framework.domain.psychologist.Profile;

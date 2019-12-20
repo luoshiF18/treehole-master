@@ -1,7 +1,6 @@
 package com.treehole.api.onlinetalk;
 
 import com.treehole.framework.domain.onlinetalk.Convers;
-import com.treehole.framework.domain.onlinetalk.Message;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * @author 何文泽

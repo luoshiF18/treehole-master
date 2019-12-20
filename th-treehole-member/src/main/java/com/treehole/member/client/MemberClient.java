@@ -1,12 +1,9 @@
 package com.treehole.member.client;
 
 import com.treehole.framework.domain.marketing.request.ActivityRequest;
-import com.treehole.framework.domain.member.ext.UserExt;
-
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @Author: shj
