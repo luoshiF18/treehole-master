@@ -1,5 +1,4 @@
 package com.treehole.online.service;
-import java.util.*;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -9,13 +8,17 @@ import com.treehole.framework.domain.onlinetalk.Message;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResult;
-import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.online.mapper.MessageMapper;
 import com.treehole.online.myUtil.MyNumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -24,7 +27,7 @@ import org.springframework.stereotype.Service;
  * @Date
  */
 @Service
-@Cacheable(value = "MessageService")
+//@Cacheable(value = "MessageService")
 public class MessageService {
 
     @Autowired
@@ -103,7 +106,7 @@ public class MessageService {
      * 新增聊天记录
      * @param message
      */
-    @CacheEvict(value="MessageService",allEntries=true)
+   // @CacheEvict(value="MessageService",allEntries=true)
     public void insertMessage(Message message) {
         message.setMessage_createtime(new Date());
         System.out.println("9999999999999999"+message.getMessage_createtime());
@@ -124,7 +127,7 @@ public class MessageService {
      * 根据会话id删除聊天记录
      * @param convers_id
      */
-    @CacheEvict(value="MessageService",allEntries=true)
+    //@CacheEvict(value="MessageService",allEntries=true)
     public void deleteMessageByConversId(String convers_id) {
         List<Message> messages = this.getMessageByConversId(convers_id);
         int sum = messages.size();

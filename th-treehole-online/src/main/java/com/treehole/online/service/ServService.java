@@ -3,10 +3,12 @@ package com.treehole.online.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.domain.onlinetalk.Serv;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
+import com.treehole.online.client.UserClient;
 import com.treehole.online.mapper.ServMapper;
 import com.treehole.online.myUtil.MyNumberUtils;
 import org.apache.commons.lang.StringUtils;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,12 +28,17 @@ import java.util.List;
  * @Date
  */
 @Service
-@Cacheable(value = "ServService")
+//@Cacheable(value = "ServService")
 public class ServService {
 
     @Autowired
     private ServMapper servMapper;
 
+    @Autowired
+    private AgentService agentService;
+
+    @Autowired
+    private UserClient userClient;
 
     /**
      * 查询所有客服服务
@@ -39,15 +47,25 @@ public class ServService {
      * @param agent_name
      * @return
      */
-    public QueryResult findAllServ(int page, int size , String agent_name) {
+    public QueryResult findAllServ(int page, int size , String agent_name,String user_id) {
 
         Page pag =PageHelper.startPage(page,size);
         List<Serv> servs = new ArrayList<>();
-        if (!agent_name.equals("")){
-            Serv serv = new Serv();
-            serv.setAgent_name(agent_name);
-           servs= servMapper.select(serv);
-        }else {
+        Serv serv = new Serv();
+
+        serv.setUser_id(user_id);
+        if(!agent_name.equals("")&&!user_id.equals("")) {
+            if (!agent_name.equals("")) {
+                serv.setAgent_name(agent_name);
+                // servs= servMapper.select(serv);
+            }
+            if (!user_id.equals("")) {
+                serv.setUser_id(user_id);
+
+            }
+            servs = servMapper.select(serv);
+        }
+        else {
             servs = servMapper.selectAll();
         }
         //        解析分页结果
@@ -105,7 +123,7 @@ public class ServService {
      * @param serv_id
      * @return
      */
-    @CacheEvict(value="ServService",allEntries=true)
+   //@CacheEvict(value="ServService",allEntries=true)
     public void deleteServById(String serv_id) {
 
         if(StringUtils.isBlank(serv_id)){
@@ -129,10 +147,13 @@ public class ServService {
      * @param serv
      * @return
      */
-    @CacheEvict(value="ServService",allEntries=true)
+    //@CacheEvict(value="ServService",allEntries=true)
     public void insertServ(Serv serv)  {
         serv.setServ_id(MyNumberUtils.getUUID());
         serv.setServ_time(new Date());
+        UserVo userVoByNickname = userClient.getUserVoByNickname(serv.getUser_name());
+        serv.setUser_id(userVoByNickname.getUser_id());
+        serv.setAgent_id(agentService.getAgentByName(serv.getAgent_name()).getAgent_id());
         int ins = servMapper.insert(serv);
         if( ins != 1){
             ExceptionCast.cast(MemberCode.INSERT_FAIL);

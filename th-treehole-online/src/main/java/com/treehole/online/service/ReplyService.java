@@ -29,7 +29,7 @@ import java.util.List;
  * @Date
  */
 @Service
-@Cacheable(value = "ReplyService")
+//@Cacheable(value = "ReplyService")
 public class ReplyService {
 
     @Autowired
@@ -133,7 +133,7 @@ public class ReplyService {
      * @param reply_id
      * @return
      */
-    @CacheEvict(value="ReplyService",allEntries=true)
+    //@CacheEvict(value="ReplyService",allEntries=true)
     public void deleteReplyById(String reply_id) {
 
         if(StringUtils.isBlank(reply_id)){
@@ -158,7 +158,7 @@ public class ReplyService {
      * @param reply
      * @return int
      */
-    @CacheEvict(value="ReplyService",allEntries=true)
+    //@CacheEvict(value="ReplyService",allEntries=true)
     public void insertReply(Reply reply)  {
         reply.setReply_id(MyNumberUtils.getUUID());
 
@@ -178,7 +178,7 @@ public class ReplyService {
      * @param replyVo
      * @return int
      */
-    @CacheEvict(value="ReplyService",allEntries=true)
+    //@CacheEvict(value="ReplyService",allEntries=true)
     public void updateReply(ReplyVo replyVo){
 
         Reply reply = new Reply();

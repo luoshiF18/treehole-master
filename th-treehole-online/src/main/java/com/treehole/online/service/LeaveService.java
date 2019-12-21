@@ -4,22 +4,16 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.member.result.MemberCode;
-import com.treehole.framework.domain.onlinetalk.Agent;
 import com.treehole.framework.domain.onlinetalk.Leave;
-import com.treehole.framework.domain.onlinetalk.Vo.AgentVo;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
-import com.treehole.online.mapper.AgentMapper;
 import com.treehole.online.mapper.LeaveMapper;
-import com.treehole.online.myUtil.MyMd5Utils;
 import com.treehole.online.myUtil.MyNumberUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import tk.mybatis.mapper.entity.Example;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,7 +25,7 @@ import java.util.List;
  * @Date
  */
 @Service
-@Cacheable(value = "LeaveService")
+//@Cacheable(value = "LeaveService")
 public class LeaveService {
 
     @Autowired
@@ -75,7 +69,7 @@ public class LeaveService {
      * @param leave
      * @return int
      */
-    @CacheEvict(value="LeaveService",allEntries=true)
+    //@CacheEvict(value="LeaveService",allEntries=true)
     public void insertLeave(Leave leave)  {
         leave.setLeave_id(MyNumberUtils.getUUID());
         leave.setCreatetime(new Date());

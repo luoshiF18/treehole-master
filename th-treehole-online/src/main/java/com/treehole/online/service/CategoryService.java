@@ -16,6 +16,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.List;
  */
 @Service
 //为此类声明缓存名称
-@Cacheable(value = "CategoryService")
+//@Cacheable(value = "CategoryService")
 public class CategoryService {
 
     @Autowired
@@ -103,7 +104,7 @@ public class CategoryService {
      * @param category_id
      * @return
      */
-    @CacheEvict(value="CategoryService",allEntries=true)
+    //@CacheEvict(value="CategoryService",allEntries=true)
 
     public void deleteCategoryById(String category_id) {
 
@@ -129,7 +130,7 @@ public class CategoryService {
      * @param category
      * @return int
      */
-    @CacheEvict(value="CategoryService",allEntries=true)
+    //@CacheEvict(value="CategoryService",allEntries=true)
     public void insertCategory(Category category)  {
         category.setCategory_id(MyNumberUtils.getUUID());
         category.setCategory_createtime(new Date());
@@ -148,7 +149,7 @@ public class CategoryService {
      * @param category
      * @return int
      */
-    @CacheEvict(value="CategoryService",allEntries=true)
+    //@CacheEvict(value="CategoryService",allEntries=true)
     public void updateCategory(Category category){
 
         Example example =new Example(Category.class);

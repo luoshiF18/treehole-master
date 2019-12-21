@@ -4,8 +4,10 @@ spring:
   application:
     name: th-treehole-online
   redis:
-    host: 10.0.43.60
+    #host: 101.37.33.66
+    host: 10.0.43.106
     port: 6379
+    #password: root
     timeout: 5000
     jedis:
       pool:
@@ -17,8 +19,8 @@ spring:
     druid:
       type: com.alibaba.druid.pool.DruidDataSource
       driverClassName: com.mysql.jdbc.Driver
+      #url: jdbc:mysql://101.37.33.66:3306/th_onlinetalk?useSSL=false&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&serverTimezone=Asia/Shanghai
       url: jdbc:mysql://10.0.43.60:3306/th_onlinetalk?useSSL=false&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&serverTimezone=Asia/Shanghai
-      #url: jdbc:mysql://localhost:3306/onlinetalk?useSSL=false&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&serverTimezone=Asia/Shanghai
       username: root
       password: root
       initialSize: 5  #初始建立连接数量
