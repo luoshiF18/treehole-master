@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>recycled</title>
+</head>
+<body>
+欢迎来到回收站：
+<hr>
+<table id="recycled"
+       data-options="singleSelect:true">
+
+</table>
+
+<script type="text/javascript"  th:inline="none">
+    $(function () {
+        $('#recycled').datagrid({
+            url:'/document/recycled',
+            columns:[[
+                {field:'id',title:'编号',width:200,hidden:true},
+                {field:'name',title:'名称',width:200},
+                {field:'typeId',title:'类型',width:100,align:'center'},
+                {field:'recover',title:'还原',width:100,align:'center',formatter: function(value,row,index){
+                        if (row.typeId=='文件夹'){
+                            return '<a href="#" onclick="recycledRecover(\'' + row.id + '\',\''+ 0 +'\')" >'+"还原"+'</a>';
+                        } else {
+                            return '<a href="#" onclick="recycledRecover(\'' + row.id + '\',\''+ 1 +'\')" >'+"还原"+'</a>';
+                        }
+                    }
+                },
+                {
+                    field: 'delete', title: '删除', width: 100, align: 'center', formatter: function (value, row, index) {
+                        if (row.typeId == '文件夹') {
+                            return '<a href="#" onclick="recycledDelete(\'' + row.id + '\',\''+ 0 +'\')" >'+"彻底删除"+'</a>';
+                        } else {
+                            return '<a href="#" onclick="recycledDelete(\'' + row.id + '\',\''+ 1 +'\')" >'+"彻底删除"+'</a>';
+                        }
+                    }
+                },
+                {field:'docDescribe',title:'备注信息',width:400},
+            ]],
+            rownumbers:true
+        });
+
+    })
+    //回收站页面中的还原函数
+    function recycledRecover(id,flag) {
+        $.messager.confirm('确认','您确认想要还原吗？',function(r){
+            if (r){
+                if(flag == 0){
+                    $.ajax({
+                        url:'/folder/recover',
+                        type:"POST",
+                        data:{"id":id,"userId":loginUserId},
+                        success:function(data){
+                            //data为后台返回值
+                            $.messager.alert('还原结果',data);
+                            //想办法刷新表格
+                            $('#recycled').datagrid('reload');
+                            $('#document').datagrid('reload');
+                            $('#search').datagrid('reload');
+                        }
+                    })
+                }else if (flag == 1) {
+                    $.ajax({
+                        url:'/document/recover',
+                        type:"POST",
+                        data:{"docId":id,"userId":loginUserId},
+                        success:function(data){
+                            //data为后台返回值
+                            $.messager.alert('还原结果',data);
+                            //想办法刷新表格
+                            $('#recycled').datagrid('reload');
+                            $('#document').datagrid('reload');
+                            $('#search').datagrid('reload');
+                        }
+                    })
+                }
+            }
+        });
+    }
+    //回收站页面中的彻底删除函数
+    function recycledDelete(id,flag) {
+        $.messager.confirm('确认','您确认想要彻底删除吗？',function(r){
+            if (r){
+                if(flag == 0){
+                    $.ajax({
+                        url:'/folder/destroy',
+                        type:"POST",
+                        data:{"id":id,"userId":loginUserId},
+                        success:function(data){
+                            //data为后台返回值
+                            $.messager.alert('彻底删除结果',data);
+                            //想办法刷新表格
+                            $('#recycled').datagrid('reload');
+                            $('#document').datagrid('reload');
+                            $('#search').datagrid('reload');
+                        }
+                    })
+                }else if (flag == 1) {
+                    $.ajax({
+                        url:'/document/destroy',
+                        type:"POST",
+                        data:{"docId":id,"userId":loginUserId},
+                        success:function(data){
+                            //data为后台返回值
+                            $.messager.alert('彻底删除结果',data);
+                            //想办法刷新表格
+                            $('#recycled').datagrid('reload');
+                            $('#document').datagrid('reload');
+                            $('#search').datagrid('reload');
+                        }
+                    })
+                }
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

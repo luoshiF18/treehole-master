@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>user</title>
+</head>
+<body>
+<a id="addUser" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加新用户</a>
+<table id="userManage"
+       data-options="singleSelect:true">
+
+</table>
+
+<script type="text/javascript"  th:inline="none">
+    $(function () {
+        $('#userManage').datagrid({
+            url:'/user/show',
+            columns:[[
+                {field:'id',title:'编号',width:200},
+                {field:'userName',title:'用户名',width:200},
+                {field:'updateName',title:'修改名字',width:100,align:'center',formatter: function(value,row,index){
+                        return '<a href="#" onclick="updateUserName(\'' + row.id + '\',\''+ row.userName + '\')" >'+"改正名字"+'</a>';
+                    }
+                },
+                {field: 'delete', title: '删除', width: 100, align: 'center', formatter: function (value, row, index) {
+                        return '<a href="#" onclick="deleteUser(\'' + row.id + '\')" >'+"删除"+'</a>';
+                    }
+                },
+                {field:'isAdmin',title:'备注信息',width:400,align:'center',formatter: function (value, row, index) {
+                        if (row.isAdmin == 1) {
+                            return '管理员';
+                        } else {
+                            return '普通用户';
+                        }
+                    }}
+            ]],
+            pagination:true,
+            rownumbers:true
+        });
+
+        $('#addUser').bind('click', function(){
+            $.messager.prompt('提示信息', '请输入新用户的名称：', function(r){
+                if(r){
+                    $.ajax({
+                        url:'/addUser',
+                        type:"POST",
+                        data:{"name":r},
+                        success:function(data){
+                            //data为后台返回值
+                            $.messager.alert('新建结果',data);
+                            $('#userManage').datagrid('reload');
+                        }
+                    })
+                }
+            });
+        });
+
+    })
+
+    function deleteUser(id) {
+        $.messager.confirm('确认','您确认想要删除吗？',function(r){
+            if (r){
+                $.ajax({
+                    url:'/deleteUser',
+                    type:"POST",
+                    data:{"userId":id},
+                    success:function(data){
+                        //data为后台返回值
+                        $.messager.alert('删除结果',data);
+                        $('#userManage').datagrid('reload');
+                    }
+                })
+            }
+        });
+    }
+    function updateUserName(id,oldname) {
+        $.messager.prompt('提示信息', '请输入新的名称：', function(r){
+            if(r){
+                if (r == oldname){
+                    $.messager.alert('警告','请不要输入原来名字相同的名字:' + r);
+                }else {
+                    $.ajax({
+                        url:'/updatedUserName',
+                        type:"POST",
+                        data:{"userId":id,"oldName":oldname,"newName":r},
+                        success:function(data){
+                            //data为后台返回值
+                            $.messager.alert('修改结果',data);
+                            $('#userManage').datagrid('reload');
+                            }
+                        })
+                }
+            }
+        });
+    }
+
+</script>
+
+</body>
+</html>

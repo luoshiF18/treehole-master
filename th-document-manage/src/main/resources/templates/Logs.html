@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>logs</title>
+</head>
+<body>
+文档操作记录：
+<hr>
+<table id="logs"
+       data-options="singleSelect:true,pageSize:18,pageList: [18, 30, 50]">
+
+</table>
+
+<script type="text/javascript"  th:inline="none">
+    $(function () {
+        $('#logs').datagrid({
+            url:'/logs/show',
+            columns:[[
+                {field:'id',title:'编号',width:200,hidden:true},
+                {field:'action',title:'操作',width:200,formatter: function(value,row,index){
+                        if (row.action == 0){
+                            return '彻底删除';
+                        } else if (row.action == 1) {
+                            return '逻辑删除';
+                        }else if (row.action == 2) {
+                            return '还原';
+                        }else if (row.action == 3) {
+                            return '重命名';
+                        }else if (row.action == 4) {
+                            return '下载';
+                        }
+                    }},
+                {field:'docId',title:'文档id',width:200},
+                {field:'type',title:'类型',width:200,formatter: function(value,row,index) {
+                        if (row.type == 0) {
+                            return '文件夹';
+                        } else if (row.type == 1) {
+                            return '文档';
+                        }
+                    }},
+                {field:'userId',title:'操作的用户的id',width:200},
+                {field:'date',title:'时间',width:200}
+
+            ]],
+            pagination:true,
+            rownumbers:true
+        });
+
+    })
+</script>
+
+</body>
+</html>

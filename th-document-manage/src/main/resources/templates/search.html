@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>search</title>
+</head>
+<body>
+    <select id="type">
+        <option value="0" selected="selected">--全部类型--</option>
+        <option value="1">音频</option>
+        <option value="2">视频</option>
+        <option value="3">文档</option>
+        <option value="4">图片</option>
+    </select>
+    <select id="date">
+        <option value="0" selected="selected">--所有时间--</option>
+        <option value="1">今天</option>
+        <option value="2">本周</option>
+        <option value="3">本月</option>
+        <option value="4">今年</option>
+    </select>
+
+    <input id="message" type="text" name="message" style="width:300px"/>
+    <input id="describe" type="text" name="describe" style="width:300px"/>
+    <button id="sousuo"class="easyui-linkbutton" data-options="iconCls:'icon-search'">搜索</button>
+<hr>
+
+<script type="text/javascript"   th:inline="none">
+    $(function () {
+
+        $("#sousuo").click(function(){
+            $('#search').datagrid({
+                url:'/document/search',
+                queryParams: {
+                    type: $('#type').val(),
+                    date: $('#date').val(),
+                    message:$('#message').val(),
+                    describe:$('#describe').val(),
+                },
+                columns:[[
+                    {field:'id',title:'编号',width:200,hidden:true},
+                    {field:'name',title:'名称',width:200},
+                    {field:'typeId',title:'类型',width:100,align:'center'},
+                    {field:'do',title:'操作',width:100,align:'center',formatter: function(value,row,index){
+                            if (row.typeId=='文件夹'){
+                                return '<a href="#" onclick="openFolder(\'' + row.id + '\',\''+ row.name +'\')" >'+"打开"+'</a>';
+                            } else {
+                                return '<a style="color:blue" href="/document/download?docId='+row.id+"&userId="+loginUserId+'">'+"下载"+'</a>';
+                            }
+                        }
+                    },
+                    {field:'delete',title:'删除',width:100,align:'center',formatter: function(value,row,index){
+                            if (row.typeId=='文件夹'){
+                                return '<a href="#" onclick="physicallyDeleted(\'' + row.id + '\',\''+ 0 +'\')" >'+"删除"+'</a>';
+                            } else {
+                                return '<a href="#" onclick="physicallyDeleted(\'' + row.id + '\',\''+ 1 +'\')" >'+"删除"+'</a>';
+                            }
+                        }
+                    },
+                    {field:'updated',title:'重命名',width:100,align:'center',formatter: function(value,row,index){
+                            if (row.typeId=='文件夹'){
+                                return '<a href="#" onclick="updatedName(\'' + row.id + '\',\''+ row.name + '\',\''+ 0 +'\')" >'+"重命名"+'</a>';
+                            } else {
+                                return '<a href="#" onclick="updatedName(\'' + row.id + '\',\''+ row.name + '\',\''+ 1 +'\')" >'+"重命名"+'</a>';
+                            }
+                        }
+                    },
+                    {field:'docDescribe',title:'备注信息',width:400}
+                ]],
+                pagination:true,
+                rownumbers:true
+            });
+        });
+    })
+
+</script>
+
+    <table id="search"
+           data-options="singleSelect:true,pageSize:15,pageList: [15, 30, 45]">
+
+    </table>
+
+    <script type="text/javascript"  th:inline="none">
+        $(function () {
+            $('#search').datagrid({
+                url:'/document/search',
+                columns:[[
+                    {field:'id',title:'编号',width:200},
+                    {field:'name',title:'名称',width:200},
+                    {field:'typeId',title:'类型',width:100,align:'center'},
+                    {field:'do',title:'操作',width:100,align:'center'},
+                    {field:'delete',title:'删除',width:100,align:'center'}
+                ]],
+                pagination:true
+            });
+
+        })
+    </script>
+
+</body>
+</html>

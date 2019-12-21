@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>document</title>
+</head>
+<body>
+
+<form id="fileForm" method="post" enctype="multipart/form-data">
+    上传文件到此/<span th:text="${folder.name}" style="color: red;white-space:nowrap;"/>目录下：
+    <p style="color: green;">提示：单个文档不要超过200MB，单次多个文档总量不要超过500MB</p>
+    <input type="file" id="file" name="file" multiple>
+    <input id="describe" type="text" name="describe">
+    <input id="folderId" type="hidden" th:value="${folder.id}" name="folderId"/>
+    <input id="userId" type="hidden" name="userId">
+    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'" onclick="uploadFile()">提交</a>
+</form>
+
+<hr />
+在此/<span th:text="${folder.name}" style="color: red;white-space:nowrap;"/>目录下：
+<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add'" onclick="newFolder()">新建文件夹</a>
+
+<hr />
+<h3>当前目录中的文档如下：</h3>
+<hr />
+
+<table id="document"
+       data-options="singleSelect:true,pageSize:10,pageList: [10, 20, 30]">
+
+</table>
+<script th:inline="javascript">
+    var id = [[${folder.id}]];
+</script>
+<script type="text/javascript"  th:inline="none">
+    $(function () {
+        $('#document').datagrid({
+            url:'/folder/open',
+            queryParams: {
+                id: id,
+            },
+            columns:[[
+                {field:'id',title:'编号',width:200,hidden:true},
+                {field:'name',title:'名称',width:200},
+                {field:'typeId',title:'类型',width:100,align:'center'},
+                {field:'do',title:'操作',width:100,align:'center',formatter: function(value,row,index){
+                        if (row.typeId=='文件夹'){
+                            return '<a href="#" onclick="openFolder(\'' + row.id + '\',\''+ row.name +'\')" >'+"打开"+'</a>';
+                        } else {
+                            return '<a style="color:blue" href="/document/download?docId='+row.id+"&userId="+loginUserId+'">'+"下载"+'</a>';
+                        }
+                    }
+                },
+                {field:'delete',title:'删除',width:100,align:'center',formatter: function(value,row,index){
+                        if (row.typeId=='文件夹'){
+                            return '<a href="#" onclick="physicallyDeleted(\'' + row.id + '\',\''+ 0 +'\')" >'+"删除"+'</a>';
+                        } else {
+                            return '<a href="#" onclick="physicallyDeleted(\'' + row.id + '\',\''+ 1 +'\')" >'+"删除"+'</a>';
+                        }
+                    }
+                },
+                {field:'updated',title:'重命名',width:100,align:'center',formatter: function(value,row,index){
+                        if (row.typeId=='文件夹'){
+                            return '<a href="#" onclick="updatedName(\'' + row.id + '\',\''+ row.name + '\',\''+ 0 +'\')" >'+"重命名"+'</a>';
+                        } else {
+                            return '<a href="#" onclick="updatedName(\'' + row.id + '\',\''+ row.name + '\',\''+ 1 +'\')" >'+"重命名"+'</a>';
+                        }
+                    }
+                },
+                {field:'docDescribe',title:'备注信息',width:400}
+            ]],
+            rownumbers:true
+        });
+
+    })
+    function newFolder() {
+        $.messager.prompt('提示信息', '请输入新建文件夹的名称：', function(r){
+            if(r){
+                $.ajax({
+                    url:'/folder/add',
+                    type:"POST",
+                    data:{"name":r,"parentId":id,"userId":loginUserId},
+                    success:function(data){
+                        //data为后台返回值
+                        $.messager.alert('新建结果',data);
+                        $('#search').datagrid('reload');
+                        $('#document').datagrid('reload');
+                    }
+                })
+            }
+        });
+    }
+    function uploadFile() {
+        $('#userId').val(loginUserId);
+        $('#fileForm').form('submit', {
+            url:"/document/upload",
+            onSubmit: function () {
+                //表单验证
+                return $("#file").val().length;
+            },
+            success:function(data){
+                document.getElementById("fileForm").reset();
+                $.messager.alert('上传结果',data);
+                $('#document').datagrid('reload');
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
