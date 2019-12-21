@@ -14,6 +14,7 @@ import com.treehole.train.feignclient.DocumentClient;
 import com.treehole.train.dao.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +32,7 @@ public class DocumentService {
     DocumentMapper documentMapper;
 
     //上传
+    @Transactional
     public ResponseResult uploadFile(MultipartFile file, DocumentExt documentExt){
         System.out.println(file.getOriginalFilename());
         System.out.println(documentExt);
@@ -45,8 +47,13 @@ public class DocumentService {
         }else {
             document.setStudentId("0");
         }
-        documentRepository.save(document);
-        return new ResponseResult(CommonCode.SUCCESS);
+        Document save = documentRepository.save(document);
+        if(save != null){
+            return new ResponseResult(CommonCode.SUCCESS);
+        }else {
+            return new ResponseResult(CommonCode.FAIL);
+        }
+
     }
 
     //老师查询学生的作业

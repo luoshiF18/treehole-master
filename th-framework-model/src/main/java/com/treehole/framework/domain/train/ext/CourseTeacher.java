@@ -11,7 +11,7 @@ import lombok.ToString;
 public class CourseTeacher extends Course {
 
     private String teacherName;
-
+    private String teacherId;
     private String courseTypeName;
     private String classCourseId;
 

@@ -98,23 +98,23 @@
         <where>
             and tc.`state`= 3
             <if test="phaseId !=null and phaseId !='' ">
-                and j.`phase_id` = #{phaseId}
+                and p.`phase_id` = #{phaseId}
             </if>
 
             <if test=" className !=null and className !='' ">
-                AND j.`class_name` LIKE '%${className}%'
+                AND c.`class_name` LIKE '%${className}%'
             </if>
 
             <if test=" courseName !=null and courseName !='' ">
-                AND j.`course_name` LIKE '%${courseName}%'
+                AND co.`course_name` LIKE '%${courseName}%'
             </if>
 
             <if test=" courseTypeId !=null and courseTypeId !='' ">
-                AND j.`course_type_id` = #{courseTypeId}
+                AND ct.`course_type_id` = #{courseTypeId}
             </if>
 
             <if test=" teacherId !=null and teacherId !='' ">
-                AND j.`teacher_id` = #{teacherId}
+                AND te.`teacher_id` = #{teacherId}
             </if>
         </where>
     </select>

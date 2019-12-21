@@ -93,8 +93,8 @@
             <if test=" courseType !=null and courseType !='' ">
                 AND c.`course_type` = #{courseType}
             </if>
-            <if test=" teacherId !=null and teacherId !='' ">
-                AND c.`teacher_id` = #{teacherId}
+            <if test=" courseTeacher !=null and courseTeacher !='' ">
+                AND c.`teacher_id` = #{courseTeacher}
             </if>
         </where>
     </select>

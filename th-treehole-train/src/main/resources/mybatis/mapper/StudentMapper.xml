@@ -59,6 +59,7 @@
             SELECT
             co.*,
             t.`teacher_name`,
+            tc.`teacher_id`,
             ct.`course_type_name`,
             cc.class_course_id
             FROM student s
@@ -72,12 +73,13 @@
             ON cc.`course_id` = co.`course_id`
             LEFT JOIN course_type ct
             ON co.`course_type` = ct.`course_type_id`
-            where s.`student_id` = #{studentId}
+            WHERE s.`student_id` = #{studentId}
             AND tc.`state` = 1
-            union
+            UNION
             SELECT
             co.*,
             t.`teacher_name`,
+            tc.`teacher_id`,
             ct.`course_type_name`,
             cc.class_course_id
             FROM student s
@@ -91,8 +93,8 @@
             ON cc.`course_id` = co.`course_id`
             LEFT JOIN course_type ct
             ON co.`course_type` = ct.`course_type_id`
-            where s.`student_id` = #{studentId}
-            AND tc.`state` is null
+            WHERE s.`student_id` = #{studentId}
+            AND tc.`state` IS NULL
         ) c
         <where>
             <if test=" courseId !=null and courseId !='' ">
@@ -105,7 +107,7 @@
                 AND c.`course_type` = #{courseType}
             </if>
             <if test=" courseTeacher !=null and courseTeacher !='' ">
-                AND c.`course_teacher` = #{courseTeacher}
+                AND c.`teacher_id` = #{courseTeacher}
             </if>
         </where>
 
