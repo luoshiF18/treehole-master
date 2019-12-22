@@ -3,11 +3,8 @@ package com.treehole.member.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.member.Cards;
-import com.treehole.framework.domain.member.FreeGrade;
 import com.treehole.framework.domain.member.PayGrade;
-import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.resquest.GradeListRequest;
-import com.treehole.framework.domain.member.resquest.UserListRequest;
 import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
@@ -16,7 +13,6 @@ import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.mapper.PaygradeMapper;
 import com.treehole.member.myUtil.AddDateUtil;
 import com.treehole.member.myUtil.MyNumberUtils;
-import io.swagger.models.auth.In;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -27,8 +23,6 @@ import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 

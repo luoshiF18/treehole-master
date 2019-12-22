@@ -60,6 +60,7 @@ public class WarningInterveneService {
         //一个用户只能被添加一个记录表
         List<WarningIntervene> warnInterveneByName = warningInterveneMapper.findWarnInterveneByName( warningIntervene.getUserName());
         if(warnInterveneByName!=null&&warnInterveneByName.size()!=0){
+
             return new ResponseResult(CommonCode.REPETITION);
         }
         try {
@@ -89,8 +90,6 @@ public class WarningInterveneService {
         }
     }
     //修改
-
-
 
     //条件查询，根据用户名、咨询人员名(有可能是心理咨询师也有可能是团体负责人，
     //
@@ -146,9 +145,5 @@ public class WarningInterveneService {
             return null;
         }
     }
-
-
-
-
 
 }

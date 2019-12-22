@@ -4,10 +4,8 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.member.Checkin;
-import com.treehole.framework.domain.member.Points;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.CheckinVo;
-import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
@@ -22,9 +20,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author shanhuijie

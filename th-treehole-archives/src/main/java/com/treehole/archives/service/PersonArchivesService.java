@@ -5,26 +5,18 @@ import com.github.pagehelper.PageHelper;
 import com.treehole.archives.client.ScaleSelectClient;
 import com.treehole.archives.client.UserVoClient;
 import com.treehole.archives.dao.ArchivesResultMapper;
-import com.treehole.framework.domain.archives.ext.ArchivesExt;
 import com.treehole.framework.domain.archives.ext.ArchivesList;
-import com.treehole.framework.domain.archives.ext.ResultTiny;
 import com.treehole.framework.domain.archives.response.ArchivesCode;
 import com.treehole.framework.domain.archives.response.ArchivesCountResult;
 import com.treehole.framework.domain.archives.resquest.ArchivesListRequest;
-import com.treehole.framework.domain.evaluation.response.DetailResult;
-import com.treehole.framework.domain.evaluation.vo.ScaleDetailVO2;
-import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.resquest.UserListRequest;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * @author 任志强

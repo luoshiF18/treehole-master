@@ -13,7 +13,10 @@ import com.treehole.marketing.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+<<<<<<< HEAD
 import javax.activity.ActivityRequiredException;
+=======
+>>>>>>> master
 import java.util.Date;
 
 /**

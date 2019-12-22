@@ -33,4 +33,6 @@ public class Option implements Serializable {
     private String scaleId;
     @Transient
     private Integer skipQuestionSort;// 问题序号，这个不会作为数据库字段,用于修改问题展示用questionVO3
+    @Transient
+    private String skipName;
 }

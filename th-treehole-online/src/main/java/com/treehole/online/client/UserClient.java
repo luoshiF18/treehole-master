@@ -2,7 +2,6 @@ package com.treehole.online.client;
 
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
-import com.treehole.framework.domain.member.ext.UserExt;
 import com.treehole.framework.model.response.ResponseResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;

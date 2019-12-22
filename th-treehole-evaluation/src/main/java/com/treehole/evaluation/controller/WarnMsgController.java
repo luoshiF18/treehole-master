@@ -3,6 +3,7 @@ package com.treehole.evaluation.controller;
 import com.treehole.api.evaluation.WarnMsgControllerApi;
 import com.treehole.evaluation.service.WarnMsgService;
 import com.treehole.framework.domain.evaluation.WarnMsg;
+import com.treehole.framework.domain.evaluation.vo.WarningVo;
 import com.treehole.framework.model.response.ResponseResult;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,7 +39,7 @@ public class WarnMsgController implements WarnMsgControllerApi {
 
     @Override
     @GetMapping("/getRedisWarning")
-    public List<String> getRedisWarning(String userId) {
+    public List<WarningVo> getRedisWarning(String userId) {
         return warnMsgService.getRedisWarning(userId);
     }
 

@@ -2,18 +2,15 @@ package com.treehole.member.controller;
 
 import com.treehole.api.member.PointControllerApi;
 import com.treehole.framework.domain.member.Points;
-import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.resquest.PointListRequest;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
-import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.member.service.PointService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * @author shanhuijie

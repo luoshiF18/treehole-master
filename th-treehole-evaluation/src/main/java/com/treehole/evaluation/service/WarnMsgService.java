@@ -7,6 +7,7 @@ import com.treehole.evaluation.dao.WarningMapper;
 import com.treehole.framework.domain.evaluation.WarnMsg;
 import com.treehole.framework.domain.evaluation.Warning;
 import com.treehole.framework.domain.evaluation.response.EvaluationCode;
+import com.treehole.framework.domain.evaluation.vo.WarningVo;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
@@ -81,20 +82,21 @@ public class WarnMsgService {
         }
     }
     //从redis中查询预警信息
-    public List<String> getRedisWarning(String userId){
+    public List<WarningVo> getRedisWarning(String userId){
         if(userId==null||StringUtils.isBlank( userId )){
             ExceptionCast.cast(EvaluationCode.DATA_ERROR );
         }
         Warning warning = new Warning();
         warning.setUserId(userId);
         List<Warning> select = warningMapper.select( warning );
-        List<String > warns = new ArrayList<>();
+        List<WarningVo> warns = new ArrayList<>();
         try {
             for (Warning warnings : select) {
                 String key = warnings.getId();
                 String value = redisTemplate.opsForValue().get( key );
                 value=JSON.parse(value).toString();
-                warns.add( value );
+                WarningVo warningMore = JSON.parseObject( value, WarningVo.class );
+                warns.add( warningMore );
             }
             System.out.println(warns);
             return warns;

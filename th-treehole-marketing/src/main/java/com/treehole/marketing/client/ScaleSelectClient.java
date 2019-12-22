@@ -1,5 +1,6 @@
 package com.treehole.marketing.client;
 
+<<<<<<< HEAD
 import com.treehole.api.evaluation.ScaleSelectControllerApi;
 import com.treehole.evaluation.api.ScaleSelectApi;
 import com.treehole.framework.client.ThServiceList;
@@ -7,6 +8,11 @@ import com.treehole.framework.model.response.QueryResponseResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+=======
+import com.treehole.evaluation.api.ScaleSelectApi;
+import com.treehole.framework.client.ThServiceList;
+import org.springframework.cloud.openfeign.FeignClient;
+>>>>>>> master
 
 /**
  * @author

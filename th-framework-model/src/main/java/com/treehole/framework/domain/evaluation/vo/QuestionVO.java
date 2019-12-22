@@ -14,7 +14,7 @@ import java.util.List;
 public class QuestionVO {
 
     private String id;
-    private Integer sort;
+    private Integer nextQuestionSort;
     private String question;
     //    该问题下所有的选项
     private List<OptionVO> optionVOS;

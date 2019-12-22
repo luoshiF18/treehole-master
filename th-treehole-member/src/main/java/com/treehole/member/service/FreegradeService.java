@@ -4,7 +4,6 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.member.Cards;
 import com.treehole.framework.domain.member.FreeGrade;
-import com.treehole.framework.domain.member.PayGrade;
 import com.treehole.framework.domain.member.resquest.GradeListRequest;
 import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.exception.ExceptionCast;

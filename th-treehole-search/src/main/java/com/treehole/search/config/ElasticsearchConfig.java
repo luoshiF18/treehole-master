@@ -5,17 +5,13 @@ import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-/**
- * @author 任志强
- * @version 1.0
- * @date 2019/10/11 16:10
- * @description: elasticsearch配置
- */
-//@Configuration
+
+@Configuration
 public class ElasticsearchConfig {
 
-    @Value("${xuecheng.elasticsearch.hostlist}")
+    @Value("${treehole.elasticsearch.hostlist}")
     private String hostlist;
 
     @Bean

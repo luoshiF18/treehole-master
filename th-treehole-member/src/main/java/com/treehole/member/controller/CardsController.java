@@ -1,14 +1,10 @@
 package com.treehole.member.controller;
 
 import com.treehole.api.member.CardsControllerApi;
-import com.treehole.framework.domain.member.Cards;
-import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.CardsVo;
-import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.resquest.CardListRequest;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
-import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.member.service.CardsService;
 import com.treehole.member.service.CardsVoService;

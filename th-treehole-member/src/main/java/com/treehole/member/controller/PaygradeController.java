@@ -1,7 +1,6 @@
 package com.treehole.member.controller;
 
 import com.treehole.api.member.PayGradeControllerApi;
-import com.treehole.framework.domain.member.FreeGrade;
 import com.treehole.framework.domain.member.PayGrade;
 import com.treehole.framework.domain.member.resquest.GradeListRequest;
 import com.treehole.framework.model.response.CommonCode;

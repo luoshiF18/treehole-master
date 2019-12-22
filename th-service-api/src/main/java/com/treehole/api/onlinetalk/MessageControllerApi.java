@@ -1,6 +1,5 @@
 package com.treehole.api.onlinetalk;
 
-import com.treehole.framework.domain.onlinetalk.Agent;
 import com.treehole.framework.domain.onlinetalk.Message;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
