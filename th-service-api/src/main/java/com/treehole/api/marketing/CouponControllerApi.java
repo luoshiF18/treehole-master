@@ -42,4 +42,7 @@ public interface CouponControllerApi {
     @ApiOperation("根据id删除优惠券")
     public ResponseResult deleteCouponById(@PathVariable("id") String id);
 
+    @ApiOperation("根据发布时间查优惠券")
+    public QueryResponseResult queryValidCouponByReleaseTime(@RequestParam("today") String today);
+
 }

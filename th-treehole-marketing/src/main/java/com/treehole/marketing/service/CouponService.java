@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.marketing.Coupon;
 import com.treehole.framework.domain.marketing.CouponType;
+import com.treehole.framework.domain.marketing.InteractiveActivity;
 import com.treehole.framework.domain.marketing.bo.CouponBo;
 import com.treehole.framework.domain.marketing.response.MarketingCode;
 import com.treehole.framework.domain.marketing.utils.MyStatusCode;
@@ -22,6 +23,8 @@ import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -179,6 +182,9 @@ public class CouponService {
      * @param coupon
      */
     public void saveCoupon(Coupon coupon) {
+        if(this.queryCountOfValidCoupon() > 10){
+            ExceptionCast.cast(MarketingCode.COUPON_NUM_TOMUCH);
+        }
         //数据为空
         if(StringUtils.isBlank(coupon.getTitle())||
                 coupon.getStartTime() == null ||
@@ -304,6 +310,10 @@ public class CouponService {
                     ExceptionCast.cast(MarketingCode.DELETE_FORBIDDEN);
                 }
                 this.couponMapper.deleteByPrimaryKey(id);
+                if(MyStatusCode.STATUS_NOT_STARTED.equals(coupon.getStatus())){
+                    redisTemplate.delete(id+"_coupon__NOTSTARTED");
+                }
+
             }
         } catch (Exception e) {
 
@@ -319,7 +329,7 @@ public class CouponService {
         if("ONGOING".equals(status)){
             coupon.setStatus(MyStatusCode.STATUS_FINISHED);
         }else if("NOTSTARTED".equals(status)){
-            coupon = this.couponMapper.selectByPrimaryKey(id);
+            coupon = this.couponMapper.selectByPrimaryKey(id);//需要时间，所以再查找
             coupon.setStatus(MyStatusCode.STATUS_ONGOING);
             redisTemplate.boundValueOps(id+"_coupon_ONGOING").set(id);
             redisTemplate.boundValueOps(id+"_coupon_ONGOING").expire((coupon.getEndTime().getTime() - new Date().getTime()), TimeUnit.MILLISECONDS);
@@ -327,4 +337,57 @@ public class CouponService {
         this.couponMapper.updateByPrimaryKeySelective(coupon);
     }
 
+
+    public int queryCountOfValidCoupon(){
+        Example example = new Example(Coupon.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andNotEqualTo("status", 0);
+        return this.couponMapper.selectCountByExample(example);
+    }
+
+    public QueryResult queryValidCoupon(String today) {
+        if(today == null){
+            ExceptionCast.cast(MarketingCode.DATA_ERROR);
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date today_= null;
+        try {
+            today_ = sdf.parse(today);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        List<Coupon> coupons = this.couponMapper.queryValidCoupon(today);
+        if(CollectionUtils.isEmpty(coupons)){
+            ExceptionCast.cast(MarketingCode.SELECT_NULL);
+        }
+        List<CouponBo> couponBos = new ArrayList<>();
+        for(Coupon coupon: coupons){
+            System.out.println(coupon);
+            this.transfer(coupon);
+
+            CouponBo couponBo = new CouponBo();
+            couponBo.setId(coupon.getId());
+            couponBo.setTitle(coupon.getTitle());
+            couponBo.setIcon(coupon.getIcon());
+            couponBo.setTypeName(coupon.getTypeName());
+            //
+            CouponType type = this.couponTypeMapper.selectByPrimaryKey(coupon.getUsedType());
+            System.out.println(type+"///"+coupon.getUsedType());
+            couponBo.setUsedType(type.getUsedType());
+            couponBo.setWithSpecial(coupon.getWithSpecial());
+            couponBo.setWithAmount(coupon.getWithAmount());
+            couponBo.setUsedAmount(coupon.getUsedAmount());
+            couponBo.setValidType(coupon.getValidType());
+            couponBo.setValidStartTime(coupon.getValidStartTime());
+            couponBo.setValidEndTime(coupon.getValidEndTime());
+            couponBo.setValidDays(coupon.getValidDays());
+            couponBo.setUsedBy(couponBo.getUsedBy());
+            couponBo.setStatus(coupon.getStatus());
+            couponBo.setLimitNum(coupon.getLimitNum());
+            couponBos.add(couponBo);
+        }
+        return new QueryResult<>(couponBos, couponBos.size());
+    }
 }

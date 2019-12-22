@@ -90,4 +90,11 @@ public class ActivityController implements ActivityControllerApi {
         this.activityService.deleteActivityById(id);
         return new ResponseResult(CommonCode.SUCCESS);
     }
+
+    @Override
+    @PutMapping("/status/{id}")
+    public ResponseResult updateStatusToFinished(@PathVariable("id") String id) {
+        this.activityService.updateStatusToFinished(id);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
 }

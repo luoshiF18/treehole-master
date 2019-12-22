@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
  * @author wanglu
  */
 @RestController
-@RequestMapping("/coupon")
+@RequestMapping("/marketing/coupon")
 public class UserCouponController implements UserCouponControllerApi {
 
     @Autowired
@@ -55,6 +55,13 @@ public class UserCouponController implements UserCouponControllerApi {
     @PostMapping("/my_coupon")
     public ResponseResult saveUserCoupon(@RequestBody UserCouponRequest userCouponRequest) {
         this.userCouponService.saveUserCoupon(userCouponRequest);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    @Override
+    @PutMapping("/user/used/{id}")
+    public ResponseResult changeUsedStatusToTrue(@PathVariable("id") String id) {
+        this.userCouponService.changeUsedStatusToTrue(id);
         return new ResponseResult(CommonCode.SUCCESS);
     }
 }

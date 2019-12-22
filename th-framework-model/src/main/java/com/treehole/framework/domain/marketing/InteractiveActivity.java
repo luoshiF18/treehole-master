@@ -6,6 +6,7 @@ import tk.mybatis.mapper.annotation.KeySql;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -20,6 +21,7 @@ public class InteractiveActivity {
     private String id;
     private String shortTitle;
     private String title;
+    private String subTitle;
     private String introduce;
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date releaseBeginTime;
@@ -39,4 +41,12 @@ public class InteractiveActivity {
     private String originatorName;
     private String originatorPhone;
     private String other;
+    private String image;
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date created;
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date updated;
+    private Integer status;
+    @Transient
+    private String statusName;
 }

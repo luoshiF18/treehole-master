@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.treehole.marketing.dao.CouponMapper">
+    <select id="queryValidCoupon" resultType="com.treehole.framework.domain.marketing.Coupon"  parameterType="java.lang.String">
+        select
+        id, title, icon,type,used_type as usedType,with_special as withSpecial,with_amount as withAmount,used_amount as usedAmount,start_time startTime,end_time as endTime,valid_type as validType,valid_start_time as validStartTime,
+        valid_end_time as validEndTime,valid_days as validDays,used_by as usedBy,limit_num as limitNum,status
+        from tb_coupon
+        where #{today}
+        between  start_time  and end_time
+        and type=2
+    </select>
+</mapper>
+

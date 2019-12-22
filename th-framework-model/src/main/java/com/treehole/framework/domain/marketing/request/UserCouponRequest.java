@@ -14,8 +14,8 @@ public class UserCouponRequest {
     private String id;
     private String title;
     private String icon;
-    private Integer usedType;//优惠券类型
-    private String usedTypeName;
+   // private Integer usedType;//优惠券类型
+    private String usedType;
     private BigDecimal withAmount;//门槛
     private BigDecimal usedAmount;//面额
     private Boolean withSpecial;

@@ -72,8 +72,15 @@ public class InteractiveActivityController implements InteractiveActivityControl
 
     @Override
     @GetMapping("/release/all")
-    public QueryResponseResult queryActivityByReleaseTime(@RequestParam("today")@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date today) {
+    public QueryResponseResult queryActivityByReleaseTime(@RequestParam("today")String today) {
         QueryResult<InteractiveActivity> queryResult = this.interactiveActivityService.queryActivityByReleaseTime(today);
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
+    }
+
+    @Override
+    @PutMapping("/status/{id}")
+    public ResponseResult updateStatusToFinished(@PathVariable("id") String id) {
+        this.interactiveActivityService.updateStatusToFinished(id);
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 }

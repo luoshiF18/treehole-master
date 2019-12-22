@@ -17,4 +17,7 @@ public interface UserCouponControllerApi {
     public int queryUserCouponCount(String userId);
     @ApiOperation("添加用户优惠券信息")
     public ResponseResult saveUserCoupon(UserCouponRequest userCouponRequest);
+    @ApiOperation("用户优惠券使用")
+    public ResponseResult changeUsedStatusToTrue(String id);
+
 }

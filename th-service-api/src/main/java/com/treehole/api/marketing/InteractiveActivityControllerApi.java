@@ -40,5 +40,8 @@ public interface InteractiveActivityControllerApi {
 
 
     @ApiOperation("根据发布时间查询活动")
-    public QueryResponseResult queryActivityByReleaseTime(@RequestParam("today") Date today);
+    public QueryResponseResult queryActivityByReleaseTime(@RequestParam("today") String today);
+
+    @ApiOperation("修改互动活动状态为结束")
+    public  ResponseResult updateStatusToFinished(@PathVariable("id") String id);
 }

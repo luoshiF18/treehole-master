@@ -104,4 +104,12 @@ public class CouponController implements CouponControllerApi {
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
+    @Override
+    @GetMapping("/valid/all")
+    public QueryResponseResult queryValidCouponByReleaseTime(@RequestParam("today") String today) {
+
+        QueryResult queryResult =  this.couponService.queryValidCoupon(today);;
+        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
+    }
+
 }

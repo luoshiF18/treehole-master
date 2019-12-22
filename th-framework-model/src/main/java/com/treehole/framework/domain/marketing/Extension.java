@@ -26,6 +26,7 @@ public class Extension implements Serializable {
     private String title;
     private String content;
     private Boolean usedFor; //false：优惠券 true：活动
+    private Integer activityType;
     @Transient
     private String usedForStr;
     private String usedForId; //

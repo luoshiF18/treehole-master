@@ -2,6 +2,7 @@ package com.treehole.framework.domain.marketing;
 
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.Data;
+import lombok.ToString;
 import tk.mybatis.mapper.annotation.KeySql;
 
 import javax.persistence.Id;
@@ -13,6 +14,7 @@ import java.io.Serializable;
  */
 @Data
 @Table(name = "tb_coupon_type")
+@ToString
 public class CouponType implements Serializable {
     @Id
     @KeySql(useGeneratedKeys = true)

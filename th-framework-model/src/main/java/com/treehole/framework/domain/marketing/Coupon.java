@@ -1,6 +1,7 @@
 package com.treehole.framework.domain.marketing;
 
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 import tk.mybatis.mapper.annotation.KeySql;
 
@@ -16,6 +17,7 @@ import java.util.Date;
  */
 @Data
 @Table(name = "tb_coupon")
+@ToString
 public class Coupon implements Serializable {
     @Id
     @KeySql(useGeneratedKeys = true)
