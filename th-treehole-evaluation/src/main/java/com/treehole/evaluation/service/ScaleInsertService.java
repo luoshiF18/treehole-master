@@ -48,11 +48,11 @@ public class ScaleInsertService {
      * @return null
      */
     @Transactional
-    public void insertScale(Scale scale) {
-//        获取用户id
+    public void insertScale(Scale scale, String userId) {
+/*//        获取用户id
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 //      获取信息
-        Map<String, String> userInfo = Oauth2Util.getJwtClaimsFromHeader(request);
+        Map<String, String> userInfo = Oauth2Util.getJwtClaimsFromHeader(request);*/
 //        校验数据
         if (scaleTypeMapper.selectByPrimaryKey(scale.getTypeId()) == null
                 || StringUtils.isBlank(scale.getScaleName())
@@ -76,7 +76,7 @@ public class ScaleInsertService {
         String upperCase = MyChineseCharUtil.getUpperCase(scale.getScaleName(), false);
         scale.setLetter(upperCase);
         scale.setCreateTime(new Date());
-        scale.setCreateUserId(userInfo.get("id")); // userId
+        scale.setCreateUserId(userId/*userInfo.get("id")*/); // userId
         if (scale.getPrice() == null || scale.getPrice().compareTo(BigDecimal.ZERO) == -1) {
             scale.setPrice(BigDecimal.valueOf(0.00));
         }

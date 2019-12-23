@@ -1,6 +1,8 @@
 package com.treehole.evaluation.service;
 
+import com.alibaba.fastjson.JSON;
 import com.treehole.evaluation.MyUtils.MyChineseCharUtil;
+import com.treehole.evaluation.MyUtils.MyCookieUtils;
 import com.treehole.evaluation.MyUtils.MyNumberUtils;
 import com.treehole.evaluation.dao.*;
 import com.treehole.framework.domain.evaluation.*;
@@ -10,11 +12,15 @@ import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.utils.Oauth2Util;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.jwt.Jwt;
+import org.springframework.security.jwt.JwtHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -37,6 +43,8 @@ public class ScaleUpdateService {
     private DescriptionMapper descriptionMapper;
     @Autowired
     private ResultMapper resultMapper;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     /**
      * 更改量表信息
@@ -58,7 +66,7 @@ public class ScaleUpdateService {
         }
 //        设置更新时间
         scale.setUpdateTime(new Date());
-        scale.setUpdateUserId(getUserId());
+        scale.setUpdateUserId(/*"userId"*/getUserId());
         if (scaleMapper.updateByPrimaryKeySelective(scale) != 1) {
             ExceptionCast.cast(EvaluationCode.UPDATE_ERROR);
         }
@@ -148,7 +156,16 @@ public class ScaleUpdateService {
         //        获取用户id
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         //      获取信息
-        Map<String, String> userInfo = Oauth2Util.getJwtClaimsFromHeader(request);
-        return userInfo.get("id");
+        String cookieValue = MyCookieUtils.getCookieValue(request, "uid");
+        String token = redisTemplate.opsForValue().get("user_token:" + cookieValue);
+        String between = StringUtils.substringBetween(token, "\"jwt_token\":\"", "\",");
+        Jwt decode = JwtHelper.decode(between);
+        //得到 jwt中的用户信息
+        String claims = decode.getClaims();
+        //将jwt转为Map
+        Map<String, String> map = null;
+        map = JSON.parseObject(claims, Map.class);
+        String id = map.get("id");
+        return id;
     }
 }

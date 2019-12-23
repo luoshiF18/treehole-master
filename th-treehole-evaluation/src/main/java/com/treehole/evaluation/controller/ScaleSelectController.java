@@ -1,6 +1,8 @@
 package com.treehole.evaluation.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.treehole.api.evaluation.ScaleSelectControllerApi;
+import com.treehole.evaluation.MyUtils.MyCookieUtils;
 import com.treehole.evaluation.client.UserClient;
 import com.treehole.evaluation.dao.ResultMapper;
 import com.treehole.evaluation.dao.ScaleMapper;
@@ -18,6 +20,9 @@ import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.utils.Oauth2Util;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.jwt.Jwt;
+import org.springframework.security.jwt.JwtHelper;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -42,6 +47,8 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
     private ScaleMapper scaleMapper;
     @Autowired
     private ResultMapper resultMapper;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     /**
      * 搜索量表
@@ -155,13 +162,7 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
     @Override
     @PostMapping("result")
     public ResultRequest testResult(@RequestBody OptionsDTO optionsDTO) {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-//      获取信息
-        Map<String, String> userInfo = Oauth2Util.getJwtClaimsFromHeader(request);
-        String userId = null;
-        if (userInfo != null) {
-            userId = userInfo.get("id");
-        }
+        String userId = getUserId();
         ResultVO testResult = scaleSelectService.getTestResult(optionsDTO, userId);
         if (testResult == null) {
             ExceptionCast.cast(EvaluationCode.TEST_ERROR);
@@ -307,17 +308,15 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
      * @return
      */
     private boolean checkResult(String scaleId) {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-//      获取信息
-        Map<String, String> userInfo = Oauth2Util.getJwtClaimsFromHeader(request);
-        if (userInfo == null) {
+        String userId = getUserId();
+        if (userId == null) {
             return true;
         }
         Scale scale = scaleMapper.selectByPrimaryKey(scaleId);
 //        如果用户登录了就校验
         Result result = new Result();
         result.setScaleName(scale.getScaleName());
-        result.setUserId(userInfo.get("id"));
+        result.setUserId(userId);
         Result selectOne = resultMapper.selectOne(result);
         if (selectOne == null) {
             return true;
@@ -325,6 +324,26 @@ public class ScaleSelectController implements ScaleSelectControllerApi {
 //            如果做过就不让继续做了
             return false;
         }
+    }
+
+    /**
+     * 获取用户Id
+     */
+    private String getUserId() {
+        //        获取用户id
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        //      获取信息
+        String cookieValue = MyCookieUtils.getCookieValue(request, "uid");
+        String token = redisTemplate.opsForValue().get("user_token:" + cookieValue);
+        String between = StringUtils.substringBetween(token, "\"jwt_token\":\"", "\",");
+        Jwt decode = JwtHelper.decode(between);
+        //得到 jwt中的用户信息
+        String claims = decode.getClaims();
+        //将jwt转为Map
+        Map<String, String> map = null;
+        map = JSON.parseObject(claims, Map.class);
+        String id = map.get("id");
+        return id;
     }
 
 }

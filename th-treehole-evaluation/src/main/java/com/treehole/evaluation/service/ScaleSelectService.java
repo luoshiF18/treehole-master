@@ -1,7 +1,9 @@
 package com.treehole.evaluation.service;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.treehole.evaluation.MyUtils.MyCookieUtils;
 import com.treehole.evaluation.MyUtils.MyDateUtils;
 import com.treehole.evaluation.MyUtils.MyMapUtils;
 import com.treehole.evaluation.MyUtils.MyNumberUtils;
@@ -19,6 +21,9 @@ import com.treehole.framework.utils.Oauth2Util;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.jwt.Jwt;
+import org.springframework.security.jwt.JwtHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -56,6 +61,8 @@ public class ScaleSelectService {
     private ScoreMethodMapper scoreMethodMapper;
     @Autowired
     private UserClient userClient;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
 
 //    private static final String USER_OPTIONS = "user:options";
@@ -400,7 +407,7 @@ public class ScaleSelectService {
             UserOptionVO userOptionVO = new UserOptionVO();
             userOptionVO.setId(selectOne.getId());
             userOptionVO.setScaleName(selectOne.getScaleName());
-            userOptionVO.setUserName(getUserId());
+            userOptionVO.setUserName(selectOne.getUserId());
             userOptionVO.setResult(combine);
             userOptionVO.setTime(MyDateUtils.dateToString1(selectOne.getTime()));
 //        返回
@@ -756,16 +763,7 @@ public class ScaleSelectService {
         warningFindInfo.insert(warning);
     }
 
-    /**
-     * 获取用户Id
-     */
-    private String getUserId() {
-        //        获取用户id
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        //      获取信息
-        Map<String, String> userInfo = Oauth2Util.getJwtClaimsFromHeader(request);
-        return userInfo.get("id");
-    }
+
 
 
 }
