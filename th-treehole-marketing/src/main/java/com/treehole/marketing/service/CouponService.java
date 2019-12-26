@@ -349,14 +349,13 @@ public class CouponService {
         if(today == null){
             ExceptionCast.cast(MarketingCode.DATA_ERROR);
         }
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+      /*  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date today_= null;
         try {
             today_ = sdf.parse(today);
         } catch (ParseException e) {
             e.printStackTrace();
-        }
+        }*/
 
         List<Coupon> coupons = this.couponMapper.queryValidCoupon(today);
         if(CollectionUtils.isEmpty(coupons)){
@@ -364,7 +363,6 @@ public class CouponService {
         }
         List<CouponBo> couponBos = new ArrayList<>();
         for(Coupon coupon: coupons){
-            System.out.println(coupon);
             this.transfer(coupon);
 
             CouponBo couponBo = new CouponBo();

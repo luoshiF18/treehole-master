@@ -7,6 +7,7 @@ import tk.mybatis.mapper.annotation.KeySql;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -15,7 +16,7 @@ import java.util.Date;
  */
 @Data
 @Table(name = "tb_interactive_activity")
-public class InteractiveActivity {
+public class InteractiveActivity implements Serializable {
     @Id
     @KeySql(useGeneratedKeys = true)
     private String id;

@@ -2,7 +2,6 @@ package com.treehole.framework.domain.marketing.request;
 
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -10,7 +9,7 @@ import java.util.Date;
  * @author wanglu
  */
 @Data
-public class UserCouponRequest {
+public class UserCouponRequest{
     private String id;
     private String title;
     private String icon;

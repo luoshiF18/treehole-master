@@ -9,7 +9,7 @@
         where #{today}
         between  release_begin_time  and release_end_time
         and status != 0
-
+        order by releaseBeginTime desc
     </select>
 
 </mapper>

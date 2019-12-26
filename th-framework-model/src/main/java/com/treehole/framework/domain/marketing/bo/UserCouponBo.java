@@ -10,7 +10,7 @@ import java.util.Date;
  * @author wanglu
  */
 @Data
-public class UserCouponBo{
+public class UserCouponBo {
 
     private String id;
     private String title;

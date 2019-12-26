@@ -14,7 +14,7 @@ spring:
   #    default-property-inclusion: non_null
   datasource:
     druid:
-      url: ${MYSQL_URL:jdbc:mysql://10.0.43.60:3306/th_marketing?characterEncoding=utf-8}
+      url: ${MYSQL_URL:jdbc:mysql://10.0.43.60:3306/th_marketing?useSSL=false&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&serverTimezone=Asia/Shanghai}
       username: root
       password: root
       driverClassName: com.mysql.jdbc.Driver
@@ -46,3 +46,6 @@ treehole:
   email:
     USER: wangluforbusiness@foxmail.com
     PASSWORD: yjvgbfmtlggkigba
+mybatis:
+  typeAliasesPackage: com.treehole.framework.domain.marketing
+  mapper-locations: classpath:mapper/*Mapper.xml

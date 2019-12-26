@@ -188,19 +188,19 @@ public class InteractiveActivityService {
 
     @Cacheable(value = "ReleaseInteractiveActivity")
     public QueryResult<InteractiveActivity> queryActivityByReleaseTime(String today) {
-        if(today == null){
+        if(StringUtils.isBlank(today)){
             ExceptionCast.cast(MarketingCode.DATA_ERROR);
         }
-        Example example = new Example(InteractiveActivity.class);
-        Example.Criteria criteria = example.createCriteria();
 
+/*      Example example = new Example(InteractiveActivity.class);
+        Example.Criteria criteria = example.createCriteria();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date today_= null;
         try {
             today_ = sdf.parse(today);
         } catch (ParseException e) {
             e.printStackTrace();
-        }
+        }*/
 
        /* criteria.andLessThanOrEqualTo("releaseBeginTime",today_);
         criteria.andGreaterThanOrEqualTo("releaseEndTime", today_);
