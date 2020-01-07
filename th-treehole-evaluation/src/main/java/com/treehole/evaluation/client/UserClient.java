@@ -29,4 +29,6 @@ public interface UserClient {
 
     @GetMapping("member/user/getUserByNicknames")
     public List<UserVo> findUserByNicknames(@RequestParam(value ="names") List<String> names);
+    @GetMapping("member/user/getUserByCid")
+    public List<UserVo> getUserByCid(@RequestParam("companyId") String companyId);
 }

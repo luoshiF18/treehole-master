@@ -71,7 +71,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 AuthorityUtils.commaSeparatedStringToAuthorityList(user_permission_string));
         userDetails.setId(userExt.getUser_id());
         /* userDetails.setUtype(userExt.getUser_type());//用户类型*/
-        userDetails.setCompanyId(userExt.getCompanyId());//所属企业
+        userDetails.setCompanyId(userExt.getCompany_id());//所属企业
         userDetails.setName(userExt.getUser_nickname());//用户名称
         userDetails.setUserpic(userExt.getUser_image());//用户头像
         return userDetails;

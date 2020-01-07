@@ -21,9 +21,19 @@ import java.util.Date;
 public class WarningVo extends Warning implements Serializable{
 
     private String scaleName;
+    private String description;
+    private String background;
+    private String way;
+    private String context;
+    private String reason;
+    private String effect;
+    private String Istatus;
+    private Date recordTime;
+    private String advisoryName;
     private String userName; //实际姓名，user表中的
     private String userNickName; //昵称，user表中的
     private String sex;
+    private String company;
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date userBirth;
     @Null

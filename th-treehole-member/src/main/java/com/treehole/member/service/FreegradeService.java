@@ -1,9 +1,11 @@
 package com.treehole.member.service;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.member.Cards;
 import com.treehole.framework.domain.member.FreeGrade;
+import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.resquest.GradeListRequest;
 import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.exception.ExceptionCast;
@@ -31,7 +33,7 @@ import java.util.List;
  */
 
 @Service
-@Cacheable(value="MemberFreeGrade")
+
 public class FreegradeService {
     @Autowired
     private FreegradeMapper freegradeMapper;
@@ -43,33 +45,34 @@ public class FreegradeService {
 /*
 * 根据rank,id,name查询所有用户等级信息
 * */
+    @Cacheable(value="MemberFreeGrade")
     public QueryResponseResult findAll1(Integer page,
                                Integer size,
                                GradeListRequest gradeListRequest) {
-        //        分页
-        PageHelper.startPage(page, size);
+        Page pag =PageHelper.startPage(page,size);
         //判断请求条件的合法性
         if (gradeListRequest == null){
             gradeListRequest = new GradeListRequest();
         }
-        FreeGrade freeGrade = new FreeGrade();
+        Example example = new Example(FreeGrade.class);
+        Example.Criteria criteria = example.createCriteria();
+
         //判断不为空字符串
         if(StringUtils.isNotEmpty(gradeListRequest.getGrade_id())){
-            freeGrade.setFreegrade_id(gradeListRequest.getGrade_id());
+            criteria.andLike("freegrade_id", "%" + gradeListRequest.getGrade_id() + "%");
         }
         if(StringUtils.isNotEmpty(gradeListRequest.getGrade_name())){
-            freeGrade.setFreegrade_name(gradeListRequest.getGrade_name());
+            criteria.andLike("freegrade_name", "%" + gradeListRequest.getGrade_name() + "%");
         }
-        if(StringUtils.isNotEmpty(String.valueOf(gradeListRequest.getRank()))){
-            freeGrade.setRank(gradeListRequest.getRank());
+        if(gradeListRequest.getRank() != null){
+            criteria.andLike("rank", "%" + gradeListRequest.getRank() + "%");
         }
-
-        List<FreeGrade> grades = freegradeMapper.select(freeGrade);
+        List<FreeGrade> grades = freegradeMapper.selectByExample(example);
         if (CollectionUtils.isEmpty(grades)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
         //        解析分页结果
-        PageInfo<FreeGrade> pageInfo = new PageInfo<>(grades);
+        PageInfo<FreeGrade> pageInfo = new PageInfo<>(pag.getResult());
         QueryResult queryResult = new QueryResult();
         queryResult.setList(grades);
         queryResult.setTotal(pageInfo.getTotal());
@@ -80,6 +83,7 @@ public class FreegradeService {
     /*
      * 查询所有用户等级信息
      * */
+
     public QueryResult findAll2(){
 
         List<FreeGrade> grades = freegradeMapper.selectAll();
@@ -133,7 +137,7 @@ public class FreegradeService {
     @CacheEvict(value="MemberFreeGrade",allEntries=true)
     public void deleteGrade(String id) {
         //id不为空
-        if(org.apache.commons.lang3.StringUtils.isBlank(id)){
+        if(StringUtils.isBlank(id)){
             ExceptionCast.cast(MemberCode.DATA_ERROR);
         }
         //等级存在
@@ -187,14 +191,10 @@ public class FreegradeService {
         FreeGrade freeGrade = new FreeGrade();
         freeGrade.setFreegrade_id(freegrade_id);
         FreeGrade fg = freegradeMapper.selectOne(freeGrade);
-
         FreeGrade fg2 = new FreeGrade();
         fg2.setRank(fg.getRank()+1);
-
         FreeGrade fg1 = freegradeMapper.selectOne(fg2);
-
         Cards card1= cardsService.findCardsByUserId(user_id);
-
         card1.setPoints_sum(sum);
         //card1.setPoints_sum(sum);
         //bigdimical比较大小 1大于 0等于 -1小于

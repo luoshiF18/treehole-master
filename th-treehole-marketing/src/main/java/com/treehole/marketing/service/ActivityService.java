@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.marketing.Activity;
 import com.treehole.framework.domain.marketing.ActivityGoods;
 import com.treehole.framework.domain.marketing.ActivityRule;
+import com.treehole.framework.domain.marketing.Coupon;
 import com.treehole.framework.domain.marketing.request.ActivityRequest;
 import com.treehole.framework.domain.marketing.response.MarketingCode;
 import com.treehole.framework.domain.marketing.utils.MyStatusCode;
@@ -93,8 +94,16 @@ public class ActivityService {
         /*Type type = this.typeMapper.selectByPrimaryKey(activity.getTypeId());
         activity.setTypeName(type.getName());*/
         String typeId = activity.getTypeId();
-        if("4_1_0".equals(typeId)){
+        if("4_4_0".equals(typeId)){
             activity.setTypeName("签到");
+        }else if("5_4_0".equals(typeId)){
+            activity.setTypeName("送积分");
+        }else if("1_1_1".equals(typeId)){
+            activity.setTypeName("满减");
+        }else if("2_2_1".equals(typeId)){
+            activity.setTypeName("促销");
+        }else if("3_3_1".equals(typeId)){
+            activity.setTypeName("打折");
         }
         int status = activity.getStatus();
         if(status == MyStatusCode.STATUS_FINISHED){
@@ -227,7 +236,12 @@ public class ActivityService {
     public void deleteActivityById(String id) {
         try {
             if(StringUtils.isNotBlank(id)){
-
+                //进行中的活动不允许删除
+                Activity activity = this.activityMapper.selectByPrimaryKey(id);
+                if(MyStatusCode.STATUS_ONGOING.equals(activity.getStatus())){
+                    ExceptionCast.cast(MarketingCode.DELETE_FORBIDDEN);
+                }
+                //根据活动id找到活动规则和活动商品，删除
                 ActivityRule activityRule = new ActivityRule();
                 activityRule.setActivityId(id);
                 ActivityGoods activityGoods = new ActivityGoods();
@@ -237,6 +251,9 @@ public class ActivityService {
                 activityRule = this.activityRuleMapper.selectOne(activityRule);
                 List<ActivityGoods> activityGoodsList = this.activityGoodsMapper.select(activityGoods);
                 this.activityMapper.deleteByPrimaryKey(id);
+                if(MyStatusCode.STATUS_NOT_STARTED.equals(activity.getStatus())){
+                    redisTemplate.delete(id+"_activity__NOTSTARTED");
+                }
                 if(StringUtils.isNotBlank(activityRule.getId())){
                     this.activityRuleMapper.delete(activityRule);
                 }
@@ -314,5 +331,33 @@ public class ActivityService {
             redisTemplate.boundValueOps(id+"_activity_ONGOING").expire((activity.getEndTime().getTime() - new Date().getTime()), TimeUnit.MILLISECONDS);
         }
         this.activityMapper.updateByPrimaryKeySelective(activity);
+    }
+
+    /**
+     * 将活动结束
+     * @param id
+     */
+    @Transactional
+    public void updateStatusToFinished(String id){
+        //数据为空
+        if(StringUtils.isBlank(id)){
+            ExceptionCast.cast(MarketingCode.DATA_ERROR);
+        }
+        Activity activity = this.activityMapper.selectByPrimaryKey(id);
+        //正在进行中的状态修改为结束，其他状态返回禁止修改操作的消息
+        if(MyStatusCode.STATUS_ONGOING.equals(activity.getStatus())){
+            activity.setStatus(MyStatusCode.STATUS_FINISHED);
+            if(this.activityMapper.updateByPrimaryKeySelective(activity) == 1) {
+                redisTemplate.delete(id+"_activity_ONGOING");
+
+            } else {
+                ExceptionCast.cast(MarketingCode.UPDATE_ERROR);
+            }
+
+        } else {
+            ExceptionCast.cast(MarketingCode.UPDATE_FORBIDDEN);
+        }
+
+
     }
 }

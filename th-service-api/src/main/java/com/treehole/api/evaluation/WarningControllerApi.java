@@ -22,7 +22,7 @@ public interface WarningControllerApi {
     @ApiOperation("心理咨询师添加预警信息")
     public ResponseResult addWarningByPsy(Warning warning);
     @ApiOperation("心理咨询师查看用户预警信息")
-    public QueryResponseResult findWarningByUserId(String userId, int page, int size);
+    public QueryResponseResult findWarningByUserId(int page, int size);
     @ApiOperation("后台管理，根据条件查询用户预警信息")
     public QueryResponseResult findWarningCondition(int page, int size, WarnRequest warnRequest);
     @ApiOperation( "后台管理，查询所有预警信息")

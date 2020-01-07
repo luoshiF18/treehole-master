@@ -50,6 +50,11 @@ public class CouponController implements CouponControllerApi {
         return this.couponService.queryCouponById(id);
     }
 
+    /**
+     * 根据优惠券id查询用户可以看到的
+     * @param id
+     * @return   门户网站用户看到的优惠券信息
+     */
     @GetMapping("/cdetail/{id}")
     public CouponBo queryCouponBoById(@PathVariable("id") String id) {
         return this.couponService.queryCouponBoById(id);
@@ -97,6 +102,14 @@ public class CouponController implements CouponControllerApi {
     public ResponseResult deleteCouponById(@PathVariable("id") String id) {
         this.couponService.deleteCouponById(id);
         return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    @Override
+    @GetMapping("/valid/all")
+    public QueryResponseResult queryValidCouponByReleaseTime(@RequestParam("today") String today) {
+
+        QueryResult queryResult =  this.couponService.queryValidCoupon(today);;
+        return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 
 }

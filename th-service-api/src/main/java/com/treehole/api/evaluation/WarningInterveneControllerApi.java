@@ -2,6 +2,7 @@ package com.treehole.api.evaluation;
 
 import com.treehole.framework.domain.evaluation.WarningIntervene;
 import com.treehole.framework.domain.evaluation.request.InterveneRequest;
+import com.treehole.framework.domain.evaluation.vo.WarningVo;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
@@ -27,4 +28,6 @@ public interface WarningInterveneControllerApi {
 
     @ApiOperation("根据id删除" )
     public ResponseResult delIntervene(@RequestParam("interveneId") String InterveneId);
+    @ApiOperation("查询用户干预记录表" )
+    public  WarningVo findByPsy();
 }

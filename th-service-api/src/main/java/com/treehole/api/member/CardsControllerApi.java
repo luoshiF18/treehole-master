@@ -15,11 +15,13 @@ import io.swagger.annotations.ApiOperation;
 @Api(value = "会员卡信息管理", description = "对会员卡信息进行增/删/改/查")
 public interface CardsControllerApi {
     @ApiOperation("查询所有会员卡信息(user_id,card_id,phone)")
-    public QueryResponseResult findAllCards( Integer page,
-                                             Integer size,
+    public QueryResponseResult findAllCards(Integer page,
+                                            Integer size,
                                             CardListRequest cardListRequest) ;
     @ApiOperation("根据cardId查询cardVo对象")
     public CardsVo findCardById(String card_id);
+    @ApiOperation("根据userId查询cardVo对象")
+    public CardsVo findCardByUserId(String user_id);
     @ApiOperation("插入一条会员卡信息")
     public ResponseResult insertCard(String id);
 

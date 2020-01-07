@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.treehole.evaluation.dao.WarnTeamMapper">
+
+
+    <select id="getTwarnsByUids" parameterType="com.treehole.framework.domain.evaluation.request.WarnRequest" resultType="com.treehole.framework.domain.evaluation.vo.WarningVo">
+        select
+        s.scaleName,
+        w.id,
+        w.warning_level as warningLevel,
+        w.w_message as wMessage,
+        w.create_time as createTime,
+        w.user_id as userId
+        from
+        warning w
+        left join test_scale s on w.scale_id=s.id
+        WHERE
+        1=1
+           <if test="request.userIds!=null">
+            and w.user_id in
+            <foreach collection="request.userIds" item="userIds" index="index" open="(" separator="," close=")">
+                #{request.userIds[${index}],jdbcType=VARCHAR}
+            </foreach>
+           </if>
+            <if test="request.startTime!= null and request.endTime != null and
+                request.startTime!='' and  request.endTime !=''">
+                and
+                create_time BETWEEN #{request.startTime} and #{request.endTime}
+            </if>
+            <if test="request.scaleName != null and request.scaleName !=''">
+                AND
+                .scaleName =#{request.scaleName}
+            </if>
+            <if test="request.warningLevel!=null or request.warningLevel==0">
+                AND
+                w.warning_level=#{request.warningLevel}
+            </if>
+
+    </select>
+    <select id="getTeamIntereven" parameterType="com.treehole.framework.domain.evaluation.request.InterveneRequest"
+            resultType="com.treehole.framework.domain.evaluation.vo.WarnInterveneVo">
+        select
+        id,
+        user_name as userName,
+        advisory_name as advisoryName,
+        record_time as recordTime,
+        status
+        from warning_intervene
+        where
+        1=1
+        <if test="interveneRequest.usernames!=null">
+            and user_name IN
+            <foreach collection="interveneRequest.usernames" item="usernames" index="index" open="(" separator="," close=")">
+                #{interveneRequest.usernames[${index}],jdbcType=VARCHAR}
+            </foreach>
+
+        </if>
+        <if test="interveneRequest.startTime!= null and interveneRequest.endTime != null and
+          interveneRequest.startTime!='' and  interveneRequest.endTime !=''">
+            and
+            record_time BETWEEN #{interveneRequest.startTime} and #{interveneRequest.endTime}
+        </if>
+        <if test="interveneRequest.userNickName != null and interveneRequest.userNickName !=''">
+            AND
+            warning_intervene.user_name =#{interveneRequest.userNickName}
+        </if>
+        <if test="interveneRequest.advisoryName != null and interveneRequest.advisoryName !=''">
+            AND
+            warning_intervene.advisory_name =#{interveneRequest.advisoryName}
+        </if>
+
+    </select>
+</mapper>

@@ -95,6 +95,7 @@
                                         from
                                         result r
                                         where
+
                                         r.scaleName = #{scaleName}
                                         ) t
                                         group by
@@ -136,9 +137,17 @@
                 where
                 w.warning_level &gt;= 4
                 AND 1=1
+                AND
+                wi.status<![CDATA[!= ]]>0
                 <if test="userNickName!=null and userNickName!=''">
                 AND
                 wi.user_name=#{userNickName}
+                </if>
+                <if test="userIds!=null">
+                  AND w.user_id IN
+                    <foreach collection="userIds" item="userIds" index="index" open="(" separator="," close=")">
+                        #{userIds[${index}],jdbcType=VARCHAR}
+                    </foreach>
                 </if>
                 group by
                 w.user_id
@@ -180,6 +189,30 @@
                    #{warningId}
              </foreach>
 
+    </select>
+    <select id="fingAllByPsy" resultType="com.treehole.framework.domain.evaluation.vo.WarningVo">
+
+    select
+    w.id,
+	w.status,
+	w.warning_level as warningLevel,
+	w.w_message as wMessage,
+	w.create_time as createTime,
+	s.scaleName as scaleName,
+	s.topicDescription as description,
+	s.topicBackground as background,
+	i.way,
+	i.user_name as userName,
+	i.context,
+	i.reason,
+	i.effect,
+	i.status,
+	i.record_time
+	from warning w
+	left join test_scale s on w.scale_id=s.id
+	left join warning_intervene i on w.id=i.warning_id
+    where
+    w.user_id=#{userId}
     </select>
 </mapper>
 

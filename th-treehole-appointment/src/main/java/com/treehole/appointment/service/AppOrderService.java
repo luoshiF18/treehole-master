@@ -1,6 +1,8 @@
 package com.treehole.appointment.service;
 
 import com.treehole.framework.domain.appointment.AppOrder;
+import com.treehole.framework.domain.appointment.ext.AppOrderExt;
+import com.treehole.framework.domain.appointment.request.QueryAppOrderExtRequest;
 import com.treehole.framework.domain.appointment.request.QueryAppOrderRequest;
 import com.treehole.framework.domain.appointment.response.AppOrderResult;
 import com.treehole.framework.model.response.QueryResponseResult;
@@ -26,5 +28,9 @@ public interface AppOrderService {
     AppOrder findById(String id);
     //修改预约订单
     AppOrderResult update(String id, AppOrder appOrder);
+    //查询预约订单扩展类
+    QueryResponseResult<AppOrderExt> findListByUserId(int page, int size, QueryAppOrderExtRequest queryAppOrderExtRequest);
+    //取消预约单
+    AppOrderResult cancel(String id);
 }
 

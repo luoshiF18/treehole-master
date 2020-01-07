@@ -24,5 +24,21 @@
       AND u.role_id = "1"
 
     </select>
+    <select id="getUserByCid" parameterType="java.lang.String" resultType="com.treehole.framework.domain.member.Vo.UserVo">
+      select
+      u.user_id,
+          u.user_nickname,
+          u.user_name,
+        u.gender,
+        u.user_phone,
+        c.name as companyName
+        from
+        member_user u
+        left join member_company c on u.company_id=c.id
+        where
+        c.id=#{companyId}
+
+
+    </select>
 </mapper>
 

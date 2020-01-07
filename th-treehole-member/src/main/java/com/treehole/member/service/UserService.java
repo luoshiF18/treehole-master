@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author shanhuijie
@@ -98,6 +99,19 @@ public class UserService {
         return  userMapper.selectOne(user);
     }
 
+    public User findUserByRolePhone(String phonenumber,String roleid)  {
+
+        /*Example example = new Example(User.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("user_phone",phonenumber);*/
+        User user = new User();
+        user.setUser_phone(phonenumber);
+        user.setRole_id(roleid);
+        User user1 = userMapper.selectOne(user);
+        //System.out.println("++++++++" + user1);
+        return user1;
+
+    }
 
     /**
      * 通过id查询用户
@@ -167,23 +181,16 @@ public class UserService {
             user.setUser_nickname(nickname1);
         }
         //手机号唯一性
-        if(this.findUserByPhone(user.getUser_phone()) == null){
+        if(this.findUserByRolePhone(user.getUser_phone(),user.getRole_id()) == null){
             user.setUser_phone(user.getUser_phone());
         }else{
             ExceptionCast.cast(MemberCode.PHONE_IS_EXIST);
         }
+        if(user.getUser_birth() == null){
+            user.setUser_birth(new Date());
+        }
         user.setUser_createtime(new Date());
         user.setUser_status(0);  //默认正常状态
-        /*if(this.findUserByNickname(nickname1) != null){
-           // ExceptionCast.cast(MemberCode.NICKNAME_EXIST);
-            Random random = new Random();
-            String nickname2 = nickname1 + random.nextInt(1000);
-            //怎样返回给前端？
-        }
-        if(this.findUserByNickname(nickname2) != null){
-            ExceptionCast.cast(MemberCode.NICKNAME_EXIST);
-        }*/
-
         if(user.getRole_id().equals("1")) {  //1普通会员
             //会员卡表内新增数据
             cardsService.insertCard(user.getUser_id());
@@ -211,7 +218,7 @@ public class UserService {
         //user.setUser_nickname(uservo.getUser_nickname());
         Role role = new Role();
         role.setRole_name(uservo.getRole_name());
-        user.setRole_id(roleService.findRoleByRole(role).getRole_id());
+        String roleId = roleService.findRoleByRole(role).getRole_id();
         user.setUser_name(uservo.getUser_name());
         user.setGender(uservo.getGender().equals("男") ? 0:1);
         user.setUser_birth(uservo.getUser_birth());
@@ -283,11 +290,13 @@ public class UserService {
 
     }
 
-    /*更改手机号 */
+    /*更改手机号
+    * 手机号 角色id
+    * */
     @Transactional
     @CacheEvict(value="MemberUser",allEntries=true)
     public void updatePhone(User user){
-        if(this.findUserByPhone(user.getUser_phone()) == null){
+        if(this.findUserByRolePhone(user.getUser_phone(),user.getRole_id()) == null){
             user.setUser_phone(user.getUser_phone());
         }else{
             ExceptionCast.cast(MemberCode.PHONE_IS_EXIST);

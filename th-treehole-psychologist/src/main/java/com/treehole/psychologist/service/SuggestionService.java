@@ -2,15 +2,23 @@ package com.treehole.psychologist.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.treehole.framework.domain.member.Vo.UserVo;
+import com.treehole.framework.domain.psychologist.Consultation;
+import com.treehole.framework.domain.psychologist.Profile;
 import com.treehole.framework.domain.psychologist.Suggestion;
+import com.treehole.framework.domain.psychologist.ext.SuggestionExt;
 import com.treehole.framework.domain.psychologist.result.PsychologistCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
+import com.treehole.psychologist.client.UserClient;
+import com.treehole.psychologist.dao.ConsultationMapper;
+import com.treehole.psychologist.dao.ProfileMapper;
 import com.treehole.psychologist.dao.SuggestionMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +37,15 @@ public class SuggestionService {
 
     @Autowired
     private SuggestionMapper suggestionMapper;
+
+    @Autowired
+    private ConsultationMapper consultationMapper;
+
+    @Autowired
+    private UserClient userClient;
+
+    @Autowired
+    private ProfileMapper profileMapper;
 
     /**
      * 根据建议id查询建议信息
@@ -140,19 +157,37 @@ public class SuggestionService {
     }
 
     /**
-     * 根据主键查询
+     * 根据主键查询，建议id和咨询记录id一样
      *
      * @param suggestion_id 主键
      * @return
      */
-    public Suggestion findSuggestionById(String suggestion_id) {
+    public SuggestionExt findSuggestionExtById(String suggestion_id) {
         if (StringUtils.isBlank(suggestion_id)) {
             ExceptionCast.cast(PsychologistCode.DATA_NULL);
         }
+        //查询建议信息
         Suggestion suggestion = this.suggestionMapper.selectByPrimaryKey(suggestion_id);
         if (suggestion == null) {
             ExceptionCast.cast(PsychologistCode.DATA_IS_NULL);
         }
-        return suggestion;
+        //查询咨询记录信息
+        Consultation consultation = this.consultationMapper.selectByPrimaryKey(suggestion_id);
+        //通过咨询记录获取用户和咨询师的信息
+        String user_id = consultation.getUser_id(); //用户id
+        String psychologist_id = consultation.getPsychologist_id(); //咨询师id
+        //获取用户信息
+        UserVo userVo = this.userClient.getUserVoByUserId(user_id);
+        //获取咨询师信息
+        Profile profile = this.profileMapper.selectByPrimaryKey(psychologist_id);
+        //开始设置数据
+        SuggestionExt suggestionExt = new SuggestionExt();
+        suggestionExt.setUser_nickname(userVo.getUser_nickname());
+        suggestionExt.setUser_name(userVo.getUser_name());
+        suggestionExt.setUser_phone(userVo.getUser_phone());
+        suggestionExt.setPsychologist_name(profile.getName());
+        suggestionExt.setPsychologist_phone(profile.getPhone());
+        BeanUtils.copyProperties(suggestion, suggestionExt);
+        return suggestionExt;
     }
 }

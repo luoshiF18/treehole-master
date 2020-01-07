@@ -112,13 +112,13 @@ public class ConsultationService {
                 ExceptionCast.cast(PsychologistCode.PSYCHOLOGIST_NOT_EXIST);
             }
             //通过用户id查询用户信息
-            UserVo user = this.userClient.getUserVoByUserId( consultation.getUser_id() );
-            if (user == null) {
+            UserVo userVo = this.userClient.getUserVoByUserId(consultation.getUser_id());
+            if (userVo == null) {
                 ExceptionCast.cast(PsychologistCode.USER_NOT_EXIST);
             }
             //设置扩展字段数据
             consultationExt.setPsychologist_name(psy.getName());
-            consultationExt.setUser_nickname(user.getUser_nickname());
+            consultationExt.setUser_nickname(userVo.getUser_nickname());
             return consultationExt;
         }).collect(Collectors.toList());
         QueryResult queryResult = new QueryResult();
@@ -150,12 +150,12 @@ public class ConsultationService {
             if (psy == null) {
                 ExceptionCast.cast(PsychologistCode.PSYCHOLOGIST_NOT_EXIST);
             }
-            UserVo user = this.userClient.getUserVoByUserId( consultation.getUser_id() );
-            if (user == null) {
+            UserVo userVo = this.userClient.getUserVoByUserId(consultation.getUser_id());
+            if (userVo == null) {
                 ExceptionCast.cast(PsychologistCode.USER_NOT_EXIST);
             }
             consultationExt.setPsychologist_name(psy.getName());
-            consultationExt.setUser_nickname(user.getUser_nickname());
+            consultationExt.setUser_nickname(userVo.getUser_nickname());
             return consultationExt;
         }).collect(Collectors.toList());
         QueryResult queryResult = new QueryResult();

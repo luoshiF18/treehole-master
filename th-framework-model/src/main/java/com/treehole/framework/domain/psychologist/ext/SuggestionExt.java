@@ -12,17 +12,17 @@ import lombok.Data;
 @Data
 public class SuggestionExt extends Suggestion {
 
+    //用户昵称
+    private String user_nickname;
+
+    //用户姓名
+    private String user_name;
+
+    //用户联系方式
+    private String user_phone;
+
     //咨询师姓名
     private String psychologist_name;
-
-    //心理咨询师性别
-    private String psychologist_sex;
-
-    //心理咨询师资质
-    private String psychologist_qualification;
-
-    //心理咨询师工作室
-    private String psychologist_studio;
 
     //心理咨询师联系方式
     private String psychologist_phone;

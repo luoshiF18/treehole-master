@@ -13,10 +13,6 @@ import com.treehole.marketing.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-<<<<<<< HEAD
-import javax.activity.ActivityRequiredException;
-=======
->>>>>>> master
 import java.util.Date;
 
 /**
@@ -92,6 +88,13 @@ public class ActivityController implements ActivityControllerApi {
     @DeleteMapping("/{id}")
     public ResponseResult deleteActivityById(@PathVariable("id") String id) {
         this.activityService.deleteActivityById(id);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    @Override
+    @PutMapping("/status/{id}")
+    public ResponseResult updateStatusToFinished(@PathVariable("id") String id) {
+        this.activityService.updateStatusToFinished(id);
         return new ResponseResult(CommonCode.SUCCESS);
     }
 }

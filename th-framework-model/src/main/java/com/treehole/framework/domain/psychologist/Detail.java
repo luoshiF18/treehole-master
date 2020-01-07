@@ -37,7 +37,7 @@ public class Detail implements Serializable {
     private String organization_address;
 
     //咨询师获得的好评数
-    private String praise_number;
+    private Integer praise_number;
 
     //好评等级
     private String praise_grade;

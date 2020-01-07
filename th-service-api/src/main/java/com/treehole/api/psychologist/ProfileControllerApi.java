@@ -1,6 +1,7 @@
 package com.treehole.api.psychologist;
 
 import com.treehole.framework.domain.psychologist.Profile;
+import com.treehole.framework.domain.psychologist.ext.DetailExt;
 import com.treehole.framework.domain.psychologist.ext.ProfileExt;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
@@ -28,5 +29,11 @@ public interface ProfileControllerApi {
 
     @ApiOperation("根据id更新心理咨询师简介信息")
     ResponseResult updateProfile(Profile profile);
+
+    @ApiOperation("根据地区和性别查询心理咨询师信息")
+    QueryResponseResult findPsychologist(Integer page, Integer size, String region, String sex);
+
+    @ApiOperation("根据id查询心理咨询师详细信息")
+    DetailExt getPsychologistDetail(String id);
 
 }

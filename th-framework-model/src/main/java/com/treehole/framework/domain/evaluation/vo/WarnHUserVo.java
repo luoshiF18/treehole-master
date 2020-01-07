@@ -18,5 +18,5 @@ public class WarnHUserVo extends WarningVo {
     private String context;
     private String way;
     private String effect;
-    private String recordTime;
+
 }

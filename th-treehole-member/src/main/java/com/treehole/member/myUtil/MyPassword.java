@@ -1,5 +1,6 @@
 package com.treehole.member.myUtil;
 
+import org.junit.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -24,4 +25,16 @@ public class MyPassword {
         //}
         return hashPass;
     }
+
+   /* @Test
+    public static void main(String[] args) {
+        String ll = "123";
+        String s = null;
+        try {
+            s = MyPassword.PasswrodEncoder(ll);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println(s);
+    }*/
 }

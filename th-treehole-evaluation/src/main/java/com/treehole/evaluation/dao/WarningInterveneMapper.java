@@ -4,6 +4,7 @@ import com.treehole.framework.domain.evaluation.WarningIntervene;
 import com.treehole.framework.domain.evaluation.request.InterveneRequest;
 import com.treehole.framework.domain.evaluation.vo.WarnInterveneVo;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  * Created by 17:37 on 2019/11/23.`
  * Version: 1.0
  */
+@Repository
 public interface WarningInterveneMapper extends Mapper<WarningIntervene> {
 
     //按条件查询干预记录表

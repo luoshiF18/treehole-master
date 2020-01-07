@@ -11,6 +11,7 @@ import com.treehole.framework.domain.evaluation.WarningIntervene;
 import com.treehole.framework.domain.evaluation.request.InterveneRequest;
 import com.treehole.framework.domain.evaluation.response.EvaluationCode;
 import com.treehole.framework.domain.evaluation.vo.WarnInterveneVo;
+import com.treehole.framework.domain.evaluation.vo.WarningVo;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
@@ -145,5 +146,27 @@ public class WarningInterveneService {
             return null;
         }
     }
+    //心理咨询师根据用户id查询
+    public WarningVo findByPsy(String userId){
 
+        if(StringUtils.isBlank(userId)){
+            ExceptionCast.cast(EvaluationCode.DATA_ERROR );
+        }
+        //根据用户id查询用户信息
+        UserVo userVoByUserId = userClient.getUserVoByUserId( userId );
+        //取出姓名查询干预信息
+        List<WarningIntervene> warnInterveneByName = warningInterveneMapper.findWarnInterveneByName( userVoByUserId.getUser_nickname() );
+       //拼接用户信息返回前台展示
+        WarningVo warningVo = new WarningVo();
+        for(WarningIntervene vos:warnInterveneByName){
+            warningVo.setContext(vos.getContext() );
+            warningVo.setReason(vos.getReason() );
+            warningVo.setWay(vos.getWay() );
+            warningVo.setAdvisoryName(vos.getAdvisoryName());
+            warningVo.setRecordTime(vos.getRecordTime());
+            warningVo.setEffect(vos.getEffect());
+        }
+        return warningVo;
+
+    }
 }

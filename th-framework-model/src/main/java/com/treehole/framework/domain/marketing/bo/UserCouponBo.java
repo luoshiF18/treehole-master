@@ -12,7 +12,7 @@ import java.util.Date;
 @Data
 public class UserCouponBo{
 
-
+    private String id;
     private String title;
     private String icon;
     private BigDecimal withAmount;//门槛
@@ -25,5 +25,6 @@ public class UserCouponBo{
     private Boolean status;//用户优惠券状态
     private Boolean unUsedStatus;
     private Boolean usedStatus;
+    private String usedTypeName;
 
 }

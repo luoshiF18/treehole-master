@@ -1,6 +1,7 @@
 package com.treehole.api.marketing;
 
 import com.treehole.framework.domain.marketing.bo.CouponBo;
+import com.treehole.framework.domain.marketing.request.UserCouponRequest;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
@@ -15,5 +16,8 @@ public interface UserCouponControllerApi {
     @ApiOperation("查询用户可用优惠券总数")
     public int queryUserCouponCount(String userId);
     @ApiOperation("添加用户优惠券信息")
-    public ResponseResult saveUserCoupon(CouponBo couponBo, String userId);
+    public ResponseResult saveUserCoupon(UserCouponRequest userCouponRequest);
+    @ApiOperation("用户优惠券使用")
+    public ResponseResult changeUsedStatusToTrue(String id);
+
 }

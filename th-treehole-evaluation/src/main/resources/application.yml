@@ -5,7 +5,6 @@ spring:
     name: th-treehole-evaluation
   redis:
     host: 10.0.43.60
-    database: 2
 #  jackson:
 #    default-property-inclusion: non_null
   datasource:

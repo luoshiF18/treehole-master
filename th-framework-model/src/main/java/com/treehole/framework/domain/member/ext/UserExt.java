@@ -19,5 +19,4 @@ public class UserExt extends User {
     private List<ThMenu> perimissions;
 
     private String companyId;
-
 }

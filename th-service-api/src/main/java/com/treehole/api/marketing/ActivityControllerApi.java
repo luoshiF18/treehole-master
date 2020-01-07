@@ -45,5 +45,6 @@ public interface ActivityControllerApi {
     public ResponseResult deleteActivityById(@PathVariable("id") String id);
 
 
-
+    @ApiOperation("修改活动状态为结束")
+    public  ResponseResult updateStatusToFinished(@PathVariable("id") String id);
 }

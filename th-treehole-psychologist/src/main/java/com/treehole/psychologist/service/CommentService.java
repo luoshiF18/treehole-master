@@ -2,7 +2,6 @@ package com.treehole.psychologist.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.psychologist.Comment;
 import com.treehole.framework.domain.psychologist.Profile;
@@ -74,14 +73,12 @@ public class CommentService {
             //设置咨询师姓名
             commentExt.setPsychologist_name(profile.getName());
             //查询用户信息
-
-            UserVo user = this.userClient.getUserVoByUserId(  comment.getUser_id());
-
-            if (user == null) {
+            UserVo userVo = this.userClient.getUserVoByUserId(comment.getUser_id());
+            if (userVo == null) {
                 ExceptionCast.cast(PsychologistCode.USER_NOT_EXIST);
             }
             //设置用户昵称
-            commentExt.setUser_nickname(user.getUser_nickname());
+            commentExt.setUser_nickname(userVo.getUser_nickname());
             return commentExt;
         }).collect(Collectors.toList());
         QueryResult queryResult = new QueryResult();
@@ -125,14 +122,12 @@ public class CommentService {
             //设置咨询师姓名
             commentExt.setPsychologist_name(psy.getName());
             //查询用户信息
-
-            UserVo user = this.userClient.getUserVoByUserId(  comment.getUser_id());
-
-            if (user == null) {
+            UserVo userVo = this.userClient.getUserVoByUserId(comment.getUser_id());
+            if (userVo == null) {
                 ExceptionCast.cast(PsychologistCode.USER_NOT_EXIST);
             }
             //设置用户昵称
-            commentExt.setUser_nickname(user.getUser_nickname());
+            commentExt.setUser_nickname(userVo.getUser_nickname());
             return commentExt;
         }).collect(Collectors.toList());
         QueryResult queryResult = new QueryResult();
@@ -229,16 +224,14 @@ public class CommentService {
         if (profile == null) {
             ExceptionCast.cast(PsychologistCode.PSYCHOLOGIST_NOT_EXIST);
         }
-
-        UserVo user = this.userClient.getUserVoByUserId(  comment.getUser_id());
-
-        if (user == null) {
+        UserVo userVo = this.userClient.getUserVoByUserId(comment.getUser_id());
+        if (userVo == null) {
             ExceptionCast.cast(PsychologistCode.USER_NOT_EXIST);
         }
         //设置数据
         CommentExt commentExt = new CommentExt();
         BeanUtils.copyProperties(comment, commentExt);
-        commentExt.setUser_nickname(user.getUser_nickname());
+        commentExt.setUser_nickname(userVo.getUser_nickname());
         commentExt.setPsychologist_name(profile.getName());
         return commentExt;
     }

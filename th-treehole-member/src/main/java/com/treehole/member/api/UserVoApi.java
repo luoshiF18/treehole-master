@@ -38,7 +38,7 @@ public interface UserVoApi {
     public UserVo getUserVoByNickname(@RequestParam("nickname") String nickname);
 
     @GetMapping("member/user/getUserByTime")
-    public QueryResult findUserByTime(@RequestParam("beforeTime") Date beforeTime,
-                                      @RequestParam("afterTime") Date afterTime);
+    public QueryResult findUserByTime(@RequestParam("beforeTime") String beforeTime,
+                                      @RequestParam("afterTime") String afterTime);
 
 }

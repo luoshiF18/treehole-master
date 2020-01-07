@@ -9,20 +9,9 @@ import com.treehole.framework.domain.marketing.response.MarketingCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.marketing.dao.ExtensionMapper;
-<<<<<<< HEAD
-import com.treehole.marketing.utils.MyMailUtils;
 import com.treehole.marketing.utils.MyNumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.rabbit.annotation.Exchange;
-import org.springframework.amqp.rabbit.annotation.Queue;
-import org.springframework.amqp.rabbit.annotation.QueueBinding;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-=======
-import com.treehole.marketing.utils.MyNumberUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.amqp.core.AmqpTemplate;
->>>>>>> master
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,12 +21,6 @@ import tk.mybatis.mapper.entity.Example;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-<<<<<<< HEAD
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-=======
->>>>>>> master
 
 /**
  * @author wanglu
@@ -50,10 +33,6 @@ public class ExtensionService {
     private static final ObjectMapper MAPPER = new ObjectMapper();
     @Autowired
     private AmqpTemplate amqpTemplate;
-
-    private static final String USER = "wangluforbusiness@foxmail.com"; // 发件人称号，同邮箱地址
-    private static final String PASSWORD = "yjvgbfmtlggkigba";  // 如果是qq邮箱可以使户端授权码，或者登录密码
-
 
     /*public void addExtension(ExtensionRequest extensionRequest) {
 

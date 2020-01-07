@@ -2,6 +2,7 @@ package com.treehole.psychologist.controller;
 
 import com.treehole.api.psychologist.SuggestionControllerApi;
 import com.treehole.framework.domain.psychologist.Suggestion;
+import com.treehole.framework.domain.psychologist.ext.SuggestionExt;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.psychologist.service.SuggestionService;
@@ -95,7 +96,7 @@ public class SuggestionController implements SuggestionControllerApi {
      */
     @Override
     @GetMapping("/find/{suggestion_id}")
-    public Suggestion findSuggestionById(@PathVariable("suggestion_id") String suggestion_id) {
-        return this.suggestionService.findSuggestionById(suggestion_id);
+    public SuggestionExt findSuggestionExtById(@PathVariable("suggestion_id") String suggestion_id) {
+        return this.suggestionService.findSuggestionExtById(suggestion_id);
     }
 }

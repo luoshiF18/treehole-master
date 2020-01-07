@@ -1,6 +1,7 @@
 package com.treehole.api.psychologist;
 
 import com.treehole.framework.domain.psychologist.Suggestion;
+import com.treehole.framework.domain.psychologist.ext.SuggestionExt;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
@@ -29,5 +30,5 @@ public interface SuggestionControllerApi {
     ResponseResult updateSuggestion(Suggestion suggestion);
 
     @ApiOperation("根据主键查询")
-    Suggestion findSuggestionById(String suggestion_id);
+    SuggestionExt findSuggestionExtById(String suggestion_id);
 }

@@ -22,7 +22,7 @@ import java.util.Date;
 @Table(name = "member_cards")
 @NoArgsConstructor
 @AllArgsConstructor
-@NameStyle(Style.normal)
+
 public class CardsVo implements Serializable {
     @Id //声明主键字段
     private String card_id;  //会员卡id

@@ -31,6 +31,12 @@
 
 <select id="findWarnInterveneByName" resultType="com.treehole.framework.domain.evaluation.WarningIntervene">
     SELECT
+     context,
+     reason,
+     effect,
+     way,
+     advisory_name as advisoryName,
+     record_time as recordTime,
      user_name as userName
      FROM
      warning_intervene

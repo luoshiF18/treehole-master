@@ -1,9 +1,12 @@
 package com.treehole.api.marketing;
 
 import com.treehole.framework.model.response.QueryResponseResult;
+import com.treehole.framework.model.response.QueryResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Date;
 
 @Api(value = "其他微服务方法管理", description = "对需要调用的其他微服务的方法进行管理")
 public interface OtherInfoControllerApi {
@@ -17,5 +20,7 @@ public interface OtherInfoControllerApi {
                                                @RequestParam(value = "scaleTypeId") String scaleTypeId,
                                                @RequestParam(value = "isFree", defaultValue = "true") Boolean isFree);
 
-
+    @ApiOperation("根据起止时间查询注册会员")
+    public QueryResult findUserByTime(@RequestParam("beforeTime") String beforeTime,
+                                      @RequestParam("afterTime") String afterTime);
 }

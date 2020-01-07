@@ -30,5 +30,5 @@ public interface PointControllerApi {
     @ApiOperation("通过user_id删除积分")
     public ResponseResult deletePointByUserId(String user_id);
     @ApiOperation("通过point_id删除积分")
-    public ResponseResult deletePointByPointId( String point_id);
+    public ResponseResult deletePointByPointId(String point_id);
 }

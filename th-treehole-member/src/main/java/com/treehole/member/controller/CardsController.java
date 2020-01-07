@@ -38,6 +38,13 @@ public class CardsController implements CardsControllerApi {
         return cardsVoService.getCardByCardId(card_id);
     }
     @Override
+    @GetMapping("/getCardByUserId/{user_id}")
+    public CardsVo findCardByUserId(@PathVariable("user_id") String user_id){
+        return cardsVoService.getCardByUserId(user_id);
+    }
+
+
+    @Override
     @PostMapping("/insert/id/{id}")
     public ResponseResult insertCard(@PathVariable("id") String id) {
         cardsService.insertCard(id);

@@ -22,6 +22,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class UserVoService {
      * 查询所有用户Vo信息
      * 自定义条件查询id/昵称/手机号码
      */
-    @Cacheable(value="MemberUser")
+    //@Cacheable(value="MemberUser")
     public QueryResponseResult findAllUserVos(Integer page,
                                               Integer size,
                                               String sortBy,
@@ -64,19 +65,20 @@ public class UserVoService {
         }
         //把字节码传给example，就可以通过反射获取数据库信息
         Example example = new Example(User.class);
+        Example.Criteria criteria = example.createCriteria();
         //判断不为空字符串
         if(StringUtils.isNotEmpty(userListRequest.getUser_id())){
             //过滤条件
-            example.createCriteria().andLike("user_id", "%" + userListRequest.getUser_id() + "%");
+            criteria.andLike("user_id", "%" + userListRequest.getUser_id() + "%");
         }
         if(StringUtils.isNotEmpty(userListRequest.getUser_nickname())){
-            example.createCriteria().andLike("user_nickname", "%" + userListRequest.getUser_nickname() + "%");
+            criteria.andLike("user_nickname", "%" + userListRequest.getUser_nickname() + "%");
         }
         if(StringUtils.isNotEmpty(userListRequest.getUser_phone())){
-            example.createCriteria().andLike("user_phone", "%" + userListRequest.getUser_phone() + "%");
+            criteria.andLike("user_phone", "%" + userListRequest.getUser_phone() + "%");
         }
         if(StringUtils.isNotEmpty(userListRequest.getRole_id())){
-            example.createCriteria().andLike("role_id", "%" + userListRequest.getRole_id() + "%");
+            criteria.andEqualTo("role_id",  userListRequest.getRole_id());
         }
         //排序
         if (StringUtils.isNotBlank(sortBy)) {
@@ -88,14 +90,12 @@ public class UserVoService {
         if (CollectionUtils.isEmpty(users)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
-
         List<UserVo> userVos = new ArrayList<UserVo>();
         for(User user:users){
             UserVo uservo = new UserVo();
             String roleId=user.getRole_id();
             Role role = new Role();
             role.setRole_id(roleId);
-            //uservo.setUniq_id(user.getUniq_id());
             uservo.setUser_id(user.getUser_id());
             uservo.setRole_name(roleMapper.selectOne(role).getRole_name());
             uservo.setUser_image(user.getUser_image());
@@ -136,9 +136,8 @@ public class UserVoService {
     }
 
     public List<UserVo> findAllUserByTime( Date beforeTime, Date afterTime)  {
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // 日期格式
-       /* Date date1 = dateFormat.parse("2019-12-02 00:11:00"); // 指定日期
-        Date date2 = dateFormat.parse("2019-12-10 00:11:00"); // 指定日期*/
         if (beforeTime == null ){
             try {
                 beforeTime = dateFormat.parse("1970-01-01 08:00:00"); // 指定日期
