@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.treehole.marketing.dao.UserCouponMapper">
+
+
+    <select  id="queryCouponUsedData" resultType="com.treehole.framework.domain.marketing.response.StatisticsData"  parameterType="java.lang.String">
+        select
+        count(id) as value,
+         '未使用' as name
+        from tb_user_coupon
+        where coupon_id = #{id} and status = 1
+        union
+        select
+        count(id) as value,
+        '使用' as name
+        from tb_user_coupon
+        where coupon_id = #{id} and status = 0 and used_status = 1
+        union
+        select
+        count(id) as value,
+        '过期' as name
+        from tb_user_coupon
+        where coupon_id = #{id} and status = 0 and used_status = 0
+    </select>
+
+
+</mapper>
+

@@ -32,7 +32,7 @@ public class Extension implements Serializable {
     private String usedForId; //
     @Transient
     private List<String> to;
-    private Integer succCount;
+   // private Integer succCount;
     private Integer count;
     private String url;
     @Transient

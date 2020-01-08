@@ -64,4 +64,10 @@ public class UserCouponController implements UserCouponControllerApi {
         this.userCouponService.changeUsedStatusToTrue(id);
         return new ResponseResult(CommonCode.SUCCESS);
     }
+
+    @Override
+    @GetMapping("/user/used/statistics/{id}")
+    public String queryCouponUsedData(@PathVariable("id") String id) {
+        return this.userCouponService.queryCouponUsedData(id);
+    }
 }

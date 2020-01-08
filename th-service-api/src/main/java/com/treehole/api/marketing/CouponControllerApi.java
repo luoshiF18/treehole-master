@@ -3,6 +3,7 @@ package com.treehole.api.marketing;
 import com.treehole.framework.domain.marketing.Coupon;
 import com.treehole.framework.domain.marketing.bo.CouponBo;
 import com.treehole.framework.model.response.QueryResponseResult;
+import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,7 +24,8 @@ public interface CouponControllerApi {
                                                  @RequestParam(value = "size", defaultValue = "5")Integer size,
                                                  @RequestParam(value = "sortBy", required = false)String sortBy,
                                                  @RequestParam(value = "desc", defaultValue = "true")Boolean desc,
-                                                 @RequestParam(value = "status", required = false)Integer status);
+                                                 @RequestParam(value = "status", required = false)Integer status,
+                                                 @RequestParam(value = "notStatus", required = false)Integer notStatus);
 
     @ApiOperation("根据优惠券id查询详细信息")
     public Coupon queryCouponById(@PathVariable("id") String id);
@@ -44,5 +46,9 @@ public interface CouponControllerApi {
 
     @ApiOperation("根据发布时间查优惠券")
     public QueryResponseResult queryValidCouponByReleaseTime(@RequestParam("today") String today);
+
+
+    @ApiOperation("查找某个优惠券的发放量/库存量")
+    public String querySomeCouponStock(@PathVariable("id")String id);
 
 }

@@ -3,6 +3,7 @@ package com.treehole.marketing.controller;
 import com.treehole.api.marketing.CouponControllerApi;
 import com.treehole.framework.domain.marketing.Coupon;
 import com.treehole.framework.domain.marketing.bo.CouponBo;
+import com.treehole.framework.domain.marketing.response.StatisticsData;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
@@ -10,6 +11,8 @@ import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.marketing.service.CouponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author wanglu
@@ -35,8 +38,9 @@ public class CouponController implements CouponControllerApi {
                                                  @RequestParam(value = "size", defaultValue = "5")Integer size,
                                                  @RequestParam(value = "sortBy", required = false)String sortBy,
                                                  @RequestParam(value = "desc", defaultValue = "true")Boolean desc,
-                                                 @RequestParam(value = "status", required = false)Integer status) {
-        QueryResult queryResult = this.couponService.queryCouponByPage(key, page, size, sortBy, desc, status);
+                                                 @RequestParam(value = "status", required = false)Integer status,
+                                                 @RequestParam(value = "notStatus", required = false)Integer notStatus) {
+        QueryResult queryResult = this.couponService.queryCouponByPage(key, page, size, sortBy, desc, status, notStatus);
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
     }
 
@@ -110,6 +114,17 @@ public class CouponController implements CouponControllerApi {
 
         QueryResult queryResult =  this.couponService.queryValidCoupon(today);;
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
+    }
+
+    /**
+     * 查找某个优惠券的库存/发放
+     * @param id
+     * @return
+     */
+    @Override
+    @GetMapping("/statistics/{id}")
+    public String querySomeCouponStock(@PathVariable("id")String id) {
+        return this.couponService.querySomeCouponStock(id);
     }
 
 }

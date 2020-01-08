@@ -1,5 +1,6 @@
 package com.treehole.marketing.service;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.marketing.Coupon;
@@ -7,6 +8,7 @@ import com.treehole.framework.domain.marketing.CouponType;
 import com.treehole.framework.domain.marketing.InteractiveActivity;
 import com.treehole.framework.domain.marketing.bo.CouponBo;
 import com.treehole.framework.domain.marketing.response.MarketingCode;
+import com.treehole.framework.domain.marketing.response.StatisticsData;
 import com.treehole.framework.domain.marketing.utils.MyStatusCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
@@ -55,7 +57,7 @@ public class CouponService {
      * @param desc
      * @return
      */
-    public QueryResult queryCouponByPage(String key, Integer page, Integer size, String sortBy, Boolean desc,Integer status) {
+    public QueryResult queryCouponByPage(String key, Integer page, Integer size, String sortBy, Boolean desc,Integer status,Integer notStatus) {
         Example example = new Example(Coupon.class);
         Example.Criteria criteria = example.createCriteria();
         //条件不为空，则添加查询条件
@@ -64,6 +66,10 @@ public class CouponService {
         }
         if(status != null){
             criteria.andEqualTo("status", status);
+        }
+        //
+        if(notStatus != null){
+            criteria.andNotEqualTo("status", notStatus);
         }
 
         // 添加分页条件
@@ -96,7 +102,7 @@ public class CouponService {
     private void transfer(Coupon coupon){
         coupon.setLetter(StringUtils.substring(coupon.getLetter(), 0, 1));
         coupon.setValidTypeName(coupon.getValidType() ? "绝对时效":"相对时效");
-        CouponType type = this.couponTypeMapper.selectByPrimaryKey(coupon.getUsedType());
+        CouponType type = this.couponTypeMapper.selectByPrimaryKey(coupon.getUsedTypeId());
         coupon.setUsedTypeName(type.getUsedType());
         if(coupon.getType() == 1){
             coupon.setTypeName("注册赠券");
@@ -151,7 +157,7 @@ public class CouponService {
         couponBo.setIcon(coupon.getIcon());
         couponBo.setTypeName(coupon.getTypeName());
         //
-        CouponType type = this.couponTypeMapper.selectByPrimaryKey(coupon.getUsedType());
+        CouponType type = this.couponTypeMapper.selectByPrimaryKey(coupon.getUsedTypeId());
         couponBo.setUsedType(type.getUsedType());
         couponBo.setWithSpecial(coupon.getWithSpecial());
         couponBo.setWithAmount(coupon.getWithAmount());
@@ -255,7 +261,7 @@ public class CouponService {
             ExceptionCast.cast(MarketingCode.DATA_ERROR);
         }
         String upperCase = MyChineseCharUtil.getUpperCase(coupon.getTitle(), false);
-        coupon.setCreated(coupon.getCreated());
+        coupon.setCreated(c.getCreated());
         coupon.setLetter(upperCase);
         coupon.setUpdated(new Date());
         //发行量只增不减，库存为发行量-领取量，发行金额进行修改
@@ -264,7 +270,15 @@ public class CouponService {
        //     ExceptionCast.cast(MarketingCode.UPDATE_DATA_ERROR);
        // }
 
-        if(this.couponMapper.updateByPrimaryKeySelective(coupon) != 1){
+        //如果时效改了，那之前的数据应该为null，
+        if(coupon.getValidType() == false){
+            coupon.setValidStartTime(null);
+            coupon.setValidEndTime(null);
+        } else {
+            coupon.setValidDays(null);
+        }
+
+        if(this.couponMapper.updateByPrimaryKey(coupon) != 1){
             ExceptionCast.cast(MarketingCode.UPDATE_ERROR);
         }
     }
@@ -371,8 +385,8 @@ public class CouponService {
             couponBo.setIcon(coupon.getIcon());
             couponBo.setTypeName(coupon.getTypeName());
             //
-            CouponType type = this.couponTypeMapper.selectByPrimaryKey(coupon.getUsedType());
-            System.out.println(type+"///"+coupon.getUsedType());
+            CouponType type = this.couponTypeMapper.selectByPrimaryKey(coupon.getUsedTypeId());
+            System.out.println(type+"///"+coupon.getUsedTypeId());
             couponBo.setUsedType(type.getUsedType());
             couponBo.setWithSpecial(coupon.getWithSpecial());
             couponBo.setWithAmount(coupon.getWithAmount());
@@ -387,5 +401,22 @@ public class CouponService {
             couponBos.add(couponBo);
         }
         return new QueryResult<>(couponBos, couponBos.size());
+    }
+
+    /**
+     * 查找某个优惠券的统计信息
+     * @param id
+     * @return
+     */
+    public String querySomeCouponStock(String id) {
+        if(StringUtils.isBlank(id)){
+            ExceptionCast.cast(MarketingCode.DATA_ERROR);
+        }
+
+        List<StatisticsData> couponData = this.couponMapper.querySomeCouponStock(id);
+        //将list<PieData> 转换为json格式 返给前端
+        String data = JSON.toJSONString(couponData);
+        System.out.println(data);
+        return  data;
     }
 }

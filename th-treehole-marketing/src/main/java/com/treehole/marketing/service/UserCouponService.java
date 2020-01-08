@@ -1,5 +1,6 @@
 package com.treehole.marketing.service;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.marketing.Coupon;
 import com.treehole.framework.domain.marketing.UserCoupon;
@@ -7,7 +8,9 @@ import com.treehole.framework.domain.marketing.bo.CouponBo;
 import com.treehole.framework.domain.marketing.bo.UserCouponBo;
 import com.treehole.framework.domain.marketing.request.UserCouponRequest;
 import com.treehole.framework.domain.marketing.response.MarketingCode;
+import com.treehole.framework.domain.marketing.response.StatisticsData;
 import com.treehole.framework.exception.ExceptionCast;
+import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.marketing.dao.CouponMapper;
 import com.treehole.marketing.dao.UserCouponMapper;
@@ -185,7 +188,7 @@ public class UserCouponService {
     public void changeStatus(String id, String ifValid, String ifUsed) {
 
         UserCoupon userCoupon = this.userCouponMapper.selectByPrimaryKey(id);
-        userCoupon.setId(id);
+        //userCoupon.setId(id);
         //过期优惠券的状态是 --- 已失效，失效中：已过期
         if("VALID".equals(ifValid)){
             userCoupon.setStatus(false);
@@ -221,4 +224,19 @@ public class UserCouponService {
     }
 
 
+    /**
+     * 优惠券使用情况
+     * @param id
+     * @return
+     */
+    public String queryCouponUsedData(String id) {
+        if(StringUtils.isBlank(id)){
+            ExceptionCast.cast(MarketingCode.DATA_ERROR);
+        }
+        List<StatisticsData> couponUsedData =  this.userCouponMapper.queryCouponUsedData(id);
+        //将list<PieData> 转换为json格式 返给前端
+        String data = JSON.toJSONString(couponUsedData);
+        System.out.println(data);
+        return  data;
+    }
 }

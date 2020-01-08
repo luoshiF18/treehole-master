@@ -21,9 +21,9 @@ public interface CouponTypeControllerApi {
     public ResponseResult addCouponType(CouponType couponType);
 
     @ApiOperation("删除优惠券类型信息")
-    public ResponseResult delCouponType(Integer id);
+    public ResponseResult delCouponType(String id);
 
     @ApiOperation("根据id查询优惠券信息")
-    public CouponType queryCouponTypeById(Integer id);
+    public CouponType queryCouponTypeById(String id);
 
 }

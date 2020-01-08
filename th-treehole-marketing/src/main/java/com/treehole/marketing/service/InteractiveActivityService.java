@@ -154,8 +154,17 @@ public class InteractiveActivityService {
         }
         //避免传过来创建时间
         interactiveActivity.setCreated(this.interactiveActivityMapper.selectByPrimaryKey(interactiveActivity).getCreated());
-
         interactiveActivity.setUpdated(new Date());
+        //
+        if(interactiveActivity.getIfOnline()){
+            interactiveActivity.setPlace(null);
+        }
+        if(!interactiveActivity.getIfLimitNum()){
+            interactiveActivity.setLimitNum(null);
+        }
+        if(!interactiveActivity.getIfPay()){
+            interactiveActivity.setPayAmount(null);
+        }
         if(this.interactiveActivityMapper.updateByPrimaryKeySelective(interactiveActivity) != 1){
             ExceptionCast.cast(MarketingCode.UPDATE_ERROR);
         }

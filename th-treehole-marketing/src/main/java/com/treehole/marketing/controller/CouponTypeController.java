@@ -28,7 +28,7 @@ public class CouponTypeController implements CouponTypeControllerApi {
     }
 
     @GetMapping("/{id}")
-    public CouponType queryCouponTypeById(@PathVariable("id") Integer id){
+    public CouponType queryCouponTypeById(@PathVariable("id") String id){
         return this.couponTypeService.queryCouponTypeById(id);
     }
     @Override
@@ -52,7 +52,7 @@ public class CouponTypeController implements CouponTypeControllerApi {
      */
     @Override
     @DeleteMapping("/{id}")
-    public ResponseResult delCouponType(@PathVariable("id") Integer id) {
+    public ResponseResult delCouponType(@PathVariable("id") String id) {
         this.couponTypeService.delCouponType(id);
         return new ResponseResult(CommonCode.SUCCESS);
     }

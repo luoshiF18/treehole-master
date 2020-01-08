@@ -28,7 +28,7 @@ public class Coupon implements Serializable {
     private Integer type;
     @Transient
     private String typeName;
-    private Integer usedType;//1测评 2咨询 3课程 0所有
+    private String usedTypeId;//1测评 2咨询 3课程 0所有
     @Transient
     private String usedTypeName;
     private Boolean withSpecial;

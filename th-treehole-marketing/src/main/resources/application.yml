@@ -44,8 +44,8 @@ ribbon:
   ReadTimeout: 6000 #请求处理的超时时间
 treehole:
   email:
-    USER: wangluforbusiness@foxmail.com
-    PASSWORD: yjvgbfmtlggkigba
+    USER: xxxxxxxx@foxmail.com
+    PASSWORD: xxxxxxxxxxxxxx
 mybatis:
   typeAliasesPackage: com.treehole.framework.domain.marketing
   mapper-locations: classpath:mapper/*Mapper.xml

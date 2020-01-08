@@ -10,6 +10,8 @@ import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.marketing.dao.ExtensionMapper;
 import com.treehole.marketing.utils.MyNumberUtils;
+import com.treehole.marketing.utils.WebSocketServer;
+import com.treehole.marketing.utils.WebSocketUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +94,8 @@ public class ExtensionService {
                 System.out.println(extensionValue.get("to"));
                 this.amqpTemplate.convertAndSend("TREEHOLE.SMS.EXCHANGE", "SMS.VERIFY.URL", msg);
             }
+        } else if(extension.getMode() == 2){//站内信
+            sendWs(extension);
         }
         extension.setCount(extension.getValues().size());
         extension.setId(MyNumberUtils.getUUID());
@@ -101,6 +106,19 @@ public class ExtensionService {
         }
         this.extensionMapper.insertSelective(extension);
 
+    }
+
+    private void sendWs(Extension extension){
+        String content = extension.getContent();
+        for (Map<String, String> value : extension.getValues()) {
+            String id = value.get("to");
+            try {
+                WebSocketServer.SendMessage(content, id);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
 /*
@@ -196,6 +214,8 @@ public class ExtensionService {
                extension.setModeName("邮件");
            } else if(extension.getMode() == 1){
                extension.setModeName("短信");
+           } else if(extension.getMode() == 2){
+               extension.setModeName("站内信");
            }
 
            if(extension.getUsedFor()){
@@ -225,6 +245,20 @@ public class ExtensionService {
         } catch (Exception e) {
             ExceptionCast.cast(MarketingCode.DELETE_ERROR);
             e.printStackTrace();
+        }
+    }
+
+    public void addPushToClient(Extension extension) {
+        if(extension.getMode() == null){
+            ExceptionCast.cast(MarketingCode.DATA_ERROR);
+        }
+
+        if(extension.getMode() == 3){
+            try {
+                WebSocketUtil.sendInfo(extension.getContent());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

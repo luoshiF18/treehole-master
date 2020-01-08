@@ -20,4 +20,7 @@ public interface UserCouponControllerApi {
     @ApiOperation("用户优惠券使用")
     public ResponseResult changeUsedStatusToTrue(String id);
 
+
+    @ApiOperation("优惠券使用情况")
+    public String queryCouponUsedData(String id);
 }

@@ -50,7 +50,7 @@ public class EmailListener {
             不再有${key},那么发送给用户的所有邮件内容是一样的
              */
             String content = renderString(extension.getContent(), value);
-
+            //设置时间间隔
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

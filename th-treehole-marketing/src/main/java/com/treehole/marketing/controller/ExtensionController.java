@@ -29,6 +29,8 @@ public class ExtensionController implements ExtensionControllerApi {
         return new ResponseResult(CommonCode.SUCCESS);
     }
 
+
+
     @Override
     @GetMapping("/all")
     public QueryResponseResult queryExtension(@RequestParam(value = "key", required = false)String key,
@@ -46,6 +48,12 @@ public class ExtensionController implements ExtensionControllerApi {
     @DeleteMapping("/{id}")
     public ResponseResult deleteExtension(@PathVariable String id) {
         this.extensionService.deleteExtension(id);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    @PostMapping("/push_to_client")
+    public ResponseResult addPushToClient(@RequestBody Extension extension){
+        this.extensionService.addPushToClient(extension);
         return new ResponseResult(CommonCode.SUCCESS);
     }
 }

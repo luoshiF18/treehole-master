@@ -8,7 +8,24 @@
         from tb_coupon
         where #{today}
         between  start_time  and end_time
-        and type=2
+        and type = 2
+        order by startTime desc
     </select>
+
+    <select  id="querySomeCouponStock" resultType="com.treehole.framework.domain.marketing.response.StatisticsData"  parameterType="java.lang.String">
+        select
+        stock as value,
+        '库存' as name
+        from tb_coupon
+        where id = #{id}
+        union
+        select
+        quota-stock as value,
+        '领取量' as name
+        from tb_coupon
+        where id = #{id}
+    </select>
+
+
 </mapper>
 

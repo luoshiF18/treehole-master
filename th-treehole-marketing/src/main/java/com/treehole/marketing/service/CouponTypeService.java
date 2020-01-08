@@ -7,6 +7,7 @@ import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.marketing.dao.CouponMapper;
 import com.treehole.marketing.dao.CouponTypeMapper;
+import com.treehole.marketing.utils.MyNumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -51,19 +52,20 @@ public class CouponTypeService {
                 StringUtils.isEmpty(couponType.getRule())){
             ExceptionCast.cast(MarketingCode.DATA_ERROR);
         }
+        couponType.setId(MyNumberUtils.getUUID());
         if(this.couponTypeMapper.insertSelective(couponType) != 1){
             ExceptionCast.cast(MarketingCode.UPDATE_ERROR);
         }
 
     }
 
-    public void delCouponType(Integer id) {
+    public void delCouponType(String id) {
         if(id == null){
             ExceptionCast.cast(MarketingCode.DATA_ERROR);
         }
         //根据优惠券类型查找优惠券，若存在该类型优惠券则不允许删除优惠类型
         Coupon coupon = new Coupon();
-        coupon.setUsedType(id);
+        coupon.setUsedTypeId(id);
         List<Coupon> select = this.couponMapper.select(coupon);
         if(!CollectionUtils.isEmpty(select)){
             ExceptionCast.cast(MarketingCode.COUPONTYPE_DEL_FORBIDDEN);
@@ -73,7 +75,7 @@ public class CouponTypeService {
         }
     }
 
-    public CouponType queryCouponTypeById(Integer id) {
+    public CouponType queryCouponTypeById(String id) {
         if(id == null){
             ExceptionCast.cast(MarketingCode.DATA_ERROR);
         }
