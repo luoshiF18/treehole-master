@@ -44,8 +44,8 @@ public interface UserControllerApi {
     @ApiOperation("根据user_id得到user对象")
     public UserVo getUserVoByUserId(String user_id);
     @ApiOperation("根据时间得到userlist对象")
-    public QueryResult findUserByTime(Date beforeTime,
-                                      Date afterTime);
+    public QueryResult findUserByTime(String beforeTime,
+                                      String afterTime);
     @ApiOperation("根据List Id得到所有user对象")
     public List<UserVo> getAllUser(List listUserId);
     /* @ApiOperation("根据用户user_ID查询用户Vo信息")

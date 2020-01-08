@@ -1,4 +1,4 @@
-package com.treehole.framework.domain.member;
+package com.treehole.framework.domain.member.Vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,21 +17,14 @@ import java.util.Date;
  * @Date
  */
 @Data
-@Table(name = "member_role")
-@NoArgsConstructor
-@AllArgsConstructor
-@NameStyle(Style.normal)
-public class Role {
+public class PermissionVo {
     @Id
-    private String role_id;  //角色Id
+    private String id;  //Id
+    private String role_id;  //角色名称
+    private Integer menu_id;  //菜单id
     private String role_name;  //角色名称
-    private String role_code;  //角色code
-    private String description;  //描述
+    private String menu_name;  //菜单id
+    private Integer menu_pid;
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date create_time;  //创建时间
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
-    private Date update_time;  //更新时间
-    private Integer status; //角色状态
-
-
 }

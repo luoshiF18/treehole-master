@@ -9,6 +9,7 @@ import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.member.service.FreegradeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,6 +28,7 @@ public class FreeGradeController implements FreeGradeControllerApi {
 
     @Override
     @GetMapping("/find/all/{page}/{size}")
+    @PreAuthorize("hasAuthority('member_freegrade_find_all')")
     public QueryResponseResult findAllFreeGrade(@PathVariable("page") Integer page,
                                                 @PathVariable("size") Integer size,
                                                  GradeListRequest gradeListRequest) {
@@ -35,6 +37,7 @@ public class FreeGradeController implements FreeGradeControllerApi {
     }
     @Override
     @GetMapping("/find/all")
+    //@PreAuthorize("hasAuthority('member_freegrade_find_nopage')")
     public QueryResponseResult findAll() {
         QueryResult result = freegradeService.findAll2();
         return new QueryResponseResult(CommonCode.SUCCESS,result);
@@ -42,6 +45,7 @@ public class FreeGradeController implements FreeGradeControllerApi {
 
     @Override
     @GetMapping("/getGradeById/{id}")
+    //@PreAuthorize("hasAuthority('member_freegrade_find_id')")
     public FreeGrade findGradeById(@PathVariable("id") String id){
         return freegradeService.getById(id);
     }
@@ -53,6 +57,7 @@ public class FreeGradeController implements FreeGradeControllerApi {
 
     @Override
     @PostMapping("/insert")
+    @PreAuthorize("hasAuthority('member_freegrade_insert')")
     public ResponseResult insertFreeGrade(@RequestBody @Valid FreeGrade freeGrade) {
         freegradeService.insert(freeGrade);
         return new ResponseResult(CommonCode.SUCCESS);
@@ -60,6 +65,7 @@ public class FreeGradeController implements FreeGradeControllerApi {
 
     @Override
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('member_freegrade_delete_id')")
     public ResponseResult deleteFreeGrade(@PathVariable("id") String id) {
         freegradeService.deleteGrade(id);
         return new ResponseResult(CommonCode.SUCCESS);
@@ -67,7 +73,8 @@ public class FreeGradeController implements FreeGradeControllerApi {
 
     @Override
     @PutMapping("/update")
-    public ResponseResult update(@RequestBody @Valid FreeGrade freeGrade) {
+    @PreAuthorize("hasAuthority('member_freegrade_update')")
+    public ResponseResult update(@RequestBody FreeGrade freeGrade) {
 
         freegradeService.updateGrade(freeGrade);
         return new ResponseResult(CommonCode.SUCCESS);

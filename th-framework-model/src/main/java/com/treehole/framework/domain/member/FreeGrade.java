@@ -3,6 +3,7 @@ package com.treehole.framework.domain.member;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 import tk.mybatis.mapper.annotation.NameStyle;
 import tk.mybatis.mapper.code.Style;
 
@@ -21,6 +22,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NameStyle(Style.normal)
 public class FreeGrade implements Serializable {
+    @Id
     private String freegrade_id; //等级id
     private String freegrade_name; // 等级名称
     private Integer points_judge; //判断积分数

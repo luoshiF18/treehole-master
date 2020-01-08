@@ -50,7 +50,7 @@ public class UserVoService {
      * 查询所有用户Vo信息
      * 自定义条件查询id/昵称/手机号码
      */
-    @Cacheable(value="MemberUser")
+    //@Cacheable(value="MemberUser")
     public QueryResponseResult findAllUserVos(Integer page,
                                               Integer size,
                                               String sortBy,
@@ -65,19 +65,20 @@ public class UserVoService {
         }
         //把字节码传给example，就可以通过反射获取数据库信息
         Example example = new Example(User.class);
+        Example.Criteria criteria = example.createCriteria();
         //判断不为空字符串
         if(StringUtils.isNotEmpty(userListRequest.getUser_id())){
             //过滤条件
-            example.createCriteria().andLike("user_id", "%" + userListRequest.getUser_id() + "%");
+            criteria.andLike("user_id", "%" + userListRequest.getUser_id() + "%");
         }
         if(StringUtils.isNotEmpty(userListRequest.getUser_nickname())){
-            example.createCriteria().andLike("user_nickname", "%" + userListRequest.getUser_nickname() + "%");
+            criteria.andLike("user_nickname", "%" + userListRequest.getUser_nickname() + "%");
         }
         if(StringUtils.isNotEmpty(userListRequest.getUser_phone())){
-            example.createCriteria().andLike("user_phone", "%" + userListRequest.getUser_phone() + "%");
+            criteria.andLike("user_phone", "%" + userListRequest.getUser_phone() + "%");
         }
         if(StringUtils.isNotEmpty(userListRequest.getRole_id())){
-            example.createCriteria().andLike("role_id", "%" + userListRequest.getRole_id() + "%");
+            criteria.andEqualTo("role_id",  userListRequest.getRole_id());
         }
         //排序
         if (StringUtils.isNotBlank(sortBy)) {
@@ -95,7 +96,6 @@ public class UserVoService {
             String roleId=user.getRole_id();
             Role role = new Role();
             role.setRole_id(roleId);
-            //uservo.setUniq_id(user.getUniq_id());
             uservo.setUser_id(user.getUser_id());
             uservo.setRole_name(roleMapper.selectOne(role).getRole_name());
             uservo.setUser_image(user.getUser_image());

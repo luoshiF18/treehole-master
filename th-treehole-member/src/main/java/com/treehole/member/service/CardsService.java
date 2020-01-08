@@ -49,7 +49,7 @@ public class CardsService {
     *更新
     * */
     @Transactional
-    @CacheEvict(value="MemberCard",allEntries=true)
+    //@CacheEvict(value="MemberCard",allEntries=true)
     public void updateCardVo(CardsVo cardsVo) {
 
         Cards cards = new Cards();
@@ -81,7 +81,7 @@ public class CardsService {
     }
 
     @Transactional
-    @CacheEvict(value="MemberCard",allEntries=true)
+    //@CacheEvict(value="MemberCard",allEntries=true)
     public void updateCard(Cards cards) {
         Example example =new Example(Cards.class);
         Example.Criteria criteria = example.createCriteria();
@@ -96,7 +96,7 @@ public class CardsService {
     /*新增
     * 根据user_id*/
     @Transactional
-    @CacheEvict(value="MemberCard",allEntries=true)
+    //@CacheEvict(value="MemberCard",allEntries=true)
     public void insertCard(String id){
         if(org.apache.commons.lang3.StringUtils.isBlank(id)){
             ExceptionCast.cast(MemberCode.DATA_ERROR);
@@ -108,12 +108,13 @@ public class CardsService {
         /*PayGrade payGrade = new PayGrade();
         payGrade.setRank(0);
         cards.setPaygrade_id(paygradeMapper.selectOne(payGrade).getPaygrade_id());*/
-        cards.setPaygrade_id(null);
+        cards.setPaygrade_id("p000");
         FreeGrade freeGrade = new FreeGrade();
         freeGrade.setRank(0);
         cards.setFreegrade_id(freegradeMapper.selectOne(freeGrade).getFreegrade_id());
         cards.setConsum_all(BigDecimal.valueOf(0));
         cards.setPoints_now(0);
+        cards.setPoints_sum(0);
         int ins= cardsMapper.insert(cards);
         if(ins != 1){
             ExceptionCast.cast(MemberCode.INSERT_FAIL);
@@ -147,7 +148,7 @@ public class CardsService {
     }
     /*根据userid删除*/
     @Transactional
-    @CacheEvict(value="MemberCard",allEntries=true)
+    //@CacheEvict(value="MemberCard",allEntries=true)
     public void deleteCard(String id) {
         //id不为空
         if(org.apache.commons.lang3.StringUtils.isBlank(id)){
@@ -174,6 +175,7 @@ public class CardsService {
         }
     }
 
+    /*检查用户Vip时间是否过期*/
     @Transactional
     //@CacheEvict(value="MemberCard",allEntries=true)
     public void updateByPayEndTime(){
@@ -181,8 +183,6 @@ public class CardsService {
         List<Cards> cardList = cardsMapper.selectAll();
         int pp =0;
         for(Cards card : cardList){
-            pp++;
-            System.out.println(pp);
             if(! card.getPaygrade_id().equals("p000")){
                 Date date = new Date(); //现在的时间
                 Date date1 = card.getPaygrade_end();  //结束时间

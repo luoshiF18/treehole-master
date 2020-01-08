@@ -1,15 +1,18 @@
 package com.treehole.member.service;
 
 import com.treehole.framework.domain.member.Role;
+import com.treehole.framework.domain.member.ThMenu;
 import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.ext.UserExt;
 import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.exception.ExceptionCast;
+import com.treehole.member.mapper.ThMenuMapper;
 import com.treehole.member.mapper.UserMapper;
 import com.treehole.member.myUtil.MyNumberUtils;
 import com.treehole.member.myUtil.MyPassword;
 import org.apache.commons.lang3.StringUtils;
+import org.omg.PortableInterceptor.SUCCESSFUL;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -32,6 +35,9 @@ public class UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private ThMenuMapper thMenuMapper;
 
     @Autowired
     private CardsService cardsService;
@@ -70,7 +76,6 @@ public class UserService {
         User user = new User();
         user.setUser_nickname(nickname);
         User use = userMapper.selectOne(user);
-
         return use;
     }
 
@@ -78,13 +83,18 @@ public class UserService {
         if (StringUtils.isBlank(userNickName)){
             ExceptionCast.cast( MemberCode.DATA_ERROR);
         }
-     User user = new User();
-     user.setUser_nickname(userNickName);
-    User use = userMapper.selectOne(user);
-    UserExt userExt = new UserExt();
-    BeanUtils.copyProperties(use,userExt);
-    return userExt;
-}
+        User user = new User();
+        user.setUser_nickname(userNickName);
+        User use = userMapper.selectOne(user);
+        //查询用户所有权限
+        List<ThMenu> thMenus = thMenuMapper.selectPermissionByUserId(use.getUser_id());
+        UserExt userExt = new UserExt();
+        BeanUtils.copyProperties(use,userExt);
+        //设置权限
+        userExt.setPerimissions(thMenus);
+        return userExt;
+    }
+
 
 
     /**
@@ -100,15 +110,10 @@ public class UserService {
     }
 
     public User findUserByRolePhone(String phonenumber,String roleid)  {
-
-        /*Example example = new Example(User.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("user_phone",phonenumber);*/
         User user = new User();
         user.setUser_phone(phonenumber);
         user.setRole_id(roleid);
         User user1 = userMapper.selectOne(user);
-        //System.out.println("++++++++" + user1);
         return user1;
 
     }
@@ -131,7 +136,7 @@ public class UserService {
      * @param user_id
      * @return
      */
-    @CacheEvict(value="MemberUser",allEntries=true)
+    //@CacheEvict(value="MemberUser",allEntries=true)
     @Transactional
     public void deleteUserById(String user_id) {
         //id不为空
@@ -158,8 +163,8 @@ public class UserService {
      * @param user
      * @return void
      */
-    @CacheEvict(value="MemberUser",allEntries=true)
-    @Transactional
+    //@CacheEvict(value="MemberUser",allEntries=true)
+    //@Transactional
     public void insertUser(User user)  {
         if(user == null){
             //抛出异常，非法参数异常。指定异常信息的内容
@@ -180,18 +185,10 @@ public class UserService {
         }else {
             user.setUser_nickname(nickname1);
         }
-        //手机号唯一性
+        //手机号唯一性  角色不同的同一手机号依旧能注册
         if(this.findUserByRolePhone(user.getUser_phone(),user.getRole_id()) == null){
             user.setUser_phone(user.getUser_phone());
         }else{
-            /*//根据手机号寻找对象 eg:管理员
-            User userByPhone = this.findUserByPhone(user.getUser_phone());
-            //判断对象角色与传来的角色值是否一致  若否
-            if (!userByPhone.getRole_id().equals(user.getRole_id())) {
-                user.setUser_phone(user.getUser_phone());
-            }else {
-                //
-            }*/
             ExceptionCast.cast(MemberCode.PHONE_IS_EXIST);
         }
         if(user.getUser_birth() == null){
@@ -199,16 +196,6 @@ public class UserService {
         }
         user.setUser_createtime(new Date());
         user.setUser_status(0);  //默认正常状态
-        /*if(this.findUserByNickname(nickname1) != null){
-           // ExceptionCast.cast(MemberCode.NICKNAME_EXIST);
-            Random random = new Random();
-            String nickname2 = nickname1 + random.nextInt(1000);
-            //怎样返回给前端？
-        }
-        if(this.findUserByNickname(nickname2) != null){
-            ExceptionCast.cast(MemberCode.NICKNAME_EXIST);
-        }*/
-
         if(user.getRole_id().equals("1")) {  //1普通会员
             //会员卡表内新增数据
             cardsService.insertCard(user.getUser_id());
@@ -228,30 +215,53 @@ public class UserService {
      * @return int
      */
     @Transactional
-    @CacheEvict(value="MemberUser",allEntries=true)
+    //@CacheEvict(value="MemberUser",allEntries=true)
     public void updateUser(UserVo uservo){
-
         User user = new User();
+        //user.setUser_id(uservo.getUser_id());
+        User user1 = this.getUserById(uservo.getUser_id());
+        //Role role = new Role();
+       // role.setRole_name(uservo.getRole_name());
+        //String roleId = roleService.findRoleByRole(role).getRole_id();  //获取角色id
+        if(StringUtils.isNotEmpty(uservo.getUser_phone()) && !(uservo.getUser_phone()).equals(user1.getUser_phone())){
+            /*修改手机号*/
+            if(this.findUserByRolePhone(uservo.getUser_phone(),user1.getRole_id()) == null){
+                user.setUser_phone(uservo.getUser_phone());
+            }else{
+                ExceptionCast.cast(MemberCode.PHONE_IS_EXIST);
+            }
+        }
+        if(StringUtils.isNotEmpty(uservo.getUser_nickname())&& !(uservo.getUser_nickname()).equals(user1.getUser_nickname())){
+            /*修改昵称*/
+            if(this.findUserByNickname(uservo.getUser_nickname()) == null){
+                user.setUser_nickname(uservo.getUser_nickname());
+            }else{
+                ExceptionCast.cast(MemberCode.NICKNAME_EXIST);
+            }
+        }
         user.setUser_id(uservo.getUser_id());
-        //user.setUser_nickname(uservo.getUser_nickname());
-        Role role = new Role();
-        role.setRole_name(uservo.getRole_name());
-        String roleId = roleService.findRoleByRole(role).getRole_id();
         user.setUser_name(uservo.getUser_name());
-        user.setGender(uservo.getGender().equals("男") ? 0:1);
+        if(StringUtils.isNotEmpty(uservo.getGender())){
+            user.setGender(uservo.getGender().equals("男") ? 0:1);
+        }
+
         user.setUser_birth(uservo.getUser_birth());
-        user.setUser_status(uservo.getUser_status().equals("正常") ? 0:1);
-        user.setUser_type(uservo.getUser_type().equals("个人")?0:1);
+        if(StringUtils.isNotEmpty(uservo.getUser_status())){
+            user.setUser_status(uservo.getUser_status().equals("正常") ? 0:1);
+        }
+       if(StringUtils.isNotEmpty(uservo.getUser_type())){
+           user.setUser_type(uservo.getUser_type().equals("个人")?0:1);
+       }
         user.setUser_email(uservo.getUser_email());
         user.setUser_qq(uservo.getUser_qq());
         user.setUser_wechat(uservo.getUser_wechat());
         user.setUser_region(uservo.getUser_region());
-        user.setCompany_id(uservo.getCompany_id());
-
+        user.setCompany_id(uservo.getCompany_id());   //!!判断公司id是否存在 未完成
+        //System.out.println("|||||||"+ user);
         Example example =new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("user_id",user.getUser_id());
-        int upd= userMapper.updateByExampleSelective(user,example);
+        int upd= userMapper.updateByExampleSelective(user,example);   //修改的部分值组成的对象
         if(upd != 1){
             ExceptionCast.cast(MemberCode.UPDATE_FAIL);
         }
@@ -281,7 +291,7 @@ public class UserService {
  */
     /*更改密码 */
     @Transactional
-    @CacheEvict(value="MemberUser",allEntries=true)
+    //@CacheEvict(value="MemberUser",allEntries=true)
     public void updatePass(String id,String OldPass,String NewPass){
         User user = this.getUserById(id);
         //判断旧密码
@@ -309,12 +319,12 @@ public class UserService {
     }
 
     /*更改手机号
-    * 手机号 角色id
+    * 手机号 不用角色id，有user_id就行
     * */
     @Transactional
-    @CacheEvict(value="MemberUser",allEntries=true)
+    //@CacheEvict(value="MemberUser",allEntries=true)
     public void updatePhone(User user){
-        if(this.findUserByRolePhone(user.getUser_phone(),user.getRole_id()) == null){
+        if(this.findUserByPhone(user.getUser_phone()) == null){
             user.setUser_phone(user.getUser_phone());
         }else{
             ExceptionCast.cast(MemberCode.PHONE_IS_EXIST);

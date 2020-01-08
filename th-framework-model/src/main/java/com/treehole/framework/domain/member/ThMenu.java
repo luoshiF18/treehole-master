@@ -19,14 +19,15 @@ import java.util.Date;
 @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
 public class ThMenu {
     @Id
-    @GeneratedValue(generator = "jpa-uuid")
-    @Column(length = 32)
-    private String id;
+    //@GeneratedValue(generator = "jpa-uuid")
+    //@GeneratedValue(generator="UUID")
+    //@Column(length = 32)
+    private Integer id;
     private String code;
     @Column(name="p_code")
     private String pCode;
     @Column(name="p_id")
-    private String pId;
+    private Integer pid;
     @Column(name="menu_name")
     private String menuName;
     private String url;

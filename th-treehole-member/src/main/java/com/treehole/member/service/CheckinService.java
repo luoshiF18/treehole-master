@@ -51,7 +51,7 @@ public class CheckinService {
     /*
     * 查询
     * */
-   // @Cacheable(value="MemberCheck")
+    //@Cacheable(value="MemberCheck")
     public QueryResponseResult findAllCheckins(Integer page,
                                        Integer size,
                                        String nickname) {
@@ -60,34 +60,21 @@ public class CheckinService {
         if(StringUtils.isNotEmpty(nickname)){
             User user = userService.findUserByNickname(nickname);
             pag =PageHelper.startPage(page,size);
-            Checkin ch = new Checkin();
-            ch.setUser_id(user.getUser_id());
-
             Example example = new Example(Checkin.class);
             Example.Criteria criteria = example.createCriteria();
             criteria.andEqualTo("user_id",user.getUser_id()); //参数为 属性名+值
             example.orderBy("checkin_time").desc();//排序
             checkins = checkinMapper.selectByExample(example);
-            //checkins = checkinMapper.select(ch);
-
         }else{
              pag =PageHelper.startPage(page,size);
-
             Example example = new Example(Checkin.class);
             Example.Criteria criteria = example.createCriteria();
             example.orderBy("checkin_time").desc();//排序
-
-            //return userMapper.selectByExample(example);
-
             checkins = checkinMapper.selectByExample(example);
-
-            //checkins = checkinMapper.selectAll();
         }
-
         if (CollectionUtils.isEmpty(checkins)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
-
         List<CheckinVo> checkinVos = new ArrayList<CheckinVo>();
         for(Checkin check : checkins){
             CheckinVo cv = new CheckinVo();
@@ -109,7 +96,7 @@ public class CheckinService {
     * 增
     * */
     @Transactional
-    @CacheEvict(value="MemberCheck",allEntries=true)
+    //@CacheEvict(value="MemberCheck",allEntries=true)
     public void insertCheckin(Checkin checkin) {
         //false 不在同一天
     if(!this.OneDayCheckin(checkin.getUser_id())){
@@ -145,7 +132,6 @@ public class CheckinService {
             if(day){
                 inOneday = true;
             }
-
         }
         return inOneday;
 
@@ -155,7 +141,7 @@ public class CheckinService {
     * 根据user_id删除签到记录
     * */
     @Transactional
-    @CacheEvict(value="MemberCheck",allEntries=true)
+    //@CacheEvict(value="MemberCheck",allEntries=true)
     public void deleteCheckinByUserId(String user_id) {
         //id不为空
         if(org.apache.commons.lang3.StringUtils.isBlank(user_id)){
@@ -189,7 +175,7 @@ public class CheckinService {
     *
     * */
     @Transactional
-    @CacheEvict(value="MemberCheck",allEntries=true)
+    //@CacheEvict(value="MemberCheck",allEntries=true)
     public void deleteByCheckId(String id){
         //1.先找
         Checkin checkin = new Checkin();
@@ -216,14 +202,11 @@ public class CheckinService {
             Checkin checkin = new Checkin();
             checkin.setUser_id(user_id);
             List<Checkin> checkins = checkinMapper.select(checkin);
-            //System.out.println("++++++++++++++++++check:" + checkins);
             if (CollectionUtils.isEmpty(checkins)) {
                 ExceptionCast.cast(MemberCode.DATA_IS_NULL);
             }
             //解析分页结果
             PageInfo<Checkin> pageInfo = new PageInfo<>(pag.getResult());
-            //获取总条数
-            //Long sizer = Long.valueOf(points.size());
             return new QueryResult(checkins, pageInfo.getTotal());
 
     }
@@ -237,7 +220,6 @@ public class CheckinService {
         PageInfo<Checkin> pageInfo = new PageInfo<>(pag.getResult());
         return new QueryResult(checkins, pageInfo.getTotal());
     }
-
 
 
     /*按时间删除  未实现*/

@@ -56,7 +56,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (userExt == null) {
             return null;
         }
-        userExt.setPerimissions(new ArrayList<ThMenu>());
         String password = userExt.getPassword();
         List<ThMenu> perimissions = userExt.getPerimissions();
         if (perimissions == null) {
@@ -64,7 +63,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             perimissions = new ArrayList<>();
         }
         List<String> user_permission = new ArrayList<>();
-        perimissions.forEach(item -> user_permission.add(item.getCode()));
+        for (ThMenu item : perimissions){
+            user_permission.add(item.getCode());
+        }
+
         String user_permission_string = org.apache.commons.lang3.StringUtils.join(user_permission.toArray(), ",");
         UserJwt userDetails = new UserJwt(username,
                 password,
@@ -74,6 +76,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         userDetails.setCompanyId(userExt.getCompanyId());//所属企业
         userDetails.setName(userExt.getUser_nickname());//用户名称
         userDetails.setUserpic(userExt.getUser_image());//用户头像
+        System.out.println("1111"+userDetails);
         return userDetails;
     }
 }

@@ -9,6 +9,7 @@ import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.member.service.PaygradeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,6 +28,7 @@ public class PaygradeController implements PayGradeControllerApi {
 
     @Override
     @GetMapping("/find/all/{page}/{size}")
+    @PreAuthorize("hasAuthority('member_paygrade_find_all')")
     public QueryResponseResult findAllPayGrade(@PathVariable("page") Integer page,
                                                @PathVariable("size") Integer size,
                                                GradeListRequest gradeListRequest) {
@@ -36,12 +38,14 @@ public class PaygradeController implements PayGradeControllerApi {
 
     @Override
     @GetMapping("/find/all")
+    //@PreAuthorize("hasAuthority('member_paygrade_find_nopage')")
     public QueryResponseResult findAll() {
         QueryResult result = paygradeService.findAll2();
         return new QueryResponseResult(CommonCode.SUCCESS,result);
     }
     @Override
     @GetMapping("/getGradeById/{id}")
+    //@PreAuthorize("hasAuthority('member_paygrade_find_id')")
     public PayGrade findGradeById(@PathVariable("id") String id){
         return paygradeService.getById(id);
     }
@@ -54,6 +58,7 @@ public class PaygradeController implements PayGradeControllerApi {
 
     @Override
     @PostMapping ("/insert")
+    @PreAuthorize("hasAuthority('member_paygrade_insert')")
     public ResponseResult insertPayGrade(@RequestBody @Valid PayGrade payGrade) {
         paygradeService.insert(payGrade);
         return new ResponseResult(CommonCode.SUCCESS);
@@ -61,6 +66,7 @@ public class PaygradeController implements PayGradeControllerApi {
 
     @Override
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('member_paygrade_delete')")
     public ResponseResult deletePayGrade(@PathVariable("id") String paygrade_id) {
         paygradeService.deleteGrade(paygrade_id);
         return new ResponseResult(CommonCode.SUCCESS);
@@ -70,7 +76,9 @@ public class PaygradeController implements PayGradeControllerApi {
     /*接收到的数据为前端update后的*/
     @Override
     @PutMapping("/update")
-    public ResponseResult update(@RequestBody @Valid PayGrade payGrade) {
+
+    @PreAuthorize("hasAuthority('member_paygrade_update')")
+    public ResponseResult update(@RequestBody PayGrade payGrade) {
         paygradeService.updateGrade(payGrade);
         return new ResponseResult(CommonCode.SUCCESS);
     }

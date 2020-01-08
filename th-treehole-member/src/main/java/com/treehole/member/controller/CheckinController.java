@@ -8,6 +8,7 @@ import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.member.service.CheckinService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,6 +25,7 @@ public class CheckinController implements CheckinControllerApi {
     private CheckinService checkinService;
 
     @Override
+    @PreAuthorize("hasAuthority('member_checkin_find_all')")
     @GetMapping("/getAllCheckin/{page}/{size}")
     public QueryResponseResult findAllCheckin(@PathVariable("page") Integer page,
                                               @PathVariable("size") Integer size,
@@ -33,6 +35,7 @@ public class CheckinController implements CheckinControllerApi {
     }
 
    @Override
+   //@PreAuthorize("hasAuthority('member_checkin_find_userid')")
     @GetMapping("/find/id/{page}/{size}/{user_id}")
     public QueryResponseResult findCheckinByUserId(@PathVariable("user_id") String user_id,
                                                    @PathVariable("page") Integer page,
@@ -44,6 +47,7 @@ public class CheckinController implements CheckinControllerApi {
 
     @Override
     @PostMapping("/insert")
+    @PreAuthorize("hasAuthority('member_checkin_insert')")
     public ResponseResult insertCheckin(@RequestBody  @Valid Checkin checkin) {
         checkinService.insertCheckin(checkin);
         return new ResponseResult(CommonCode.SUCCESS);
@@ -51,6 +55,7 @@ public class CheckinController implements CheckinControllerApi {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('member_checkin_delete_userid')")
     @DeleteMapping(value = "/deleteByUserId/{user_id}")
     public ResponseResult deleteCheckinById(@PathVariable("user_id") String user_id) {
         checkinService.deleteCheckinByUserId(user_id);
@@ -58,6 +63,7 @@ public class CheckinController implements CheckinControllerApi {
     }
     @Override
     @DeleteMapping(value = "/deleteByCheckId/{check_id}")
+    @PreAuthorize("hasAuthority('member_checkin_delete_checkinid')")
     public ResponseResult deleteByCheckId(@PathVariable("check_id") String check_id){
         checkinService.deleteByCheckId(check_id);
         return new ResponseResult(CommonCode.SUCCESS);

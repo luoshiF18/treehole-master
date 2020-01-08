@@ -8,6 +8,7 @@ import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.member.service.PointService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -29,6 +30,7 @@ public class PointController implements PointControllerApi {
     //http://localhost:40300/point/find/id/2?page=2
     @Override
     @GetMapping("/getAllPoints/{page}/{size}")
+    @PreAuthorize("hasAuthority('member_point_find_all')")
     public QueryResponseResult findAllPoint(@PathVariable("page") Integer page,
                                             @PathVariable("size") Integer size,
                                             PointListRequest pointListRequest)  {
@@ -38,6 +40,7 @@ public class PointController implements PointControllerApi {
 
     @Override
     @PostMapping("/insert")
+    @PreAuthorize("hasAuthority('member_point_insert')")
     public ResponseResult insertPoint(@RequestBody @Valid Points points)  {
         pointService.insertPoint(points);
         return new ResponseResult(CommonCode.SUCCESS);
@@ -49,13 +52,16 @@ public class PointController implements PointControllerApi {
         pointService.deletePointById(points_id);
         return new ResponseResult(CommonCode.SUCCESS);
     }*/
+    @Override
     @DeleteMapping("/delete/userid/{user_id}")
+    @PreAuthorize("hasAuthority('member_point_delete_userid')")
     public ResponseResult deletePointByUserId(@PathVariable("user_id") String user_id){
         pointService.deletePointByUserId(user_id);
         return  new ResponseResult(CommonCode.SUCCESS);
     }
-
+    @Override
     @DeleteMapping("/deleteByPointId/{point_id}")
+    @PreAuthorize("hasAuthority('member_point_delete_pointid')")
     public ResponseResult deletePointByPointId(@PathVariable("point_id") String point_id){
         pointService.deletePointById(point_id);
         return   new ResponseResult(CommonCode.SUCCESS);

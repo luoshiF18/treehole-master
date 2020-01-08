@@ -72,16 +72,11 @@ public class PointService {
     public QueryResponseResult findAllPoints(Integer page,
                                              Integer size,
                                              PointListRequest pointListRequest){
-
-
         if(pointListRequest == null){
             pointListRequest =new PointListRequest();
         }
-        Points points1 = new Points();
-
         Example example = new Example(Points.class);
         Example.Criteria criteria = example.createCriteria();
-
         if(StringUtils.isNotEmpty(pointListRequest.getUser_nickname())){
             User user = userService.findUserByNickname(pointListRequest.getUser_nickname());
             criteria.andEqualTo("user_id",user.getUser_id()); //参数为 属性名+值
@@ -89,7 +84,7 @@ public class PointService {
         //pagehelper需要放在离查询最近的地方，中间不能隔着查询去查询，数据会一直为1
         Page pag =PageHelper.startPage(page,size);
         if(StringUtils.isNotEmpty(pointListRequest.getUser_id())){
-            criteria.andEqualTo("user_id",pointListRequest.getUser_id()); //参数为 属性名+值
+            criteria.andLike("user_id","%"  + pointListRequest.getUser_id() + "%" ); //参数为 属性名+值
         }
         //查询
         example.orderBy("points_time").desc();//排序
@@ -97,13 +92,6 @@ public class PointService {
         if (CollectionUtils.isEmpty(pointsList)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
-        //时间倒序排  最近的时间的放在最前面
-        Collections.sort(pointsList, new Comparator<Points>() {
-            @Override
-            public int compare(Points p1, Points p2) {
-                return p2.getPoints_time().compareTo(p1.getPoints_time());  //大于返回1；小于返回-1；等于返回0
-            }
-        });
         //解析分页结果
         PageInfo<Points> pageInfo = new PageInfo<Points>(pag.getResult());
         QueryResult queryResult = new QueryResult();
@@ -128,7 +116,7 @@ public class PointService {
      * @return int
      */
     @Transactional
-    @CacheEvict(value="MemberPoint",allEntries=true)
+    //@CacheEvict(value="MemberPoint",allEntries=true)
     public void insertPoint(Points points)  {
         points.setPoints_id(MyNumberUtils.getUUID());
         points.setPoints_time(new Date());
@@ -142,6 +130,9 @@ public class PointService {
         //改变cards  目的：累计积分变化/等级变化
         if(market_point > 0){
             Cards cards = cardsService.findCardsByUserId(points.getUser_id());
+            /*System.out.println("++++" + points.getUser_id());
+            System.out.println(" ++++"  +cards.getPoints_sum());
+            System.out.println(" ++++"  +market_point);*/
             Integer sum =cards.getPoints_sum()+ market_point;
             //判断cars累计积分值是否大于现有等级的积分值,此功能在freegradeservice中，gradeChange()
             // 通过user_id 查找用户的freegrade_id
@@ -178,7 +169,7 @@ public class PointService {
      * @return int
      */
     @Transactional
-    @CacheEvict(value="MemberPoint",allEntries=true)
+    //@CacheEvict(value="MemberPoint",allEntries=true)
     public void deletePointById(String points_id) {
         //List<Points> points = this.getPointById(points_id);
         //id不为空
@@ -193,7 +184,7 @@ public class PointService {
         }
     }
     @Transactional
-    @CacheEvict(value="MemberPoint",allEntries=true)
+    //@CacheEvict(value="MemberPoint",allEntries=true)
     public void deletePointByUserId(String user_id){
         //id不为空
         if(org.apache.commons.lang3.StringUtils.isBlank(user_id)){

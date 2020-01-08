@@ -9,6 +9,7 @@ import com.treehole.framework.model.response.ResponseResult;
 import com.treehole.member.service.CardsService;
 import com.treehole.member.service.CardsVoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,7 +26,10 @@ public class CardsController implements CardsControllerApi {
     private CardsService cardsService;
     @Autowired
     private CardsVoService cardsVoService;
+
     @Override
+    //当用户拥有权限时候方可访问此方法
+    @PreAuthorize("hasAuthority('member_card_find_all')")
     @GetMapping("/getAllCards/{page}/{size}")
         public QueryResponseResult findAllCards(@PathVariable("page") Integer page,
                                                 @PathVariable("size") Integer size,
@@ -33,18 +37,19 @@ public class CardsController implements CardsControllerApi {
         return cardsVoService.findAllCardVos(page,size,cardListRequest);
     }
     @Override
+    //@PreAuthorize("hasAuthority('member_card_find_cardid')")
     @GetMapping("/getCardById/{card_id}")
     public CardsVo findCardById(@PathVariable("card_id") String card_id){
         return cardsVoService.getCardByCardId(card_id);
     }
     @Override
+    //@PreAuthorize("hasAuthority('member_card_find_userid')")
     @GetMapping("/getCardByUserId/{user_id}")
     public CardsVo findCardByUserId(@PathVariable("user_id") String user_id){
         return cardsVoService.getCardByUserId(user_id);
     }
-
-
     @Override
+
     @PostMapping("/insert/id/{id}")
     public ResponseResult insertCard(@PathVariable("id") String id) {
         cardsService.insertCard(id);
@@ -52,6 +57,7 @@ public class CardsController implements CardsControllerApi {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('member_card_delete_userid')")
     @DeleteMapping(value ="/delete/userId/{user_id}")
     public ResponseResult deleteCardById(@PathVariable("user_id") String user_id) {
         cardsService.deleteCard(user_id);
@@ -59,8 +65,9 @@ public class CardsController implements CardsControllerApi {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('member_card_update')")
     @PutMapping("/update")
-    public ResponseResult update(@RequestBody @Valid CardsVo cardsvo) {
+    public ResponseResult update(@RequestBody CardsVo cardsvo) {
         cardsService.updateCardVo(cardsvo);
         return new ResponseResult(CommonCode.SUCCESS);
     }

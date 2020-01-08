@@ -23,7 +23,7 @@ import java.util.Date;
 
 public class CheckinVo implements Serializable {
     private String checkin_id; //签到id
-    private String nickname; //用户id
+    private String nickname; //昵称
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date checkin_time; //签到时间
 

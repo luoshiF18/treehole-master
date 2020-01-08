@@ -3,6 +3,7 @@ package com.treehole.framework.domain.member;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 import org.springframework.format.annotation.DateTimeFormat;
 import tk.mybatis.mapper.annotation.NameStyle;
 import tk.mybatis.mapper.code.Style;
@@ -22,6 +23,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NameStyle(Style.normal)
 public class Points implements Serializable {
+    @Id
     private String points_id;  //记录积分id
     private String user_id;  //用户id
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")

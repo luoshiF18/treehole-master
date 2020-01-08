@@ -37,6 +37,9 @@ public enum MemberCode implements ResultCode {
     PASSWORD_ERROR(false,318,"密码错误"),
     PASSWORD_OLD_ERROR(false,319,"原密码输入错误"),
     CHECKIN_REPEAT(false,320,"重复签到"),
+    HAS_THIS_CODE(false,322,"CODE不能重复"),
+    HAVA_THIS_MENU(false,321,"权限已经存在"),
+
     TEST1(false,0000,"测试报错1"),
     TEST2(false,6690,"测试报错2"),
     TEST3(false,0002,"测试报错3")

@@ -1,5 +1,6 @@
 package com.treehole.member.service;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.member.Cards;
@@ -13,7 +14,7 @@ import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.mapper.PaygradeMapper;
 import com.treehole.member.myUtil.AddDateUtil;
 import com.treehole.member.myUtil.MyNumberUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -74,7 +75,7 @@ public class PaygradeService {
     }
     //修改等级信息
     @Transactional
-    @CacheEvict(value="MemberPayGrade",allEntries=true)
+    //@CacheEvict(value="MemberPayGrade",allEntries=true)
     public void updateGrade(PayGrade payGrade){
         Example example =new Example(PayGrade.class);
         Example.Criteria criteria = example.createCriteria();
@@ -90,36 +91,34 @@ public class PaygradeService {
     /*
      * 根据rank,id,name查询所有付费会员等级信息
      * */
-    @Cacheable(value="MemberPayGrade")
+    //@Cacheable(value="MemberPayGrade")
     public QueryResponseResult findAll1(Integer page,
                                        Integer size,
                                        GradeListRequest gradeListRequest) {
-        //        分页
-        PageHelper.startPage(page, size);
 
         //判断请求条件的合法性
         if (gradeListRequest == null){
             gradeListRequest = new GradeListRequest();
         }
-        PayGrade payGrade = new PayGrade();
+        Page pag =PageHelper.startPage(page,size);
+        Example example = new Example(PayGrade.class);
+        Example.Criteria criteria = example.createCriteria();
         //判断不为空字符串
-        if(org.apache.commons.lang3.StringUtils.isNotEmpty(gradeListRequest.getGrade_id())){
-            payGrade.setPaygrade_id(gradeListRequest.getGrade_id());
+        if(StringUtils.isNotEmpty(gradeListRequest.getGrade_id())){
+            criteria.andLike("paygrade_id", "%" + gradeListRequest.getGrade_id() + "%");
         }
-        if(org.apache.commons.lang3.StringUtils.isNotEmpty(gradeListRequest.getGrade_name())){
-            payGrade.setPaygrade_name(gradeListRequest.getGrade_name());
+        if(StringUtils.isNotEmpty(gradeListRequest.getGrade_name())){
+            criteria.andLike("paygrade_name", "%" + gradeListRequest.getGrade_name() + "%");
         }
-        if(org.apache.commons.lang3.StringUtils.isNotEmpty(String.valueOf(gradeListRequest.getRank()))){
-            payGrade.setRank(gradeListRequest.getRank());
+        if(gradeListRequest.getRank() != null){
+            criteria.andLike("rank", "%" + gradeListRequest.getRank() + "%");
         }
-
-
-        List<PayGrade> grades = paygradeMapper.select(payGrade);
+        List<PayGrade> grades = paygradeMapper.selectByExample(example);
         if (CollectionUtils.isEmpty(grades)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
-        //        解析分页结果
-        PageInfo<PayGrade> pageInfo = new PageInfo<>(grades);
+        //  解析分页结果
+        PageInfo<PayGrade> pageInfo = new PageInfo<>(pag.getResult());
         QueryResult queryResult = new QueryResult();
         queryResult.setList(grades);
         queryResult.setTotal(pageInfo.getTotal());
@@ -142,7 +141,7 @@ public class PaygradeService {
 
         /*删除*/
     @Transactional
-    @CacheEvict(value="MemberPayGrade",allEntries=true)
+    //@CacheEvict(value="MemberPayGrade",allEntries=true)
     public void deleteGrade(String id) {
         //id不为空
         if(org.apache.commons.lang3.StringUtils.isBlank(id)){
@@ -164,7 +163,7 @@ public class PaygradeService {
     }
 
     @Transactional
-    @CacheEvict(value="MemberPayGrade",allEntries=true)
+    //@CacheEvict(value="MemberPayGrade",allEntries=true)
     public void insert(PayGrade payGrade) {
         if(payGrade == null){
             //抛出异常，非法参数异常。指定异常信息的内容
@@ -182,7 +181,7 @@ public class PaygradeService {
         if(CollectionUtils.isEmpty(payGrades)){
             int ins = paygradeMapper.insert(payGrade);
             if(ins != 1){
-                ExceptionCast.cast(MemberCode.UPDATE_FAIL);
+                ExceptionCast.cast(MemberCode.INSERT_FAIL);
             }
         }else{
             ExceptionCast.cast(MemberCode.GRADE_RANK_EXIST);
@@ -193,7 +192,7 @@ public class PaygradeService {
     * 等级变化
     * */
     @Transactional
-    @CacheEvict(value="MemberPayGrade",allEntries=true)
+    //@CacheEvict(value="MemberPayGrade",allEntries=true)
     public void gradeChange(String user_id,String  paygrade_id){
         //通过paygrade_id得到等级对象
         PayGrade payGrade1 = this.getById(paygrade_id);

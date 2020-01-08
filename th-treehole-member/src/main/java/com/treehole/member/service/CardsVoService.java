@@ -57,34 +57,26 @@ public class CardsVoService {
         cardsService.updateByPayEndTime();
         //分页
         Page pag =PageHelper.startPage(page,size);
-        //
         if(cardListRequest == null){
             cardListRequest =new CardListRequest();
         }
         Example example = new Example(Cards.class);
         Example.Criteria criteria = example.createCriteria();
-        //Cards cards = new Cards();
         if(StringUtils.isNotEmpty(cardListRequest.getCard_id())){
-            //cards.setCard_id(cardListRequest.getCard_id());
-            criteria.andEqualTo("card_id",cardListRequest.getCard_id());
+            criteria.andLike("card_id","%" + cardListRequest.getCard_id() + "%");
         }
         if(StringUtils.isNotEmpty(cardListRequest.getUser_id())){
-            //cards.setUser_id(cardListRequest.getUser_id());
-            criteria.andEqualTo("user_id",cardListRequest.getUser_id());
-
+            criteria.andLike("user_id","%" + cardListRequest.getUser_id() + "%");
         }
         if (StringUtils.isNotEmpty(cardListRequest.getUser_phone())) {
-            User user = userService.findUserByRolePhone(cardListRequest.getUser_phone(),"1");
-            //cards.setUser_id(user.getUser_id());
-            criteria.andEqualTo("user_id",user.getUser_id());
+            User user = userService.findUserByPhone(cardListRequest.getUser_phone());
+            criteria.andEqualTo("user_id",user.getUser_id() );
         }
         if (StringUtils.isNotEmpty(cardListRequest.getUser_nickname())) {
             User user = userService.findUserByNickname(cardListRequest.getUser_nickname());
-            //cards.setUser_id(user.getUser_id());
             criteria.andEqualTo("user_id",user.getUser_id());
         }
         //查询
-        //List<Cards> cardsList = cardsMapper.select(cards);
         List<Cards> cardsList =cardsMapper.selectByExample(example);
         if (CollectionUtils.isEmpty(cardsList)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
@@ -129,7 +121,6 @@ public class CardsVoService {
     public CardsVo getCardByCardId(String id){
         Cards cards1 = cardsService.getCardById(id);
         CardsVo cardsVo = new CardsVo();
-
         cardsVo.setCard_id(cards1.getCard_id());
         cardsVo.setUser_id(cards1.getUser_id());
         //cardsVo.setUser_nickname(userService.getUserById(cards1.getUser_id()).getUser_nickname());
@@ -161,7 +152,6 @@ public class CardsVoService {
     public CardsVo getCardByUserId(String id){
         Cards cards1 = cardsService.findCardsByUserId(id);
         CardsVo cardsVo = new CardsVo();
-
         cardsVo.setCard_id(cards1.getCard_id());
         cardsVo.setUser_id(cards1.getUser_id());
         //cardsVo.setUser_nickname(userService.getUserById(cards1.getUser_id()).getUser_nickname());
@@ -185,6 +175,7 @@ public class CardsVoService {
             cardsVo.setPaygrade_start(null);
             cardsVo.setPaygrade_end(null);
         }
+        //System.out.println("}}}}}"+cardsVo);
         return cardsVo;
     }
 }
