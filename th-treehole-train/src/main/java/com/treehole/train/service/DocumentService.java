@@ -34,9 +34,12 @@ public class DocumentService {
     //上传
     @Transactional
     public ResponseResult uploadFile(MultipartFile file, DocumentExt documentExt){
-        System.out.println(file.getOriginalFilename());
-        System.out.println(documentExt);
-        String documentId = documentClient.uploadPort(file, documentExt.getDescribe(), documentExt.getFolderId(),documentExt.getUserId());
+        String documentId = null;
+        try{
+            documentId = documentClient.uploadPort(file, documentExt.getDescribe(), documentExt.getFolderId(),documentExt.getUserId());
+        }catch (Exception e){
+            return new ResponseResult(CommonCode.FAIL);
+        }
         Document document = new Document();
         document.setDocumentId(documentId);
         document.setDocumentName(file.getOriginalFilename());
