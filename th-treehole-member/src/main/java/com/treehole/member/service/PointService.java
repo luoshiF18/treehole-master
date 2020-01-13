@@ -3,12 +3,11 @@ package com.treehole.member.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.treehole.framework.domain.evaluation.Description;
-import com.treehole.framework.domain.evaluation.response.EvaluationCode;
 import com.treehole.framework.domain.marketing.request.ActivityRequest;
-import com.treehole.framework.domain.member.*;
-import com.treehole.framework.domain.member.Vo.UserVo;
-import com.treehole.framework.domain.member.resquest.CardListRequest;
+import com.treehole.framework.domain.member.Cards;
+import com.treehole.framework.domain.member.Checkin;
+import com.treehole.framework.domain.member.Points;
+import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.resquest.PointListRequest;
 import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.exception.ExceptionCast;
@@ -17,7 +16,6 @@ import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.client.MemberClient;
 import com.treehole.member.mapper.PointsMapper;
-import com.treehole.member.mapper.UserMapper;
 import com.treehole.member.myUtil.MyNumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author shanhuijie
@@ -36,7 +37,7 @@ import java.util.*;
  * @Date
  */
 @Service
-@Cacheable(value="MemberPoint")
+
 public class PointService {
     @Autowired
     private PointsMapper pointsMapper;
@@ -67,37 +68,30 @@ public class PointService {
      * @param pointListRequest
      * @return List<Points>
      */
-
+    @Cacheable(value="MemberPoint")
     public QueryResponseResult findAllPoints(Integer page,
                                              Integer size,
                                              PointListRequest pointListRequest){
-
-
         if(pointListRequest == null){
             pointListRequest =new PointListRequest();
         }
-        Points points1 = new Points();
+        Example example = new Example(Points.class);
+        Example.Criteria criteria = example.createCriteria();
         if(StringUtils.isNotEmpty(pointListRequest.getUser_nickname())){
             User user = userService.findUserByNickname(pointListRequest.getUser_nickname());
-            points1.setUser_id(user.getUser_id());
+            criteria.andEqualTo("user_id",user.getUser_id()); //参数为 属性名+值
         }
         //pagehelper需要放在离查询最近的地方，中间不能隔着查询去查询，数据会一直为1
         Page pag =PageHelper.startPage(page,size);
         if(StringUtils.isNotEmpty(pointListRequest.getUser_id())){
-            points1.setUser_id(pointListRequest.getUser_id());
+            criteria.andLike("user_id","%"  + pointListRequest.getUser_id() + "%" ); //参数为 属性名+值
         }
         //查询
-        List<Points> pointsList = pointsMapper.select(points1);
+        example.orderBy("points_time").desc();//排序
+        List<Points> pointsList = pointsMapper.selectByExample(example);
         if (CollectionUtils.isEmpty(pointsList)) {
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
-        //时间倒序排  最近的时间的放在最前面
-        Collections.sort(pointsList, new Comparator<Points>() {
-            @Override
-            public int compare(Points p1, Points p2) {
-                return p2.getPoints_time().compareTo(p1.getPoints_time());  //大于返回1；小于返回-1；等于返回0
-            }
-        });
         //解析分页结果
         PageInfo<Points> pageInfo = new PageInfo<Points>(pag.getResult());
         QueryResult queryResult = new QueryResult();
@@ -176,7 +170,7 @@ public class PointService {
     public void deletePointById(String points_id) {
         //List<Points> points = this.getPointById(points_id);
         //id不为空
-        if(org.apache.commons.lang3.StringUtils.isBlank(points_id)){
+        if(StringUtils.isBlank(points_id)){
             ExceptionCast.cast(MemberCode.DATA_ERROR);
         }
         Points point = new Points();
@@ -190,7 +184,7 @@ public class PointService {
     @CacheEvict(value="MemberPoint",allEntries=true)
     public void deletePointByUserId(String user_id){
         //id不为空
-        if(org.apache.commons.lang3.StringUtils.isBlank(user_id)){
+        if(StringUtils.isBlank(user_id)){
             ExceptionCast.cast(MemberCode.DATA_ERROR);
         }
         //1.先找
@@ -225,6 +219,7 @@ public class PointService {
         PageInfo<Points> pageInfo = new PageInfo<Points>(pag.getResult());
         return new QueryResult(points, pageInfo.getTotal());
     }
+
 
 
 }

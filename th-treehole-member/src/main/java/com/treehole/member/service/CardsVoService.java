@@ -5,7 +5,6 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.member.*;
 import com.treehole.framework.domain.member.Vo.CardsVo;
-import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.resquest.CardListRequest;
 import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.exception.ExceptionCast;
@@ -13,10 +12,8 @@ import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.member.mapper.CardsMapper;
-import com.treehole.member.mapper.CardsVoMapper;
 import com.treehole.member.mapper.FreegradeMapper;
 import com.treehole.member.mapper.PaygradeMapper;
-import com.treehole.member.myUtil.MyNumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -24,10 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
-import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,7 +32,6 @@ import java.util.List;
  * @Date
  */
 @Service
-@Cacheable(value="MemberCard")
 public class CardsVoService {
     @Autowired
     private CardsMapper cardsMapper;
@@ -49,38 +44,41 @@ public class CardsVoService {
 
     @Autowired
     private CardsService cardsService;
+    @Autowired
+    private PaygradeService paygradeService;
     /**
      * 查询所有CardsVo信息
      * 自定义条件查询 user_id/card_id/手机号码
      */
+  //  @Cacheable(value="MemberCard")
     public QueryResponseResult findAllCardVos(Integer page,
                                               Integer size,
                                               CardListRequest cardListRequest) {
+        cardsService.updateByPayEndTime();
         //分页
         Page pag =PageHelper.startPage(page,size);
-        //
         if(cardListRequest == null){
             cardListRequest =new CardListRequest();
         }
-        Cards cards = new Cards();
+        Example example = new Example(Cards.class);
+        Example.Criteria criteria = example.createCriteria();
         if(StringUtils.isNotEmpty(cardListRequest.getCard_id())){
-            cards.setCard_id(cardListRequest.getCard_id());
+            criteria.andLike("card_id","%" + cardListRequest.getCard_id() + "%");
         }
         if(StringUtils.isNotEmpty(cardListRequest.getUser_id())){
-            cards.setUser_id(cardListRequest.getUser_id());
+            criteria.andLike("user_id","%" + cardListRequest.getUser_id() + "%");
         }
         if (StringUtils.isNotEmpty(cardListRequest.getUser_phone())) {
-            User user = userService.findUserByPhone(cardListRequest.getUser_phone());
-            cards.setUser_id(user.getUser_id());
+            User user = userService.findUserByRolePhone(cardListRequest.getUser_phone(),"1");
+            criteria.andEqualTo("user_id",user.getUser_id() );
         }
         if (StringUtils.isNotEmpty(cardListRequest.getUser_nickname())) {
             User user = userService.findUserByNickname(cardListRequest.getUser_nickname());
-            cards.setUser_id(user.getUser_id());
+            criteria.andEqualTo("user_id",user.getUser_id());
         }
         //查询
-        List<Cards> cardsList = cardsMapper.select(cards);
+        List<Cards> cardsList =cardsMapper.selectByExample(example);
         if (CollectionUtils.isEmpty(cardsList)) {
-            //ExceptionCast.cast(MemberCode.DATA_IS_NULL);
             ExceptionCast.cast(MemberCode.DATA_IS_NULL);
         }
         List<CardsVo> cardsVos = new ArrayList<CardsVo>();
@@ -89,7 +87,6 @@ public class CardsVoService {
             cardsVo.setCard_id(cards1.getCard_id());
             cardsVo.setUser_id(cards1.getUser_id());
             cardsVo.setUser_nickname((userService.getUserById(cards1.getUser_id()).getUser_nickname()));
-            //cardsVo.setUser_nickname(userService.getUserById(cards1.getUser_id()).getUser_nickname());
             String freegradeId = cards1.getFreegrade_id();
             FreeGrade freeGrade = new FreeGrade();
             freeGrade.setFreegrade_id(freegradeId);
@@ -99,7 +96,7 @@ public class CardsVoService {
             cardsVo.setPoints_sum(cards1.getPoints_sum());
             //付费会员的等级变化在payGardeService中
             String paygradeId = cards1.getPaygrade_id();
-            if(StringUtils.isEmpty(paygradeId) || (cards1.getPaygrade_id()).equals("")||paygradeId == null){
+            if(StringUtils.isEmpty(paygradeId) || paygradeId.equals("p000")||paygradeId == null){
                 cardsVo.setPaygrade("无");
                 cardsVo.setPaygrade_start(null);
                 cardsVo.setPaygrade_end(null);
@@ -124,7 +121,6 @@ public class CardsVoService {
     public CardsVo getCardByCardId(String id){
         Cards cards1 = cardsService.getCardById(id);
         CardsVo cardsVo = new CardsVo();
-
         cardsVo.setCard_id(cards1.getCard_id());
         cardsVo.setUser_id(cards1.getUser_id());
         //cardsVo.setUser_nickname(userService.getUserById(cards1.getUser_id()).getUser_nickname());
@@ -156,7 +152,6 @@ public class CardsVoService {
     public CardsVo getCardByUserId(String id){
         Cards cards1 = cardsService.findCardsByUserId(id);
         CardsVo cardsVo = new CardsVo();
-
         cardsVo.setCard_id(cards1.getCard_id());
         cardsVo.setUser_id(cards1.getUser_id());
         //cardsVo.setUser_nickname(userService.getUserById(cards1.getUser_id()).getUser_nickname());
