@@ -1,11 +1,15 @@
 server:
-  port: ${PORT:40100}
+  port: 31400
 spring:
   application:
-    name: th-treehole-archives
+    name: th-service-manage-media
+#  data:
+#    mongodb:
+#      uri:  mongodb://root:root@localhost:27017
+#      database: xc_media
   datasource:
     druid:
-      url: ${MYSQL_URL:jdbc:mysql://127.0.0.1:3306/th_evaluation?characterEncoding=utf-8}
+      url: jdbc:mysql://10.0.43.60:3306/th_courses_online?characterEncoding=utf-8
       username: root
       password: root
       driverClassName: com.mysql.jdbc.Driver
@@ -17,6 +21,17 @@ spring:
       testOnReturn: false #归还连接时检测连接是否有效
       timeBetweenEvictionRunsMillis: 60000 #配置间隔检测连接是否有效的时间（单位是毫秒）
       minEvictableIdleTimeMillis: 300000  #连接在连接池的最小生存时间（毫秒）
+  rabbitmq:
+    host: 10.0.43.60
+    port: 5672
+    username: root
+    password: root
+    virtual-host: /
+xc-service-manage-media:
+  mq:
+    queue-media-video-processor: queue_media_video_processor
+    routingkey-media-video: routingkey_media_video
+  upload-location: G:/develop/video/
 eureka:
   client:
     registerWithEureka: true #服务注册开关

@@ -160,28 +160,36 @@ public class ArchivesSelectService {
         resultExt.setTopicBackground(scaleDetail.getTopicBackground());
         //设置主题问题建议
         resultExt.setTopicSuggest(scaleDetail.getTopicSuggest());
-        //构建选项列表
-        UserOptionResult userOption = scaleSelectClient.findUserOption(result.getScaleName(), result.getUserId());
-        //设置选项题
-        UserOptionVO userOptionVO = userOption.getUserOptionVO();
-        Map<String,List<String>> userOptionVOResult = userOptionVO.getResult();
 
-        Set<Map.Entry<String, List<String>>> entrySet = userOptionVOResult.entrySet();
-        List<ResuAnswer> resuAnswers = new ArrayList<>();
-        for (Map.Entry<String, List<String>> entry: entrySet){
-            ResuAnswer resuAnswer = new ResuAnswer();
-            String key = entry.getKey();
-            List<String> value = entry.getValue();
-            String[] split = key.split("：");
-            String resuValue = value.toString();
-            resuAnswer.setSort(split[0]);       //设置题号
-            resuAnswer.setQuestion(split[1]);  //设置问题
-            resuAnswer.setAnswer(resuValue);  //设置回答
-            resuAnswers.add(resuAnswer);
+        try {
+            //构建选项列表
+            UserOptionResult userOption = scaleSelectClient.findUserOption(result.getScaleName(), result.getUserId());
+            //设置选项题
+            UserOptionVO userOptionVO = userOption.getUserOptionVO();
+            Map<String,List<String>> userOptionVOResult = userOptionVO.getResult();
+
+            Set<Map.Entry<String, List<String>>> entrySet = userOptionVOResult.entrySet();
+            List<ResuAnswer> resuAnswers = new ArrayList<>();
+            for (Map.Entry<String, List<String>> entry: entrySet){
+                ResuAnswer resuAnswer = new ResuAnswer();
+                String key = entry.getKey();
+                List<String> value = entry.getValue();
+                String[] split = key.split("：");
+                String resuValue = value.toString();
+                resuAnswer.setSort(split[0]);       //设置题号
+                resuAnswer.setQuestion(split[1]);  //设置问题
+                resuAnswer.setAnswer(resuValue);  //设置回答
+                resuAnswers.add(resuAnswer);
+            }
+
+            //设置选项答案
+            resultExt.setQuestionAndOption(resuAnswers);
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultExt.setQuestionAndOption(null);
+        } finally {
+
         }
-
-        //设置选项答案
-        resultExt.setQuestionAndOption(resuAnswers);
 
         //这里先将健康等级设置为1级
         resultExt.setHeal_level("一级");

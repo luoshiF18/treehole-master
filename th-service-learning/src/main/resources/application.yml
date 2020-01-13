@@ -1,11 +1,11 @@
 server:
-  port: ${PORT:40100}
+  port: ${PORT:40600}
 spring:
   application:
-    name: th-treehole-archives
+    name: th-service-learning
   datasource:
     druid:
-      url: ${MYSQL_URL:jdbc:mysql://127.0.0.1:3306/th_evaluation?characterEncoding=utf-8}
+      url: ${MYSQL_URL:jdbc:mysql://10.0.43.60:3306/xc_learning?characterEncoding=utf-8}
       username: root
       password: root
       driverClassName: com.mysql.jdbc.Driver
@@ -17,12 +17,20 @@ spring:
       testOnReturn: false #归还连接时检测连接是否有效
       timeBetweenEvictionRunsMillis: 60000 #配置间隔检测连接是否有效的时间（单位是毫秒）
       minEvictableIdleTimeMillis: 300000  #连接在连接池的最小生存时间（毫秒）
+#rabbitmq配置
+  rabbitmq:
+    host: 10.0.43.60
+    port: 5672
+    username: root
+    password: root
+    publisher-confirms: true
+    virtual-host: /
 eureka:
   client:
     registerWithEureka: true #服务注册开关
     fetchRegistry: true #服务发现开关
     serviceUrl: #Eureka客户端与Eureka服务端进行交互的地址，多个中间用逗号分隔
-      defaultZone: ${EUREKA_SERVER:http://localhost:50101/eureka/}
+      defaultZone: ${EUREKA_SERVER:http://localhost:50101/eureka/,http://localhost:50102/eureka/}
   instance:
     prefer-ip-address:  true  #将自己的ip地址注册到Eureka服务中
     ip-address: ${IP_ADDRESS:127.0.0.1}

@@ -15,7 +15,7 @@ public class PsychologistTest {
     private PsychologistClient psychologistClient;
 
     @Test
-    public void getDetailByIdTest(){
+    public void  aaa(){
         Detail detailById = psychologistClient.getDetailById("1");
         System.out.println(detailById);
     }
