@@ -1,6 +1,5 @@
 package com.treehole.member.api;
 
-import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.resquest.UserListRequest;
 import com.treehole.framework.model.response.QueryResponseResult;
@@ -9,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,7 +37,7 @@ public interface UserVoApi {
     public UserVo getUserVoByNickname(@RequestParam("nickname") String nickname);
 
     @GetMapping("member/user/getUserByTime")
-    public QueryResult findUserByTime(@RequestParam("beforeTime") Date beforeTime,
-                                      @RequestParam("afterTime") Date afterTime);
+    public QueryResult findUserByTime(@RequestParam("beforeTime") String beforeTime,
+                                      @RequestParam("afterTime") String afterTime);
 
 }

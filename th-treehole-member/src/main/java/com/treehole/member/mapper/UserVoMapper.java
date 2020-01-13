@@ -18,7 +18,7 @@ public interface UserVoMapper extends Mapper<UserVo> {
     List<UserVo> getAllUser(List listUserId);
 
     List<User> getUserByTime(@Param(value = "before") Date before,
-                                @Param(value = "after") Date after
-                              );
-
+                             @Param(value = "after") Date after
+    );
+    List<UserVo> getUserByCid(String companyId);
 }

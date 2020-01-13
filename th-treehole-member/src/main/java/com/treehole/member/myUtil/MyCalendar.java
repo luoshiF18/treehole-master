@@ -39,7 +39,7 @@ public class MyCalendar {
     }
 
     public static void main(String[] args) {
-        SimpleDateFormat df = new SimpleDateFormat("HH:mm");// 设置日期格式
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
         Date now = null;
         Date beginTime = null;
         Date endTime = null;

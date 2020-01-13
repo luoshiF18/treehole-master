@@ -5,17 +5,27 @@ import com.treehole.framework.domain.member.User;
 import com.treehole.framework.domain.member.Vo.UserVo;
 import com.treehole.framework.domain.member.ext.UserExt;
 import com.treehole.framework.domain.member.resquest.UserListRequest;
-import com.treehole.framework.domain.member.result.MemberCode;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.framework.model.response.ResponseResult;
+import com.treehole.member.mapper.UserVoMapper;
 import com.treehole.member.service.UserService;
 import com.treehole.member.service.UserVoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -31,7 +41,8 @@ public class UserController implements UserControllerApi {
     private UserService userService;
 
     @Autowired UserVoService userVoService;
-
+    @Autowired
+    UserVoMapper userVoMapper;
 
     @Override
     @GetMapping("/getAllUserVos/{page}/{size}")
@@ -58,10 +69,24 @@ public class UserController implements UserControllerApi {
     }
 
     @Override
+    @GetMapping("/getUserByCid")
+    public List<UserVo> getUserByCid(@RequestParam("companyId") String companyId) {
+        return userVoMapper.getUserByCid( companyId );
+    }
+    @Override
     @GetMapping("/getUserByTime")
-    public QueryResult findUserByTime(@RequestParam("beforeTime") Date beforeTime,
-                                      @RequestParam("afterTime") Date afterTime){
-        List<UserVo> byTime = userVoService.findAllUserByTime(beforeTime, afterTime);
+    public QueryResult findUserByTime(@RequestParam("beforeTime") String beforeTime,
+                                      @RequestParam("afterTime") String afterTime){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date before = null;
+        Date after = null;
+        try {
+            before = sdf.parse(beforeTime);
+            after = sdf.parse(afterTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        List<UserVo> byTime = userVoService.findAllUserByTime(before, after);
         QueryResult queryResult = new QueryResult();
         queryResult.setList(byTime);
         queryResult.setTotal(byTime.size());
@@ -77,10 +102,6 @@ public class UserController implements UserControllerApi {
     @DeleteMapping(value ="/delete/{user_id}")
     public ResponseResult deleteUserById(@PathVariable("user_id") String user_id) {
         userService.deleteUserById(user_id);
-        //再判断用户是否存在
-         /*if(this.getUserById(user_id) != null){
-             ExceptionCast.cast(MemberCode.DELETE_USER_NOT_EXIST);
-         }*/
         return new ResponseResult(CommonCode.SUCCESS);
 
     }
@@ -88,14 +109,8 @@ public class UserController implements UserControllerApi {
     @Override
     @PostMapping ("/insert")
     public ResponseResult insertUser(@RequestBody @Valid User user) {
-
-        if (userService.findUserByPhone(user.getUser_phone())!= null){  /*手机号唯一*/
-            return new ResponseResult(MemberCode.PHONE_IS_EXIST);
-        }
         userService.insertUser(user);
-
         return new ResponseResult(CommonCode.SUCCESS);
-
 
     }
 
@@ -111,7 +126,14 @@ public class UserController implements UserControllerApi {
     /*更新手机号绑定*/
     @Override
     @PutMapping("/update/phone")
-    public ResponseResult updateUserPhone(@RequestBody @Valid User user){
+    public ResponseResult updateUserPhone(@RequestParam(required=true,value = "user_id") String user_id,
+                                          @RequestParam(required=true,value ="role_id") String role_id,
+                                          @RequestParam(required=true,value ="user_phone") String user_phone){
+        User user = new User();
+        user.setUser_id(user_id);
+        user.setRole_id(role_id);
+        user.setUser_phone(user_phone);
+        System.out.println("_____________" + user);
         userService.updatePhone(user);
         return new ResponseResult(CommonCode.SUCCESS);
 
@@ -119,9 +141,9 @@ public class UserController implements UserControllerApi {
     /*更新密码*/
     @Override
     @PutMapping("/update/password")
-    public ResponseResult updateUserPass(@RequestParam("id") String id,
-                                         @RequestParam("OldPass") String OldPass,
-                                         @RequestParam("NewPass") String NewPass){
+    public ResponseResult updateUserPass(@RequestParam(value = "user_id") String id,
+                                         @RequestParam(value ="OldPass") String OldPass,
+                                         @RequestParam(value ="NewPass") String NewPass){
         userService.updatePass(id,OldPass,NewPass);
         return new ResponseResult(CommonCode.SUCCESS);
 
@@ -137,6 +159,7 @@ public class UserController implements UserControllerApi {
     public UserVo getUserVoByUserId(@PathVariable("user_id") String user_id){
         return userVoService.getUserByUserId(user_id);
     }
+
 
 
 }

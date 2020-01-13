@@ -2,7 +2,6 @@ package com.treehole.member.controller;
 
 import com.treehole.api.member.CheckinControllerApi;
 import com.treehole.framework.domain.member.Checkin;
-import com.treehole.framework.domain.member.Role;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.QueryResult;
@@ -33,14 +32,14 @@ public class CheckinController implements CheckinControllerApi {
 
     }
 
-  /*  @Override
+   @Override
     @GetMapping("/find/id/{page}/{size}/{user_id}")
     public QueryResponseResult findCheckinByUserId(@PathVariable("user_id") String user_id,
                                                    @PathVariable("page") Integer page,
                                                   @PathVariable("size") Integer size) {
         QueryResult checkinById= checkinService.getCheckinByUserId(user_id,page,size);
         return new QueryResponseResult(CommonCode.SUCCESS, checkinById);
-    }*/
+    }
 
 
     @Override

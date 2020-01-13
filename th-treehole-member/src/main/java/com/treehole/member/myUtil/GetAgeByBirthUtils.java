@@ -1,12 +1,7 @@
 package com.treehole.member.myUtil;
 
 
-import com.treehole.framework.domain.member.result.MemberCode;
-import com.treehole.framework.exception.ExceptionCast;
-
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Year;
 import java.util.Calendar;
 import java.util.Date;
 

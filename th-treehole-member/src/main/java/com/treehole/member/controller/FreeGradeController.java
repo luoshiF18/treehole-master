@@ -2,7 +2,6 @@ package com.treehole.member.controller;
 
 import com.treehole.api.member.FreeGradeControllerApi;
 import com.treehole.framework.domain.member.FreeGrade;
-import com.treehole.framework.domain.member.Vo.CardsVo;
 import com.treehole.framework.domain.member.resquest.GradeListRequest;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.QueryResponseResult;
