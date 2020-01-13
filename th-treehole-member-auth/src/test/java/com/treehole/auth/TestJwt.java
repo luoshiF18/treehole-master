@@ -11,6 +11,7 @@ import org.springframework.security.jwt.crypto.sign.RsaSigner;
 import org.springframework.security.jwt.crypto.sign.RsaVerifier;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 import org.springframework.test.context.junit4.SpringRunner;
+
 import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.HashMap;
@@ -60,8 +61,8 @@ public class TestJwt {
     @Test
     public void testVerify(){
         //公钥
-        String publickey = "";
-        String jwtString = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoicWJsIn0.O3G_mGCbh5nh9rgEAREfPGYDKspBslrQYnpjyALGTtD9i0_Bi3-6xn8Aj-uMCON7afJF8D7y4wEFC3LkgMUPXLaqZlzsI12lpR-H2OXEDI64VRSML2UyBaEtYJT4S4aUd2zXPXhAQUQAsRzRuTrVPztnFeVi1k5WB8bToMBW1-iHBhH3vP8L-7d40HiPxYvCC4LGZGnHXp_4_DkWLLHcO5HjVXPAh-ImuKCsQ5PAX4jvZtvIlK0AxircuEiBbm-JXQKcrAvYAt0x1N1AqzXot7mbNHwRsJMfJAlIT70LnG1Vw28IZvVeWJD9pQxUXGhsuWd9oUp5WQh6GdIg9gZ_3A";
+        String publickey = "-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAh/hjv9+POhQnf8CkWoX1OGDSPGRPs1JXjXXebVbMf+mKQa0wKeakqUkwdztYF/cMZjHGAbQACdG3qlu5Ic4PoHdwhY8rVFi1a61Qnr4jV0ij2dPaqeOJ5iJ3zcvw3ONyCi32U/K/MuwIvyexdEUhxYTmNg3EmP1Xc/gqToNXQAEVPR5eSlxijKKGnWJ7T6+aSubNkEOeyNLk/BccHAlkDZh3DKLivrfOdiZnhwHYuZgzeVqg/5S+ez5rgFJQ6YTeku/C+JtZZOh723fQytaDFiwf9DDzO8Tj55XmLuKNDpNOQ+miYv1ro08QJKyg5KIh0Ntbb2ZOwv7byduPqpVEvwIDAQAB-----END PUBLIC KEY-----";
+        String jwtString = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55SWQiOiJjZXNoaW5lbmdidW5lZyIsInVzZXJwaWMiOiJzdHJpbmciLCJ1c2VyX25hbWUiOiLlsI_liJgiLCJzY29wZSI6WyJhbGwiXSwibmFtZSI6IuWwj-WImCIsInV0eXBlIjpudWxsLCJpZCI6ImFiZWNlMjc2MWYzNDQyNmViMmFlZjNjNjkxODFjODRiIiwiZXhwIjoxNTc3MTk2MDI5LCJqdGkiOiIxYjcxYmRmOS04NjlhLTRiNzAtODdiZi0yOGUxY2IwYjIyYzgiLCJjbGllbnRfaWQiOiJUcmVlSG9sZSJ9.OpMQ2Eme2zONNiCQPSqFzVtehY6qL_u43sh4bRDJg3ppJ1kDjkUFBI0-A4vujA9n3JXQHl2FQWQFe-qW2lKxTQMhYowkaa7FPmHypOlPabqYK8bBZC1O5haDSrzIPu3U-fWFiVIjpdhGcztHvXEeQXgpYonGbrDK2X16sQ_LENfR1vVUCJsAyyNF6V7GLclbykdzbgFGsNEWixyG16ctqObIDkVzyMv0pa_JxBqzR3OJpLR-sSaR4CLms9e4ESfUmw18G63eWQwANZ-lciZWJQCtJ-lwDh2BhGMZ7sJXSmSKafZlef1sPeq7RkWeWhOOCp37uDdhonMCqUGTryGoGQ";
         //校验jwt令牌
         Jwt jwt = JwtHelper.decodeAndVerify(jwtString, new RsaVerifier(publickey));
         //拿到jwt令牌中自定义的内容

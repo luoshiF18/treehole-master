@@ -6,7 +6,7 @@ spring:
   application:
     name: th-treehole-member-auth
   redis:
-    host: 10.0.43.60
+    host: 192.168.56.101
     port: 6379
     timeout: 5000
     jedis:
@@ -17,7 +17,7 @@ spring:
         maxWait: -1
   datasource:
     druid:
-      url: jdbc:mysql://10.0.43.60/th_member?useSSL=false&useUnicode=true&characterEncoding=utf-8
+      url: jdbc:mysql://127.0.0.1/th_member?useSSL=false&useUnicode=true&characterEncoding=utf-8
       username: root
       password: root
       driverClassName: com.mysql.jdbc.Driver

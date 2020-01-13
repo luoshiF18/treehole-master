@@ -4,10 +4,10 @@ spring:
   application:
     name: th-treehole-psychologist
   redis:
-    host: 10.0.43.60
+    host: 192.168.56.101
   datasource:
     druid:
-      url: ${MYSQL_URL:jdbc:mysql://10.0.43.60:3306/th_psychologist?useSSL=false&characterEncoding=utf-8}
+      url: ${MYSQL_URL:jdbc:mysql://127.0.0.1:3306/th_psychologist?useSSL=false&characterEncoding=utf-8}
       username: root
       password: root
       driverClassName: com.mysql.jdbc.Driver
