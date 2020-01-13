@@ -1,16 +1,11 @@
 package com.treehole.api.member;
 
-import com.treehole.framework.domain.member.FreeGrade;
 import com.treehole.framework.domain.member.PayGrade;
 import com.treehole.framework.domain.member.resquest.GradeListRequest;
 import com.treehole.framework.model.response.QueryResponseResult;
 import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import javax.validation.Valid;
 
 /**
  * @author shanhuijie

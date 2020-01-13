@@ -1,6 +1,8 @@
 package com.treehole.api.appointment;
 
 import com.treehole.framework.domain.appointment.AppOrder;
+import com.treehole.framework.domain.appointment.ext.AppOrderExt;
+import com.treehole.framework.domain.appointment.request.QueryAppOrderExtRequest;
 import com.treehole.framework.domain.appointment.request.QueryAppOrderRequest;
 import com.treehole.framework.domain.appointment.response.AppOrderResult;
 import com.treehole.framework.model.response.QueryResponseResult;
@@ -42,6 +44,18 @@ public interface AppOrderControllerApi {
     //修改预约单
     @ApiOperation("修改预约订单")
     public AppOrderResult update(String id,AppOrder appOrder);
+
+    //分页查询
+    @ApiOperation("根据用户id分页查询预约单")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="page",value = "页码",required=true,paramType="path",dataType="int"),
+            @ApiImplicitParam(name="size",value = "每页记录数",required=true,paramType="path",dataType="int")
+    })
+    public QueryResponseResult<AppOrderExt> findListByUserId(int page, int size, QueryAppOrderExtRequest queryAppOrderExtRequest);
+
+    //取消预约单
+    @ApiOperation("取消预约订单")
+    public AppOrderResult cancel(String id);
 
 }
 

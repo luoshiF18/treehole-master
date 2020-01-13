@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.format.annotation.DateTimeFormat;
 import tk.mybatis.mapper.annotation.NameStyle;
 import tk.mybatis.mapper.code.Style;
+
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;

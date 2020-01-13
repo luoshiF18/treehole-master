@@ -24,8 +24,10 @@ public class ScaleDetailVO2 {
     private String scaleFunction;
     private String createTime;
     private String createUserId;
+    private String createUserName;
     private String updateTime;
     private String updateUserId;
+    private String updateUserName;
     private String images;
     private Integer status;
     private String statusName;

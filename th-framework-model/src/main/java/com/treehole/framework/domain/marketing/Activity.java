@@ -20,8 +20,11 @@ public class Activity implements Serializable {
     @Id
     @KeySql(useGeneratedKeys = true)
     private String id;
+    private String shortTitle;
     private String title;
     private String subTitle;
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    private Date releaseTime;
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date beginTime;
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")

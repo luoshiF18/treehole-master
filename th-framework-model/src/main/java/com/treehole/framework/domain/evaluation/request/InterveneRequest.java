@@ -3,6 +3,8 @@ package com.treehole.framework.domain.evaluation.request;
 import lombok.Data;
 import lombok.ToString;
 
+import java.util.List;
+
 /**
  * @Author: Qbl
  * Created by 9:14 on 2019/11/25.
@@ -17,4 +19,5 @@ public class InterveneRequest {
     private String userNickName;
     private String advisoryName;
     private String organizationName;
+    private List<String> usernames;
 }

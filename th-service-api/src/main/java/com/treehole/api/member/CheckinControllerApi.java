@@ -18,9 +18,9 @@ public interface CheckinControllerApi {
     public QueryResponseResult findAllCheckin(Integer page,
                                               Integer size,
                                               String user_id);
-/*
+
     @ApiOperation("根据user_id查询签到信息")
-    public ResponseResult findCheckinByUserId(String user_id,Integer page, Integer size) ;*/
+    public ResponseResult findCheckinByUserId(String user_id, Integer page, Integer size) ;
 
     @ApiOperation("插入一条签到信息")
     public ResponseResult insertCheckin(Checkin checkin) ;

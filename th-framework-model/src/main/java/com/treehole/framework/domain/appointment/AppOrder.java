@@ -1,8 +1,12 @@
 package com.treehole.framework.domain.appointment;
 
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
-import javax.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -17,11 +21,9 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "appointment")
-@GenericGenerator(name ="jpa-uuid",strategy = "uuid")
 public class AppOrder implements Serializable {
     // 预约单ID
     @Id
-    @GeneratedValue(generator = "jpa-uuid")
     private String id;
 
     // 用户ID
@@ -35,14 +37,6 @@ public class AppOrder implements Serializable {
     // 预约日期
     @Column(name = "app_date")
     private Date appDate;
-
-    // 预约开始时间
-    @Column(name = "app_start_time")
-    private String appStartTime;
-
-    // 预约结束时间
-    @Column(name = "app_end_time")
-    private String appEndTime;
 
     // 预约咨询方式
     @Column(name = "app_mode")
@@ -58,6 +52,7 @@ public class AppOrder implements Serializable {
 
     // 创建时间
     @Column(name = "create_time")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
     private Date createTime;
 
     // 创建时间

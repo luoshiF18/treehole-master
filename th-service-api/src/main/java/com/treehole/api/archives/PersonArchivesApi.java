@@ -1,5 +1,6 @@
 package com.treehole.api.archives;
 
+import com.treehole.framework.domain.archives.ext.ArchivesExt;
 import com.treehole.framework.domain.archives.response.ArchivesCountResult;
 import com.treehole.framework.domain.archives.resquest.ArchivesListRequest;
 import com.treehole.framework.domain.member.resquest.UserListRequest;
@@ -23,10 +24,10 @@ public interface PersonArchivesApi {
             ArchivesListRequest archivesListRequest
     );
 
-/*    @ApiOperation("根据用户id和量表名查询个人详细档案记录")
+    @ApiOperation("根据用户id和量表名查询个人详细档案记录")
     public ArchivesExt findArchivesExt(
             ArchivesListRequest archivesListRequest
-    );*/
+    );
 
     @ApiOperation("查询所有用户的档案记录")
     public QueryResponseResult findAllUserArchivesList(
