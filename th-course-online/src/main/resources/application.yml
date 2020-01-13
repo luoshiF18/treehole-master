@@ -1,0 +1,46 @@
+server:
+  port: 40900
+spring:
+  application:
+    name: th-course-online
+  datasource:
+    druid:
+      url: jdbc:mysql://10.0.43.60:3306/th_courses_online?characterEncoding=utf-8
+      username: root
+      password: root
+      driverClassName: com.mysql.jdbc.Driver
+      initialSize: 5  #初始建立连接数量
+      minIdle: 5  #最小连接数量
+      maxActive: 20 #最大连接数量
+      maxWait: 10000  #获取连接最大等待时间，毫秒
+      testOnBorrow: true #申请连接时检测连接是否有效
+      testOnReturn: false #归还连接时检测连接是否有效
+      timeBetweenEvictionRunsMillis: 60000 #配置间隔检测连接是否有效的时间（单位是毫秒）
+      minEvictableIdleTimeMillis: 300000  #连接在连接池的最小生存时间（毫秒）
+    #SpringMVC上传文件配置
+    servlet:
+      multipart:
+        #默认支持文件上传.
+        enabled: true
+        #支持文件写入磁盘.
+        file-size-threshold: 0
+        # 上传文件的临时目录
+        location:
+        # 最大支持文件大小
+        max-file-size: 1MB
+        # 最大支持请求大小
+        max-request-size: 30MB
+treehole:
+  fastdfs:
+    connect_timeout_in_seconds: 5
+    network_timeout_in_seconds: 30
+    charset: UTF-8
+    tracker_servers: 10.0.43.60:22122 #多个 trackerServer中间以逗号分隔
+  elasticsearch:
+    hostlist: ${eshostlist:127.0.0.1:9200} #多个结点中间用逗号分隔
+    course:
+      index: th_course
+      type: doc
+      source_field: id,name,grade,mt,st,charge,valid,pic,qq,price,price_old,status,studymodel,teachmode,expires,pub_time,start_time,end_time
+pagehelper:
+  helper-dialect: mysql

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.treehole.onlineCourse.dao.CategoryMapper">
+    <resultMap id="teachplanMap" type="com.treehole.framework.domain.onlineCourse.ext.CategoryNode">
+        <id property="id" column="one_id"/>
+        <result property="label" column="one_label"/>
+        <result property="name" column="one_name"/>
+        <collection property="children" ofType="com.treehole.framework.domain.onlineCourse.ext.CategoryNode">
+            <id property="id" column="two_id"/>
+            <result property="label" column="two_label"/>
+            <result property="name" column="two_name"/>
+        </collection>
+    </resultMap>
+    <select id="selectList" resultMap="teachplanMap">
+        SELECT
+a.id one_id,
+a.label one_label,
+a.name one_name,
+b.id two_id,
+b.label two_label,
+b.name two_name
+FROM category a
+  LEFT JOIN category b
+    ON a.id = b.parentid
+WHERE a.parentid = '1'
+    </select>
+</mapper>
