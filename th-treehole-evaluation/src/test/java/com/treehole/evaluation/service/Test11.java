@@ -31,4 +31,19 @@ public class Test11 {
         }
     }
 
+    @Test
+    public void testEquals(){
+
+        Integer i = new Integer(100);
+        Integer j = 100;
+        if(i.equals(j )){
+            System.out.print(true);
+        }
+        else {
+            System.out.println(false);
+        }
+
+
+    }
+
 }

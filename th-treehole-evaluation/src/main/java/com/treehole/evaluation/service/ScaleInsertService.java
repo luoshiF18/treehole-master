@@ -9,15 +9,20 @@ import com.treehole.framework.domain.evaluation.response.EvaluationCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.CommonCode;
 import com.treehole.framework.model.response.ResponseResult;
+import com.treehole.framework.utils.Oauth2Util;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @auther: Yan Hao
@@ -44,7 +49,10 @@ public class ScaleInsertService {
      */
     @Transactional
     public void insertScale(Scale scale) {
-
+//        获取用户id
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+//      获取信息
+        Map<String, String> userInfo = Oauth2Util.getJwtClaimsFromHeader(request);
 //        校验数据
         if (scaleTypeMapper.selectByPrimaryKey(scale.getTypeId()) == null
                 || StringUtils.isBlank(scale.getScaleName())
@@ -68,7 +76,7 @@ public class ScaleInsertService {
         String upperCase = MyChineseCharUtil.getUpperCase(scale.getScaleName(), false);
         scale.setLetter(upperCase);
         scale.setCreateTime(new Date());
-        scale.setCreateUserId(scale.getCreateUserId()); //TODO userId想办法获取
+        scale.setCreateUserId(userInfo.get("id")); // userId
         if (scale.getPrice() == null || scale.getPrice().compareTo(BigDecimal.ZERO) == -1) {
             scale.setPrice(BigDecimal.valueOf(0.00));
         }

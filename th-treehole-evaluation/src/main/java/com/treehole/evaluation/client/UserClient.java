@@ -2,6 +2,7 @@ package com.treehole.evaluation.client;
 
 import com.treehole.framework.domain.member.Vo.UserVo;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +15,7 @@ import java.util.List;
  * Version: 1.0
  */
 @FeignClient(value = "th-treehole-member")
+@Repository
 public interface UserClient {
 
     @GetMapping("member/user/getUserByNickname")
@@ -27,5 +29,6 @@ public interface UserClient {
 
     @GetMapping("member/user/getUserByNicknames")
     public List<UserVo> findUserByNicknames(@RequestParam(value ="names") List<String> names);
-
+    @GetMapping("member/user/getUserByCid")
+    public List<UserVo> getUserByCid(@RequestParam("companyId") String companyId);
 }

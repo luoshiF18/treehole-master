@@ -6,4 +6,5 @@ package com.treehole.evaluation.dao;
  * Version: 1.0
  */
 public interface WarnMsgMapper {
+
 }

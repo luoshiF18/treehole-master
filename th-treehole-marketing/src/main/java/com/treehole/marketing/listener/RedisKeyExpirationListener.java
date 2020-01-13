@@ -1,7 +1,10 @@
 package com.treehole.marketing.listener;
 
+import com.treehole.framework.domain.marketing.InteractiveActivity;
 import com.treehole.marketing.service.ActivityService;
 import com.treehole.marketing.service.CouponService;
+import com.treehole.marketing.service.InteractiveActivityService;
+import com.treehole.marketing.service.UserCouponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -18,6 +21,11 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
     private CouponService couponService;
     @Autowired
     private ActivityService activityService;
+    @Autowired
+    private InteractiveActivityService interactiveActivityService;
+
+    @Autowired
+    private UserCouponService userCouponService;
 
     public RedisKeyExpirationListener(RedisMessageListenerContainer listenerContainer) {
         super(listenerContainer);
@@ -42,6 +50,17 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
                 this.couponService.changeStatus(status, id);
             }else if("activity".equals(type)){
                 this.activityService.changeStatus(status, id);
+            } else if("interactiveActivity".equals(type)){
+                this.interactiveActivityService.changeStatus(status, id);
+            }
+
+        } else if(info.length == 4) {
+            String id = info[0];
+            String userCoupon = info[1];
+            String ifValid = info[2];
+            String ifUsed = info[3];
+            if("userCoupon".equals(userCoupon)){
+                this.userCouponService.changeStatus(id, ifValid, ifUsed);
             }
 
         }

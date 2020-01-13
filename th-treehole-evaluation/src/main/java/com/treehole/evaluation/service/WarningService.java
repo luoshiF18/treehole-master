@@ -9,6 +9,7 @@ import com.treehole.evaluation.dao.ScaleMapper;
 import com.treehole.evaluation.dao.WarningInterveneMapper;
 import com.treehole.evaluation.dao.WarningMapper;
 import com.treehole.framework.domain.evaluation.Scale;
+import com.treehole.framework.domain.evaluation.WarnMsg;
 import com.treehole.framework.domain.evaluation.Warning;
 import com.treehole.framework.domain.evaluation.request.PieData;
 import com.treehole.framework.domain.evaluation.request.WarnRequest;
@@ -45,7 +46,7 @@ public class WarningService {
     private final ScaleMapper scaleMapper;
     private final UserClient userClient;
     private final WarningInterveneMapper warningInterveneMapper;
-
+    private final WarnMsgService warnMsgService;
 
 
     //心理咨询师添加咨询用户的预警信息
@@ -57,11 +58,16 @@ public class WarningService {
         }
         try {
             warning.setId( MyNumberUtils.getUUID() );
-            warning.setUserId( "null" );//从哪里得到用户id???
             warning.setCreateTime( new Date() );
-            warning.setScaleId( "null" );//得到咨询师让用户做的那张量表id
             warning.setStatus( 1 );  //咨询师给出的预警信息状态码为1
             warningMapper.insert( warning );
+            WarnMsg warnMsg = new WarnMsg();
+            warnMsg.setUserId(warning.getUserId());
+            warnMsg.setMessage(warning.getWMessage());
+            List<String> warningid = new ArrayList<>( );
+            warningid.add(warning.getId());
+            warnMsg.setWarningId( warningid);
+            warnMsgService.sendMeg(warnMsg);
             return ResponseResult.SUCCESS();
         } catch (Exception e) {
             e.printStackTrace();
@@ -71,7 +77,6 @@ public class WarningService {
 
     //根据用户id查询用户的预警信息，分页查询
     public QueryResponseResult selectWarningByUserId(String userId, int page, int size) {
-        //TODO 只限后台管理查询 ，心理咨询师查看待写
         if (userId == null || StringUtils.isEmpty( userId )) {
             ExceptionCast.cast( EvaluationCode.DATA_ERROR );
         }
@@ -87,8 +92,8 @@ public class WarningService {
         }
         try {
             PageHelper.startPage( page, size );
-            List<Warning> warnings = warningMapper.select( warning );
-            PageInfo<Warning> warningPageInfo = new PageInfo<Warning>( warnings );
+            List<WarningVo> warnings = warningMapper.fingAllByPsy( userId );
+            PageInfo<WarningVo> warningPageInfo = new PageInfo<WarningVo>( warnings );
             QueryResult queryResult = new QueryResult<>();
             queryResult.setList( warningPageInfo.getList() ); //数据列表
             queryResult.setTotal( warningPageInfo.getTotal() ); //总记录数
@@ -117,7 +122,6 @@ public class WarningService {
             for (UserVo userVo : allUser) {
                 for (WarningVo warningVo : scaleWarning) {
                     if (userVo.getUser_id().equals(warningVo.getUserId())) {
-
                         warningVo.setSex(userVo.getGender());
                         warningVo.setUserBirth(userVo.getUser_birth());
                         warningVo.setUserName( userVo.getUser_name() );
@@ -162,6 +166,7 @@ public class WarningService {
         for (WarningVo warningVo : warning) {
             for (UserVo userVo : allUser){
                 if(warningVo.getUserId().equals(userVo.getUser_id())){
+                    warningVo.setUserId(userVo.getUser_id());
                     warningVo.setUserName(userVo.getUser_name() );
                     warningVo.setUserNickName(userVo.getUser_nickname());
                     warningVo.setSex(userVo.getGender());
@@ -285,8 +290,6 @@ public class WarningService {
         //得到用户id，去查询该用户在预警表产生的所有预警信息，关联查询量表得到量表信息
         String uid=userVoByNickname.getUser_id();
         List<PieData> pieData = warningMapper.getPieData(uid);
-        //还可以拼接咨询师给他服务的次数，拿到咨询师服务的简要内容
-        //将list<PieData> 转换为json格式 返给前端
         String data = JSON.toJSONString(pieData);
         System.out.println(data);
         return data;
@@ -347,8 +350,8 @@ public class WarningService {
             ExceptionCast.cast( EvaluationCode.SELECT_NULL);
         }
         //根据请求条件得到高危人群的预警信息和干预记录
-        List<WarnHUserVo> highRisk = warningMapper.findHighRisk(userNickName);
-        System.out.println("测试数据"+highRisk);
+        List<WarnHUserVo> highRisk = warningMapper.findHighRisk(userNickName,null);
+
         //从结果中得到用户id，查询用户信息
         List<String> listUserId = new ArrayList<>();
         for (WarnHUserVo user : highRisk) {

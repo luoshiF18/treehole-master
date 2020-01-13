@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.treehole.marketing.dao.InteractiveActivityMapper">
+    <select id="queryActivityByReleaseTime" resultType="com.treehole.framework.domain.marketing.InteractiveActivity">
+        select
+        id, short_title as shortTitle, title,sub_title  as subTitle,introduce,release_begin_time as releaseBeginTime,release_end_time as releaseEndTime,begin_time as beginTime,end_time as endTime,if_online as ifOnline,place,
+       if_pay as ifPay, pay_amount as payAmount,if_limit_num as ifLimitNum,limit_num as limitNum,join_in_mode as joinInMode,originator_name as originatorName,originator_phone as originatorPhone,other,image,status
+        from tb_interactive_activity
+        where #{today}
+        between  release_begin_time  and release_end_time
+        and status != 0
+
+    </select>
+
+</mapper>
+

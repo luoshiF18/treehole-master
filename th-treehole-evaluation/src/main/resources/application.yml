@@ -4,12 +4,12 @@ spring:
   application:
     name: th-treehole-evaluation
   redis:
-    host: 10.0.43.60
+    host: 192.168.56.101
 #  jackson:
 #    default-property-inclusion: non_null
   datasource:
     druid:
-      url: ${MYSQL_URL:jdbc:mysql://10.0.43.60:3306/th_evaluation?characterEncoding=utf-8}
+      url: ${MYSQL_URL:jdbc:mysql://127.0.0.1:3306/th_evaluation?characterEncoding=utf-8}
       username: root
       password: root
       driverClassName: com.mysql.jdbc.Driver
@@ -21,6 +21,20 @@ spring:
       testOnReturn: false #归还连接时检测连接是否有效
       timeBetweenEvictionRunsMillis: 60000 #配置间隔检测连接是否有效的时间（单位是毫秒）
       minEvictableIdleTimeMillis: 300000  #连接在连接池的最小生存时间（毫秒）
+  mail:
+    host: smtp.mxhichina.com
+    port: 465
+    username: spring-boot-demo@xkcoding.com
+    password: ENC(OT0qGOpXrr1Iog1W+fjOiIDCJdBjHyhy)
+    default-encoding: UTF-8
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
+      mail.smtp.ssl.enable: true
+      mail.display.sendmail: treehole.com
+    protocol: smtp
+
 eureka:
   client:
     registerWithEureka: true #服务注册开关
@@ -40,13 +54,6 @@ ribbon:
 mybatis:
   typeAliasesPackage: com.treehole.framework.domain.evaluation
   mapper-locations: classpath:mapper/*Mapper.xml
-#ev:
-#  method:
-#    - 和|sum
-#    - 平均数|mean
-#    - 方差|variance
-#    - 几何平均数|geometricMean
-#    - 总体方差|populationVariance
-#    - 乘积|product
-#    - 对数求和|sumLog
-#    - 平方和|sumSq
+jasypt:
+  encryptor:
+    password: spring-boot-demo
