@@ -15,8 +15,6 @@ import com.treehole.online.mapper.AgentMapper;
 import com.treehole.online.myUtil.MyNumberUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -33,7 +31,7 @@ import java.util.List;
  */
 @Service
 //使用缓存注解为此类中的所有方法声明可缓存
-@Cacheable(value = "AgentService")
+//@Cacheable(value = "AgentService")
 public class AgentService {
 
     @Autowired
@@ -141,6 +139,20 @@ public class AgentService {
         }
         return agent1;
     }
+    /**
+     * 通过id查询客服
+     * @return List<User>
+     */
+    public Agent getAgentByName(String agent_name){
+        Agent agent = new Agent();
+        //
+        agent.setAgent_name(agent_name);
+        Agent agent1 = agentMapper.selectOne(agent);
+        if(agent1 == null){
+            ExceptionCast.cast(MemberCode.DATA_IS_NULL);
+        }
+        return agent1;
+    }
 
     /**
      * 通过id删除客服
@@ -149,7 +161,7 @@ public class AgentService {
      */
     @Transactional
     //进行增删改操作时清空缓存
-    @CacheEvict(value="AgentService",allEntries=true)
+    //@CacheEvict(value="AgentService",allEntries=true)
     public void deleteAgentById(String agent_id) {
 
         if(StringUtils.isBlank(agent_id)){
@@ -182,7 +194,7 @@ public class AgentService {
      * @return int
      */
     @Transactional
-    @CacheEvict(value="AgentService",allEntries=true)
+    //@CacheEvict(value="AgentService",allEntries=true)
     public void insertAgent(Agent agent)  {
 
         User user = new User();
@@ -225,7 +237,7 @@ public class AgentService {
      * @param agent
      * @return int
      */
-    @CacheEvict(value="AgentService",allEntries=true)
+    //@CacheEvict(value="AgentService",allEntries=true)
     public void updateAgent(Agent agent){
         Example example =new Example(Agent.class);
         Example.Criteria criteria = example.createCriteria();

@@ -400,7 +400,7 @@ public class ScaleSelectService {
             UserOptionVO userOptionVO = new UserOptionVO();
             userOptionVO.setId(selectOne.getId());
             userOptionVO.setScaleName(selectOne.getScaleName());
-            userOptionVO.setUserName(getUserId());
+            userOptionVO.setUserName(selectOne.getUserId());
             userOptionVO.setResult(combine);
             userOptionVO.setTime(MyDateUtils.dateToString1(selectOne.getTime()));
 //        返回

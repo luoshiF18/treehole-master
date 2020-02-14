@@ -32,9 +32,10 @@ public class ServController implements ServControllerApi {
     @Override
     @GetMapping ("/getAllServ")
     public QueryResponseResult getAllServ(@RequestParam(value = "page", defaultValue = "1") int page,
-                                           @RequestParam(value = "size", defaultValue = "5") int size,
-                                           @RequestParam(value = "agent_name", defaultValue = "")String agent_name)  {
-        QueryResult queryResult = servService.findAllServ(page, size,agent_name);
+                                          @RequestParam(value = "size", defaultValue = "5") int size,
+                                          @RequestParam(value = "agent_name", defaultValue = "")String agent_name,
+                                          @RequestParam(value = "user_id", defaultValue = "")String user_id)  {
+        QueryResult queryResult = servService.findAllServ(page, size,agent_name,user_id);
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
 
     }
