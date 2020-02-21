@@ -16,4 +16,8 @@ public interface DetailMapper extends Mapper<Detail> {
     @Select("SELECT * FROM detail")
     List<Detail> getPsychologists();
 
+    //根据月份查询当月咨询师总人数
+    @Select("select count(psychologist_id) from detail where create_time <= #{value}")
+    Integer findMemberCountBeforeDate(String month);
+
 }

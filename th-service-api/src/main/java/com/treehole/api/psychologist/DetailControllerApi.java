@@ -6,6 +6,8 @@ import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import java.util.List;
+
 /**
  * @author Helay
  * @date 2019/11/16 9:08
@@ -27,5 +29,11 @@ public interface DetailControllerApi {
 
     @ApiOperation("查询所有咨询师的好评数")
     QueryResponseResult getPraiseNumber();
+
+    @ApiOperation("获取当前日期开始过去一年的日期")
+    List<String> getMonthBeforeYear();
+
+    @ApiOperation("根据月份查询当月咨询师总人数")
+    List<Integer> findMemberCountByMonth();
 
 }

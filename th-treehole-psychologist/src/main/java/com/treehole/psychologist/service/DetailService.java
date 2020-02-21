@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -135,5 +136,21 @@ public class DetailService {
         queryResult.setList(praiseList);
         return new QueryResponseResult(CommonCode.SUCCESS, queryResult);
 
+    }
+
+    /**
+     * 根据月份查询当月咨询师总人数
+     *
+     * @param months
+     * @return
+     */
+    public List<Integer> findMemberCountByMonth(List<String> months) {
+        List<Integer> list = new ArrayList<>();
+        for (String month : months) {
+            month = month + ".31";//格式：2020.01.31
+            Integer members = detailMapper.findMemberCountBeforeDate(month);
+            list.add(members);
+        }
+        return list;
     }
 }

@@ -8,6 +8,11 @@ import com.treehole.psychologist.service.DetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
 /**
  * @author Helay
  * @date 2019/11/16 9:14
@@ -79,5 +84,36 @@ public class DetailController implements DetailControllerApi {
     @GetMapping("/get/praises")
     public QueryResponseResult getPraiseNumber() {
         return this.detailService.getPraiseNumber();
+    }
+
+    /**
+     * 获取当前日期开始过去一年的日期
+     *
+     * @return
+     */
+    @Override
+    @GetMapping("/get/month")
+    public List<String> getMonthBeforeYear() {
+        Calendar calendar = Calendar.getInstance();//获取日期实例，默认为当前日期，例如：2020-2-20
+        calendar.add(Calendar.MONTH, -12);//获得当前日期之前第12个月的日期，例如：2019-2-20
+        List<String> months = new ArrayList<>();//构建集合用来存放日期
+        for (int i = 0; i < 12; i++) {
+            //获得当前日期之后1个月的日期，第一次遍历得到2019-3-20
+            calendar.add(Calendar.MONTH, 1);
+            months.add(new SimpleDateFormat("yyyy.MM").format(calendar.getTime()));
+        }
+        return months;
+    }
+
+    /**
+     * 根据月份查询当月咨询师总人数
+     *
+     * @return
+     */
+    @Override
+    @GetMapping("/get/number")
+    public List<Integer> findMemberCountByMonth() {
+        List<String> months = this.getMonthBeforeYear();
+        return this.detailService.findMemberCountByMonth(months);
     }
 }
