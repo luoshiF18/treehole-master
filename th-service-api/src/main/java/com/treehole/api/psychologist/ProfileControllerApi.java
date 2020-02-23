@@ -8,6 +8,8 @@ import com.treehole.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import java.util.Map;
+
 /**
  * @author Helay
  * @date 2019/10/29 16:58
@@ -35,5 +37,11 @@ public interface ProfileControllerApi {
 
     @ApiOperation("根据id查询心理咨询师详细信息")
     DetailExt getPsychologistDetail(String id);
+
+    @ApiOperation("获取咨询师资质占比情况")
+    Map<String, Object> getQualificationCount();
+
+    @ApiOperation("获取咨询师资质名")
+    Map<String, Object> getQualificationNames();
 
 }

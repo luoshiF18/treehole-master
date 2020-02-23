@@ -27,6 +27,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -325,5 +326,14 @@ public class ProfileService {
         detailExt.setPrice(state.getPrice());
         detailExt.setPraise_number(detail.getPraise_number());
         return detailExt;
+    }
+
+    /**
+     * 查询咨询师资质占比情况
+     *
+     * @return
+     */
+    public List<Map<String, Object>> getQualificationCount() {
+        return profileMapper.getQualificationCount();
     }
 }

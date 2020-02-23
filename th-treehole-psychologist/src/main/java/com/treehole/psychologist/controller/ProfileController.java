@@ -10,6 +10,11 @@ import com.treehole.psychologist.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Helay
  * @date 2019/10/25 9:33
@@ -121,5 +126,45 @@ public class ProfileController implements ProfileControllerApi {
     @GetMapping("/get/detail/{id}")
     public DetailExt getPsychologistDetail(@PathVariable("id") String id) {
         return this.profileService.getPsychologistDetail(id);
+    }
+
+    /**
+     * 获取咨询师资质占比情况
+     *
+     * @return
+     */
+    @Override
+    @GetMapping("/get/qualificationCount")
+    public Map<String, Object> getQualificationCount() {
+        //查询出的数据格式为：{"name":"国家二级心理咨询师","value":3}，{"name":"国家三级心理咨询师","value":4}
+        List<Map<String, Object>> qualificationCount = profileService.getQualificationCount();
+        //构建map用来封装页面展示所需数据
+        Map<String, Object> map = new HashMap<>();
+        map.put("qualificationCount", qualificationCount);
+        return map;
+    }
+
+    /**
+     * 获取咨询师资质名
+     *
+     * @return
+     */
+    @Override
+    @GetMapping("/get/qualificationNames")
+    public Map<String, Object> getQualificationNames() {
+        //查询咨询师资质占比情况
+        List<Map<String, Object>> qualificationCount = this.profileService.getQualificationCount();
+        //构建list集合用来存放咨询师资质名
+        List<String> qualificationNames = new ArrayList<>();
+        //构建map用来封装页面展示所需数据
+        Map<String, Object> map = new HashMap<>();
+        //遍历qualificationCount集合
+        for (Map<String, Object> m : qualificationCount) {
+            String name = (String) m.get("name");//取出资质名
+            qualificationNames.add(name);//放入qualificationNames集合
+            map.put("qualificationNames", qualificationNames);
+        }
+        return map;
+
     }
 }
