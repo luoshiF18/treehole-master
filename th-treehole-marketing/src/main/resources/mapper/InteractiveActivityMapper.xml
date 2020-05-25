@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.treehole.marketing.dao.InteractiveActivityMapper">
+
     <select id="queryActivityByReleaseTime" resultType="com.treehole.framework.domain.marketing.InteractiveActivity">
         select
         id, short_title as shortTitle, title,sub_title  as subTitle,introduce,release_begin_time as releaseBeginTime,release_end_time as releaseEndTime,begin_time as beginTime,end_time as endTime,if_online as ifOnline,place,

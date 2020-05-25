@@ -200,22 +200,6 @@ public class InteractiveActivityService {
         if(StringUtils.isBlank(today)){
             ExceptionCast.cast(MarketingCode.DATA_ERROR);
         }
-
-/*      Example example = new Example(InteractiveActivity.class);
-        Example.Criteria criteria = example.createCriteria();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date today_= null;
-        try {
-            today_ = sdf.parse(today);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }*/
-
-       /* criteria.andLessThanOrEqualTo("releaseBeginTime",today_);
-        criteria.andGreaterThanOrEqualTo("releaseEndTime", today_);
-        //门户展示的活动或者没进行或者进行中，不能为已结束的
-        criteria.andNotEqualTo("status", MyStatusCode.STATUS_FINISHED);
-        example.setOrderByClause("release_begin_time" + " " + "desc");*/
         List<InteractiveActivity> interactiveActivities = this.interactiveActivityMapper.queryActivityByReleaseTime(today);
         if(CollectionUtils.isEmpty(interactiveActivities)){
             ExceptionCast.cast(MarketingCode.SELECT_NULL);

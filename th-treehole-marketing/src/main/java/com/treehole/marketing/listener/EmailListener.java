@@ -32,19 +32,15 @@ public class EmailListener {
                     ignoreDeclarationExceptions = "true"),
             key = {"EMAIL.VERIFY.EXTENSION"}))
     public void sendEmails(Extension extension){
-
-        //List<String> emails = extension.getTo();
         String title = extension.getTitle();
-        // String content = extension.getContent();
-        //int succCount = 0;
         //将content中的${key}变量替换为对应的值
         for (Map<String, String> value : extension.getValues()) {
             value.put("url", extension.getUrl());
-            try {
+            /*try {
                 System.out.println(MAPPER.writeValueAsString(value));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
-            }
+            }*/
             /*传入的参数为extension.getContent()的原因是，
             传入content104行的content，content第一个${key}已经被修改过了，
             不再有${key},那么发送给用户的所有邮件内容是一样的
@@ -57,12 +53,8 @@ public class EmailListener {
                 e.printStackTrace();
             }
             MyMailUtils.sendMail(prop.getUSER(), prop.getPASSWORD(), value.get("to"), content, title);
-            //succCount++;
         }
-
-        //return succCount;
     }
-
     //
     public String renderString(String content, Map<String, String> map){
         Set<Map.Entry<String, String>> sets = map.entrySet();

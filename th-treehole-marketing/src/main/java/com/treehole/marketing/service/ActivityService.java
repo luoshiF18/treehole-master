@@ -101,9 +101,9 @@ public class ActivityService {
         }else if("1_1_1".equals(typeId)){
             activity.setTypeName("满减");
         }else if("2_2_1".equals(typeId)){
-            activity.setTypeName("促销");
-        }else if("3_3_1".equals(typeId)){
             activity.setTypeName("打折");
+        }else if("3_3_1".equals(typeId)){
+            activity.setTypeName("促销");
         }
         int status = activity.getStatus();
         if(status == MyStatusCode.STATUS_FINISHED){

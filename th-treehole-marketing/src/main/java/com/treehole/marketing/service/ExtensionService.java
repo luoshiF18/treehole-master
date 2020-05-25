@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.treehole.framework.domain.marketing.Extension;
+import com.treehole.framework.domain.marketing.UserExtension;
 import com.treehole.framework.domain.marketing.response.MarketingCode;
 import com.treehole.framework.exception.ExceptionCast;
 import com.treehole.framework.model.response.QueryResult;
 import com.treehole.marketing.dao.ExtensionMapper;
+import com.treehole.marketing.dao.UserExtensionMapper;
 import com.treehole.marketing.utils.MyNumberUtils;
 import com.treehole.marketing.utils.WebSocketServer;
 import com.treehole.marketing.utils.WebSocketUtil;
@@ -21,9 +23,12 @@ import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author wanglu
@@ -33,6 +38,9 @@ public class ExtensionService {
 
     @Autowired
     private ExtensionMapper extensionMapper;
+
+    @Autowired
+    private UserExtensionMapper userExtensionMapper;
     private static final ObjectMapper MAPPER = new ObjectMapper();
     @Autowired
     private AmqpTemplate amqpTemplate;
@@ -75,10 +83,14 @@ public class ExtensionService {
             ExceptionCast.cast(MarketingCode.DATA_ERROR);
         }
         for (Map<String, String> value : extension.getValues()) {
-            if(value.containsKey("to") == false){
+            if(value.containsKey("to") == false && value.containsKey("userId") == false){
                 ExceptionCast.cast(MarketingCode.DATA_ERROR);
             }
         }
+
+        extension.setCount(extension.getValues().size());
+        extension.setId(MyNumberUtils.getUUID());
+
         //发送邮件的推广
         if(extension.getMode() == 0){
             this.amqpTemplate.convertAndSend("TREEHOLE.EMAIL.EXCHANGE", "EMAIL.VERIFY.EXTENSION", extension);
@@ -91,25 +103,27 @@ public class ExtensionService {
                 Map<String, String> msg = new HashMap<>();
                 msg.put("phone", extensionValue.get("to"));
                 msg.put("code", extension.getUrl());
-                System.out.println(extensionValue.get("to"));
                 this.amqpTemplate.convertAndSend("TREEHOLE.SMS.EXCHANGE", "SMS.VERIFY.URL", msg);
             }
         } else if(extension.getMode() == 2){//站内信
-            sendWs(extension);
+           // sendWs(extension);
         }
-        extension.setCount(extension.getValues().size());
-        extension.setId(MyNumberUtils.getUUID());
+
         try {
             extension.setInfo(MAPPER.writeValueAsString(extension.getValues()));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        this.extensionMapper.insertSelective(extension);
+        if(this.extensionMapper.insertSelective(extension)!=1){
+            ExceptionCast.cast(MarketingCode.INSERT_FAILURE);
+        }
+        this.saveUserExtension(extension);
 
     }
+    //添加用户推广
 
-    private void sendWs(Extension extension){
-        String content = extension.getContent();
+    private void saveUserExtension(Extension extension){
+       /* String content = extension.getContent();
         for (Map<String, String> value : extension.getValues()) {
             String id = value.get("to");
             try {
@@ -118,7 +132,35 @@ public class ExtensionService {
                 e.printStackTrace();
             }
 
+        }*/
+        UserExtension userExtension = new UserExtension();
+        userExtension.setMode(extension.getMode());
+        userExtension.setTitle(extension.getTitle());
+        userExtension.setExtensionId(extension.getId());
+        if(StringUtils.isNotBlank(extension.getUrl())){
+            String regex = "\\$\\{url\\}";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(extension.getContent());
+            userExtension.setContent(matcher.replaceAll(extension.getUrl()));
+        }else{
+            userExtension.setContent(extension.getContent());
         }
+        userExtension.setTitle(extension.getTitle());
+        userExtension.setUsedFor(extension.getUsedFor());
+        userExtension.setActivityType(extension.getActivityType());
+        List<Map<String, String>> extensionValues = extension.getValues();
+        for (Map<String, String> extensionValue : extensionValues) {
+            userExtension.setUserId(extensionValue.get("userId"));
+            userExtension.setId(MyNumberUtils.getUUID());
+            if(userExtension.getReleaseTime() == null){
+                userExtension.setReleaseTime(new Date());
+            }
+            userExtension.setResolve(false);
+            if(this.userExtensionMapper.insertSelective(userExtension)!= 1 ){
+                ExceptionCast.cast(MarketingCode.INSERT_FAILURE);
+            }
+        }
+
     }
 
 /*
@@ -140,7 +182,8 @@ public class ExtensionService {
             *//*传入的参数为extension.getContent()的原因是，
             传入content104行的content，content第一个${key}已经被修改过了，
             不再有${key},那么发送给用户的所有邮件内容是一样的
-             *//*
+             */
+    /*
             String content = renderString(extension.getContent(), value);
 
             try {

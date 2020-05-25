@@ -3,11 +3,11 @@
 <mapper namespace="com.treehole.marketing.dao.CouponMapper">
     <select id="queryValidCoupon" resultType="com.treehole.framework.domain.marketing.Coupon"  parameterType="java.lang.String">
         select
-        id, title, icon,type,used_type as usedType,with_special as withSpecial,with_amount as withAmount,used_amount as usedAmount,start_time startTime,end_time as endTime,valid_type as validType,valid_start_time as validStartTime,
+        id, title, icon,type,used_type_id as usedTypeId,with_special as withSpecial,with_amount as withAmount,used_amount as usedAmount,start_time startTime,end_time as endTime,valid_type as validType,valid_start_time as validStartTime,
         valid_end_time as validEndTime,valid_days as validDays,used_by as usedBy,limit_num as limitNum,status
         from tb_coupon
         where #{today}
-        between  start_time  and end_time
+        between  DATE_FORMAT(DATE_SUB(start_time,INTERVAL 1 DAY),'%Y-%m-%d')  and end_time
         and type = 2
         order by startTime desc
     </select>

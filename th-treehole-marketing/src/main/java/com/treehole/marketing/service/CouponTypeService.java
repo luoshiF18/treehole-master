@@ -36,6 +36,7 @@ public class CouponTypeService {
         return new QueryResult<>(couponTypes, couponTypes.size());
     }
 
+    //
     public void updateCouponType(CouponType couponType) {
         if(StringUtils.isEmpty(couponType.getUsedType())||
         StringUtils.isEmpty(couponType.getRule())){

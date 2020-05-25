@@ -1,5 +1,6 @@
 package com.treehole.marketing.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.treehole.framework.domain.marketing.ActivityGoods;
 import com.treehole.framework.domain.marketing.ActivityRule;
@@ -50,7 +51,6 @@ public class ActivityInfoService {
         if(CollectionUtils.isEmpty(activityGoodsList)){
             ExceptionCast.cast(MarketingCode.DATA_NULL);
         }
-
         return activityGoodsList;
     }
 

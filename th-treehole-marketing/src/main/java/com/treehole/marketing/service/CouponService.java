@@ -138,7 +138,7 @@ public class CouponService {
     }
 
     /**
-     * 用户可以查看到的优惠券信息,待补充---压力测试&信息！！！！！！！！
+     * 用户可以查看到的优惠券信息
      * @param cid
      * @return
      */
@@ -192,49 +192,48 @@ public class CouponService {
             ExceptionCast.cast(MarketingCode.COUPON_NUM_TOMUCH);
         }
         //数据为空
-        if(StringUtils.isBlank(coupon.getTitle())||
-                coupon.getStartTime() == null ||
-                coupon.getEndTime() == null ||
-                coupon.getQuota() == null ||
-                coupon.getUsedAmount() == null ||
-                coupon.getUsedAmount() == new BigDecimal(0)){
+        if(StringUtils.isBlank(coupon.getTitle())|| coupon.getStartTime() == null ||
+                coupon.getEndTime() == null || coupon.getQuota() == null ||
+                coupon.getUsedAmount() == null || coupon.getUsedAmount() == new BigDecimal(0)){
             ExceptionCast.cast(MarketingCode.DATA_ERROR);
         }
-        if((coupon.getValidType() == false && coupon.getValidDays() == null)||(coupon.getValidType()==true && (coupon.getValidStartTime() == null || coupon.getValidEndTime() == null))){
+        //优惠券有效期
+        if((coupon.getValidType() == false && coupon.getValidDays() == null)||
+                (coupon.getValidType()==true && (coupon.getValidStartTime() == null ||
+                        coupon.getValidEndTime() == null))){
             ExceptionCast.cast(MarketingCode.COUPON_VALID_DATE_ERROR);
         }
+        //手动设置数据
         coupon.setId(MyNumberUtils.getUUID());
         String upperCase = MyChineseCharUtil.getUpperCase(coupon.getTitle(), false);
         coupon.setLetter(upperCase);
-
-        //!!!!!!!!!不确定还有没有字段需要修改，添加时需不需要判断并添加状态！！！！！！
-        coupon.setStock(coupon.getQuota());
+        coupon.setStock(coupon.getQuota());    //库存=发放量
         coupon.setCreated(new Date());
-        coupon.setUpdated(coupon.getCreated());
-
-
-        //添加redis操作对优惠券状态进行修改！！！！！！！！
+        coupon.setUpdated(coupon.getCreated()); //首次更新时间=创建时间
+        //添加redis操作对优惠券状态进行修改
         Date date = new Date();
         Date startTime = coupon.getStartTime();
         Date endTime = coupon.getEndTime();
         //活动开始时间小于当前时间则已开始
-        if(startTime.compareTo(date) < 0 && endTime.compareTo(new Date())>0){
-            //格式为id_coupon_ONGOING ,值目前觉得无所谓，所以存为了id
-            redisTemplate.boundValueOps(coupon.getId()+"_coupon"+"_ONGOING").set(coupon.getId());
-            redisTemplate.boundValueOps(coupon.getId()+"_coupon"+"_ONGOING").expire(endTime.getTime() - (new Date().getTime()), TimeUnit.MILLISECONDS);
+        if(startTime.compareTo(date) < 0
+                && endTime.compareTo(new Date())>0){
+            //格式为id_coupon_ONGOING ,值无所谓，存为id
+            redisTemplate.boundValueOps(
+                    coupon.getId()+"_coupon"+"_ONGOING").set(coupon.getId());
+            redisTemplate.boundValueOps(coupon.getId()+"_coupon"+"_ONGOING")
+                    .expire(endTime.getTime() - (new Date().getTime()), TimeUnit.MILLISECONDS);
             coupon.setStatus(2);
         } else if(startTime.compareTo(date) > 0 ){//开始时间大于当前时间，未开始
-            redisTemplate.boundValueOps(coupon.getId()+"_coupon"+"_NOTSTARTED").set(coupon.getId());
-            redisTemplate.boundValueOps(coupon.getId()+"_coupon"+"_NOTSTARTED").expire((startTime.getTime() - new Date().getTime()),TimeUnit.MILLISECONDS);
+            redisTemplate.boundValueOps(
+                    coupon.getId()+"_coupon"+"_NOTSTARTED").set(coupon.getId());
+            redisTemplate.boundValueOps(coupon.getId()+"_coupon"+"_NOTSTARTED")
+                    .expire((startTime.getTime() - new Date().getTime()),TimeUnit.MILLISECONDS);
             coupon.setStatus(1);
-
         }
-
+        //添加
         if(this.couponMapper.insertSelective(coupon) != 1 ){
             ExceptionCast.cast(MarketingCode.INSERT_FAILURE);
         }
-
-
     }
 
     /**
@@ -311,24 +310,26 @@ public class CouponService {
 
     }
 
-    /**!!!!!!!!!!!!!!!!!!异常抛出的信息不对
+    /**
      * 删除优惠券，正在进行中的优惠券不可删除，只能结束或者修改
      * @param id
      */
     @Transactional
     public void deleteCouponById(String id) {
+        if(StringUtils.isBlank(id)){
+            ExceptionCast.cast(MarketingCode.DATA_ERROR);
+        }
+        Coupon coupon = this.couponMapper.selectByPrimaryKey(id);
+        if(MyStatusCode.STATUS_ONGOING.equals(coupon.getStatus())){//正在进行发放的优惠券要先下架才能删除
+            ExceptionCast.cast(MarketingCode.DELETE_FORBIDDEN);
+        }
+        //删除优惠券及Redis中的信息
         try {
-            if(StringUtils.isNotBlank(id)){
-                Coupon coupon = this.couponMapper.selectByPrimaryKey(id);
-                if(MyStatusCode.STATUS_ONGOING.equals(coupon.getStatus())){
-                    ExceptionCast.cast(MarketingCode.DELETE_FORBIDDEN);
-                }
+
                 this.couponMapper.deleteByPrimaryKey(id);
                 if(MyStatusCode.STATUS_NOT_STARTED.equals(coupon.getStatus())){
                     redisTemplate.delete(id+"_coupon__NOTSTARTED");
                 }
-
-            }
         } catch (Exception e) {
 
             ExceptionCast.cast(MarketingCode.DELETE_ERROR);
